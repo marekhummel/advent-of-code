@@ -40,32 +40,33 @@ def parse(lines: list[str]) -> tuple[list[Number], list[Symbol]]:
 
 
 def is_part(number: Number, symbols: list[Symbol]) -> bool:
-    _, row_num, left, right = number
+    _, num_row, left, right = number
 
-    for _, row, col in symbols:
-        if row == row_num and (col == left - 1 or col == right + 1):
+    for sym, sym_row, sym_col in symbols:
+        if sym_row == num_row and (sym_col == left - 1 or sym_col == right + 1):
             return True
-        if (row == row_num - 1 or row == row_num + 1) and left - 1 <= col <= right + 1:
+        if (sym_row == num_row - 1 or sym_row == num_row + 1) and left - 1 <= sym_col <= right + 1:
             return True
 
     return False
 
 
 def gear_ratio(symbol: Symbol, numbers: list[Number]) -> int:
-    char, row_sym, col_sym = symbol
+    char, sym_row, sym_col = symbol
 
     if char != "*":
         return 0
 
     part_numbers = []
-    for num, row, left, right in numbers:
-        if row_sym == row and (col_sym == left - 1 or col_sym == right + 1):
+    for num, num_row, num_col_start, num_col_end in numbers:
+        if sym_row == num_row and (sym_col == num_col_start - 1 or sym_col == num_col_end + 1):
             part_numbers.append(num)
             continue
-        if (row_sym == row - 1 or row_sym == row + 1) and left - 1 <= col_sym <= right + 1:
+        if (sym_row == num_row - 1 or sym_row == num_row + 1) and num_col_start - 1 <= sym_col <= num_col_end + 1:
             part_numbers.append(num)
             continue
 
     if len(part_numbers) != 2:
         return 0
+
     return part_numbers[0] * part_numbers[1]
