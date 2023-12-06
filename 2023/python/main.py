@@ -1,6 +1,7 @@
 import sys
 from typing import Literal
 
+
 from solutions.day01 import Solution01
 from solutions.day02 import Solution02
 from solutions.day03 import Solution03
@@ -26,12 +27,11 @@ from solutions.day22 import Solution22
 from solutions.day23 import Solution23
 from solutions.day24 import Solution24
 
-VERSION: Literal[1, 2] = 1
-USE_SAMPLE = False
+VERSION: Literal[1, 2] = 2
+USE_SAMPLE = True
 
 
 if __name__ == "__main__":
-    day = int(sys.argv[1].removeprefix("day"))
     solutions = [
         Solution01,
         Solution02,
@@ -59,6 +59,24 @@ if __name__ == "__main__":
         Solution24,
     ]
 
-    s = solutions[day - 1]()
-    v = s.solve(version=VERSION, use_sample=USE_SAMPLE)
-    print(v)
+    arg = sys.argv[1]
+
+    if arg == "main":
+        for sc in solutions:
+            s = sc()
+            print(f"Day {s.day:02d}:")
+            for version in [1, 2]:
+                for sample in [True, False]:
+                    try:
+                        v = str(s.solve(version=version, use_sample=sample))  # type: ignore
+                    except FileNotFoundError:
+                        v = "failed"
+
+                    sample_str = "samp" if sample else "real"
+                    print(f"  V{version} {sample_str}:  {v}")
+    else:
+        day = int(arg.removeprefix("day"))
+
+        s = solutions[day - 1]()
+        v = str(s.solve(version=VERSION, use_sample=USE_SAMPLE))
+        print(v)

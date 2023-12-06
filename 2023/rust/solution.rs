@@ -8,16 +8,16 @@ pub type ProblemInput = Vec<String>;
 pub type ProblemResult = i32;
 
 pub trait Solution {
-    fn solve(&self, version: u8, use_sample: bool) -> ProblemResult {
-        let data = self.get_input(version, use_sample);
+    fn solve(&self, version: u8, use_sample: bool) -> Option<ProblemResult> {
+        let data = self.get_input(version, use_sample)?;
         match version {
-            1 => self.solve_version01(data),
-            2 => self.solve_version02(data),
+            1 => Some(self.solve_version01(data)),
+            2 => Some(self.solve_version02(data)),
             _ => panic!(),
         }
     }
 
-    fn get_input(&self, version: u8, use_sample: bool) -> ProblemInput {
+    fn get_input(&self, version: u8, use_sample: bool) -> Option<ProblemInput> {
         let base_filename = if use_sample { "sample" } else { "input" };
         let day = self.get_day();
         let mut fullname = format!("2023\\inputs\\{base_filename}{day:02}.txt");
@@ -25,9 +25,9 @@ pub trait Solution {
             fullname = fullname.replace(".txt", format!("_{version}.txt").as_str());
         }
 
-        let file = File::open(fullname).expect("Input missing");
+        let file = File::open(fullname).ok()?;
         let buf = BufReader::new(file);
-        buf.lines().map(|l| l.expect("Could not parse line")).collect()
+        Some(buf.lines().map(|l| l.expect("Could not parse line")).collect())
     }
 
     fn get_day(&self) -> u8;

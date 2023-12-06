@@ -33,14 +33,6 @@ const VERSION: u8 = 2;
 const USE_SAMPLE: bool = false;
 
 fn main() {
-    let day = env::args()
-        .nth(1)
-        .expect("Pass day as argument!")
-        .strip_prefix("day")
-        .expect("Argument should start with 'day'")
-        .parse::<usize>()
-        .expect("Argument should have format 'dayXX' with XX being a valid number!");
-
     let solutions: Vec<Box<dyn Solution>> = vec![
         Box::new(day01::Solution01 {}),
         Box::new(day02::Solution02 {}),
@@ -68,7 +60,32 @@ fn main() {
         Box::new(day24::Solution24 {}),
     ];
 
-    let s = &solutions[day - 1];
-    let v = s.solve(VERSION, USE_SAMPLE);
-    println!("Day {day:02}:  {v}");
+    let arg = env::args().nth(1).expect("Pass day or 'main' as argument!");
+
+    match arg.as_str() {
+        "main" => {
+            for s in &solutions {
+                println!("Day {0:02}:", s.get_day());
+                for version in [1, 2] {
+                    for sample in [true, false] {
+                        let ov = s.solve(version, sample);
+                        let sample_str = if sample { "samp" } else { "real" };
+                        let v_str = ov.map_or(String::from("failed"), |v| v.to_string());
+                        println!("  V{version} {sample_str}:  {v_str}");
+                    }
+                }
+            }
+        }
+        _ => {
+            let day = arg
+                .strip_prefix("day")
+                .expect("Argument should start with 'day'")
+                .parse::<usize>()
+                .expect("Argument should have format 'dayXX' with XX being a valid number!");
+
+            let s = &solutions[day - 1];
+            let v = s.solve(VERSION, USE_SAMPLE).unwrap();
+            println!("{v}");
+        }
+    }
 }
