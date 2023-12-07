@@ -53,7 +53,7 @@ impl Solution06 {
         Race { time, record: dist }
     }
 
-    fn solve_run(&self, race: Race) -> u32 {
+    fn solve_race(&self, race: Race) -> u32 {
         // dist = (race_time - hold) * hold
         // => Inverse parabola, max `r` at race_time `t` / 2
         // => hold_record = 0.5 * (t +- sqrt(t^2 - 4r))
@@ -66,9 +66,7 @@ impl Solution06 {
             hold_low += 1.0;
         }
 
-        let count = (hold_high.floor() as u32) - (hold_low.ceil() as u32) + 1;
-        println!("{race:?}: {hold_low}, {hold_high}, {count}");
-        count
+        (hold_high.floor() as u32) - (hold_low.ceil() as u32) + 1
     }
 }
 
@@ -79,11 +77,11 @@ impl Solution for Solution06 {
 
     fn solve_version01(&self, input: ProblemInput) -> i128 {
         let races = self.parse(input);
-        races.into_iter().map(|r| self.solve_run(r)).product::<u32>().into()
+        races.into_iter().map(|r| self.solve_race(r)).product::<u32>().into()
     }
 
     fn solve_version02(&self, input: ProblemInput) -> i128 {
         let race = self.parse2(input);
-        self.solve_run(race).into()
+        self.solve_race(race).into()
     }
 }

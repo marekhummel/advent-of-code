@@ -27,8 +27,9 @@ from solutions.day22 import Solution22
 from solutions.day23 import Solution23
 from solutions.day24 import Solution24
 
+ALL: bool = True
 VERSION: Literal[1, 2] = 2
-USE_SAMPLE = True
+USE_SAMPLE: bool = True
 
 
 if __name__ == "__main__":
@@ -78,5 +79,13 @@ if __name__ == "__main__":
         day = int(arg.removeprefix("day"))
 
         s = solutions[day - 1]()
-        v = str(s.solve(version=VERSION, use_sample=USE_SAMPLE))
-        print(v)
+
+        if ALL:
+            for version in [1, 2]:
+                for sample in [True, False]:
+                    v = str(s.solve(version=version, use_sample=sample))  # type: ignore
+                    sample_str = "samp" if sample else "real"
+                    print(f"V{version} {sample_str}:  {v}")
+        else:
+            v = str(s.solve(version=VERSION, use_sample=USE_SAMPLE))
+            print(v)
