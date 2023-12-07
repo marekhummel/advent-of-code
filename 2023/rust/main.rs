@@ -30,8 +30,8 @@ use std::env;
 use crate::solution::Solution;
 
 const ALL: bool = true;
-const VERSION: u8 = 1;
-const USE_SAMPLE: bool = true;
+const VERSION: u8 = 2;
+const USE_SAMPLE: bool = false;
 
 fn main() {
     let solutions: Vec<Box<dyn Solution>> = vec![
