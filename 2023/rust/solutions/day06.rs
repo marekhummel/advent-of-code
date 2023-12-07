@@ -58,15 +58,12 @@ impl Solution06 {
         // => Inverse parabola, max `r` at race_time `t` / 2
         // => hold_record = 0.5 * (t +- sqrt(t^2 - 4r))
         let sqrt = (race.time * race.time - 4.0 * race.record).sqrt();
-        let (mut hold_low, mut hold_high) = (0.5 * (race.time - sqrt), 0.5 * (race.time + sqrt));
-        if hold_high.fract() == 0.0 {
-            hold_high -= 1.0;
-        }
-        if hold_low.fract() == 0.0 {
-            hold_low += 1.0;
-        }
+        let (hold_low, hold_high) = (0.5 * (race.time - sqrt), 0.5 * (race.time + sqrt));
 
-        (hold_high.floor() as u32) - (hold_low.ceil() as u32) + 1
+        // At low and high its equal to the record.
+        // Thus we intentionally include the integers below low and above high, and then subtract 2 after.
+        // This avoids checking if low and high matches the record exactly.
+        (hold_high.ceil() as u32) - (hold_low.floor() as u32) - 1
     }
 }
 

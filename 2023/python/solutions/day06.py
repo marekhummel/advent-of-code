@@ -34,7 +34,4 @@ def solve_race(race: tuple[int, int]) -> int:
     root = sqrt(time * time - 4 * record)
     low, high = 0.5 * (time - root), 0.5 * (time + root)
 
-    low = low + 1 if low.is_integer() else low
-    high = high - 1 if high.is_integer() else high
-
-    return floor(high) - ceil(low) + 1
+    return ceil(high) - floor(low) - 1
