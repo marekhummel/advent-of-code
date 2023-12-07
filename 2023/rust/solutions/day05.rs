@@ -1,6 +1,6 @@
 use itertools::Itertools;
 
-use crate::solution::{ProblemInput, ProblemResult, Solution};
+use crate::solution::{ProblemInput, Solution};
 
 struct MapEntry {
     dst: u64,
@@ -33,7 +33,7 @@ impl SeedRange {
 type Seed = u64;
 type Map = Vec<MapEntry>;
 
-pub struct Solution05 {}
+pub struct Solution05;
 
 impl Solution05 {
     fn parse(&self, lines: ProblemInput) -> (Vec<Seed>, Vec<Map>) {
@@ -162,7 +162,7 @@ impl Solution for Solution05 {
         5
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version01(&self, input: ProblemInput) -> i128 {
         let (seeds, maps) = self.parse(input);
         seeds
             .iter()
@@ -173,7 +173,7 @@ impl Solution for Solution05 {
             .unwrap()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version02(&self, input: ProblemInput) -> i128 {
         let (seeds, maps) = self.parse2(input);
         seeds
             .into_iter()

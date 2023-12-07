@@ -68,9 +68,9 @@ fn main() {
                 println!("Day {0:02}:", s.get_day());
                 for version in [1, 2] {
                     for sample in [true, false] {
-                        let ov = s.solve(version, sample);
+                        let opt_v = s.solve(version, sample);
                         let sample_str = if sample { "samp" } else { "real" };
-                        let v_str = ov.map_or(String::from("failed"), |v| v.to_string());
+                        let v_str = opt_v.map_or(String::from("failed"), |v| v.to_string());
                         println!("  V{version} {sample_str}:  {v_str}");
                     }
                 }
@@ -84,7 +84,7 @@ fn main() {
                 .expect("Argument should have format 'dayXX' with XX being a valid number!");
 
             let s = &solutions[day - 1];
-            let v = s.solve(VERSION, USE_SAMPLE).unwrap();
+            let v = s.solve(VERSION, USE_SAMPLE).unwrap().to_string();
             println!("{v}");
         }
     }

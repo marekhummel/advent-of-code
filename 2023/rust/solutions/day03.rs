@@ -1,4 +1,4 @@
-use crate::solution::{ProblemInput, ProblemResult, Solution};
+use crate::solution::{ProblemInput, Solution};
 
 #[derive(Debug)]
 struct Number {
@@ -15,7 +15,7 @@ struct Symbol {
     col: usize,
 }
 
-pub struct Solution03 {}
+pub struct Solution03;
 
 impl Solution03 {
     fn parse(&self, lines: ProblemInput) -> (Vec<Number>, Vec<Symbol>) {
@@ -112,7 +112,7 @@ impl Solution for Solution03 {
         3
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version01(&self, input: ProblemInput) -> i128 {
         let (numbers, symbols) = self.parse(input);
         numbers
             .iter()
@@ -123,7 +123,7 @@ impl Solution for Solution03 {
             .unwrap()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version02(&self, input: ProblemInput) -> i128 {
         let (numbers, symbols) = self.parse(input);
         symbols
             .iter()

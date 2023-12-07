@@ -1,12 +1,12 @@
 use itertools::Itertools;
 
-use crate::solution::{ProblemInput, ProblemResult, Solution};
+use crate::solution::{ProblemInput, Solution};
 
 use std::collections::HashMap;
 
 type Reveals = Vec<(u16, String)>;
 
-pub struct Solution02 {}
+pub struct Solution02;
 
 impl Solution02 {
     fn parse(&self, input: ProblemInput) -> Vec<(u16, Reveals)> {
@@ -30,7 +30,7 @@ impl Solution02 {
         reveals.iter().all(|(n, color)| n <= colors.get(color as &str).unwrap())
     }
 
-    fn power(&self, reveals: &Reveals) -> ProblemResult {
+    fn power(&self, reveals: &Reveals) -> i32 {
         let mut setsize = HashMap::from([("red", 0u16), ("green", 0), ("blue", 0)]);
         for (n, color) in reveals {
             setsize.entry(color).and_modify(|val| *val = (*val).max(*n));
@@ -45,7 +45,7 @@ impl Solution for Solution02 {
         2
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version01(&self, input: ProblemInput) -> i128 {
         self.parse(input)
             .iter()
             .filter(|(_, reveals)| self.is_valid(reveals, 12, 13, 14))
@@ -54,7 +54,11 @@ impl Solution for Solution02 {
             .into()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
-        self.parse(input).iter().map(|(_, reveals)| self.power(reveals)).sum()
+    fn solve_version02(&self, input: ProblemInput) -> i128 {
+        self.parse(input)
+            .iter()
+            .map(|(_, reveals)| self.power(reveals))
+            .sum::<i32>()
+            .into()
     }
 }
