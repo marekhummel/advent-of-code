@@ -29,8 +29,9 @@ use std::env;
 
 use crate::solution::Solution;
 
-const VERSION: u8 = 2;
-const USE_SAMPLE: bool = false;
+const ALL: bool = true;
+const VERSION: u8 = 1;
+const USE_SAMPLE: bool = true;
 
 fn main() {
     let solutions: Vec<Box<dyn Solution>> = vec![
@@ -84,8 +85,22 @@ fn main() {
                 .expect("Argument should have format 'dayXX' with XX being a valid number!");
 
             let s = &solutions[day - 1];
-            let v = s.solve(VERSION, USE_SAMPLE).unwrap().to_string();
-            println!("{v}");
+
+            match ALL {
+                true => {
+                    for version in [1, 2] {
+                        for sample in [true, false] {
+                            let v = s.solve(version, sample).unwrap();
+                            let sample_str = if sample { "samp" } else { "real" };
+                            println!("V{version} {sample_str}:  {v}");
+                        }
+                    }
+                }
+                false => {
+                    let v = s.solve(VERSION, USE_SAMPLE).unwrap().to_string();
+                    println!("{v}");
+                }
+            }
         }
     }
 }
