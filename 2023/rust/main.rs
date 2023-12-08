@@ -29,7 +29,7 @@ use std::env;
 
 use crate::solution::Solution;
 
-const ALL: bool = true;
+const ALL: bool = false;
 const VERSION: u8 = 2;
 const USE_SAMPLE: bool = false;
 
