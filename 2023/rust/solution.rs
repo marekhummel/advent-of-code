@@ -5,6 +5,7 @@ use std::{
 };
 
 pub type ProblemInput = Vec<String>;
+pub type ProblemResult = i128;
 
 pub trait Solution {
     fn solve(&self, version: u8, use_sample: bool) -> Option<i128> {
@@ -31,6 +32,6 @@ pub trait Solution {
 
     fn get_day(&self) -> u8;
 
-    fn solve_version01(&self, input: ProblemInput) -> i128;
-    fn solve_version02(&self, input: ProblemInput) -> i128;
+    fn solve_version01(&self, input: ProblemInput) -> ProblemResult;
+    fn solve_version02(&self, input: ProblemInput) -> ProblemResult;
 }

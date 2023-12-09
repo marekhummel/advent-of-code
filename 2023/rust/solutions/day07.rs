@@ -3,8 +3,7 @@ use std::collections::HashMap;
 
 use itertools::Itertools;
 
-use crate::solution::{ProblemInput, Solution};
-
+use crate::solution::{ProblemInput, ProblemResult, Solution};
 #[derive(Debug)]
 struct CamelHand {
     hand: String,
@@ -105,11 +104,11 @@ impl Solution for Solution07 {
         7
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> i128 {
+    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
         self.solve(input, false).into()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> i128 {
+    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
         self.solve(input, true).into()
     }
 }

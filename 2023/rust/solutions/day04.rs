@@ -1,6 +1,6 @@
 use itertools::Itertools;
 
-use crate::solution::{ProblemInput, Solution};
+use crate::solution::{ProblemInput, ProblemResult, Solution};
 use std::collections::HashSet;
 
 type Hand = HashSet<u8>;
@@ -44,7 +44,7 @@ impl Solution for Solution04 {
         4
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> i128 {
+    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
         self.parse(input)
             .iter()
             .map(|(winning, mine)| self.compute_value(winning, mine))
@@ -53,7 +53,7 @@ impl Solution for Solution04 {
             .unwrap()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> i128 {
+    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
         let mut copies = vec![1u32; input.len()];
         for (i, (winning, mine)) in self.parse(input).iter().enumerate() {
             let value = self.count_hits(winning, mine);

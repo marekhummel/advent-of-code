@@ -3,8 +3,7 @@ use std::collections::HashMap;
 
 use itertools::Itertools;
 
-use crate::solution::{ProblemInput, Solution};
-
+use crate::solution::{ProblemInput, ProblemResult, Solution};
 pub struct Solution08;
 
 impl Solution08 {
@@ -47,7 +46,7 @@ impl Solution for Solution08 {
         8
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> i128 {
+    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
         let (instruction, network) = self.parse(input);
 
         let mut node = String::from("AAA");
@@ -63,7 +62,7 @@ impl Solution for Solution08 {
         }
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> i128 {
+    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
         let (instruction, network) = self.parse(input);
 
         // define starting nodes and count when each starting node reaches an end state

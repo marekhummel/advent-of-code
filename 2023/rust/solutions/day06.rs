@@ -1,8 +1,7 @@
 #![allow(unused_variables)]
 use itertools::Itertools;
 
-use crate::solution::{ProblemInput, Solution};
-
+use crate::solution::{ProblemInput, ProblemResult, Solution};
 #[derive(Debug)]
 struct Race {
     time: f64,
@@ -72,12 +71,12 @@ impl Solution for Solution06 {
         6
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> i128 {
+    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
         let races = self.parse(input);
         races.into_iter().map(|r| self.solve_race(r)).product::<u32>().into()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> i128 {
+    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
         let race = self.parse2(input);
         self.solve_race(race).into()
     }

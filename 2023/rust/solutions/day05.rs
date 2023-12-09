@@ -1,7 +1,6 @@
 use itertools::Itertools;
 
-use crate::solution::{ProblemInput, Solution};
-
+use crate::solution::{ProblemInput, ProblemResult, Solution};
 struct MapEntry {
     dst: u64,
     src: u64,
@@ -162,7 +161,7 @@ impl Solution for Solution05 {
         5
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> i128 {
+    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
         let (seeds, maps) = self.parse(input);
         seeds
             .iter()
@@ -173,7 +172,7 @@ impl Solution for Solution05 {
             .unwrap()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> i128 {
+    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
         let (seeds, maps) = self.parse2(input);
         seeds
             .into_iter()

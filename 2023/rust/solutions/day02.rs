@@ -1,7 +1,6 @@
 use itertools::Itertools;
 
-use crate::solution::{ProblemInput, Solution};
-
+use crate::solution::{ProblemInput, ProblemResult, Solution};
 use std::collections::HashMap;
 
 type Reveals = Vec<(u16, String)>;
@@ -45,7 +44,7 @@ impl Solution for Solution02 {
         2
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> i128 {
+    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
         self.parse(input)
             .iter()
             .filter(|(_, reveals)| self.is_valid(reveals, 12, 13, 14))
@@ -54,7 +53,7 @@ impl Solution for Solution02 {
             .into()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> i128 {
+    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
         self.parse(input)
             .iter()
             .map(|(_, reveals)| self.power(reveals))

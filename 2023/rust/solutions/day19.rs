@@ -1,6 +1,5 @@
 #![allow(unused_variables)]
-use crate::solution::{ProblemInput, Solution};
-
+use crate::solution::{ProblemInput, ProblemResult, Solution};
 pub struct Solution19;
 
 impl Solution19 {}
@@ -10,11 +9,11 @@ impl Solution for Solution19 {
         19
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> i128 {
+    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
         -1
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> i128 {
+    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
         -1
     }
 }

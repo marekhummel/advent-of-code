@@ -1,5 +1,4 @@
-use crate::solution::{ProblemInput, Solution};
-
+use crate::solution::{ProblemInput, ProblemResult, Solution};
 #[derive(Debug)]
 struct Number {
     value: u32,
@@ -112,7 +111,7 @@ impl Solution for Solution03 {
         3
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> i128 {
+    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
         let (numbers, symbols) = self.parse(input);
         numbers
             .iter()
@@ -123,7 +122,7 @@ impl Solution for Solution03 {
             .unwrap()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> i128 {
+    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
         let (numbers, symbols) = self.parse(input);
         symbols
             .iter()
