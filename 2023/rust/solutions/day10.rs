@@ -28,10 +28,10 @@ impl Solution10 {
             .unwrap();
 
         let mut path = vec![start];
-        let (mut curr_pos, mut curr_off) = self.find_path_beginning(start, &grid);
+        let (mut curr_pos, mut curr_off) = self.find_path_beginning(start, grid);
         while grid[curr_pos.0][curr_pos.1] != 'S' {
             path.push(curr_pos);
-            (curr_pos, curr_off) = self.find_next_element(curr_pos, curr_off, &grid);
+            (curr_pos, curr_off) = self.find_next_element(curr_pos, curr_off, grid);
         }
 
         // println!("{path:?}, {0}", path.len());

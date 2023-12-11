@@ -24,7 +24,7 @@ impl Solution11 {
         (height, width, galaxies)
     }
 
-    fn min_distances(&self, exp_galaxies: Vec<Position>) -> usize {
+    fn min_distances(&self, exp_galaxies: &[Position]) -> usize {
         exp_galaxies
             .iter()
             .combinations(2)
@@ -66,12 +66,12 @@ impl Solution for Solution11 {
     fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
         let (height, width, galaxies) = self.parse(input);
         let expanded_galaxies = self.expand_galaxies(height, width, galaxies, 2);
-        self.min_distances(expanded_galaxies).try_into().unwrap()
+        self.min_distances(&expanded_galaxies).try_into().unwrap()
     }
 
     fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
         let (height, width, galaxies) = self.parse(input);
         let expanded_galaxies = self.expand_galaxies(height, width, galaxies, 1000000);
-        self.min_distances(expanded_galaxies).try_into().unwrap()
+        self.min_distances(&expanded_galaxies).try_into().unwrap()
     }
 }

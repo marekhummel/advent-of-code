@@ -51,7 +51,7 @@ impl Solution06 {
         Race { time, record: dist }
     }
 
-    fn solve_race(&self, race: Race) -> u32 {
+    fn solve_race(&self, race: &Race) -> u32 {
         // dist = (race_time - hold) * hold
         // => Inverse parabola, max `r` at race_time `t` / 2
         // => hold_record = 0.5 * (t +- sqrt(t^2 - 4r))
@@ -72,11 +72,11 @@ impl Solution for Solution06 {
 
     fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
         let races = self.parse(input);
-        races.into_iter().map(|r| self.solve_race(r)).product::<u32>().into()
+        races.into_iter().map(|r| self.solve_race(&r)).product::<u32>().into()
     }
 
     fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
         let race = self.parse2(input);
-        self.solve_race(race).into()
+        self.solve_race(&race).into()
     }
 }
