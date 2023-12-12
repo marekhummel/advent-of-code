@@ -3,18 +3,21 @@ use std::{
     fs::File,
     io::{prelude::*, BufReader},
     path::Path,
+    time::{Duration, Instant},
 };
 
 pub type ProblemInput = Vec<String>;
 
 pub trait Solution {
-    fn solve(&self, version: u8, use_sample: bool) -> Option<ProblemResult> {
+    fn solve(&self, version: u8, use_sample: bool) -> Option<(ProblemResult, Duration)> {
         let data = self.get_input(version, use_sample)?;
-        match version {
+        let now = Instant::now();
+        let result = match version {
             1 => self.solve_version01(data),
             2 => self.solve_version02(data),
             _ => panic!(),
-        }
+        };
+        result.map(|x| (x, now.elapsed()))
     }
 
     fn get_input(&self, version: u8, use_sample: bool) -> Option<ProblemInput> {
