@@ -51,18 +51,12 @@ impl Solution12 {
         }
 
         let arrangements = match line.chars().next().unwrap() {
-            '.' => {
-                let new_groups_opt = match (groups, last_char) {
-                    (_, Some('.')) | (_, None) => Some(groups),
-                    ([0, rest @ ..], Some('#')) => Some(rest),
-                    ([_, ..], Some('#')) => None,
-                    _ => panic!("what is this"),
-                };
-                match new_groups_opt {
-                    Some(new_groups) => Self::find_arrangements(&line[1..], new_groups, Some('.'), cache),
-                    None => 0,
-                }
-            }
+            '.' => match (groups, last_char) {
+                (_, Some('.')) | (_, None) => Self::find_arrangements(&line[1..], groups, Some('.'), cache),
+                ([0, rest @ ..], Some('#')) => Self::find_arrangements(&line[1..], rest, Some('.'), cache),
+                ([_, ..], Some('#')) => 0,
+                _ => panic!("what is this"),
+            },
             '#' => match groups {
                 [] => 0,
                 [0, ..] => 0,
@@ -78,10 +72,8 @@ impl Solution12 {
                 ),
             },
             '?' => {
-                let use_dot = format!(".{0}", &line[1..]);
-                let use_hash = format!("#{0}", &line[1..]);
-                Self::find_arrangements(&use_dot, groups, last_char, cache)
-                    + Self::find_arrangements(&use_hash, groups, last_char, cache)
+                Self::find_arrangements(&format!(".{0}", &line[1..]), groups, last_char, cache)
+                    + Self::find_arrangements(&format!("#{0}", &line[1..]), groups, last_char, cache)
             }
             _ => panic!("Unexpected char"),
         };
