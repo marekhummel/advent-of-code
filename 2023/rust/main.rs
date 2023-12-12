@@ -29,9 +29,9 @@ use std::env;
 
 use crate::solution::Solution;
 
-const ALL: bool = true;
-const VERSION: u8 = 2;
-const USE_SAMPLE: bool = false;
+const ALL: bool = false;
+const VERSION: u8 = 1;
+const USE_SAMPLE: bool = true;
 
 fn main() {
     let solutions: Vec<Box<dyn Solution>> = vec![
@@ -97,7 +97,9 @@ fn main() {
                     }
                 }
                 false => {
-                    let v = s.solve(VERSION, USE_SAMPLE).unwrap().to_string();
+                    let v = s
+                        .solve(VERSION, USE_SAMPLE)
+                        .map_or(String::from("<Unsolved>"), |v| v.to_string());
                     println!("{v}");
                 }
             }
