@@ -40,17 +40,19 @@ impl Solution for Solution09 {
         9
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         let sequences = self.parse(input);
-        sequences.into_iter().map(|s| self.extrapolate(&s)).sum::<i64>().into()
+        Some(sequences.into_iter().map(|s| self.extrapolate(&s)).sum::<i64>().into())
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
         let sequences = self.parse(input);
-        sequences
-            .into_iter()
-            .map(|s| self.extrapolate(&s.iter().cloned().rev().collect_vec()))
-            .sum::<i64>()
-            .into()
+        Some(
+            sequences
+                .into_iter()
+                .map(|s| self.extrapolate(&s.iter().cloned().rev().collect_vec()))
+                .sum::<i64>()
+                .into(),
+        )
     }
 }

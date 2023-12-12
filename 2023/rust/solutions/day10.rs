@@ -12,7 +12,7 @@ const RIGHT: Offset = (0, 1);
 const UP: Offset = (-1, 0);
 const DOWN: Offset = (1, 0);
 
-const PRINT: bool = true;
+const PRINT: bool = false;
 
 pub struct Solution10;
 impl Solution10 {
@@ -34,8 +34,6 @@ impl Solution10 {
             (curr_pos, curr_off) = self.find_next_element(curr_pos, curr_off, grid);
         }
 
-        // println!("{path:?}, {0}", path.len());
-        // println!("{0:?}", path.iter().map(|&(y, x)| grid[y][x]).collect_vec());
         path
     }
 
@@ -168,14 +166,14 @@ impl Solution for Solution10 {
         10
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         // Add one to account for odd-length paths
-        ((self.find_loop(&self.parse(input)).len() + 1) / 2).try_into().unwrap()
+        Some(((self.find_loop(&self.parse(input)).len() + 1) / 2).into())
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
         let grid = self.parse(input);
         let loop_path = self.find_loop(&grid);
-        self.compute_area(&grid, loop_path).into()
+        Some(self.compute_area(&grid, loop_path).into())
     }
 }

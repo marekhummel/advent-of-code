@@ -63,15 +63,15 @@ impl Solution for Solution11 {
         11
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         let (height, width, galaxies) = self.parse(input);
         let expanded_galaxies = self.expand_galaxies(height, width, galaxies, 2);
-        self.min_distances(&expanded_galaxies).try_into().unwrap()
+        Some(self.min_distances(&expanded_galaxies).into())
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
         let (height, width, galaxies) = self.parse(input);
         let expanded_galaxies = self.expand_galaxies(height, width, galaxies, 1000000);
-        self.min_distances(&expanded_galaxies).try_into().unwrap()
+        Some(self.min_distances(&expanded_galaxies).into())
     }
 }

@@ -9,11 +9,11 @@ impl Solution for Solution13 {
         13
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
-        -1
+    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+        None
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
-        -1
+    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+        None
     }
 }
