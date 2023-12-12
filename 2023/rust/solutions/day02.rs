@@ -44,20 +44,24 @@ impl Solution for Solution02 {
         2
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
-        self.parse(input)
-            .iter()
-            .filter(|(_, reveals)| self.is_valid(reveals, 12, 13, 14))
-            .map(|(g, _)| g)
-            .sum::<u16>()
-            .into()
+    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+        Some(
+            self.parse(input)
+                .iter()
+                .filter(|(_, reveals)| self.is_valid(reveals, 12, 13, 14))
+                .map(|(g, _)| g)
+                .sum::<u16>()
+                .into(),
+        )
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
-        self.parse(input)
-            .iter()
-            .map(|(_, reveals)| self.power(reveals))
-            .sum::<i32>()
-            .into()
+    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+        Some(
+            self.parse(input)
+                .iter()
+                .map(|(_, reveals)| self.power(reveals))
+                .sum::<i32>()
+                .into(),
+        )
     }
 }

@@ -44,16 +44,17 @@ impl Solution for Solution04 {
         4
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
-        self.parse(input)
-            .iter()
-            .map(|(winning, mine)| self.compute_value(winning, mine))
-            .sum::<u32>()
-            .try_into()
-            .unwrap()
+    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+        Some(
+            self.parse(input)
+                .iter()
+                .map(|(winning, mine)| self.compute_value(winning, mine))
+                .sum::<u32>()
+                .into(),
+        )
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
         let mut copies = vec![1u32; input.len()];
         for (i, (winning, mine)) in self.parse(input).iter().enumerate() {
             let value = self.count_hits(winning, mine);
@@ -63,6 +64,6 @@ impl Solution for Solution04 {
             }
         }
 
-        copies.iter().sum::<u32>().try_into().unwrap()
+        Some(copies.iter().sum::<u32>().into())
     }
 }

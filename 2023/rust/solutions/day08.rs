@@ -45,7 +45,7 @@ impl Solution for Solution08 {
         8
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         let (instruction, network) = self.parse(input);
 
         let mut node = String::from("AAA");
@@ -55,13 +55,13 @@ impl Solution for Solution08 {
                 node = network[&node][&inst].clone();
                 steps += 1;
                 if node == "ZZZ" {
-                    return steps;
+                    return Some(steps.into());
                 }
             }
         }
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
         let (instruction, network) = self.parse(input);
 
         // define starting nodes and count when each starting node reaches an end state
@@ -89,13 +89,15 @@ impl Solution for Solution08 {
         }
 
         // Compute all combinations of finishes and find the lowest LCM
-        finishes
-            .values()
-            .cloned()
-            .multi_cartesian_product()
-            .map(|fs| Self::lcm(&fs[..]))
-            .min()
-            .unwrap()
-            .into()
+        Some(
+            finishes
+                .values()
+                .cloned()
+                .multi_cartesian_product()
+                .map(|fs| Self::lcm(&fs[..]))
+                .min()
+                .unwrap()
+                .into(),
+        )
     }
 }

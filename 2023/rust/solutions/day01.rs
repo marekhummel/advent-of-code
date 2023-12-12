@@ -41,11 +41,11 @@ impl Solution for Solution01 {
         1
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
-        input.iter().map(|s| self.value01(s)).sum::<u32>().into()
+    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+        Some(input.iter().map(|s| self.value01(s)).sum::<u32>().into())
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
-        input.iter().map(|s| self.value02(s)).sum::<u32>().into()
+    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+        Some(input.iter().map(|s| self.value02(s)).sum::<u32>().into())
     }
 }

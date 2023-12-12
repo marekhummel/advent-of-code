@@ -70,13 +70,13 @@ impl Solution for Solution06 {
         6
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         let races = self.parse(input);
-        races.into_iter().map(|r| self.solve_race(r)).product::<u32>().into()
+        Some(races.into_iter().map(|r| self.solve_race(r)).product::<u32>().into())
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
         let race = self.parse2(input);
-        self.solve_race(race).into()
+        Some(self.solve_race(race).into())
     }
 }

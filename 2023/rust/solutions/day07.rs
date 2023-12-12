@@ -103,11 +103,11 @@ impl Solution for Solution07 {
         7
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
-        self.solve(input, false).into()
+    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+        Some(self.solve(input, false).into())
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
-        self.solve(input, true).into()
+    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+        Some(self.solve(input, true).into())
     }
 }

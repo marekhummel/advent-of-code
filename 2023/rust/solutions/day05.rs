@@ -161,26 +161,28 @@ impl Solution for Solution05 {
         5
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         let (seeds, maps) = self.parse(input);
-        seeds
-            .iter()
-            .map(|s| maps.iter().fold(*s, |acc, m| self.apply_map(acc, m)))
-            .min()
-            .unwrap()
-            .try_into()
-            .unwrap()
+        Some(
+            seeds
+                .iter()
+                .map(|s| maps.iter().fold(*s, |acc, m| self.apply_map(acc, m)))
+                .min()
+                .unwrap()
+                .into(),
+        )
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
         let (seeds, maps) = self.parse2(input);
-        seeds
-            .into_iter()
-            .flat_map(|s| maps.iter().fold(vec![s], |acc, m| self.apply_map2(acc, m)))
-            .map(|sr| sr.first)
-            .min()
-            .unwrap()
-            .try_into()
-            .unwrap()
+        Some(
+            seeds
+                .into_iter()
+                .flat_map(|s| maps.iter().fold(vec![s], |acc, m| self.apply_map2(acc, m)))
+                .map(|sr| sr.first)
+                .min()
+                .unwrap()
+                .into(),
+        )
     }
 }

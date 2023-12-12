@@ -111,24 +111,20 @@ impl Solution for Solution03 {
         3
     }
 
-    fn solve_version01(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         let (numbers, symbols) = self.parse(input);
-        numbers
-            .iter()
-            .filter(|n| self.is_part(n, &symbols))
-            .map(|n| n.value)
-            .sum::<u32>()
-            .try_into()
-            .unwrap()
+        Some(
+            numbers
+                .iter()
+                .filter(|n| self.is_part(n, &symbols))
+                .map(|n| n.value)
+                .sum::<u32>()
+                .into(),
+        )
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> ProblemResult {
+    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
         let (numbers, symbols) = self.parse(input);
-        symbols
-            .iter()
-            .map(|s| self.gear_ratio(s, &numbers))
-            .sum::<u32>()
-            .try_into()
-            .unwrap()
+        Some(symbols.iter().map(|s| self.gear_ratio(s, &numbers)).sum::<u32>().into())
     }
 }
