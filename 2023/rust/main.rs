@@ -31,7 +31,7 @@ use std::time::Duration;
 
 use crate::solution::Solution;
 
-const ALL: bool = true;
+const ALL: bool = false;
 const VERSION: u8 = 1;
 const USE_SAMPLE: bool = true;
 

@@ -27,8 +27,8 @@ from solutions.day22 import Solution22
 from solutions.day23 import Solution23
 from solutions.day24 import Solution24
 
-ALL: bool = True
-VERSION: Literal[1, 2] = 2
+ALL: bool = False
+VERSION: Literal[1, 2] = 1
 USE_SAMPLE: bool = True
 
 
