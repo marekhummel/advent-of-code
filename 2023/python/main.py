@@ -1,5 +1,6 @@
 import sys
 from typing import Literal
+from time import perf_counter
 
 
 from solutions.day01 import Solution01
@@ -27,7 +28,7 @@ from solutions.day22 import Solution22
 from solutions.day23 import Solution23
 from solutions.day24 import Solution24
 
-ALL: bool = False
+ALL: bool = True
 VERSION: Literal[1, 2] = 1
 USE_SAMPLE: bool = True
 
@@ -81,11 +82,16 @@ if __name__ == "__main__":
         s = solutions[day - 1]()
 
         if ALL:
+            total = 0.0
             for version in [1, 2]:
                 for sample in [True, False]:
+                    start = perf_counter()
                     v = str(s.solve(version=version, use_sample=sample))  # type: ignore
+                    total += perf_counter() - start
                     sample_str = "samp" if sample else "real"
                     print(f"V{version} {sample_str}:  {v}")
+
+            print(f"\nTotal Runtime: {total}")
         else:
             v = str(s.solve(version=VERSION, use_sample=USE_SAMPLE))
             print(v)
