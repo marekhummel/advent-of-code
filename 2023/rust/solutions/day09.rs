@@ -1,6 +1,7 @@
 use itertools::Itertools;
 
-use crate::solution::{ProblemInput, ProblemResult, Solution};
+use aoc_lib::solution::Solution;
+use aoc_lib::types::{ProblemInput, ProblemResult};
 
 type Sequence = Vec<i64>;
 
@@ -36,10 +37,6 @@ impl Solution09 {
 }
 
 impl Solution for Solution09 {
-    fn get_day(&self) -> u8 {
-        9
-    }
-
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         let sequences = self.parse(input);
         Some(sequences.into_iter().map(|s| self.extrapolate(&s)).sum::<i64>().into())

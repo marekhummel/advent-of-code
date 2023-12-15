@@ -2,7 +2,8 @@ use std::collections::HashMap;
 
 use itertools::Itertools;
 
-use crate::solution::{ProblemInput, ProblemResult, Solution};
+use aoc_lib::solution::Solution;
+use aoc_lib::types::{ProblemInput, ProblemResult};
 pub struct Solution08;
 
 impl Solution08 {
@@ -41,10 +42,6 @@ impl Solution08 {
 }
 
 impl Solution for Solution08 {
-    fn get_day(&self) -> u8 {
-        8
-    }
-
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         let (instruction, network) = self.parse(input);
 

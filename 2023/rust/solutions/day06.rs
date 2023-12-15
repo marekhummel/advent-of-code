@@ -1,6 +1,7 @@
 use itertools::Itertools;
 
-use crate::solution::{ProblemInput, ProblemResult, Solution};
+use aoc_lib::solution::Solution;
+use aoc_lib::types::{ProblemInput, ProblemResult};
 #[derive(Debug)]
 struct Race {
     time: f64,
@@ -66,10 +67,6 @@ impl Solution06 {
 }
 
 impl Solution for Solution06 {
-    fn get_day(&self) -> u8 {
-        6
-    }
-
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         let races = self.parse(input);
         Some(races.into_iter().map(|r| self.solve_race(&r)).product::<u32>().into())

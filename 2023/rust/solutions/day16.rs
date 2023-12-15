@@ -1,14 +1,11 @@
 #![allow(unused_variables)]
-use crate::solution::{ProblemInput, ProblemResult, Solution};
+use aoc_lib::solution::Solution;
+use aoc_lib::types::{ProblemInput, ProblemResult};
 pub struct Solution16;
 
 impl Solution16 {}
 
 impl Solution for Solution16 {
-    fn get_day(&self) -> u8 {
-        16
-    }
-
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         None
     }

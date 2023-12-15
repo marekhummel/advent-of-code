@@ -1,6 +1,7 @@
 use std::collections::{HashMap, HashSet};
 
-use crate::solution::{ProblemInput, ProblemResult, Solution};
+use aoc_lib::solution::Solution;
+use aoc_lib::types::{ProblemInput, ProblemResult};
 use itertools::Itertools;
 
 type Grid = Vec<Vec<char>>;
@@ -162,10 +163,6 @@ impl Solution10 {
 }
 
 impl Solution for Solution10 {
-    fn get_day(&self) -> u8 {
-        10
-    }
-
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         // Add one to account for odd-length paths
         Some(((self.find_loop(&self.parse(input)).len() + 1) / 2).into())

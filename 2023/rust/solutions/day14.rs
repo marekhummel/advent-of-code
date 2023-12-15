@@ -2,7 +2,8 @@ use itertools::Itertools;
 
 use std::{collections::HashMap, iter};
 
-use crate::solution::{ProblemInput, ProblemResult, Solution};
+use aoc_lib::solution::Solution;
+use aoc_lib::types::{ProblemInput, ProblemResult};
 
 type Grid = Vec<Vec<char>>;
 pub struct Solution14;
@@ -105,10 +106,6 @@ impl Solution14 {
 }
 
 impl Solution for Solution14 {
-    fn get_day(&self) -> u8 {
-        14
-    }
-
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         let grid = self.parse(input);
         let tilted = Self::tilt(&grid, true, false); // North

@@ -3,7 +3,8 @@ use std::{collections::HashMap, iter};
 
 use itertools::Itertools;
 
-use crate::solution::{ProblemInput, ProblemResult, Solution};
+use aoc_lib::solution::Solution;
+use aoc_lib::types::{ProblemInput, ProblemResult};
 
 type Cache = HashMap<(String, Vec<usize>, Option<char>), usize>;
 
@@ -82,10 +83,6 @@ impl Solution12 {
 }
 
 impl Solution for Solution12 {
-    fn get_day(&self) -> u8 {
-        12
-    }
-
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         let mut c = Cache::new();
         Some(

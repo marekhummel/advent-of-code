@@ -2,7 +2,8 @@ use std::collections::HashMap;
 
 use itertools::Itertools;
 
-use crate::solution::{ProblemInput, ProblemResult, Solution};
+use aoc_lib::solution::Solution;
+use aoc_lib::types::{ProblemInput, ProblemResult};
 #[derive(Debug)]
 struct CamelHand {
     hand: String,
@@ -99,10 +100,6 @@ impl Solution07 {
 }
 
 impl Solution for Solution07 {
-    fn get_day(&self) -> u8 {
-        7
-    }
-
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         Some(self.solve(input, false).into())
     }

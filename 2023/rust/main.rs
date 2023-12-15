@@ -1,6 +1,6 @@
-mod solution;
 mod solutions;
 
+use aoc_lib::runner::AocRunner;
 use solutions::day01;
 use solutions::day02;
 use solutions::day03;
@@ -25,11 +25,9 @@ use solutions::day21;
 use solutions::day22;
 use solutions::day23;
 use solutions::day24;
-use std::collections::HashMap;
 use std::env;
-use std::time::Duration;
 
-use crate::solution::Solution;
+use aoc_lib::solution::Solution;
 
 const ALL: bool = false;
 const VERSION: u8 = 1;
@@ -63,62 +61,7 @@ fn main() {
         Box::new(day24::Solution24 {}),
     ];
 
-    let arg = env::args().nth(1).expect("Pass day or 'main' as argument!");
-    let sample_str = HashMap::from([(false, "real"), (true, "samp")]);
-
-    match arg.as_str() {
-        "main" => {
-            let mut total_time = Duration::ZERO;
-            for s in &solutions {
-                println!("Day {0:02}:", s.get_day());
-                for version in [1, 2] {
-                    for sample in [true, false] {
-                        match s.solve(version, sample) {
-                            Some((v, e)) => {
-                                println!("  V{version} {0}:  {v}", sample_str[&sample]);
-                                total_time += e;
-                            }
-                            None => println!("  V{version} {0}:  <Unsolved>", sample_str[&sample]),
-                        }
-                    }
-                }
-            }
-
-            println!("\n\nTotal Runtime: {total_time:?}");
-        }
-        _ => {
-            let day = arg
-                .strip_prefix("day")
-                .expect("Argument should start with 'day'")
-                .parse::<usize>()
-                .expect("Argument should have format 'dayXX' with XX being a valid number!");
-
-            let s = &solutions[day - 1];
-
-            match ALL {
-                true => {
-                    let mut total_time = Duration::ZERO;
-                    for version in [1, 2] {
-                        for sample in [true, false] {
-                            let (v, e) = s.solve(version, sample).unwrap();
-                            total_time += e;
-                            println!("V{version} {0}:  {v}", sample_str[&sample]);
-                        }
-                    }
-                    println!("\nTotal Runtime: {total_time:?}");
-                }
-                false => {
-                    let (v, e) = s
-                        .solve(VERSION, USE_SAMPLE)
-                        .map_or((String::from("<Unsolved>"), Duration::ZERO), |(v, e)| {
-                            (v.to_string(), e)
-                        });
-                    println!(
-                        "Day {day:02} / Version {VERSION} / Data '{0}' => {e:?}\n{v}",
-                        sample_str[&USE_SAMPLE]
-                    );
-                }
-            }
-        }
-    }
+    let arg = env::args().nth(1);
+    let runner = AocRunner { year: 2023, solutions };
+    runner.run(arg, ALL, VERSION, USE_SAMPLE);
 }

@@ -1,4 +1,5 @@
-use crate::solution::{ProblemInput, ProblemResult, Solution};
+use aoc_lib::solution::Solution;
+use aoc_lib::types::{ProblemInput, ProblemResult};
 #[derive(Debug)]
 struct Number {
     value: u32,
@@ -107,10 +108,6 @@ impl Solution03 {
 }
 
 impl Solution for Solution03 {
-    fn get_day(&self) -> u8 {
-        3
-    }
-
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         let (numbers, symbols) = self.parse(input);
         Some(

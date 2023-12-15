@@ -1,6 +1,7 @@
 use itertools::Itertools;
 
-use crate::solution::{ProblemInput, ProblemResult, Solution};
+use aoc_lib::solution::Solution;
+use aoc_lib::types::{ProblemInput, ProblemResult};
 
 type Grid = Vec<Vec<bool>>;
 pub struct Solution13;
@@ -81,10 +82,6 @@ impl Solution13 {
 }
 
 impl Solution for Solution13 {
-    fn get_day(&self) -> u8 {
-        13
-    }
-
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         Some(
             self.parse(input)

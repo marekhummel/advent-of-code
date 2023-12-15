@@ -1,4 +1,5 @@
-use crate::solution::{ProblemInput, ProblemResult, Solution};
+use aoc_lib::solution::Solution;
+use aoc_lib::types::{ProblemInput, ProblemResult};
 
 const DIGITS: &[&str] = &[
     "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "0", "1", "2", "3", "4", "5", "6",
@@ -37,10 +38,6 @@ impl Solution01 {
 }
 
 impl Solution for Solution01 {
-    fn get_day(&self) -> u8 {
-        1
-    }
-
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         Some(input.iter().map(|s| self.value01(s)).sum::<u32>().into())
     }

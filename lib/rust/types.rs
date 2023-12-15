@@ -1,43 +1,6 @@
-use std::{
-    fmt::Display,
-    fs::File,
-    io::{prelude::*, BufReader},
-    path::Path,
-    time::{Duration, Instant},
-};
+use std::fmt::Display;
 
 pub type ProblemInput = Vec<String>;
-
-pub trait Solution {
-    fn solve(&self, version: u8, use_sample: bool) -> Option<(ProblemResult, Duration)> {
-        let data = self.get_input(version, use_sample)?;
-        let now = Instant::now();
-        let result = match version {
-            1 => self.solve_version01(data),
-            2 => self.solve_version02(data),
-            _ => panic!(),
-        };
-        result.map(|x| (x, now.elapsed()))
-    }
-
-    fn get_input(&self, version: u8, use_sample: bool) -> Option<ProblemInput> {
-        let base_filename = if use_sample { "sample" } else { "input" };
-        let day = self.get_day();
-        let mut fullname = format!("2023\\inputs\\{base_filename}{day:02}.txt");
-        if !Path::new(&fullname).exists() {
-            fullname = fullname.replace(".txt", format!("_{version}.txt").as_str());
-        }
-
-        let file = File::open(fullname).ok()?;
-        let buf = BufReader::new(file);
-        Some(buf.lines().map(|l| l.expect("Could not parse line")).collect())
-    }
-
-    fn get_day(&self) -> u8;
-
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult>;
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult>;
-}
 
 pub enum ProblemResult {
     I128(i128),
