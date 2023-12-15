@@ -7,6 +7,10 @@ edition = "2021"
 name = "main2023"
 path = "2023/rust/main.rs"
 
+[[bin]]
+name = "main2015"
+path = "2015/rust/main.rs"
+
 [lib]
 name = "aoc_lib"
 path = "lib/rust/aoc_lib.rs"
