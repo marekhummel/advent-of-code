@@ -28,9 +28,16 @@ pub trait Solution {
             fullname = fullname.replace(".txt", format!("_{version}.txt").as_str());
         }
 
-        let file = File::open(fullname).ok()?;
-        let buf = BufReader::new(file);
-        Some(buf.lines().map(|l| l.expect("Could not parse line")).collect())
+        match File::open(fullname) {
+            Err(_) => {
+                println!("Missing files");
+                None
+            }
+            Ok(file) => {
+                let buf = BufReader::new(file);
+                Some(buf.lines().map(|l| l.expect("Could not parse line")).collect())
+            }
+        }
     }
 
     fn get_day(&self) -> u8;

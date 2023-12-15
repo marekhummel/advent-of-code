@@ -98,6 +98,7 @@ impl Solution for Solution12 {
     }
 
     fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+        // Takes a couple of seconds for real input
         let mut c = Cache::new();
         Some(
             self.parse2(input)
