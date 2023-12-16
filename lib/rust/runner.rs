@@ -1,9 +1,4 @@
-use std::{
-    fs::File,
-    io::{BufRead, BufReader},
-    path::Path,
-    time::Duration,
-};
+use std::{path::Path, time::Duration};
 
 use crate::{solution::Solution, types::ProblemInput};
 
@@ -75,7 +70,9 @@ impl AocRunner {
 
     fn run_single(&self, day: usize, version: u8, use_sample: bool) {
         let s = &self.solutions[day - 1];
-        let input = self.get_input(self.year, day as u8, version, use_sample).unwrap();
+        let input = self
+            .get_input(self.year, day as u8, version, use_sample)
+            .expect("No input");
         let (v, e) = s
             .solve(input, version)
             .map_or((String::from("<Unsolved>"), Duration::ZERO), |(v, e)| {
