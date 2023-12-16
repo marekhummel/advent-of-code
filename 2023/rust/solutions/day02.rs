@@ -10,7 +10,7 @@ pub struct Solution02;
 impl Solution02 {
     fn parse(&self, input: ProblemInput) -> Vec<(u16, Reveals)> {
         let mut record = vec![];
-        for line in input {
+        for line in input.lines() {
             let line_parts = line.split([':', ';', ',']).collect_vec();
             let (game_id_str, reveal_strs) = line_parts.split_first().unwrap();
             let game_id = game_id_str.split_whitespace().nth(1).unwrap().parse::<u16>().unwrap();

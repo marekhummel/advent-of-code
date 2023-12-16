@@ -6,7 +6,7 @@ use aoc_lib::types::{ProblemInput, ProblemResult};
 pub struct Solution15;
 impl Solution15 {
     fn parse(input: ProblemInput) -> Vec<String> {
-        input.join("").split(',').map(String::from).collect_vec()
+        input.string().split(',').map(String::from).collect_vec()
     }
 
     fn split_step(step: &str) -> (String, String, Option<u8>) {

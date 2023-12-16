@@ -8,6 +8,7 @@ pub struct Solution13;
 impl Solution13 {
     fn parse(&self, input: ProblemInput) -> Vec<Grid> {
         input
+            .lines()
             .into_iter()
             .map(|s| s.chars().map(|c| c == '#').collect_vec())
             .collect_vec()

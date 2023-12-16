@@ -13,6 +13,7 @@ pub struct Solution06;
 impl Solution06 {
     fn parse(&self, input: ProblemInput) -> Vec<Race> {
         let (times, distances) = input
+            .lines()
             .iter()
             .map(|l| {
                 l.split(':')
@@ -35,6 +36,7 @@ impl Solution06 {
 
     fn parse2(&self, input: ProblemInput) -> Race {
         let (time, dist) = input
+            .lines()
             .iter()
             .map(|l| {
                 l.split(':')

@@ -8,7 +8,7 @@ pub struct Solution08;
 
 impl Solution08 {
     fn parse(&self, input: ProblemInput) -> (String, HashMap<String, HashMap<char, String>>) {
-        let mut lines = input.into_iter();
+        let mut lines = input.lines().into_iter();
 
         let instruction = String::from(lines.next().unwrap().trim());
 

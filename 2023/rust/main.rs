@@ -29,7 +29,7 @@ use std::env;
 
 use aoc_lib::solution::Solution;
 
-const ALL: bool = false;
+const ALL: bool = true;
 const VERSION: u8 = 1;
 const USE_SAMPLE: bool = true;
 

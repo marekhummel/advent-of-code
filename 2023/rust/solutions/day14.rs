@@ -9,7 +9,7 @@ type Grid = Vec<Vec<char>>;
 pub struct Solution14;
 impl Solution14 {
     fn parse(&self, input: ProblemInput) -> Grid {
-        input.into_iter().map(|row| row.chars().collect_vec()).collect_vec()
+        input.grid()
     }
 
     fn eval_load(grid: &Grid) -> usize {

@@ -9,6 +9,7 @@ pub struct Solution09;
 impl Solution09 {
     fn parse(&self, input: ProblemInput) -> Vec<Sequence> {
         input
+            .lines()
             .into_iter()
             .map(|s| s.split_whitespace().map(|x| x.parse::<i64>().unwrap()).collect_vec())
             .collect_vec()

@@ -1,6 +1,50 @@
-use std::fmt::Display;
+use std::{
+    fmt::Display,
+    fs::File,
+    io::{BufRead, BufReader},
+};
 
-pub type ProblemInput = Vec<String>;
+use itertools::Itertools;
+
+// pub type ProblemInput = Vec<String>;
+
+pub struct ProblemInput {
+    lines: Vec<String>,
+}
+
+impl ProblemInput {
+    pub fn read(filename: &str) -> Option<Self> {
+        let file = File::open(filename).ok()?;
+        let buf = BufReader::new(file);
+
+        let lines = buf.lines().map(|l| l.expect("Could not parse line")).collect();
+        Some(ProblemInput { lines })
+    }
+
+    pub fn lines(&self) -> Vec<String> {
+        self.lines.iter().cloned().collect_vec()
+    }
+
+    pub fn string(&self) -> String {
+        self.lines.join("")
+    }
+
+    pub fn grid(&self) -> Vec<Vec<char>> {
+        self.lines.iter().map(|row| row.chars().collect_vec()).collect_vec()
+    }
+
+    pub fn enumerated_grid(&self) -> Vec<Vec<(usize, usize, char)>> {
+        self.lines
+            .iter()
+            .enumerate()
+            .map(|(y, row)| row.chars().enumerate().map(|(x, c)| (y, x, c)).collect_vec())
+            .collect_vec()
+    }
+
+    pub fn grid_size(&self) -> (usize, usize) {
+        (self.lines.len(), self.lines[0].len())
+    }
+}
 
 pub enum ProblemResult {
     I128(i128),

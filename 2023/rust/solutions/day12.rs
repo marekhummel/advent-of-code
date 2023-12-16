@@ -12,6 +12,7 @@ pub struct Solution12;
 impl Solution12 {
     fn parse(&self, input: ProblemInput) -> Vec<(String, Vec<usize>)> {
         input
+            .lines()
             .into_iter()
             .map(|row| {
                 let (line, groups_str) = row.split_once(' ').unwrap();

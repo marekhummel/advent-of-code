@@ -9,19 +9,15 @@ type Position = (usize, usize);
 pub struct Solution11;
 impl Solution11 {
     fn parse(&self, input: ProblemInput) -> (usize, usize, Vec<Position>) {
-        let (height, width) = (input.len(), input[0].len());
         let galaxies = input
+            .enumerated_grid()
             .into_iter()
-            .enumerate()
-            .flat_map(|(y, row)| {
-                row.chars()
-                    .enumerate()
-                    .filter(|(_, ch)| *ch == '#')
-                    .map(|(x, _)| (y, x))
-                    .collect_vec()
-            })
+            .flatten()
+            .filter(|(_, _, c)| *c == '#')
+            .map(|(y, x, _)| (y, x))
             .collect_vec();
 
+        let (height, width) = input.grid_size();
         (height, width, galaxies)
     }
 

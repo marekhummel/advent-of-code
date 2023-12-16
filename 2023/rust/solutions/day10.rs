@@ -18,7 +18,7 @@ const PRINT: bool = false;
 pub struct Solution10;
 impl Solution10 {
     fn parse(&self, input: ProblemInput) -> Grid {
-        input.into_iter().map(|line| line.chars().collect_vec()).collect_vec()
+        input.grid()
     }
 
     fn find_loop(&self, grid: &Grid) -> Vec<Position> {

@@ -11,7 +11,7 @@ pub struct Solution04;
 impl Solution04 {
     fn parse(&self, data: ProblemInput) -> Vec<(Hand, Hand)> {
         let mut cards = vec![];
-        for line in data.iter() {
+        for line in data.lines().iter() {
             let hand_strs = line.split(':').nth(1).unwrap().split('|');
             let parsed = hand_strs
                 .map(|s| {
@@ -52,7 +52,7 @@ impl Solution for Solution04 {
     }
 
     fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
-        let mut copies = vec![1u32; input.len()];
+        let mut copies = vec![1u32; input.lines().len()];
         for (i, (winning, mine)) in self.parse(input).iter().enumerate() {
             let value = self.count_hits(winning, mine);
             let current = *copies.get(i).unwrap();

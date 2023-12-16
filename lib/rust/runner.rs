@@ -94,8 +94,6 @@ impl AocRunner {
             fullname = fullname.replace(".txt", format!("_{version}.txt").as_str());
         }
 
-        let file = File::open(fullname).ok()?;
-        let buf = BufReader::new(file);
-        Some(buf.lines().map(|l| l.expect("Could not parse line")).collect())
+        ProblemInput::read(&fullname)
     }
 }

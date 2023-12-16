@@ -36,8 +36,9 @@ type Map = Vec<MapEntry>;
 pub struct Solution05;
 
 impl Solution05 {
-    fn parse(&self, lines: ProblemInput) -> (Vec<Seed>, Vec<Map>) {
-        let seeds = lines
+    fn parse(&self, input: ProblemInput) -> (Vec<Seed>, Vec<Map>) {
+        let seeds = input
+            .lines()
             .get(0)
             .unwrap()
             .strip_prefix("seeds: ")
@@ -49,7 +50,7 @@ impl Solution05 {
         let mut maps = vec![];
         let mut current_map = vec![];
 
-        for line in lines.iter().skip(2) {
+        for line in input.lines().iter().skip(2) {
             if line.chars().all(char::is_whitespace) {
                 maps.push(current_map);
                 current_map = vec![];

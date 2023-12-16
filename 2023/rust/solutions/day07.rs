@@ -38,6 +38,7 @@ impl Solution07 {
 
     fn parse(&self, input: ProblemInput) -> Vec<CamelHand> {
         input
+            .lines()
             .iter()
             .map(|l| l.split_once(' ').unwrap())
             .map(|(hd, bet)| CamelHand {

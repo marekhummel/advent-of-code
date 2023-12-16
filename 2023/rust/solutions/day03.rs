@@ -18,10 +18,10 @@ struct Symbol {
 pub struct Solution03;
 
 impl Solution03 {
-    fn parse(&self, lines: ProblemInput) -> (Vec<Number>, Vec<Symbol>) {
+    fn parse(&self, input: ProblemInput) -> (Vec<Number>, Vec<Symbol>) {
         let mut numbers = vec![];
         let mut symbols = vec![];
-        for (i, line) in lines.iter().enumerate() {
+        for (i, line) in input.lines().iter().enumerate() {
             let mut num_str = String::from("");
             let mut number_start = 0;
             for (j, ch) in line.chars().enumerate() {
