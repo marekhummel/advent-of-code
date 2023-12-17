@@ -78,68 +78,72 @@ impl Display for ProblemResult {
     }
 }
 
-impl From<i128> for ProblemResult {
-    fn from(val: i128) -> Self {
-        ProblemResult::I128(val)
+pub trait IntoSome<T> {
+    fn into_some(self) -> Option<T>;
+}
+
+impl IntoSome<ProblemResult> for i128 {
+    fn into_some(self) -> Option<ProblemResult> {
+        Some(ProblemResult::I128(self))
     }
 }
 
-impl From<i64> for ProblemResult {
-    fn from(val: i64) -> Self {
-        ProblemResult::I64(val)
+impl IntoSome<ProblemResult> for i64 {
+    fn into_some(self) -> Option<ProblemResult> {
+        Some(ProblemResult::I64(self))
     }
 }
 
-impl From<i32> for ProblemResult {
-    fn from(val: i32) -> Self {
-        ProblemResult::I32(val)
+impl IntoSome<ProblemResult> for i32 {
+    fn into_some(self) -> Option<ProblemResult> {
+        Some(ProblemResult::I32(self))
     }
 }
 
-impl From<i16> for ProblemResult {
-    fn from(val: i16) -> Self {
-        ProblemResult::I16(val)
+impl IntoSome<ProblemResult> for i16 {
+    fn into_some(self) -> Option<ProblemResult> {
+        Some(ProblemResult::I16(self))
     }
 }
 
-impl From<i8> for ProblemResult {
-    fn from(val: i8) -> Self {
-        ProblemResult::I8(val)
+impl IntoSome<ProblemResult> for i8 {
+    fn into_some(self) -> Option<ProblemResult> {
+        Some(ProblemResult::I8(self))
     }
 }
 
-impl From<u128> for ProblemResult {
-    fn from(val: u128) -> Self {
-        ProblemResult::U128(val)
+impl IntoSome<ProblemResult> for u128 {
+    fn into_some(self) -> Option<ProblemResult> {
+        Some(ProblemResult::U128(self))
     }
 }
 
-impl From<u64> for ProblemResult {
-    fn from(val: u64) -> Self {
-        ProblemResult::U64(val)
+impl IntoSome<ProblemResult> for u64 {
+    fn into_some(self) -> Option<ProblemResult> {
+        Some(ProblemResult::U64(self))
     }
 }
 
-impl From<u32> for ProblemResult {
-    fn from(val: u32) -> Self {
-        ProblemResult::U32(val)
+impl IntoSome<ProblemResult> for u32 {
+    fn into_some(self) -> Option<ProblemResult> {
+        Some(ProblemResult::U32(self))
     }
 }
 
-impl From<u16> for ProblemResult {
-    fn from(val: u16) -> Self {
-        ProblemResult::U16(val)
+impl IntoSome<ProblemResult> for u16 {
+    fn into_some(self) -> Option<ProblemResult> {
+        Some(ProblemResult::U16(self))
     }
 }
 
-impl From<u8> for ProblemResult {
-    fn from(val: u8) -> Self {
-        ProblemResult::U8(val)
+impl IntoSome<ProblemResult> for u8 {
+    fn into_some(self) -> Option<ProblemResult> {
+        Some(ProblemResult::U8(self))
     }
 }
 
-impl From<usize> for ProblemResult {
-    fn from(val: usize) -> Self {
-        ProblemResult::USize(val)
+impl IntoSome<ProblemResult> for usize {
+    fn into_some(self) -> Option<ProblemResult> {
+        Some(ProblemResult::USize(self))
     }
 }

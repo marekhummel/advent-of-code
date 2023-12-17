@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult};
+use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 struct MapEntry {
     dst: u64,
     src: u64,
@@ -161,26 +161,22 @@ impl Solution05 {
 impl Solution for Solution05 {
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         let (seeds, maps) = self.parse(input);
-        Some(
-            seeds
-                .iter()
-                .map(|s| maps.iter().fold(*s, |acc, m| self.apply_map(acc, m)))
-                .min()
-                .unwrap()
-                .into(),
-        )
+        seeds
+            .iter()
+            .map(|s| maps.iter().fold(*s, |acc, m| self.apply_map(acc, m)))
+            .min()
+            .unwrap()
+            .into_some()
     }
 
     fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
         let (seeds, maps) = self.parse2(input);
-        Some(
-            seeds
-                .into_iter()
-                .flat_map(|s| maps.iter().fold(vec![s], |acc, m| self.apply_map2(acc, m)))
-                .map(|sr| sr.first)
-                .min()
-                .unwrap()
-                .into(),
-        )
+        seeds
+            .into_iter()
+            .flat_map(|s| maps.iter().fold(vec![s], |acc, m| self.apply_map2(acc, m)))
+            .map(|sr| sr.first)
+            .min()
+            .unwrap()
+            .into_some()
     }
 }

@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult};
+use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 pub struct Solution08;
 
 impl Solution08 {
@@ -52,7 +52,7 @@ impl Solution for Solution08 {
                 node = network[&node][&inst].clone();
                 steps += 1;
                 if node == "ZZZ" {
-                    return Some(steps.into());
+                    return steps.into_some();
                 }
             }
         }
@@ -86,15 +86,13 @@ impl Solution for Solution08 {
         }
 
         // Compute all combinations of finishes and find the lowest LCM
-        Some(
-            finishes
-                .values()
-                .cloned()
-                .multi_cartesian_product()
-                .map(|fs| Self::lcm(&fs[..]))
-                .min()
-                .unwrap()
-                .into(),
-        )
+        finishes
+            .values()
+            .cloned()
+            .multi_cartesian_product()
+            .map(|fs| Self::lcm(&fs[..]))
+            .min()
+            .unwrap()
+            .into_some()
     }
 }

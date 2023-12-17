@@ -1,7 +1,7 @@
 use std::collections::{HashMap, HashSet};
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult};
+use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 use aoc_lib::util::{Direction, Position};
 use itertools::Itertools;
 
@@ -161,12 +161,12 @@ impl Solution10 {
 impl Solution for Solution10 {
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         // Add one to account for odd-length paths
-        Some(((self.find_loop(&self.parse(input)).len() + 1) / 2).into())
+        ((self.find_loop(&self.parse(input)).len() + 1) / 2).into_some()
     }
 
     fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
         let grid = self.parse(input);
         let loop_path = self.find_loop(&grid);
-        Some(self.compute_area(&grid, loop_path).into())
+        self.compute_area(&grid, loop_path).into_some()
     }
 }

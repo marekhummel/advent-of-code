@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult};
+use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 use std::collections::HashSet;
 
 type Hand = HashSet<u8>;
@@ -42,13 +42,11 @@ impl Solution04 {
 
 impl Solution for Solution04 {
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
-        Some(
-            self.parse(input)
-                .iter()
-                .map(|(winning, mine)| self.compute_value(winning, mine))
-                .sum::<u32>()
-                .into(),
-        )
+        self.parse(input)
+            .iter()
+            .map(|(winning, mine)| self.compute_value(winning, mine))
+            .sum::<u32>()
+            .into_some()
     }
 
     fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
@@ -61,6 +59,6 @@ impl Solution for Solution04 {
             }
         }
 
-        Some(copies.iter().sum::<u32>().into())
+        copies.iter().sum::<u32>().into_some()
     }
 }

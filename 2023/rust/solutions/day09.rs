@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult};
+use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 
 type Sequence = Vec<i64>;
 
@@ -40,17 +40,19 @@ impl Solution09 {
 impl Solution for Solution09 {
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         let sequences = self.parse(input);
-        Some(sequences.into_iter().map(|s| self.extrapolate(&s)).sum::<i64>().into())
+        sequences
+            .into_iter()
+            .map(|s| self.extrapolate(&s))
+            .sum::<i64>()
+            .into_some()
     }
 
     fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
         let sequences = self.parse(input);
-        Some(
-            sequences
-                .into_iter()
-                .map(|s| self.extrapolate(&s.iter().cloned().rev().collect_vec()))
-                .sum::<i64>()
-                .into(),
-        )
+        sequences
+            .into_iter()
+            .map(|s| self.extrapolate(&s.iter().cloned().rev().collect_vec()))
+            .sum::<i64>()
+            .into_some()
     }
 }

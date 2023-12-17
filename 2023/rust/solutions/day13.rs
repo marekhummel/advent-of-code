@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult};
+use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 
 type Grid = Vec<Vec<bool>>;
 pub struct Solution13;
@@ -84,22 +84,18 @@ impl Solution13 {
 
 impl Solution for Solution13 {
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
-        Some(
-            self.parse(input)
-                .into_iter()
-                .map(|grid| self.compute_reflection_value(&grid, 0))
-                .sum::<usize>()
-                .into(),
-        )
+        self.parse(input)
+            .into_iter()
+            .map(|grid| self.compute_reflection_value(&grid, 0))
+            .sum::<usize>()
+            .into_some()
     }
 
     fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
-        Some(
-            self.parse(input)
-                .into_iter()
-                .map(|grid| self.compute_reflection_value(&grid, 1))
-                .sum::<usize>()
-                .into(),
-        )
+        self.parse(input)
+            .into_iter()
+            .map(|grid| self.compute_reflection_value(&grid, 1))
+            .sum::<usize>()
+            .into_some()
     }
 }

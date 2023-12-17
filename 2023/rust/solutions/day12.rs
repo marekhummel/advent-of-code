@@ -4,7 +4,7 @@ use std::{collections::HashMap, iter};
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult};
+use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 
 type Cache = HashMap<(String, Vec<usize>, Option<char>), usize>;
 
@@ -86,24 +86,20 @@ impl Solution12 {
 impl Solution for Solution12 {
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         let mut c = Cache::new();
-        Some(
-            self.parse(input)
-                .into_iter()
-                .map(|(line, groups)| Self::find_arrangements(&line, &groups, None, &mut c))
-                .sum::<usize>()
-                .into(),
-        )
+        self.parse(input)
+            .into_iter()
+            .map(|(line, groups)| Self::find_arrangements(&line, &groups, None, &mut c))
+            .sum::<usize>()
+            .into_some()
     }
 
     fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
         // Takes a couple of seconds for real input
         let mut c = Cache::new();
-        Some(
-            self.parse2(input)
-                .into_iter()
-                .map(|(line, groups)| Self::find_arrangements(&line, &groups, None, &mut c))
-                .sum::<usize>()
-                .into(),
-        )
+        self.parse2(input)
+            .into_iter()
+            .map(|(line, groups)| Self::find_arrangements(&line, &groups, None, &mut c))
+            .sum::<usize>()
+            .into_some()
     }
 }

@@ -2,7 +2,7 @@
 use std::collections::{HashSet, VecDeque};
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult};
+use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 use aoc_lib::util::{Direction, Position};
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
@@ -84,7 +84,7 @@ impl Solution for Solution16 {
             pos: Position { x: 0, y: 0 },
             dir: Direction::East,
         };
-        Some(Self::traverse(&grid, beam_start, width, height).into())
+        Self::traverse(&grid, beam_start, width, height).into_some()
     }
 
     fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
@@ -108,13 +108,15 @@ impl Solution for Solution16 {
             dir: Direction::North,
         }));
 
-        Some(
-            start_beams
-                .into_iter()
-                .map(|start| Self::traverse(&grid, start, width, height))
-                .max()
-                .unwrap()
-                .into(),
-        )
+        // Some(
+
+        // )
+
+        start_beams
+            .into_iter()
+            .map(|start| Self::traverse(&grid, start, width, height))
+            .max()
+            .unwrap()
+            .into_some()
     }
 }

@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult};
+use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 
 type Position = (usize, usize);
 pub struct Solution11;
@@ -59,12 +59,12 @@ impl Solution for Solution11 {
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         let (height, width, galaxies) = self.parse(input);
         let expanded_galaxies = self.expand_galaxies(height, width, galaxies, 2);
-        Some(self.min_distances(&expanded_galaxies).into())
+        self.min_distances(&expanded_galaxies).into_some()
     }
 
     fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
         let (height, width, galaxies) = self.parse(input);
         let expanded_galaxies = self.expand_galaxies(height, width, galaxies, 1000000);
-        Some(self.min_distances(&expanded_galaxies).into())
+        self.min_distances(&expanded_galaxies).into_some()
     }
 }

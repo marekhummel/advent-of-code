@@ -3,7 +3,7 @@ use itertools::Itertools;
 use std::{collections::HashMap, iter};
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult};
+use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 
 type Grid = Vec<Vec<char>>;
 pub struct Solution14;
@@ -109,7 +109,7 @@ impl Solution for Solution14 {
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         let grid = self.parse(input);
         let tilted = Self::tilt(&grid, true, false); // North
-        Some(Self::eval_load(&tilted).into())
+        Self::eval_load(&tilted).into_some()
     }
 
     fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
@@ -125,7 +125,7 @@ impl Solution for Solution14 {
                 for _ in 0..offset {
                     dish = Self::cycle(&dish);
                 }
-                return Some(Self::eval_load(&dish).into());
+                return Self::eval_load(&dish).into_some();
             }
 
             iterations.insert(dish.clone(), i);
