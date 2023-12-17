@@ -17,7 +17,7 @@ impl Solution16 {
         (input.grid(), input.grid_size())
     }
 
-    fn traverse(grid: &Vec<Vec<char>>, beam_start: Beam, width: usize, height: usize) -> usize {
+    fn traverse(grid: &[Vec<char>], beam_start: Beam, width: usize, height: usize) -> usize {
         let mut beams: VecDeque<Beam> = VecDeque::from([beam_start.clone()]);
         let mut beam_history = HashSet::from([beam_start.clone()]);
 
@@ -29,26 +29,30 @@ impl Solution16 {
                     Direction::East => vec![Direction::North],
                     Direction::West => vec![Direction::South],
                     Direction::South => vec![Direction::West],
+                    Direction::None => unreachable!(),
                 },
                 '\\' => match b.dir {
                     Direction::North => vec![Direction::West],
                     Direction::East => vec![Direction::South],
                     Direction::West => vec![Direction::North],
                     Direction::South => vec![Direction::East],
+                    Direction::None => unreachable!(),
                 },
                 '|' => match b.dir {
                     Direction::North | Direction::South => vec![b.dir],
                     Direction::East | Direction::West => vec![Direction::North, Direction::South],
+                    Direction::None => unreachable!(),
                 },
                 '-' => match b.dir {
                     Direction::East | Direction::West => vec![b.dir],
                     Direction::North | Direction::South => vec![Direction::East, Direction::West],
+                    Direction::None => unreachable!(),
                 },
                 _ => unreachable!(),
             };
 
             for dir in new_dirs {
-                if let Some(next_pos) = b.pos.advance(dir, width, height) {
+                if let Some(next_pos) = b.pos.advance_check(dir, width, height) {
                     let new_beam = Beam { pos: next_pos, dir };
                     if !beam_history.contains(&new_beam) {
                         beam_history.insert(new_beam.clone());
