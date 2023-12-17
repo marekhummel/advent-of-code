@@ -1,21 +1,21 @@
 use std::collections::{HashMap, HashSet};
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{Grid, IntoSome, ProblemInput, ProblemResult};
 use aoc_lib::util::{Direction, Position};
 use itertools::Itertools;
 
-type Grid = Vec<Vec<char>>;
+type CharGrid = Grid<char>;
 
 const PRINT: bool = false;
 
 pub struct Solution10;
 impl Solution10 {
-    fn parse(&self, input: ProblemInput) -> Grid {
+    fn parse(&self, input: ProblemInput) -> CharGrid {
         input.grid()
     }
 
-    fn find_loop(&self, grid: &Grid) -> Vec<Position> {
+    fn find_loop(&self, grid: &CharGrid) -> Vec<Position> {
         let start = grid
             .iter()
             .find_position(|row| row.iter().any(|&c| c == 'S'))
@@ -35,7 +35,7 @@ impl Solution10 {
         path
     }
 
-    fn find_path_beginning(&self, start: Position, grid: &Grid) -> (Position, Direction) {
+    fn find_path_beginning(&self, start: Position, grid: &CharGrid) -> (Position, Direction) {
         let (height, width) = (grid.len(), grid[0].len());
         if let Some(up) = start.advance_check(Direction::North, width, height) {
             let symbol = up.grid_get(grid);
@@ -80,7 +80,7 @@ impl Solution10 {
         unreachable!()
     }
 
-    fn find_next_element(&self, pos: Position, dir: Direction, grid: &Grid) -> (Position, Direction) {
+    fn find_next_element(&self, pos: Position, dir: Direction, grid: &CharGrid) -> (Position, Direction) {
         let next_pos = pos.advance(dir);
 
         let next_dir = match (dir, next_pos.grid_get(grid)) {
@@ -103,7 +103,7 @@ impl Solution10 {
         (next_pos, next_dir)
     }
 
-    fn compute_area(&self, grid: &Grid, loop_path: Vec<Position>) -> u32 {
+    fn compute_area(&self, grid: &CharGrid, loop_path: Vec<Position>) -> u32 {
         let s_tile = self.find_tile_below_s(&loop_path);
         let loop_lookup: HashSet<Position> = loop_path.into_iter().collect();
 

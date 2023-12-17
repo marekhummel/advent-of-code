@@ -1,6 +1,7 @@
 use core::panic;
 use std::{collections::HashMap, iter};
 
+use aoc_lib::iterator::ParsedExt;
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
@@ -16,7 +17,7 @@ impl Solution12 {
             .into_iter()
             .map(|row| {
                 let (line, groups_str) = row.split_once(' ').unwrap();
-                let groups = groups_str.split(',').map(|c| c.parse::<usize>().unwrap()).collect_vec();
+                let groups = groups_str.split(',').parsed().collect_vec();
                 (String::from(line), groups)
             })
             .collect_vec()

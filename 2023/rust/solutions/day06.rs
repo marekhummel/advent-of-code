@@ -1,3 +1,4 @@
+use aoc_lib::iterator::ParsedExt;
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
@@ -15,14 +16,7 @@ impl Solution06 {
         let (times, distances) = input
             .lines()
             .iter()
-            .map(|l| {
-                l.split(':')
-                    .nth(1)
-                    .unwrap()
-                    .split_whitespace()
-                    .map(|n| n.parse::<f64>().unwrap())
-                    .collect_vec()
-            })
+            .map(|l| l.split(':').nth(1).unwrap().split_whitespace().parsed().collect_vec())
             .take(2)
             .collect_tuple()
             .unwrap();

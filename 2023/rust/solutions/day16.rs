@@ -2,7 +2,7 @@
 use std::collections::{HashSet, VecDeque};
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{Grid, IntoSome, ProblemInput, ProblemResult};
 use aoc_lib::util::{Direction, Position};
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
@@ -13,7 +13,7 @@ struct Beam {
 
 pub struct Solution16;
 impl Solution16 {
-    fn parse(input: ProblemInput) -> (Vec<Vec<char>>, (usize, usize)) {
+    fn parse(input: ProblemInput) -> (Grid<char>, (usize, usize)) {
         (input.grid(), input.grid_size())
     }
 

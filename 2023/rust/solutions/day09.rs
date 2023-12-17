@@ -1,3 +1,4 @@
+use aoc_lib::iterator::ParsedExt;
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
@@ -11,7 +12,7 @@ impl Solution09 {
         input
             .lines()
             .into_iter()
-            .map(|s| s.split_whitespace().map(|x| x.parse::<i64>().unwrap()).collect_vec())
+            .map(|s| s.split_whitespace().parsed().collect_vec())
             .collect_vec()
     }
 

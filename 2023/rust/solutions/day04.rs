@@ -1,3 +1,4 @@
+use aoc_lib::iterator::ParsedExt;
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
@@ -14,11 +15,7 @@ impl Solution04 {
         for line in data.lines().iter() {
             let hand_strs = line.split(':').nth(1).unwrap().split('|');
             let parsed = hand_strs
-                .map(|s| {
-                    s.split_whitespace()
-                        .map(|c| c.parse::<u8>().unwrap())
-                        .collect::<HashSet<_>>()
-                })
+                .map(|s| s.split_whitespace().parsed().collect::<HashSet<_>>())
                 .take(2)
                 .collect_tuple()
                 .unwrap();

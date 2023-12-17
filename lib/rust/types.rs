@@ -6,7 +6,8 @@ use std::{
 
 use itertools::Itertools;
 
-// pub type ProblemInput = Vec<String>;
+pub type Grid<T> = Vec<Vec<T>>;
+pub type EnumeratedGrid = Vec<Vec<(usize, usize, char)>>;
 
 pub struct ProblemInput {
     lines: Vec<String>,
@@ -29,11 +30,11 @@ impl ProblemInput {
         self.lines.join("")
     }
 
-    pub fn grid(&self) -> Vec<Vec<char>> {
+    pub fn grid(&self) -> Grid<char> {
         self.lines.iter().map(|row| row.chars().collect_vec()).collect_vec()
     }
 
-    pub fn enumerated_grid(&self) -> Vec<Vec<(usize, usize, char)>> {
+    pub fn enumerated_grid(&self) -> EnumeratedGrid {
         self.lines
             .iter()
             .enumerate()

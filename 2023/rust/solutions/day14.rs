@@ -3,30 +3,31 @@ use itertools::Itertools;
 use std::{collections::HashMap, iter};
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{Grid, IntoSome, ProblemInput, ProblemResult};
 
-type Grid = Vec<Vec<char>>;
+type CharGrid = Grid<char>;
+
 pub struct Solution14;
 impl Solution14 {
-    fn parse(&self, input: ProblemInput) -> Grid {
+    fn parse(&self, input: ProblemInput) -> CharGrid {
         input.grid()
     }
 
-    fn eval_load(grid: &Grid) -> usize {
+    fn eval_load(grid: &CharGrid) -> usize {
         grid.iter()
             .enumerate()
             .map(|(i, row)| row.iter().filter(|c| **c == 'O').count() * (grid.len() - i))
             .sum()
     }
 
-    fn cycle(grid: &Grid) -> Grid {
+    fn cycle(grid: &CharGrid) -> CharGrid {
         let tilted_north = Self::tilt(grid, true, false);
         let tilted_west = Self::tilt(&tilted_north, false, false);
         let tilted_south = Self::tilt(&tilted_west, true, true);
         Self::tilt(&tilted_south, false, true)
     }
 
-    fn tilt(grid: &Grid, transpose: bool, reverse: bool) -> Grid {
+    fn tilt(grid: &CharGrid, transpose: bool, reverse: bool) -> CharGrid {
         let grid_t = Self::transpose(grid);
         let grid_iter = match transpose {
             false => grid,
@@ -44,7 +45,7 @@ impl Solution14 {
         }
     }
 
-    fn transpose(grid: &Grid) -> Grid {
+    fn transpose(grid: &CharGrid) -> CharGrid {
         (0..grid[0].len())
             .map(|i| grid.iter().map(|inner| inner[i]).collect_vec())
             .collect()
@@ -94,7 +95,7 @@ impl Solution14 {
     }
 
     #[allow(dead_code)]
-    fn print_grid(grid: &Grid) {
+    fn print_grid(grid: &CharGrid) {
         for row in grid {
             for c in row {
                 print!("{c}");

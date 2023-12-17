@@ -1,12 +1,12 @@
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{Grid, IntoSome, ProblemInput, ProblemResult};
 
-type Grid = Vec<Vec<bool>>;
+type BoolGrid = Grid<bool>;
 pub struct Solution13;
 impl Solution13 {
-    fn parse(&self, input: ProblemInput) -> Vec<Grid> {
+    fn parse(&self, input: ProblemInput) -> Vec<BoolGrid> {
         input
             .lines()
             .into_iter()
@@ -17,7 +17,7 @@ impl Solution13 {
             .collect_vec()
     }
 
-    fn compute_reflection_value(&self, grid: &Grid, smudges: usize) -> usize {
+    fn compute_reflection_value(&self, grid: &BoolGrid, smudges: usize) -> usize {
         match self.find_reflection(grid, smudges) {
             Some(mirror_hor) => 100 * (mirror_hor + 1),
             None => {
@@ -30,13 +30,13 @@ impl Solution13 {
         }
     }
 
-    fn transpose(&self, grid: &Grid) -> Grid {
+    fn transpose(&self, grid: &BoolGrid) -> BoolGrid {
         (0..grid[0].len())
             .map(|i| grid.iter().map(|inner| inner[i]).collect_vec())
             .collect()
     }
 
-    fn find_reflection(&self, grid: &Grid, total_smudges: usize) -> Option<usize> {
+    fn find_reflection(&self, grid: &BoolGrid, total_smudges: usize) -> Option<usize> {
         // Find possible horizontal mirrors (between two almost equal lines)
         // Result is a list of possible mirrors, where each entry is the mirrors position plus
         // the list of rows that match and if that match includes a smudge or not
