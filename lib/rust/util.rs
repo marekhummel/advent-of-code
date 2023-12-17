@@ -9,6 +9,32 @@ pub enum Direction {
     None,
 }
 
+impl Direction {
+    pub fn inverse(&self) -> Direction {
+        match self {
+            Direction::North => Direction::South,
+            Direction::East => Direction::West,
+            Direction::West => Direction::East,
+            Direction::South => Direction::North,
+            Direction::None => Direction::None,
+        }
+    }
+
+    pub fn compass() -> [Direction; 4] {
+        [Direction::North, Direction::East, Direction::South, Direction::West]
+    }
+
+    pub fn turn(&self) -> [Direction; 2] {
+        match self {
+            Direction::North => [Direction::West, Direction::East],
+            Direction::East => [Direction::North, Direction::South],
+            Direction::West => [Direction::South, Direction::North],
+            Direction::South => [Direction::East, Direction::West],
+            Direction::None => panic!(),
+        }
+    }
+}
+
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Position {
     pub x: usize,
@@ -46,6 +72,13 @@ impl Position {
             Direction::South if self.y < height - 1 => Some(self.advance(dir)),
             _ => None,
         }
+    }
+
+    pub fn von_neumann_neighbors(&self, width: usize, height: usize) -> Vec<Position> {
+        Direction::compass()
+            .into_iter()
+            .filter_map(|dir| self.advance_check(dir, width, height))
+            .collect()
     }
 
     pub fn grid_get<'a, 'b: 'a, T>(&'b self, grid: &'a [Vec<T>]) -> &'a T {
