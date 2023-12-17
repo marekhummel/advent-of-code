@@ -6,7 +6,7 @@ use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{Grid, IntoSome, ProblemInput, ProblemResult};
 use aoc_lib::util::{Direction, Position};
-use itertools::{iproduct, Itertools};
+use itertools::Itertools;
 pub struct Solution17;
 
 impl Solution17 {
@@ -17,12 +17,8 @@ impl Solution17 {
             .map(|row| row.iter().parsed().collect_vec())
             .collect_vec();
 
-        let vertices = iproduct!(0..width, 0..height)
-            .map(|(x, y)| Position { x, y })
-            .collect_vec();
-
         LatticeGraph {
-            weights: grid.to_vec(),
+            weights: grid,
             width,
             height,
         }
@@ -56,24 +52,28 @@ impl Solution for Solution17 {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Hash)]
-struct State {
-    heat: u32,
-    vertex: Position,
+struct Vertex {
+    pos: Position,
     straight: Option<(Direction, usize)>,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq, Hash)]
+struct QueueElement {
+    heat: u32,
+    vertex: Vertex,
+}
+
 // Explicit implementation for Ord and PartialOrd to get Min-Heap
-impl Ord for State {
+impl Ord for QueueElement {
     fn cmp(&self, other: &Self) -> Ordering {
         other
             .heat
             .cmp(&self.heat)
-            .then_with(|| other.vertex.y.cmp(&self.vertex.y))
-            .then_with(|| other.vertex.x.cmp(&self.vertex.x))
+            .then_with(|| other.vertex.pos.cmp(&self.vertex.pos))
     }
 }
 
-impl PartialOrd for State {
+impl PartialOrd for QueueElement {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
@@ -92,36 +92,38 @@ impl LatticeGraph {
         goal: Position,
         min_straight: usize,
         max_straight: usize,
-    ) -> Option<State> {
-        let mut visited: HashSet<(Position, (Direction, usize))> = HashSet::new();
-        let mut queue: BinaryHeap<State> = BinaryHeap::from([State {
+    ) -> Option<QueueElement> {
+        let mut visited: HashSet<Vertex> = HashSet::new();
+        let mut queue: BinaryHeap<QueueElement> = BinaryHeap::from([QueueElement {
             heat: 0,
-            vertex: start,
-            straight: None,
+            vertex: Vertex {
+                pos: start,
+                straight: None,
+            },
         }]);
 
         while let Some(state) = queue.pop() {
-            let u = state.vertex;
+            let u = state.vertex.pos;
             if u == goal {
                 return Some(state);
             }
-            if let Some(straight) = state.straight {
-                if visited.contains(&(state.vertex, straight)) {
-                    continue;
-                }
+            if visited.contains(&state.vertex) {
+                continue;
             }
-            visited.insert((state.vertex, state.straight.unwrap_or((Direction::None, 0))));
+            visited.insert(state.vertex.clone());
 
-            for (v, weight) in self.get_neighbors(&state, min_straight, max_straight) {
+            for (v, weight) in self.get_neighbors(&state.vertex, min_straight, max_straight) {
                 let new_heat = state.heat + weight;
                 let dir = u.get_direction_to(v);
 
-                let last_str = state.straight.unwrap_or((Direction::None, 0));
+                let last_str = state.vertex.straight.unwrap_or((Direction::None, 0));
                 let straight = if last_str.0 == dir { last_str.1 + 1 } else { 0 };
-                queue.push(State {
+                queue.push(QueueElement {
                     heat: new_heat,
-                    vertex: v,
-                    straight: Some((dir, straight)),
+                    vertex: Vertex {
+                        pos: v,
+                        straight: Some((dir, straight)),
+                    },
                 })
             }
         }
@@ -129,8 +131,8 @@ impl LatticeGraph {
         None
     }
 
-    fn get_neighbors(&self, state: &State, min_straight: usize, max_straight: usize) -> Vec<(Position, u32)> {
-        let valid_directions = match state.straight {
+    fn get_neighbors(&self, vertex: &Vertex, min_straight: usize, max_straight: usize) -> Vec<(Position, u32)> {
+        let valid_directions = match vertex.straight {
             Some((dir, count)) => {
                 let mut directions = Vec::new();
                 if count < max_straight - 1 {
@@ -146,7 +148,7 @@ impl LatticeGraph {
 
         valid_directions
             .iter()
-            .filter_map(|d| state.vertex.advance_check(*d, self.width, self.height))
+            .filter_map(|d| vertex.pos.advance_check(*d, self.width, self.height))
             .map(|v| (v, *v.grid_get(&self.weights)))
             .collect_vec()
     }
