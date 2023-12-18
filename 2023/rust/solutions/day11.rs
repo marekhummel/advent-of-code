@@ -1,27 +1,27 @@
 use std::collections::HashSet;
 
+use aoc_lib::util::Index;
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 
-type Position = (usize, usize);
 pub struct Solution11;
 impl Solution11 {
-    fn parse(&self, input: ProblemInput) -> (usize, usize, Vec<Position>) {
+    fn parse(&self, input: ProblemInput) -> (usize, usize, Vec<Index>) {
         let galaxies = input
             .enumerated_grid()
             .into_iter()
             .flatten()
             .filter(|(_, _, c)| *c == '#')
-            .map(|(y, x, _)| (y, x))
+            .map(|(j, i, _)| Index { i, j })
             .collect_vec();
 
         let (height, width) = input.grid_size();
         (height, width, galaxies)
     }
 
-    fn min_distances(&self, exp_galaxies: &[Position]) -> usize {
+    fn min_distances(&self, exp_galaxies: &[Index]) -> usize {
         exp_galaxies
             .iter()
             .tuple_combinations()
@@ -29,9 +29,9 @@ impl Solution11 {
             .sum()
     }
 
-    fn expand_galaxies(&self, height: usize, width: usize, galaxies: Vec<Position>, expansion: usize) -> Vec<Position> {
-        let galaxy_rows = galaxies.iter().map(|(y, _)| *y).collect::<HashSet<_>>();
-        let galaxy_cols = galaxies.iter().map(|(_, x)| *x).collect::<HashSet<_>>();
+    fn expand_galaxies(&self, height: usize, width: usize, galaxies: Vec<Index>, expansion: usize) -> Vec<Index> {
+        let galaxy_rows = galaxies.iter().map(|idx| idx.j).collect::<HashSet<_>>();
+        let galaxy_cols = galaxies.iter().map(|idx| idx.i).collect::<HashSet<_>>();
         let rows = HashSet::from_iter(0..height);
         let cols = HashSet::from_iter(0..width);
 
@@ -40,17 +40,15 @@ impl Solution11 {
 
         galaxies
             .into_iter()
-            .map(|(y, x)| {
-                (
-                    y + exp_rows.iter().take_while(|&&&ey| ey < y).count() * (expansion - 1),
-                    x + exp_cols.iter().take_while(|&&&ex| ex < x).count() * (expansion - 1),
-                )
+            .map(|idx| Index {
+                i: idx.i + exp_cols.iter().take_while(|&&&ei| ei < idx.i).count() * (expansion - 1),
+                j: idx.j + exp_rows.iter().take_while(|&&&ej| ej < idx.j).count() * (expansion - 1),
             })
             .collect_vec()
     }
 
-    fn distance(&self, first: &Position, second: &Position) -> usize {
-        first.0.abs_diff(second.0) + first.1.abs_diff(second.1)
+    fn distance(&self, first: &Index, second: &Index) -> usize {
+        first.i.abs_diff(second.i) + first.j.abs_diff(second.j)
     }
 }
 
