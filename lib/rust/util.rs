@@ -42,6 +42,10 @@ pub struct Index {
 }
 
 impl Index {
+    pub fn from_tuple(tuple: (usize, usize)) -> Self {
+        Self { i: tuple.0, j: tuple.1 }
+    }
+
     pub fn advance(&self, dir: Direction) -> Self {
         match dir {
             Direction::North => Index {

@@ -60,7 +60,11 @@ impl AocRunner {
         for version in [1, 2] {
             for sample in [true, false] {
                 let input = self.get_input(self.year, day as u8, version, sample).unwrap();
-                let (v, e) = s.solve(input, version).unwrap();
+                let (v, e) = s
+                    .solve(input, version)
+                    .map_or((String::from("<Unsolved>"), Duration::ZERO), |(v, e)| {
+                        (v.to_string(), e)
+                    });
                 total_time += e;
                 println!("V{version} {0}:  {v}", Self::SAMPLE_STR[sample as usize]);
             }

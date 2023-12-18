@@ -17,8 +17,8 @@ impl Solution05 {
         let grouped_pairs = char_pairs
             .into_iter()
             .enumerate()
-            .sorted_by_key(|(idx, tpl)| *tpl)
-            .group_by(|(idx, tpl)| *tpl);
+            .sorted_by_key(|(_, tpl)| *tpl)
+            .group_by(|(_, tpl)| *tpl);
         let double_pair = grouped_pairs
             .into_iter()
             .map(|(_, group)| group.map(|(i, _)| i).collect_vec())
