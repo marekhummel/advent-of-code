@@ -1,13 +1,9 @@
-use std::collections::{HashMap, HashSet};
-
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{Grid, IntoSome, ProblemInput, ProblemResult};
 use aoc_lib::util::{Direction, Index};
 use itertools::Itertools;
 
 type CharGrid = Grid<char>;
-
-const PRINT: bool = false;
 
 pub struct Solution10;
 impl Solution10 {
@@ -103,58 +99,23 @@ impl Solution10 {
         (next_pos, next_dir)
     }
 
-    fn compute_area(&self, grid: &CharGrid, loop_path: Vec<Index>) -> u32 {
-        let s_tile = self.find_tile_below_s(&loop_path);
-        let loop_lookup: HashSet<Index> = loop_path.into_iter().collect();
+    fn compute_area(&self, grid: &CharGrid, loop_path: Vec<Index>) -> u64 {
+        let mut vertices = loop_path
+            .iter()
+            .filter(|idx| "SFL7J".contains(*idx.grid_get(grid)))
+            .collect_vec();
+        vertices.push(vertices[0]);
 
-        // Define what tiles toggle the parity. Only choose either side of corners (JL or F7)
-        let mut toggle_tiles: HashSet<char> = "|JL".chars().collect();
-        if toggle_tiles.contains(&s_tile) {
-            toggle_tiles.insert('S');
+        // Shoelace formula
+        let mut area_inside = 0i64;
+        for (v, nv) in vertices.iter().zip(vertices.iter().skip(1)) {
+            area_inside += (v.j as i64 + nv.j as i64) * (v.i as i64 - nv.i as i64);
         }
+        area_inside /= 2;
 
-        let tile_replacement: HashMap<char, char> = "S|-F7LJ".chars().zip_eq("S║═╔╗╚╝".chars()).collect();
-
-        let mut area = 0u32;
-        for (y, row) in grid.iter().enumerate() {
-            let mut inside_loop = false;
-            for (x, tile) in row.iter().enumerate() {
-                let tile_in_loop = loop_lookup.contains(&Index { j: y, i: x });
-                inside_loop ^= tile_in_loop && toggle_tiles.contains(tile);
-                area += (inside_loop && !tile_in_loop) as u32;
-
-                if PRINT {
-                    if tile_in_loop {
-                        print!("{0}", tile_replacement.get(tile).copied().unwrap());
-                    } else {
-                        print!("{0}", if inside_loop && !tile_in_loop { "∙" } else { " " });
-                    }
-                }
-            }
-            if PRINT {
-                println!()
-            }
-        }
-
-        area
-    }
-
-    fn find_tile_below_s(&self, loop_path: &[Index]) -> char {
-        let s = loop_path[0];
-        let next = loop_path[1];
-        let prev = loop_path.last().copied().unwrap();
-
-        let dir_prev = prev.get_direction_to(s);
-        let dir_next = s.get_direction_to(next);
-        match (dir_prev, dir_next) {
-            (Direction::North, Direction::North) | (Direction::South, Direction::South) => '|',
-            (Direction::East, Direction::East) | (Direction::West, Direction::West) => '-',
-            (Direction::North, Direction::East) | (Direction::West, Direction::South) => 'F',
-            (Direction::South, Direction::East) | (Direction::West, Direction::North) => 'L',
-            (Direction::South, Direction::West) | (Direction::East, Direction::North) => 'J',
-            (Direction::North, Direction::West) | (Direction::East, Direction::South) => '7',
-            _ => unreachable!("Where is S going"),
-        }
+        // Pick's theorem
+        let boundary = loop_path.len() as u64;
+        area_inside.unsigned_abs() - boundary / 2 + 1
     }
 }
 
