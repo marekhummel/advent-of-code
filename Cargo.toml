@@ -18,3 +18,5 @@ path = "lib/rust/aoc_lib.rs"
 [dependencies]
 regex = "1"
 itertools = "0.10.5"
+md5 = "0.7.0"
+rayon = "1.8.0"
