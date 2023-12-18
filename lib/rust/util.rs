@@ -36,29 +36,29 @@ impl Direction {
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Position {
-    pub x: usize,
-    pub y: usize,
+pub struct Index {
+    pub i: usize,
+    pub j: usize,
 }
 
-impl Position {
+impl Index {
     pub fn advance(&self, dir: Direction) -> Self {
         match dir {
-            Direction::North => Position {
-                x: self.x,
-                y: self.y - 1,
+            Direction::North => Index {
+                i: self.i,
+                j: self.j - 1,
             },
-            Direction::East => Position {
-                x: self.x + 1,
-                y: self.y,
+            Direction::East => Index {
+                i: self.i + 1,
+                j: self.j,
             },
-            Direction::West => Position {
-                x: self.x - 1,
-                y: self.y,
+            Direction::West => Index {
+                i: self.i - 1,
+                j: self.j,
             },
-            Direction::South => Position {
-                x: self.x,
-                y: self.y + 1,
+            Direction::South => Index {
+                i: self.i,
+                j: self.j + 1,
             },
             Direction::None => *self,
         }
@@ -66,15 +66,15 @@ impl Position {
 
     pub fn advance_check(&self, dir: Direction, width: usize, height: usize) -> Option<Self> {
         match dir {
-            Direction::North if self.y > 0 => Some(self.advance(dir)),
-            Direction::East if self.x < width - 1 => Some(self.advance(dir)),
-            Direction::West if self.x > 0 => Some(self.advance(dir)),
-            Direction::South if self.y < height - 1 => Some(self.advance(dir)),
+            Direction::North if self.j > 0 => Some(self.advance(dir)),
+            Direction::East if self.i < width - 1 => Some(self.advance(dir)),
+            Direction::West if self.i > 0 => Some(self.advance(dir)),
+            Direction::South if self.j < height - 1 => Some(self.advance(dir)),
             _ => None,
         }
     }
 
-    pub fn von_neumann_neighbors(&self, width: usize, height: usize) -> Vec<Position> {
+    pub fn von_neumann_neighbors(&self, width: usize, height: usize) -> Vec<Index> {
         Direction::compass()
             .into_iter()
             .filter_map(|dir| self.advance_check(dir, width, height))
@@ -82,11 +82,54 @@ impl Position {
     }
 
     pub fn grid_get<'a, 'b: 'a, T>(&'b self, grid: &'a [Vec<T>]) -> &'a T {
-        &grid[self.y][self.x]
+        &grid[self.j][self.i]
+    }
+
+    pub fn get_direction_to(&self, other: Index) -> Direction {
+        let offset = (other.i as i32 - self.i as i32, other.j as i32 - self.j as i32);
+
+        match offset {
+            (0, 0) => Direction::None,
+            (dx, 0) if dx > 0 => Direction::East,
+            (dx, 0) if dx < 0 => Direction::West,
+            (0, dy) if dy > 0 => Direction::South,
+            (0, dy) if dy < 0 => Direction::North,
+            _ => panic!("No clear direction"),
+        }
+    }
+}
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Position {
+    pub x: i128,
+    pub y: i128,
+}
+
+impl Position {
+    pub fn advance_by(&self, dir: Direction, delta: i128) -> Self {
+        match dir {
+            Direction::North => Position {
+                x: self.x,
+                y: self.y - delta,
+            },
+            Direction::East => Position {
+                x: self.x + delta,
+                y: self.y,
+            },
+            Direction::West => Position {
+                x: self.x - delta,
+                y: self.y,
+            },
+            Direction::South => Position {
+                x: self.x,
+                y: self.y + delta,
+            },
+            Direction::None => *self,
+        }
     }
 
     pub fn get_direction_to(&self, other: Position) -> Direction {
-        let offset = (other.x as i32 - self.x as i32, other.y as i32 - self.y as i32);
+        let offset = (other.x - self.x, other.y - self.y);
 
         match offset {
             (0, 0) => Direction::None,

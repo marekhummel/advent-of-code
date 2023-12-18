@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{Grid, IntoSome, ProblemInput, ProblemResult};
-use aoc_lib::util::{Direction, Position};
+use aoc_lib::util::{Direction, Index};
 use itertools::Itertools;
 
 type CharGrid = Grid<char>;
@@ -15,13 +15,13 @@ impl Solution10 {
         input.grid()
     }
 
-    fn find_loop(&self, grid: &CharGrid) -> Vec<Position> {
+    fn find_loop(&self, grid: &CharGrid) -> Vec<Index> {
         let start = grid
             .iter()
             .find_position(|row| row.iter().any(|&c| c == 'S'))
-            .map(|(y, row)| Position {
-                y,
-                x: row.iter().position(|&c| c == 'S').unwrap(),
+            .map(|(y, row)| Index {
+                j: y,
+                i: row.iter().position(|&c| c == 'S').unwrap(),
             })
             .unwrap();
 
@@ -35,7 +35,7 @@ impl Solution10 {
         path
     }
 
-    fn find_path_beginning(&self, start: Position, grid: &CharGrid) -> (Position, Direction) {
+    fn find_path_beginning(&self, start: Index, grid: &CharGrid) -> (Index, Direction) {
         let (height, width) = (grid.len(), grid[0].len());
         if let Some(up) = start.advance_check(Direction::North, width, height) {
             let symbol = up.grid_get(grid);
@@ -80,7 +80,7 @@ impl Solution10 {
         unreachable!()
     }
 
-    fn find_next_element(&self, pos: Position, dir: Direction, grid: &CharGrid) -> (Position, Direction) {
+    fn find_next_element(&self, pos: Index, dir: Direction, grid: &CharGrid) -> (Index, Direction) {
         let next_pos = pos.advance(dir);
 
         let next_dir = match (dir, next_pos.grid_get(grid)) {
@@ -103,9 +103,9 @@ impl Solution10 {
         (next_pos, next_dir)
     }
 
-    fn compute_area(&self, grid: &CharGrid, loop_path: Vec<Position>) -> u32 {
+    fn compute_area(&self, grid: &CharGrid, loop_path: Vec<Index>) -> u32 {
         let s_tile = self.find_tile_below_s(&loop_path);
-        let loop_lookup: HashSet<Position> = loop_path.into_iter().collect();
+        let loop_lookup: HashSet<Index> = loop_path.into_iter().collect();
 
         // Define what tiles toggle the parity. Only choose either side of corners (JL or F7)
         let mut toggle_tiles: HashSet<char> = "|JL".chars().collect();
@@ -119,7 +119,7 @@ impl Solution10 {
         for (y, row) in grid.iter().enumerate() {
             let mut inside_loop = false;
             for (x, tile) in row.iter().enumerate() {
-                let tile_in_loop = loop_lookup.contains(&Position { y, x });
+                let tile_in_loop = loop_lookup.contains(&Index { j: y, i: x });
                 inside_loop ^= tile_in_loop && toggle_tiles.contains(tile);
                 area += (inside_loop && !tile_in_loop) as u32;
 
@@ -139,7 +139,7 @@ impl Solution10 {
         area
     }
 
-    fn find_tile_below_s(&self, loop_path: &[Position]) -> char {
+    fn find_tile_below_s(&self, loop_path: &[Index]) -> char {
         let s = loop_path[0];
         let next = loop_path[1];
         let prev = loop_path.last().copied().unwrap();

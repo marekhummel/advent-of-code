@@ -3,11 +3,11 @@ use std::collections::{HashSet, VecDeque};
 
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{Grid, IntoSome, ProblemInput, ProblemResult};
-use aoc_lib::util::{Direction, Position};
+use aoc_lib::util::{Direction, Index};
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 struct Beam {
-    pos: Position,
+    pos: Index,
     dir: Direction,
 }
 
@@ -22,7 +22,7 @@ impl Solution16 {
         let mut beam_history = HashSet::from([beam_start.clone()]);
 
         while let Some(b) = beams.pop_front() {
-            let new_dirs = match grid[b.pos.y][b.pos.x] {
+            let new_dirs = match grid[b.pos.j][b.pos.i] {
                 '.' => vec![b.dir],
                 '/' => match b.dir {
                     Direction::North => vec![Direction::East],
@@ -62,7 +62,7 @@ impl Solution16 {
             }
         }
 
-        let energized: HashSet<Position> = beam_history.iter().map(|b| b.pos).collect();
+        let energized: HashSet<Index> = beam_history.iter().map(|b| b.pos).collect();
         energized.len()
         // for y in 0..height {
         //     for x in 0..width {
@@ -81,7 +81,7 @@ impl Solution for Solution16 {
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         let (grid, (height, width)) = Self::parse(input);
         let beam_start = Beam {
-            pos: Position { x: 0, y: 0 },
+            pos: Index { i: 0, j: 0 },
             dir: Direction::East,
         };
         Self::traverse(&grid, beam_start, width, height).into_some()
@@ -92,19 +92,19 @@ impl Solution for Solution16 {
 
         let mut start_beams = Vec::new();
         start_beams.extend((0..height).map(|y| Beam {
-            pos: Position { x: 0, y },
+            pos: Index { i: 0, j: y },
             dir: Direction::East,
         }));
         start_beams.extend((0..height).map(|y| Beam {
-            pos: Position { x: width - 1, y },
+            pos: Index { i: width - 1, j: y },
             dir: Direction::West,
         }));
         start_beams.extend((0..width).map(|x| Beam {
-            pos: Position { x, y: 0 },
+            pos: Index { i: x, j: 0 },
             dir: Direction::South,
         }));
         start_beams.extend((0..width).map(|x| Beam {
-            pos: Position { x, y: height - 1 },
+            pos: Index { i: x, j: height - 1 },
             dir: Direction::North,
         }));
 

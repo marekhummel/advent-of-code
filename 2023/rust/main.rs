@@ -30,7 +30,7 @@ use std::env;
 use aoc_lib::solution::Solution;
 
 const ALL: bool = true;
-const VERSION: u8 = 1;
+const VERSION: u8 = 2;
 const USE_SAMPLE: bool = true;
 
 fn main() {

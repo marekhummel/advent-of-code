@@ -5,7 +5,7 @@ use std::fmt::Debug;
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{Grid, IntoSome, ProblemInput, ProblemResult};
-use aoc_lib::util::{Direction, Position};
+use aoc_lib::util::{Direction, Index};
 use itertools::Itertools;
 pub struct Solution17;
 
@@ -29,10 +29,10 @@ impl Solution for Solution17 {
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
         let (height, width) = input.grid_size();
         let graph = Self::get_graph(input, width, height);
-        let start = Position { x: 0, y: 0 };
-        let goal = Position {
-            x: width - 1,
-            y: height - 1,
+        let start = Index { i: 0, j: 0 };
+        let goal = Index {
+            i: width - 1,
+            j: height - 1,
         };
 
         graph.shortest_path(start, goal, 0, 3).unwrap().heat.into_some()
@@ -41,10 +41,10 @@ impl Solution for Solution17 {
     fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
         let (height, width) = input.grid_size();
         let graph = Self::get_graph(input, width, height);
-        let start = Position { x: 0, y: 0 };
-        let goal = Position {
-            x: width - 1,
-            y: height - 1,
+        let start = Index { i: 0, j: 0 };
+        let goal = Index {
+            i: width - 1,
+            j: height - 1,
         };
 
         graph.shortest_path(start, goal, 4, 10).unwrap().heat.into_some()
@@ -53,7 +53,7 @@ impl Solution for Solution17 {
 
 #[derive(Clone, Debug, Eq, PartialEq, Hash)]
 struct Vertex {
-    pos: Position,
+    pos: Index,
     straight: Option<(Direction, usize)>,
 }
 
@@ -88,8 +88,8 @@ struct LatticeGraph {
 impl LatticeGraph {
     fn shortest_path(
         &self,
-        start: Position,
-        goal: Position,
+        start: Index,
+        goal: Index,
         min_straight: usize,
         max_straight: usize,
     ) -> Option<QueueElement> {
@@ -131,7 +131,7 @@ impl LatticeGraph {
         None
     }
 
-    fn get_neighbors(&self, vertex: &Vertex, min_straight: usize, max_straight: usize) -> Vec<(Position, u32)> {
+    fn get_neighbors(&self, vertex: &Vertex, min_straight: usize, max_straight: usize) -> Vec<(Index, u32)> {
         let valid_directions = match vertex.straight {
             Some((dir, count)) => {
                 let mut directions = Vec::new();
