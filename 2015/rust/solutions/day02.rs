@@ -1,4 +1,3 @@
-#![allow(unused_variables)]
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 use itertools::Itertools;

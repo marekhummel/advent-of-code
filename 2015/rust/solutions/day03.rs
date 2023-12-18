@@ -1,4 +1,3 @@
-#![allow(unused_variables)]
 use std::collections::HashSet;
 
 use aoc_lib::solution::Solution;
