@@ -43,8 +43,7 @@ impl Solution13 {
         let mirrors = grid
             .iter()
             .enumerate()
-            .combinations(2)
-            .map(|comb| (comb[0], comb[1])) // convert to tuples
+            .tuple_combinations()
             .filter(|((i, _), (j, _))| (i + j) & 1 == 1) // mirrors can only be between rows
             .map(|((i, r), (j, s))| ((i + j) / 2, i, j, Self::count_diff(r, s))) // find mirror position and amount of smudges needed for equality
             .filter(|(_, _, _, d)| *d <= total_smudges) // filter out pairs that need more than one smudge

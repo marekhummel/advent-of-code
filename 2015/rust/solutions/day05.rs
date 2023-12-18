@@ -23,12 +23,7 @@ impl Solution05 {
             .into_iter()
             .map(|(_, group)| group.map(|(i, _)| i).collect_vec())
             .filter(|group| group.len() > 1)
-            .flat_map(|group| {
-                group
-                    .into_iter()
-                    .combinations(2)
-                    .map(|comb| comb.into_iter().collect_tuple::<(usize, usize)>().unwrap())
-            })
+            .flat_map(|group| group.into_iter().tuple_combinations())
             .any(|(first, second)| second - first > 1);
 
         let double_spaced_letter = string.chars().zip(string.chars().skip(2)).any(|(f, s)| f == s);
