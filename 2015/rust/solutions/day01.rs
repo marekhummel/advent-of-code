@@ -1,25 +1,23 @@
 #![allow(unused_variables)]
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult};
+use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 pub struct Solution01;
 
 impl Solution01 {}
 
 impl Solution for Solution01 {
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
-        Some(
-            input
-                .join("")
-                .chars()
-                .map(|c| -(((c as u8 - 40) * 2) as i16 - 1))
-                .sum::<i16>()
-                .into(),
-        )
+        input
+            .string()
+            .chars()
+            .map(|c| -(((c as u8 - 40) * 2) as i16 - 1))
+            .sum::<i16>()
+            .into_some()
     }
 
     fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
         let index = input
-            .join("")
+            .string()
             .chars()
             .map(|c| -(((c as u8 - 40) * 2) as i16 - 1))
             .scan(0, |floor, dir| {
@@ -29,6 +27,6 @@ impl Solution for Solution01 {
             .take_while(|floor| *floor != -1)
             .count();
 
-        Some((index + 1).into())
+        (index + 1).into_some()
     }
 }
