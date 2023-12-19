@@ -19,7 +19,7 @@ impl Solution16 {
 
     fn traverse(grid: &[Vec<char>], beam_start: Beam, width: usize, height: usize) -> usize {
         let mut beams: VecDeque<Beam> = VecDeque::from([beam_start.clone()]);
-        let mut beam_history = HashSet::from([beam_start.clone()]);
+        let mut beam_history = HashSet::from([beam_start]);
 
         while let Some(b) = beams.pop_front() {
             let new_dirs = match grid[b.pos.j][b.pos.i] {
