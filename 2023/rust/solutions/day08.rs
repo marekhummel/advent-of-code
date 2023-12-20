@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use aoc_lib::util::lcm;
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
@@ -22,22 +23,6 @@ impl Solution08 {
         }
 
         (instruction, network)
-    }
-
-    fn lcm(nums: &[u64]) -> u64 {
-        if nums.len() == 1 {
-            return nums[0];
-        }
-        let a = nums[0];
-        let b = Self::lcm(&nums[1..]);
-        a * b / Self::gcd(a, b)
-    }
-
-    fn gcd(a: u64, b: u64) -> u64 {
-        if b == 0 {
-            return a;
-        }
-        Self::gcd(b, a % b)
     }
 }
 
@@ -90,7 +75,7 @@ impl Solution for Solution08 {
             .values()
             .cloned()
             .multi_cartesian_product()
-            .map(|fs| Self::lcm(&fs[..]))
+            .map(|fs| lcm(&fs[..]))
             .min()
             .unwrap()
             .into_some()
