@@ -5,12 +5,12 @@ use std::fmt::Debug;
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{Grid, IntoSome, ProblemInput, ProblemResult};
-use aoc_lib::util::{Direction, Index};
+use aoc_lib::util::{Direction, Index, Size};
 use itertools::Itertools;
 pub struct Solution17;
 
 impl Solution17 {
-    fn get_graph(input: ProblemInput, width: usize, height: usize) -> LatticeGraph {
+    fn get_graph(input: ProblemInput) -> LatticeGraph {
         let grid = input
             .grid()
             .iter()
@@ -18,33 +18,30 @@ impl Solution17 {
             .collect_vec();
 
         LatticeGraph {
+            size: Size::from_grid(&grid),
             weights: grid,
-            width,
-            height,
         }
     }
 }
 
 impl Solution for Solution17 {
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
-        let (height, width) = input.grid_size();
-        let graph = Self::get_graph(input, width, height);
+        let graph = Self::get_graph(input);
         let start = Index { i: 0, j: 0 };
         let goal = Index {
-            i: width - 1,
-            j: height - 1,
+            i: graph.size.width - 1,
+            j: graph.size.height - 1,
         };
 
         graph.shortest_path(start, goal, 0, 3).unwrap().heat.into_some()
     }
 
     fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
-        let (height, width) = input.grid_size();
-        let graph = Self::get_graph(input, width, height);
+        let graph = Self::get_graph(input);
         let start = Index { i: 0, j: 0 };
         let goal = Index {
-            i: width - 1,
-            j: height - 1,
+            i: graph.size.width - 1,
+            j: graph.size.height - 1,
         };
 
         graph.shortest_path(start, goal, 4, 10).unwrap().heat.into_some()
@@ -81,8 +78,7 @@ impl PartialOrd for QueueElement {
 
 struct LatticeGraph {
     weights: Grid<u32>,
-    width: usize,
-    height: usize,
+    size: Size,
 }
 
 impl LatticeGraph {
@@ -148,7 +144,7 @@ impl LatticeGraph {
 
         valid_directions
             .iter()
-            .filter_map(|d| vertex.pos.advance_check(*d, self.width, self.height))
+            .filter_map(|d| vertex.pos.advance_check(*d, self.size))
             .map(|v| (v, *v.grid_get(&self.weights)))
             .collect_vec()
     }

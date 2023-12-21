@@ -1,6 +1,6 @@
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{Grid, IntoSome, ProblemInput, ProblemResult};
-use aoc_lib::util::{Direction, Index};
+use aoc_lib::util::{Direction, Index, Size};
 use itertools::Itertools;
 
 type CharGrid = Grid<char>;
@@ -32,8 +32,8 @@ impl Solution10 {
     }
 
     fn find_path_beginning(&self, start: Index, grid: &CharGrid) -> (Index, Direction) {
-        let (height, width) = (grid.len(), grid[0].len());
-        if let Some(up) = start.advance_check(Direction::North, width, height) {
+        let size = Size::from_grid(grid);
+        if let Some(up) = start.advance_check(Direction::North, size) {
             let symbol = up.grid_get(grid);
             match symbol {
                 '|' => return (up, Direction::North),
@@ -43,7 +43,7 @@ impl Solution10 {
             }
         }
 
-        if let Some(down) = start.advance_check(Direction::South, width, height) {
+        if let Some(down) = start.advance_check(Direction::South, size) {
             let symbol = down.grid_get(grid);
             match symbol {
                 '|' => return (down, Direction::South),
@@ -53,7 +53,7 @@ impl Solution10 {
             }
         }
 
-        if let Some(left) = start.advance_check(Direction::West, width, height) {
+        if let Some(left) = start.advance_check(Direction::West, size) {
             let symbol = left.grid_get(grid);
             match symbol {
                 '-' => return (left, Direction::West),
@@ -63,7 +63,7 @@ impl Solution10 {
             }
         }
 
-        if let Some(right) = start.advance_check(Direction::East, width, height) {
+        if let Some(right) = start.advance_check(Direction::East, size) {
             let symbol = right.grid_get(grid);
             match symbol {
                 '-' => return (right, Direction::East),

@@ -6,8 +6,10 @@ use std::{
 
 use itertools::Itertools;
 
+use crate::util::Index;
+
 pub type Grid<T> = Vec<Vec<T>>;
-pub type EnumeratedGrid = Vec<Vec<(usize, usize, char)>>;
+pub type EnumeratedGrid = Vec<Vec<(Index, char)>>;
 
 pub struct ProblemInput {
     lines: Vec<String>,
@@ -38,12 +40,8 @@ impl ProblemInput {
         self.lines
             .iter()
             .enumerate()
-            .map(|(y, row)| row.chars().enumerate().map(|(x, c)| (y, x, c)).collect_vec())
+            .map(|(j, row)| row.chars().enumerate().map(|(i, c)| (Index { i, j }, c)).collect_vec())
             .collect_vec()
-    }
-
-    pub fn grid_size(&self) -> (usize, usize) {
-        (self.lines.len(), self.lines[0].len())
     }
 }
 

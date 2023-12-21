@@ -1,5 +1,7 @@
 use core::panic;
 
+use crate::types::Grid;
+
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub enum Direction {
     North,
@@ -68,20 +70,20 @@ impl Index {
         }
     }
 
-    pub fn advance_check(&self, dir: Direction, width: usize, height: usize) -> Option<Self> {
+    pub fn advance_check(&self, dir: Direction, size: Size) -> Option<Self> {
         match dir {
             Direction::North if self.j > 0 => Some(self.advance(dir)),
-            Direction::East if self.i < width - 1 => Some(self.advance(dir)),
+            Direction::East if self.i < size.width - 1 => Some(self.advance(dir)),
             Direction::West if self.i > 0 => Some(self.advance(dir)),
-            Direction::South if self.j < height - 1 => Some(self.advance(dir)),
+            Direction::South if self.j < size.height - 1 => Some(self.advance(dir)),
             _ => None,
         }
     }
 
-    pub fn von_neumann_neighbors(&self, width: usize, height: usize) -> Vec<Index> {
+    pub fn von_neumann_neighbors(&self, size: Size) -> Vec<Index> {
         Direction::compass()
             .into_iter()
-            .filter_map(|dir| self.advance_check(dir, width, height))
+            .filter_map(|dir| self.advance_check(dir, size))
             .collect()
     }
 
@@ -142,6 +144,21 @@ impl Position {
             (0, dy) if dy > 0 => Direction::South,
             (0, dy) if dy < 0 => Direction::North,
             _ => panic!("No clear direction"),
+        }
+    }
+}
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Size {
+    pub width: usize,
+    pub height: usize,
+}
+
+impl Size {
+    pub fn from_grid<T>(grid: &Grid<T>) -> Size {
+        Size {
+            height: grid.len(),
+            width: grid[0].len(),
         }
     }
 }

@@ -2,8 +2,8 @@
 use std::collections::{HashSet, VecDeque};
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{Grid, IntoSome, ProblemInput, ProblemResult};
-use aoc_lib::util::{Direction, Index};
+use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::util::{Direction, Index, Size};
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 struct Beam {
@@ -13,11 +13,7 @@ struct Beam {
 
 pub struct Solution16;
 impl Solution16 {
-    fn parse(input: ProblemInput) -> (Grid<char>, (usize, usize)) {
-        (input.grid(), input.grid_size())
-    }
-
-    fn traverse(grid: &[Vec<char>], beam_start: Beam, width: usize, height: usize) -> usize {
+    fn traverse(grid: &[Vec<char>], beam_start: Beam, size: Size) -> usize {
         let mut beams: VecDeque<Beam> = VecDeque::from([beam_start.clone()]);
         let mut beam_history = HashSet::from([beam_start]);
 
@@ -52,7 +48,7 @@ impl Solution16 {
             };
 
             for dir in new_dirs {
-                if let Some(next_pos) = b.pos.advance_check(dir, width, height) {
+                if let Some(next_pos) = b.pos.advance_check(dir, size) {
                     let new_beam = Beam { pos: next_pos, dir };
                     if !beam_history.contains(&new_beam) {
                         beam_history.insert(new_beam.clone());
@@ -79,42 +75,45 @@ impl Solution16 {
 
 impl Solution for Solution16 {
     fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
-        let (grid, (height, width)) = Self::parse(input);
+        let grid = input.grid();
         let beam_start = Beam {
             pos: Index { i: 0, j: 0 },
             dir: Direction::East,
         };
-        Self::traverse(&grid, beam_start, width, height).into_some()
+        Self::traverse(&grid, beam_start, Size::from_grid(&grid)).into_some()
     }
 
     fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
-        let (grid, (height, width)) = Self::parse(input);
+        let grid = input.grid();
+        let size = Size::from_grid(&grid);
 
         let mut start_beams = Vec::new();
-        start_beams.extend((0..height).map(|y| Beam {
+        start_beams.extend((0..size.height).map(|y| Beam {
             pos: Index { i: 0, j: y },
             dir: Direction::East,
         }));
-        start_beams.extend((0..height).map(|y| Beam {
-            pos: Index { i: width - 1, j: y },
+        start_beams.extend((0..size.height).map(|y| Beam {
+            pos: Index {
+                i: size.width - 1,
+                j: y,
+            },
             dir: Direction::West,
         }));
-        start_beams.extend((0..width).map(|x| Beam {
+        start_beams.extend((0..size.width).map(|x| Beam {
             pos: Index { i: x, j: 0 },
             dir: Direction::South,
         }));
-        start_beams.extend((0..width).map(|x| Beam {
-            pos: Index { i: x, j: height - 1 },
+        start_beams.extend((0..size.width).map(|x| Beam {
+            pos: Index {
+                i: x,
+                j: size.height - 1,
+            },
             dir: Direction::North,
         }));
 
-        // Some(
-
-        // )
-
         start_beams
             .into_iter()
-            .map(|start| Self::traverse(&grid, start, width, height))
+            .map(|start| Self::traverse(&grid, start, size))
             .max()
             .unwrap()
             .into_some()
