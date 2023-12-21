@@ -105,6 +105,15 @@ impl Index {
     }
 }
 
+impl From<Position> for Index {
+    fn from(pos: Position) -> Self {
+        Index {
+            i: pos.x as usize,
+            j: pos.y as usize,
+        }
+    }
+}
+
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Position {
     pub x: i128,
@@ -144,6 +153,30 @@ impl Position {
             (0, dy) if dy > 0 => Direction::South,
             (0, dy) if dy < 0 => Direction::North,
             _ => panic!("No clear direction"),
+        }
+    }
+
+    pub fn von_neumann_neighbors(&self, depth: i128) -> Vec<Position> {
+        Direction::compass()
+            .into_iter()
+            .map(|dir| self.advance_by(dir, depth))
+            .collect()
+    }
+
+    pub fn wrap_modular(&self, size: Size) -> Index {
+        let (mx, my) = (size.width as i128, size.height as i128);
+        Index {
+            i: (((self.x % mx) + mx) % mx) as usize,
+            j: (((self.y % my) + my) % my) as usize,
+        }
+    }
+}
+
+impl From<Index> for Position {
+    fn from(idx: Index) -> Self {
+        Position {
+            x: idx.i as i128,
+            y: idx.j as i128,
         }
     }
 }

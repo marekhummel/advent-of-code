@@ -1,0 +1,105 @@
+Day 01:
+  V1 samp:  142
+  V1 real:  55971
+  V2 samp:  281
+  V2 real:  54719
+Day 02:
+  V1 samp:  8
+  V1 real:  2476
+  V2 samp:  2286
+  V2 real:  54911
+Day 03:
+  V1 samp:  4361
+  V1 real:  550064
+  V2 samp:  467835
+  V2 real:  85010461
+Day 04:
+  V1 samp:  13
+  V1 real:  26443
+  V2 samp:  30
+  V2 real:  6284877
+Day 05:
+  V1 samp:  35
+  V1 real:  379811651
+  V2 samp:  46
+  V2 real:  27992443
+Day 06:
+  V1 samp:  288
+  V1 real:  293046
+  V2 samp:  71503
+  V2 real:  35150181
+Day 07:
+  V1 samp:  6440
+  V1 real:  249483956
+  V2 samp:  5905
+  V2 real:  252137472
+Day 08:
+  V1 samp:  6
+  V1 real:  18827
+  V2 samp:  6
+  V2 real:  20220305520997
+Day 09:
+  V1 samp:  114
+  V1 real:  1702218515
+  V2 samp:  2
+  V2 real:  925
+Day 10:
+  V1 samp:  8
+  V1 real:  7145
+  V2 samp:  10
+  V2 real:  445
+Day 11:
+  V1 samp:  374
+  V1 real:  9684228
+  V2 samp:  82000210
+  V2 real:  483844716556
+Day 12:
+  V1 samp:  21
+  V1 real:  7716
+  V2 samp:  525152
+  V2 real:  18716325559999
+Day 13:
+  V1 samp:  405
+  V1 real:  43614
+  V2 samp:  400
+  V2 real:  36771
+Day 14:
+  V1 samp:  136
+  V1 real:  109345
+  V2 samp:  64
+  V2 real:  112452
+Day 15:
+  V1 samp:  1320
+  V1 real:  502139
+  V2 samp:  145
+  V2 real:  284132
+Day 16:
+  V1 samp:  46
+  V1 real:  7517
+  V2 samp:  51
+  V2 real:  7741
+Day 17:
+  V1 samp:  102
+  V1 real:  1195
+  V2 samp:  94
+  V2 real:  1347
+Day 18:
+  V1 samp:  62
+  V1 real:  52231
+  V2 samp:  952408144115
+  V2 real:  57196493937398
+Day 19:
+  V1 samp:  19114
+  V1 real:  280909
+  V2 samp:  167409079868000
+  V2 real:  116138474394508
+Day 20:
+  V1 samp:  11687500
+  V1 real:  703315117
+  V2 samp:  <Unsolved>
+  V2 real:  230402300925361
+Day 21:
+  V1 samp:  <Unsolved>
+  V1 real:  <Unsolved>
+  V2 samp:  <Unsolved>
+  V2 real:  <Unsolved>
