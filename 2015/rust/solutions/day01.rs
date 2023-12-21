@@ -5,7 +5,7 @@ pub struct Solution01;
 impl Solution01 {}
 
 impl Solution for Solution01 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         input
             .string()
             .chars()
@@ -14,7 +14,7 @@ impl Solution for Solution01 {
             .into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let index = input
             .string()
             .chars()

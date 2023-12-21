@@ -53,13 +53,13 @@ impl Solution11 {
 }
 
 impl Solution for Solution11 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let (galaxies, size) = self.parse(input);
         let expanded_galaxies = self.expand_galaxies(size, galaxies, 2);
         self.min_distances(&expanded_galaxies).into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let (galaxies, size) = self.parse(input);
         let expanded_galaxies = self.expand_galaxies(size, galaxies, 1000000);
         self.min_distances(&expanded_galaxies).into_some()

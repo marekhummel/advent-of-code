@@ -69,20 +69,19 @@ impl Solution21 {
 }
 
 impl Solution for Solution21 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
         let (grid, start) = Self::parse(input);
-        let steps = 64;
+        let steps = if is_sample { 6 } else { 64 };
 
         let plots = Self::walk(&grid, &[start.into()], steps);
         plots.len().into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
         let (grid, start) = Self::parse(input);
-        let size = Size::from_grid(&grid);
         let steps = 26501365;
 
-        if size.width != 131 {
+        if is_sample {
             return None; // Won't be able to solve sample case
         }
 

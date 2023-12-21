@@ -27,7 +27,7 @@ impl Solution08 {
 }
 
 impl Solution for Solution08 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let (instruction, network) = self.parse(input);
 
         let mut node = String::from("AAA");
@@ -43,7 +43,7 @@ impl Solution for Solution08 {
         }
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let (instruction, network) = self.parse(input);
 
         // define starting nodes and count when each starting node reaches an end state

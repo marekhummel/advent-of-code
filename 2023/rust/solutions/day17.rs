@@ -25,7 +25,7 @@ impl Solution17 {
 }
 
 impl Solution for Solution17 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let graph = Self::get_graph(input);
         let start = Index { i: 0, j: 0 };
         let goal = Index {
@@ -36,7 +36,7 @@ impl Solution for Solution17 {
         graph.shortest_path(start, goal, 0, 3).unwrap().heat.into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let graph = Self::get_graph(input);
         let start = Index { i: 0, j: 0 };
         let goal = Index {

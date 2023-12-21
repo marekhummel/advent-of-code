@@ -108,7 +108,7 @@ impl Solution03 {
 }
 
 impl Solution for Solution03 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let (numbers, symbols) = self.parse(input);
         numbers
             .iter()
@@ -118,7 +118,7 @@ impl Solution for Solution03 {
             .into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let (numbers, symbols) = self.parse(input);
         symbols
             .iter()

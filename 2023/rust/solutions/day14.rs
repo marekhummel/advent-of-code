@@ -107,13 +107,13 @@ impl Solution14 {
 }
 
 impl Solution for Solution14 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let grid = self.parse(input);
         let tilted = Self::tilt(&grid, true, false); // North
         Self::eval_load(&tilted).into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let mut dish = self.parse(input);
         let mut iterations = HashMap::from([(dish.clone(), 0)]);
 

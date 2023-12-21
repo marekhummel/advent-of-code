@@ -38,7 +38,7 @@ impl AocRunner {
                 for sample in [true, false] {
                     let data = self.get_input(self.year, day as u8 + 1, version, sample);
                     match data {
-                        Some(input) => match s.solve(input, version) {
+                        Some(input) => match s.solve(input, version, sample) {
                             Some((v, e)) => {
                                 println!("  V{version} {0}:  {v}", Self::SAMPLE_STR[sample as usize]);
                                 total_time += e;
@@ -61,7 +61,7 @@ impl AocRunner {
             for sample in [true, false] {
                 let input = self.get_input(self.year, day as u8, version, sample).unwrap();
                 let (v, e) = s
-                    .solve(input, version)
+                    .solve(input, version, sample)
                     .map_or((String::from("<Unsolved>"), Duration::ZERO), |(v, e)| {
                         (v.to_string(), e)
                     });
@@ -78,7 +78,7 @@ impl AocRunner {
             .get_input(self.year, day as u8, version, use_sample)
             .expect("No input");
         let (v, e) = s
-            .solve(input, version)
+            .solve(input, version, use_sample)
             .map_or((String::from("<Unsolved>"), Duration::ZERO), |(v, e)| {
                 (v.to_string(), e)
             });

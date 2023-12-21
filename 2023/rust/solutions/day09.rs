@@ -39,7 +39,7 @@ impl Solution09 {
 }
 
 impl Solution for Solution09 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let sequences = self.parse(input);
         sequences
             .into_iter()
@@ -48,7 +48,7 @@ impl Solution for Solution09 {
             .into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let sequences = self.parse(input);
         sequences
             .into_iter()

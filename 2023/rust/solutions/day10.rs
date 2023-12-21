@@ -120,12 +120,12 @@ impl Solution10 {
 }
 
 impl Solution for Solution10 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         // Add one to account for odd-length paths
         ((self.find_loop(&self.parse(input)).len() + 1) / 2).into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let grid = self.parse(input);
         let loop_path = self.find_loop(&grid);
         self.compute_area(&grid, loop_path).into_some()

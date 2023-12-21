@@ -77,7 +77,7 @@ impl Solution06 {
 }
 
 impl Solution for Solution06 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let instructions = Self::parse(input);
         let (ii, jj) = Self::get_relevant_indices(&instructions);
 
@@ -96,7 +96,7 @@ impl Solution for Solution06 {
         Self::compute_illumination(&flat_grid, &block_sizes).into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let instructions = Self::parse(input);
         let (ii, jj) = Self::get_relevant_indices(&instructions);
 

@@ -182,7 +182,7 @@ impl Solution19 {
 }
 
 impl Solution for Solution19 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let (parts, workflows) = Self::parse(input);
         let exec_workflows: HashMap<_, _> = workflows
             .into_iter()
@@ -197,7 +197,7 @@ impl Solution for Solution19 {
             .into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let (_, workflows) = Self::parse(input);
 
         let initial_part = Part {

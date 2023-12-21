@@ -25,12 +25,12 @@ impl Solution04 {
 }
 
 impl Solution for Solution04 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let key = input.string();
         Self::find_hash(&key, "00000").into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let key = input.string();
         Self::find_hash(&key, "000000").into_some()
     }

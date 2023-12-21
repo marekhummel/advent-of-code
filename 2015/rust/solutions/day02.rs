@@ -19,7 +19,7 @@ impl Solution02 {
 }
 
 impl Solution for Solution02 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         Self::parse(input)
             .into_iter()
             .map(|(l, w, h)| (l * w, l * h, w * h))
@@ -28,7 +28,7 @@ impl Solution for Solution02 {
             .into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         Self::parse(input)
             .into_iter()
             .map(|(l, w, h)| (l + w, l + h, w + h, l * w * h))

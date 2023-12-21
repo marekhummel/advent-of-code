@@ -38,7 +38,7 @@ impl Solution04 {
 }
 
 impl Solution for Solution04 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         self.parse(input)
             .iter()
             .map(|(winning, mine)| self.compute_value(winning, mine))
@@ -46,7 +46,7 @@ impl Solution for Solution04 {
             .into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let mut copies = vec![1u32; input.lines().len()];
         for (i, (winning, mine)) in self.parse(input).iter().enumerate() {
             let value = self.count_hits(winning, mine);

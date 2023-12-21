@@ -74,7 +74,7 @@ impl Solution16 {
 }
 
 impl Solution for Solution16 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let grid = input.grid();
         let beam_start = Beam {
             pos: Index { i: 0, j: 0 },
@@ -83,7 +83,7 @@ impl Solution for Solution16 {
         Self::traverse(&grid, beam_start, Size::from_grid(&grid)).into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let grid = input.grid();
         let size = Size::from_grid(&grid);
 

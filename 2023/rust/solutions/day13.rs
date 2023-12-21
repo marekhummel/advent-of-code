@@ -82,7 +82,7 @@ impl Solution13 {
 }
 
 impl Solution for Solution13 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         self.parse(input)
             .into_iter()
             .map(|grid| self.compute_reflection_value(&grid, 0))
@@ -90,7 +90,7 @@ impl Solution for Solution13 {
             .into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         self.parse(input)
             .into_iter()
             .map(|grid| self.compute_reflection_value(&grid, 1))

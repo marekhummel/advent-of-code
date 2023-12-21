@@ -159,7 +159,7 @@ impl Solution05 {
 }
 
 impl Solution for Solution05 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let (seeds, maps) = self.parse(input);
         seeds
             .iter()
@@ -169,7 +169,7 @@ impl Solution for Solution05 {
             .into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let (seeds, maps) = self.parse2(input);
         seeds
             .into_iter()

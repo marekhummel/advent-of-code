@@ -112,7 +112,7 @@ impl Solution20 {
 }
 
 impl Solution for Solution20 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         const BUTTON_PRESSES: usize = 1000;
         let mut modules = Self::parse(input);
         let mut states = Vec::new();
@@ -138,13 +138,14 @@ impl Solution for Solution20 {
         (lows * highs).into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
         let mut modules = Self::parse(input);
 
         // Looking at the input, we know rx is only the target of one conjuction: "cs"
         const FINAL: &str = "cs";
 
-        if !modules.contains_key(FINAL) {
+        // Not defined for sample
+        if is_sample {
             return None;
         }
 

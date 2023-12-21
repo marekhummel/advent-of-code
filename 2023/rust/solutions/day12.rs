@@ -85,7 +85,7 @@ impl Solution12 {
 }
 
 impl Solution for Solution12 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let mut c = Cache::new();
         self.parse(input)
             .into_iter()
@@ -94,7 +94,7 @@ impl Solution for Solution12 {
             .into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         // Takes a couple of seconds for real input
         let mut c = Cache::new();
         self.parse2(input)

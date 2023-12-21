@@ -38,11 +38,11 @@ impl Solution01 {
 }
 
 impl Solution for Solution01 {
-    fn solve_version01(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         input.lines().iter().map(|s| self.value01(s)).sum::<u32>().into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         input.lines().iter().map(|s| self.value02(s)).sum::<u32>().into_some()
     }
 }
