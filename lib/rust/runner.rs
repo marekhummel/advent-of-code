@@ -73,6 +73,11 @@ impl AocRunner {
     }
 
     fn run_single(&self, day: usize, version: u8, use_sample: bool) {
+        if self.solutions.len() < day {
+            println!("No solution implemented for day {day:02} in year {0}", self.year);
+            return;
+        }
+
         let s = &self.solutions[day - 1];
         let input = self
             .get_input(self.year, day as u8, version, use_sample)
