@@ -79,7 +79,7 @@ impl Solution22 {
     fn let_bricks_fall(bricks: &mut [Brick]) {
         // Easy lookup which groups bricks by the z-level they stop at
         let mut landed_bricks: HashMap<usize, Vec<Brick>> = HashMap::new();
-        let mut support_lookup = HashMap::new();
+        let mut support_lookup: HashMap<usize, Vec<usize>> = HashMap::new();
 
         for fb in bricks.iter_mut() {
             while !fb.on_ground() {
@@ -89,7 +89,7 @@ impl Solution22 {
                             && (fb.from.y <= lb.to.y && lb.from.y <= fb.to.y)
                         {
                             fb.supported_by.push(lb.id);
-                            support_lookup.entry(lb.id).or_insert(Vec::new()).push(fb.id);
+                            support_lookup.entry(lb.id).or_default().push(fb.id);
                         }
                     }
 
@@ -101,7 +101,7 @@ impl Solution22 {
                 fb.lower();
             }
 
-            landed_bricks.entry(fb.to.z).or_insert(Vec::new()).push(fb.clone());
+            landed_bricks.entry(fb.to.z).or_default().push(fb.clone());
         }
 
         // Double sided lookup in brick, second direction has to be done afterwards

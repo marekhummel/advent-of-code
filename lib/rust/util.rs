@@ -103,6 +103,10 @@ impl Index {
             _ => panic!("No clear direction"),
         }
     }
+
+    pub fn dist(&self, other: &Index) -> usize {
+        self.i.abs_diff(other.i) + self.j.abs_diff(other.j)
+    }
 }
 
 impl From<Position> for Index {
