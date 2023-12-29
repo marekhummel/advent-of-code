@@ -5,6 +5,7 @@ use std::{
 };
 
 use itertools::Itertools;
+use num::bigint::BigInt;
 
 use crate::util::Index;
 
@@ -57,6 +58,7 @@ pub enum ProblemResult {
     U16(u16),
     U8(u8),
     USize(usize),
+    BigInt(BigInt),
 }
 
 impl Display for ProblemResult {
@@ -73,6 +75,7 @@ impl Display for ProblemResult {
             ProblemResult::U16(v) => write!(f, "{}", v),
             ProblemResult::U8(v) => write!(f, "{}", v),
             ProblemResult::USize(v) => write!(f, "{}", v),
+            ProblemResult::BigInt(v) => write!(f, "{}", v),
         }
     }
 }
@@ -144,5 +147,11 @@ impl IntoSome<ProblemResult> for u8 {
 impl IntoSome<ProblemResult> for usize {
     fn into_some(self) -> Option<ProblemResult> {
         Some(ProblemResult::USize(self))
+    }
+}
+
+impl IntoSome<ProblemResult> for BigInt {
+    fn into_some(self) -> Option<ProblemResult> {
+        Some(ProblemResult::BigInt(self))
     }
 }

@@ -24,6 +24,7 @@ use solutions::day20;
 use solutions::day21;
 use solutions::day22;
 use solutions::day23;
+use solutions::day24;
 use std::env;
 
 use aoc_lib::solution::Solution;
@@ -57,6 +58,7 @@ fn main() {
         Box::new(day21::Solution21 {}),
         Box::new(day22::Solution22 {}),
         Box::new(day23::Solution23 {}),
+        Box::new(day24::Solution24 {}),
     ];
 
     let arg = env::args().nth(1);

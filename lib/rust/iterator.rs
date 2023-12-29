@@ -19,7 +19,7 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.inner.next().and_then(|item| item.to_string().parse().ok())
+        self.inner.next().and_then(|item| item.to_string().trim().parse().ok())
     }
 }
 

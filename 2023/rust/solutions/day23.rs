@@ -133,6 +133,7 @@ impl Solution for Solution23 {
         let (map, start, end) = Self::parse(input);
         let trail_graph = Self::create_trail_graph(&map, false);
         let mut visited = HashSet::from([start]);
+        // Runs a couple of seconds, especially without release mode (60s)
         Self::longest_path(&trail_graph, &mut visited, start, end)
             .unwrap()
             .into_some()

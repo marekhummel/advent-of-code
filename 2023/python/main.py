@@ -10,10 +10,11 @@ from solutions.day04 import Solution04
 from solutions.day05 import Solution05
 from solutions.day06 import Solution06
 from solutions.day12 import Solution12
+from solutions.day24 import Solution24
 
-ALL: bool = True
-VERSION: Literal[1, 2] = 1
-USE_SAMPLE: bool = True
+ALL: bool = False
+VERSION: Literal[1, 2] = 2
+USE_SAMPLE: bool = False
 
 
 if __name__ == "__main__":
@@ -25,6 +26,7 @@ if __name__ == "__main__":
         5: Solution05,
         6: Solution06,
         12: Solution12,
+        24: Solution24,
     }
 
     arg = sys.argv[1]
@@ -45,7 +47,7 @@ if __name__ == "__main__":
     else:
         day = int(arg.removeprefix("day"))
 
-        s = solutions[day - 1]()
+        s = solutions[day]()
 
         if ALL:
             total = 0.0
