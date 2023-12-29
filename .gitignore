@@ -3,4 +3,5 @@
 /target
 __pycache__/
 
+scripts/aoc_cookie.txt
 **/inputs/input*.txt

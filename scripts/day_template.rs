@@ -1,7 +1,7 @@
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{ProblemInput, ProblemResult};
-pub struct SolutionXX;
 
+pub struct SolutionXX;
 impl SolutionXX {}
 
 impl Solution for SolutionXX {
