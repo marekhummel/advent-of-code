@@ -40,7 +40,3 @@ impl Solution for Solution08 {
         delta.into_some()
     }
 }
-
-// 300 lines
-// 6502 chars
-// 5758 remaining
