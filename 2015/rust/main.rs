@@ -12,13 +12,14 @@ use solutions::day08;
 use solutions::day09;
 use solutions::day10;
 use solutions::day11;
+use solutions::day12;
 use std::env;
 
 use aoc_lib::solution::Solution;
 
 const ALL: bool = true;
-const VERSION: u8 = 1;
-const USE_SAMPLE: bool = true;
+const VERSION: u8 = 2;
+const USE_SAMPLE: bool = false;
 
 fn main() {
     let solutions: Vec<Box<dyn Solution>> = vec![
@@ -33,6 +34,7 @@ fn main() {
         Box::new(day09::Solution09 {}),
         Box::new(day10::Solution10 {}),
         Box::new(day11::Solution11 {}),
+        Box::new(day12::Solution12 {}),
     ];
 
     let arg = env::args().nth(1);
