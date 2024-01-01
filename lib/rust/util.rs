@@ -1,5 +1,7 @@
 use core::panic;
 
+use itertools::Itertools;
+
 use crate::types::Grid;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
@@ -76,6 +78,7 @@ impl Index {
             Direction::East if self.i < size.width - 1 => Some(self.advance(dir)),
             Direction::West if self.i > 0 => Some(self.advance(dir)),
             Direction::South if self.j < size.height - 1 => Some(self.advance(dir)),
+            Direction::None => Some(*self),
             _ => None,
         }
     }
@@ -87,8 +90,26 @@ impl Index {
             .collect()
     }
 
+    pub fn moore_neighbors(&self, size: Size) -> Vec<Index> {
+        Direction::compass()
+            .into_iter()
+            .flat_map(|dir| {
+                [
+                    self.advance_check(dir, size),
+                    self.advance_check(dir, size)
+                        .and_then(|next| next.advance_check(dir.turn()[0], size)),
+                ]
+            })
+            .flatten()
+            .collect()
+    }
+
     pub fn grid_get<'a, 'b: 'a, T>(&'b self, grid: &'a [Vec<T>]) -> &'a T {
         &grid[self.j][self.i]
+    }
+
+    pub fn grid_set<T>(&self, grid: &mut [Vec<T>], value: T) {
+        grid[self.j][self.i] = value;
     }
 
     pub fn get_direction_to(&self, other: Index) -> Direction {
