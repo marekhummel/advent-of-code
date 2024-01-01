@@ -59,6 +59,7 @@ pub enum ProblemResult {
     U8(u8),
     USize(usize),
     BigInt(BigInt),
+    String(String),
 }
 
 impl Display for ProblemResult {
@@ -76,6 +77,7 @@ impl Display for ProblemResult {
             ProblemResult::U8(v) => write!(f, "{}", v),
             ProblemResult::USize(v) => write!(f, "{}", v),
             ProblemResult::BigInt(v) => write!(f, "{}", v),
+            ProblemResult::String(v) => write!(f, "{}", v),
         }
     }
 }
@@ -153,5 +155,11 @@ impl IntoSome<ProblemResult> for usize {
 impl IntoSome<ProblemResult> for BigInt {
     fn into_some(self) -> Option<ProblemResult> {
         Some(ProblemResult::BigInt(self))
+    }
+}
+
+impl IntoSome<ProblemResult> for String {
+    fn into_some(self) -> Option<ProblemResult> {
+        Some(ProblemResult::String(self))
     }
 }
