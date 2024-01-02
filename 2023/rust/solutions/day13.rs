@@ -1,7 +1,8 @@
+use aoc_lib::cartesian::Grid;
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{Grid, IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 
 type BoolGrid = Grid<bool>;
 pub struct Solution13;
@@ -9,11 +10,13 @@ impl Solution13 {
     fn parse(&self, input: ProblemInput) -> Vec<BoolGrid> {
         input
             .lines()
-            .into_iter()
-            .map(|s| s.chars().map(|c| c == '#').collect_vec())
-            .collect_vec()
             .split(|row| row.is_empty())
-            .map(|row| row.to_vec())
+            .map(|grid| Grid {
+                rows: grid
+                    .iter()
+                    .map(|s| s.chars().map(|c| c == '#').collect_vec())
+                    .collect_vec(),
+            })
             .collect_vec()
     }
 
@@ -21,7 +24,7 @@ impl Solution13 {
         match self.find_reflection(grid, smudges) {
             Some(mirror_hor) => 100 * (mirror_hor + 1),
             None => {
-                let grid_t = self.transpose(grid);
+                let grid_t = grid.transpose();
                 match self.find_reflection(&grid_t, smudges) {
                     Some(mirror_ver) => mirror_ver + 1,
                     None => unreachable!("No mirror found"),
@@ -30,17 +33,12 @@ impl Solution13 {
         }
     }
 
-    fn transpose(&self, grid: &BoolGrid) -> BoolGrid {
-        (0..grid[0].len())
-            .map(|i| grid.iter().map(|inner| inner[i]).collect_vec())
-            .collect()
-    }
-
     fn find_reflection(&self, grid: &BoolGrid, total_smudges: usize) -> Option<usize> {
         // Find possible horizontal mirrors (between two almost equal lines)
         // Result is a list of possible mirrors, where each entry is the mirrors position plus
         // the list of rows that match and if that match includes a smudge or not
         let mirrors = grid
+            .rows
             .iter()
             .enumerate()
             .tuple_combinations()
@@ -58,7 +56,7 @@ impl Solution13 {
             .into_iter()
             .find(|(mirror, row_pairs)| {
                 let mut smudges = 0;
-                for offset in Self::offset_range(*mirror, grid.len()) {
+                for offset in Self::offset_range(*mirror, grid.size().height) {
                     let (low, high) = (mirror - offset, mirror + 1 + offset);
                     match row_pairs.iter().find(|&(i, j, _)| *i == low && *j == high) {
                         Some((_, _, false)) => (),

@@ -1,9 +1,10 @@
+
 use std::collections::HashMap;
 
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
-use aoc_lib::util::{Direction, Index};
+use aoc_lib::cartesian::{Direction, Index};
 use itertools::{iproduct, Itertools};
 
 type Instruction = (String, Index, Index);

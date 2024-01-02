@@ -1,46 +1,43 @@
 use std::cell::RefCell;
+
 use std::collections::{HashMap, HashSet};
 
+use aoc_lib::cartesian::{Direction, Grid, Index};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{Grid, IntoSome, ProblemInput, ProblemResult};
-use aoc_lib::util::{Direction, Index, Size};
+use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 use itertools::Itertools;
 
 pub struct Solution23;
 impl Solution23 {
     fn parse(input: ProblemInput) -> (Grid<char>, Index, Index) {
         let hiking_map = input.grid();
+        let height = hiking_map.size().height;
         let start = Index {
-            i: hiking_map[0].iter().position(|c| *c == '.').unwrap(),
+            i: hiking_map.rows[0].iter().position(|c| *c == '.').unwrap(),
             j: 0,
         };
         let end = Index {
-            i: hiking_map[hiking_map.len() - 1].iter().position(|c| *c == '.').unwrap(),
-            j: hiking_map.len() - 1,
+            i: hiking_map.rows[height - 1].iter().position(|c| *c == '.').unwrap(),
+            j: height - 1,
         };
 
         (hiking_map, start, end)
     }
 
     fn create_trail_graph(grid: &Grid<char>, slippery_slopes: bool) -> HashMap<Index, Vec<(Index, usize)>> {
-        let map_size = Size::from_grid(grid);
-
         // Use refcells here for mutability problems in collapse part.
         let mut junctions: HashMap<Index, RefCell<Vec<(Index, usize)>>> = HashMap::new();
-        for j in 0..map_size.height {
-            for i in 0..map_size.width {
-                let idx = Index { i, j };
-                if *idx.grid_get(grid) != '#' {
-                    junctions.insert(
-                        idx,
-                        RefCell::new(
-                            Self::get_neighbors(grid, idx, slippery_slopes)
-                                .into_iter()
-                                .map(|nb| (nb, nb.dist(&idx)))
-                                .collect_vec(),
-                        ),
-                    );
-                }
+        for (idx, value) in grid.enumerate() {
+            if *value != '#' {
+                junctions.insert(
+                    idx,
+                    RefCell::new(
+                        Self::get_neighbors(grid, idx, slippery_slopes)
+                            .into_iter()
+                            .map(|nb| (nb, nb.dist(&idx)))
+                            .collect_vec(),
+                    ),
+                );
             }
         }
 
@@ -69,9 +66,9 @@ impl Solution23 {
     }
 
     fn get_neighbors(grid: &Grid<char>, idx: Index, slippery_slopes: bool) -> Vec<Index> {
-        let map_size = Size::from_grid(grid);
+        let map_size = grid.size();
         let directions = match slippery_slopes {
-            true => match idx.grid_get(grid) {
+            true => match grid.get(&idx) {
                 '>' => vec![Direction::East],
                 '<' => vec![Direction::West],
                 '^' => vec![Direction::North],
@@ -85,7 +82,7 @@ impl Solution23 {
         directions
             .into_iter()
             .filter_map(|d| idx.advance_check(d, map_size))
-            .filter(|np| *np.grid_get(grid) != '#')
+            .filter(|np| *grid.get(np) != '#')
             .collect()
     }
 

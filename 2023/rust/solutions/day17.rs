@@ -2,10 +2,9 @@ use std::cmp::Ordering;
 use std::collections::{BinaryHeap, HashSet};
 use std::fmt::Debug;
 
-use aoc_lib::iterator::ParsedExt;
+use aoc_lib::cartesian::{Direction, Grid, Index, Size};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{Grid, IntoSome, ProblemInput, ProblemResult};
-use aoc_lib::util::{Direction, Index, Size};
+use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 use itertools::Itertools;
 pub struct Solution17;
 
@@ -13,12 +12,10 @@ impl Solution17 {
     fn get_graph(input: ProblemInput) -> LatticeGraph {
         let grid = input
             .grid()
-            .iter()
-            .map(|row| row.iter().parsed().collect_vec())
-            .collect_vec();
+            .map_elements(|elem| elem.to_string().parse::<u32>().unwrap());
 
         LatticeGraph {
-            size: Size::from_grid(&grid),
+            size: grid.size(),
             weights: grid,
         }
     }
@@ -145,7 +142,7 @@ impl LatticeGraph {
         valid_directions
             .iter()
             .filter_map(|d| vertex.pos.advance_check(*d, self.size))
-            .map(|v| (v, *v.grid_get(&self.weights)))
+            .map(|v| (v, *self.weights.get(&v)))
             .collect_vec()
     }
 }

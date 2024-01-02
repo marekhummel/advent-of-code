@@ -1,8 +1,8 @@
 use std::collections::{HashMap, HashSet};
 
+use aoc_lib::math::lcm;
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
-use aoc_lib::util::lcm;
 use itertools::Itertools;
 
 #[derive(Debug, Clone, PartialEq, Eq)]

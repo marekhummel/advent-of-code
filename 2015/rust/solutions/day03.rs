@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 
+use aoc_lib::cartesian::{Direction, Position};
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
-use aoc_lib::util::{Direction, Position};
 use itertools::Itertools;
 pub struct Solution03;
 

@@ -1,3 +1,21 @@
+use itertools::Itertools;
+
+pub fn lcm(nums: &[u64]) -> u64 {
+    if nums.len() == 1 {
+        return nums[0];
+    }
+    let a = nums[0];
+    let b = lcm(&nums[1..]);
+    a * b / gcd(a, b)
+}
+
+pub fn gcd(a: u64, b: u64) -> u64 {
+    if b == 0 {
+        return a;
+    }
+    gcd(b, a % b)
+}
+
 // Unused, but saved for later (originated from attempts in 2023-24)
 pub fn gauss_jordan(a: &mut [&mut [f64]], b: &mut [f64]) {
     // Find pivot and create 1
@@ -25,7 +43,7 @@ pub fn gauss_jordan(a: &mut [&mut [f64]], b: &mut [f64]) {
     });
 
     // Continue with sub matrices until upper triangle is given
-    Self::gauss_jordan(&mut a.iter_mut().map(|r| &mut r[1..]).collect_vec()[1..], &mut b[1..]);
+    gauss_jordan(&mut a.iter_mut().map(|r| &mut r[1..]).collect_vec()[1..], &mut b[1..]);
 
     // Adjust rows to create 0s above 1s on diagonal
     let delta_b = a[0][1..].iter().zip(b[1..].iter()).map(|(ai, bi)| ai * bi).sum::<f64>();

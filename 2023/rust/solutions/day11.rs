@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use aoc_lib::util::{Index, Size};
+use aoc_lib::cartesian::{Index, Size};
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
@@ -9,16 +9,14 @@ use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 pub struct Solution11;
 impl Solution11 {
     fn parse(&self, input: ProblemInput) -> (Vec<Index>, Size) {
-        let egrid = input.enumerated_grid();
-        let size = Size::from_grid(&egrid);
-        let galaxies = egrid
-            .into_iter()
-            .flatten()
-            .filter(|(_, c)| *c == '#')
+        let grid = input.grid();
+        let galaxies = grid
+            .enumerate()
+            .filter(|(_, c)| **c == '#')
             .map(|(idx, _)| idx)
             .collect_vec();
 
-        (galaxies, size)
+        (galaxies, grid.size())
     }
 
     fn min_distances(&self, exp_galaxies: &[Index]) -> usize {

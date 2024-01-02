@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use aoc_lib::util::lcm;
+use aoc_lib::math::lcm;
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;

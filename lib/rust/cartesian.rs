@@ -1,8 +1,7 @@
 use core::panic;
+use std::fmt::Display;
 
 use itertools::Itertools;
-
-use crate::types::Grid;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub enum Direction {
@@ -102,14 +101,6 @@ impl Index {
             })
             .flatten()
             .collect()
-    }
-
-    pub fn grid_get<'a, 'b: 'a, T>(&'b self, grid: &'a [Vec<T>]) -> &'a T {
-        &grid[self.j][self.i]
-    }
-
-    pub fn grid_set<T>(&self, grid: &mut [Vec<T>], value: T) {
-        grid[self.j][self.i] = value;
     }
 
     pub fn get_direction_to(&self, other: Index) -> Direction {
@@ -212,27 +203,94 @@ pub struct Size {
     pub height: usize,
 }
 
-impl Size {
-    pub fn from_grid<T>(grid: &Grid<T>) -> Size {
-        Size {
-            height: grid.len(),
-            width: grid[0].len(),
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Grid<T> {
+    pub rows: Vec<Vec<T>>,
+}
+
+impl<T> Grid<T> {
+    pub fn empty(size: Size, default: T) -> Self
+    where
+        T: Clone,
+    {
+        Grid {
+            rows: vec![vec![default; size.width]; size.height],
         }
     }
-}
 
-pub fn lcm(nums: &[u64]) -> u64 {
-    if nums.len() == 1 {
-        return nums[0];
+    pub fn get(&self, idx: &Index) -> &T {
+        &self.rows[idx.j][idx.i]
     }
-    let a = nums[0];
-    let b = lcm(&nums[1..]);
-    a * b / gcd(a, b)
-}
 
-pub fn gcd(a: u64, b: u64) -> u64 {
-    if b == 0 {
-        return a;
+    pub fn set(&mut self, idx: &Index, value: T) {
+        self.rows[idx.j][idx.i] = value;
     }
-    gcd(b, a % b)
+
+    pub fn size(&self) -> Size {
+        Size {
+            height: self.rows.len(),
+            width: self.rows[0].len(),
+        }
+    }
+
+    pub fn corners(&self) -> [Index; 4] {
+        let size = self.size();
+        [
+            Index { i: 0, j: 0 },
+            Index {
+                i: 0,
+                j: size.height - 1,
+            },
+            Index {
+                i: size.width - 1,
+                j: 0,
+            },
+            Index {
+                i: size.width - 1,
+                j: size.height - 1,
+            },
+        ]
+    }
+
+    pub fn iter(&self) -> impl Iterator<Item = &T> {
+        self.rows.iter().flatten()
+    }
+
+    pub fn enumerate(&self) -> impl Iterator<Item = (Index, &T)> {
+        self.rows
+            .iter()
+            .enumerate()
+            .flat_map(|(j, row)| row.iter().enumerate().map(move |(i, v)| (Index { i, j }, v)))
+    }
+
+    pub fn map_elements<R, F: Fn(&T) -> R>(self, func: F) -> Grid<R> {
+        Grid {
+            rows: self
+                .rows
+                .into_iter()
+                .map(|row| row.iter().map(&func).collect_vec())
+                .collect_vec(),
+        }
+    }
+
+    pub fn transpose(&self) -> Self
+    where
+        T: Copy,
+    {
+        Grid {
+            rows: (0..self.rows[0].len())
+                .map(|i| self.rows.iter().map(|inner| inner[i]).collect_vec())
+                .collect(),
+        }
+    }
+
+    pub fn print_grid<F: Fn(Index, &T) -> S, S: Display>(&self, display_fn: F) {
+        for (j, row) in self.rows.iter().enumerate() {
+            for (i, item) in row.iter().enumerate() {
+                print!("{}", display_fn(Index { i, j }, item));
+            }
+            println!();
+        }
+        println!();
+    }
 }

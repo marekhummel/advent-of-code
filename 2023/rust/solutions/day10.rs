@@ -1,6 +1,7 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{Grid, IntoSome, ProblemInput, ProblemResult};
-use aoc_lib::util::{Direction, Index, Size};
+
+use aoc_lib::cartesian::{Direction, Grid, Index};
+use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 use itertools::Itertools;
 
 type CharGrid = Grid<char>;
@@ -12,18 +13,11 @@ impl Solution10 {
     }
 
     fn find_loop(&self, grid: &CharGrid) -> Vec<Index> {
-        let start = grid
-            .iter()
-            .find_position(|row| row.iter().any(|&c| c == 'S'))
-            .map(|(y, row)| Index {
-                j: y,
-                i: row.iter().position(|&c| c == 'S').unwrap(),
-            })
-            .unwrap();
+        let start = grid.enumerate().find(|(_, c)| **c == 'S').unwrap().0;
 
         let mut path = vec![start];
         let (mut curr_pos, mut curr_off) = self.find_path_beginning(start, grid);
-        while *curr_pos.grid_get(grid) != 'S' {
+        while *grid.get(&curr_pos) != 'S' {
             path.push(curr_pos);
             (curr_pos, curr_off) = self.find_next_element(curr_pos, curr_off, grid);
         }
@@ -32,9 +26,9 @@ impl Solution10 {
     }
 
     fn find_path_beginning(&self, start: Index, grid: &CharGrid) -> (Index, Direction) {
-        let size = Size::from_grid(grid);
+        let size = grid.size();
         if let Some(up) = start.advance_check(Direction::North, size) {
-            let symbol = up.grid_get(grid);
+            let symbol = grid.get(&up);
             match symbol {
                 '|' => return (up, Direction::North),
                 '7' => return (up, Direction::West),
@@ -44,7 +38,7 @@ impl Solution10 {
         }
 
         if let Some(down) = start.advance_check(Direction::South, size) {
-            let symbol = down.grid_get(grid);
+            let symbol = grid.get(&down);
             match symbol {
                 '|' => return (down, Direction::South),
                 'J' => return (down, Direction::West),
@@ -54,7 +48,7 @@ impl Solution10 {
         }
 
         if let Some(left) = start.advance_check(Direction::West, size) {
-            let symbol = left.grid_get(grid);
+            let symbol = grid.get(&left);
             match symbol {
                 '-' => return (left, Direction::West),
                 'F' => return (left, Direction::South),
@@ -64,7 +58,7 @@ impl Solution10 {
         }
 
         if let Some(right) = start.advance_check(Direction::East, size) {
-            let symbol = right.grid_get(grid);
+            let symbol = grid.get(&right);
             match symbol {
                 '-' => return (right, Direction::East),
                 '7' => return (right, Direction::South),
@@ -79,7 +73,7 @@ impl Solution10 {
     fn find_next_element(&self, pos: Index, dir: Direction, grid: &CharGrid) -> (Index, Direction) {
         let next_pos = pos.advance(dir);
 
-        let next_dir = match (dir, next_pos.grid_get(grid)) {
+        let next_dir = match (dir, grid.get(&next_pos)) {
             (_, 'S') => Direction::None,
             (Direction::West, '-') => Direction::West,
             (Direction::East, '-') => Direction::East,
@@ -102,7 +96,7 @@ impl Solution10 {
     fn compute_area(&self, grid: &CharGrid, loop_path: Vec<Index>) -> u64 {
         let mut vertices = loop_path
             .iter()
-            .filter(|idx| "SFL7J".contains(*idx.grid_get(grid)))
+            .filter(|idx| "SFL7J".contains(*grid.get(idx)))
             .collect_vec();
         vertices.push(vertices[0]);
 

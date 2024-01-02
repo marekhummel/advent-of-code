@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 
+use aoc_lib::cartesian::{Grid, Index, Position};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{Grid, IntoSome, ProblemInput, ProblemResult};
-use aoc_lib::util::{Index, Position, Size};
+use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 use itertools::Itertools;
 
 type BoolGrid = Grid<bool>;
@@ -11,26 +11,13 @@ pub struct Solution21;
 impl Solution21 {
     fn parse(input: ProblemInput) -> (BoolGrid, Index) {
         let grid = input.grid();
-
-        let start = grid
-            .iter()
-            .find_position(|row| row.iter().any(|&c| c == 'S'))
-            .map(|(y, row)| Index {
-                j: y,
-                i: row.iter().position(|&c| c == 'S').unwrap(),
-            })
-            .unwrap();
-
-        let bool_grid = grid
-            .into_iter()
-            .map(|row| row.into_iter().map(|c| c != '#').collect_vec())
-            .collect_vec();
-
+        let start = grid.enumerate().find(|(_, c)| **c == 'S').unwrap().0;
+        let bool_grid = grid.map_elements(|c| *c != '#');
         (bool_grid, start)
     }
 
     fn walk(grid: &BoolGrid, current: &[Position], steps: usize) -> Vec<Position> {
-        let size = Size::from_grid(grid);
+        let size = grid.size();
 
         let mut positions = current.iter().cloned().collect_vec();
         for _ in 0..steps {
@@ -39,7 +26,7 @@ impl Solution21 {
                 let reached = pos
                     .von_neumann_neighbors(1)
                     .into_iter()
-                    .filter(|p| *p.wrap_modular(size).grid_get(grid));
+                    .filter(|p| *grid.get(&p.wrap_modular(size)));
                 new_positions.extend(reached);
             }
 
@@ -51,20 +38,12 @@ impl Solution21 {
 
     #[allow(dead_code)]
     fn print(grid: &BoolGrid, positions: &HashSet<Index>) {
-        let size = Size::from_grid(grid);
-        #[allow(clippy::needless_range_loop)]
-        for j in 0..size.height {
-            for i in 0..size.width {
-                match (grid[j][i], positions.contains(&Index { j, i })) {
-                    (true, true) => print!("O"),
-                    (true, false) => print!("."),
-                    (false, true) => panic!(),
-                    (false, false) => print!("#"),
-                }
-            }
-            println!();
-        }
-        println!();
+        grid.print_grid(|idx, c| match (c, positions.contains(&idx)) {
+            (true, true) => "O",
+            (true, false) => ".",
+            (false, true) => panic!(),
+            (false, false) => "#",
+        });
     }
 }
 

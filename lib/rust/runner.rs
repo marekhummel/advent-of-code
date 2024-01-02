@@ -49,6 +49,7 @@ impl AocRunner {
                     }
                 }
             }
+            println!()
         }
 
         println!("\n\nTotal Runtime: {total_time:?}");

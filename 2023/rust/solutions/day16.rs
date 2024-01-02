@@ -1,9 +1,9 @@
 #![allow(unused_variables)]
 use std::collections::{HashSet, VecDeque};
 
+use aoc_lib::cartesian::{Direction, Grid, Index};
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
-use aoc_lib::util::{Direction, Index, Size};
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 struct Beam {
@@ -13,12 +13,12 @@ struct Beam {
 
 pub struct Solution16;
 impl Solution16 {
-    fn traverse(grid: &[Vec<char>], beam_start: Beam, size: Size) -> usize {
+    fn traverse(grid: &Grid<char>, beam_start: Beam) -> usize {
         let mut beams: VecDeque<Beam> = VecDeque::from([beam_start.clone()]);
         let mut beam_history = HashSet::from([beam_start]);
 
         while let Some(b) = beams.pop_front() {
-            let new_dirs = match grid[b.pos.j][b.pos.i] {
+            let new_dirs = match grid.get(&b.pos) {
                 '.' => vec![b.dir],
                 '/' => match b.dir {
                     Direction::North => vec![Direction::East],
@@ -48,7 +48,7 @@ impl Solution16 {
             };
 
             for dir in new_dirs {
-                if let Some(next_pos) = b.pos.advance_check(dir, size) {
+                if let Some(next_pos) = b.pos.advance_check(dir, grid.size()) {
                     let new_beam = Beam { pos: next_pos, dir };
                     if !beam_history.contains(&new_beam) {
                         beam_history.insert(new_beam.clone());
@@ -80,12 +80,12 @@ impl Solution for Solution16 {
             pos: Index { i: 0, j: 0 },
             dir: Direction::East,
         };
-        Self::traverse(&grid, beam_start, Size::from_grid(&grid)).into_some()
+        Self::traverse(&grid, beam_start).into_some()
     }
 
     fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let grid = input.grid();
-        let size = Size::from_grid(&grid);
+        let size = grid.size();
 
         let mut start_beams = Vec::new();
         start_beams.extend((0..size.height).map(|y| Beam {
@@ -113,7 +113,7 @@ impl Solution for Solution16 {
 
         start_beams
             .into_iter()
-            .map(|start| Self::traverse(&grid, start, size))
+            .map(|start| Self::traverse(&grid, start))
             .max()
             .unwrap()
             .into_some()

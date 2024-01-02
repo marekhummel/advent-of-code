@@ -7,10 +7,7 @@ use std::{
 use itertools::Itertools;
 use num::bigint::BigInt;
 
-use crate::util::Index;
-
-pub type Grid<T> = Vec<Vec<T>>;
-pub type EnumeratedGrid = Vec<Vec<(Index, char)>>;
+use crate::cartesian::Grid;
 
 pub struct ProblemInput {
     lines: Vec<String>,
@@ -34,16 +31,18 @@ impl ProblemInput {
     }
 
     pub fn grid(&self) -> Grid<char> {
-        self.lines.iter().map(|row| row.chars().collect_vec()).collect_vec()
+        Grid {
+            rows: self.lines.iter().map(|row| row.chars().collect_vec()).collect_vec(),
+        }
     }
 
-    pub fn enumerated_grid(&self) -> EnumeratedGrid {
-        self.lines
-            .iter()
-            .enumerate()
-            .map(|(j, row)| row.chars().enumerate().map(|(i, c)| (Index { i, j }, c)).collect_vec())
-            .collect_vec()
-    }
+    // pub fn enumerated_grid(&self) -> EnumeratedGrid {
+    //     self.lines
+    //         .iter()
+    //         .enumerate()
+    //         .map(|(j, row)| row.chars().enumerate().map(|(i, c)| (Index { i, j }, c)).collect_vec())
+    //         .collect_vec()
+    // }
 }
 
 pub enum ProblemResult {
