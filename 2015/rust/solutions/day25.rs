@@ -5,7 +5,7 @@ use regex::Regex;
 pub struct Solution25;
 impl Solution25 {
     fn parse(input: ProblemInput) -> (usize, usize) {
-        let rgx = Regex::new(r"To continue, please consult the code grid in the manual.  Enter the code at row (?P<row>\d+), column (?P<col>\d+).").unwrap();
+        let rgx = Regex::new(r"Enter the code at row (?P<row>\d+), column (?P<col>\d+).").unwrap();
         let line = input.string();
         let captures = rgx.captures(&line).unwrap();
         let row = captures.name("row").unwrap().as_str().parse().unwrap();
@@ -33,7 +33,7 @@ impl Solution for Solution25 {
         code.into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, _input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         // No part two
         None
     }
