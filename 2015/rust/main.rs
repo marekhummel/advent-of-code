@@ -22,12 +22,16 @@ use solutions::day18;
 use solutions::day19;
 use solutions::day20;
 use solutions::day21;
+use solutions::day22;
+use solutions::day23;
+use solutions::day24;
+use solutions::day25;
 use std::env;
 
 use aoc_lib::solution::Solution;
 
-const ALL: bool = true;
-const VERSION: u8 = 2;
+const ALL: bool = false;
+const VERSION: u8 = 1;
 const USE_SAMPLE: bool = true;
 
 fn main() {
@@ -53,6 +57,10 @@ fn main() {
         Box::new(day19::Solution19 {}),
         Box::new(day20::Solution20 {}),
         Box::new(day21::Solution21 {}),
+        Box::new(day22::Solution22 {}),
+        Box::new(day23::Solution23 {}),
+        Box::new(day24::Solution24 {}),
+        Box::new(day25::Solution25 {}),
     ];
 
     let arg = env::args().nth(1);
