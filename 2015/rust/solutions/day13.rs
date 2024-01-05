@@ -38,9 +38,7 @@ impl Solution13 {
             .map(|order| {
                 order
                     .into_iter()
-                    .cycle()
-                    .take(table.len() + 1)
-                    .tuple_windows()
+                    .circular_tuple_windows()
                     .map(|(from, to)| table[from][to] + table[to][from])
                     .sum::<i16>()
             })
