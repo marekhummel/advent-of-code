@@ -284,7 +284,7 @@ impl<T> Grid<T> {
         }
     }
 
-    pub fn print_grid<F: Fn(Index, &T) -> S, S: Display>(&self, display_fn: F) {
+    pub fn print<F: Fn(Index, &T) -> S, S: Display>(&self, display_fn: F) {
         for (j, row) in self.rows.iter().enumerate() {
             for (i, item) in row.iter().enumerate() {
                 print!("{}", display_fn(Index { i, j }, item));

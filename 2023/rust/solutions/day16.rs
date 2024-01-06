@@ -59,7 +59,7 @@ impl Solution16 {
         }
 
         let energized: HashSet<Index> = beam_history.iter().map(|b| b.pos).collect();
-        // grid.print_grid(|idx, _| if energized.contains(&idx) { "#" } else { "." });
+        // grid.print(|idx, _| if energized.contains(&idx) { "#" } else { "." });
         energized.len()
     }
 }

@@ -38,7 +38,7 @@ impl Solution21 {
 
     #[allow(dead_code)]
     fn print(grid: &BoolGrid, positions: &HashSet<Index>) {
-        grid.print_grid(|idx, c| match (c, positions.contains(&idx)) {
+        grid.print(|idx, c| match (c, positions.contains(&idx)) {
             (true, true) => "O",
             (true, false) => ".",
             (false, true) => panic!(),
