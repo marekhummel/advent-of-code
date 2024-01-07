@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 use regex::Regex;
