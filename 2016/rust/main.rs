@@ -24,7 +24,7 @@ use std::env;
 
 use aoc_lib::solution::Solution;
 
-const ALL: bool = true;
+const ALL: bool = false;
 const VERSION: u8 = 1;
 const USE_SAMPLE: bool = true;
 

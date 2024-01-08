@@ -54,8 +54,11 @@ impl Solution for Solution04 {
     }
 
     fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        let rooms = Self::parse(input);
+        if _is_sample {
+            return None;
+        }
 
+        let rooms = Self::parse(input);
         rooms
             .into_iter()
             .find(|(room, sector, _)| Self::decrypt_room(room, *sector) == "northpole object storage")
