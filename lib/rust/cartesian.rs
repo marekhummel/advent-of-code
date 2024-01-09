@@ -222,6 +222,10 @@ impl<T> Grid<T> {
         &self.rows[idx.j][idx.i]
     }
 
+    pub fn get_mut(&mut self, idx: &Index) -> &mut T {
+        &mut self.rows[idx.j][idx.i]
+    }
+
     pub fn set(&mut self, idx: &Index, value: T) {
         self.rows[idx.j][idx.i] = value;
     }
