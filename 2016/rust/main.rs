@@ -20,11 +20,12 @@ use solutions::day16;
 use solutions::day17;
 use solutions::day18;
 use solutions::day19;
+use solutions::day20;
 use std::env;
 
 use aoc_lib::solution::Solution;
 
-const ALL: bool = false;
+const ALL: bool = true;
 const VERSION: u8 = 1;
 const USE_SAMPLE: bool = true;
 
@@ -49,6 +50,7 @@ fn main() {
         Box::new(day17::Solution17 {}),
         Box::new(day18::Solution18 {}),
         Box::new(day19::Solution19 {}),
+        Box::new(day20::Solution20 {}),
         //
     ];
 
