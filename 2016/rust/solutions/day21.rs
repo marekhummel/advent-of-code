@@ -125,9 +125,9 @@ impl Solution21 {
 }
 
 impl Solution for Solution21 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
         let instructions = Self::parse(input);
-        let password = if _is_sample { "abcde" } else { "abcdefgh" };
+        let password = if is_sample { "abcde" } else { "abcdefgh" };
 
         let mut scramble = password.to_string();
         for inst in instructions {
@@ -137,9 +137,9 @@ impl Solution for Solution21 {
         scramble.into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
         let instructions = Self::parse(input);
-        let password = if _is_sample { "decab" } else { "fbgdceah" };
+        let password = if is_sample { "decab" } else { "fbgdceah" };
         let rot_letter_map = Self::create_mapping_rev_letter(password.len());
 
         let mut unscramble = password.to_string();

@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use aoc_lib::solution::Solution;
 use aoc_lib::specific::assembunny::{Instruction, Program, Value};
@@ -9,8 +9,8 @@ pub struct Solution25;
 impl Solution25 {}
 
 impl Solution for Solution25 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        if _is_sample {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+        if is_sample {
             return None;
         }
 

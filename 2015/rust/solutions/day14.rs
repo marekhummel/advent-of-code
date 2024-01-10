@@ -46,8 +46,8 @@ impl Solution14 {
 }
 
 impl Solution for Solution14 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        let race_length = if _is_sample { 1000 } else { 2503 };
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+        let race_length = if is_sample { 1000 } else { 2503 };
 
         let reindeers = Self::parse(input);
         reindeers
@@ -58,8 +58,8 @@ impl Solution for Solution14 {
             .into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        let race_length = if _is_sample { 1000 } else { 2503 };
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+        let race_length = if is_sample { 1000 } else { 2503 };
 
         let reindeers = Self::parse(input);
         let mut points = HashMap::new();

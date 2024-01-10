@@ -132,8 +132,8 @@ impl Solution for Solution11 {
         min_steps.into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        if _is_sample {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+        if is_sample {
             return None;
         }
 

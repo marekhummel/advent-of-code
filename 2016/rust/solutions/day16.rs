@@ -41,16 +41,16 @@ impl Solution16 {
 
 // Can be implemented on strings as well, but using bools improves performance by x10
 impl Solution for Solution16 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        let disk_size = if _is_sample { 20 } else { 272 };
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+        let disk_size = if is_sample { 20 } else { 272 };
         let data = Self::create_data(Self::parse(input), disk_size);
         let checksum = Self::checksum(data, disk_size);
 
         Self::format(checksum).into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        let disk_size = if _is_sample { 20 } else { 35651584 };
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+        let disk_size = if is_sample { 20 } else { 35651584 };
         let data = Self::create_data(Self::parse(input), disk_size);
         let checksum = Self::checksum(data, disk_size);
 

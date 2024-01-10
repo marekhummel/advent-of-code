@@ -32,14 +32,14 @@ impl Solution17 {
 }
 
 impl Solution for Solution17 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        let eggnog = if _is_sample { 25 } else { 150 };
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+        let eggnog = if is_sample { 25 } else { 150 };
         let containers = Self::parse(input);
         Self::fill(&containers, eggnog, 0).values().sum::<u32>().into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        let eggnog = if _is_sample { 25 } else { 150 };
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+        let eggnog = if is_sample { 25 } else { 150 };
         let containers = Self::parse(input);
 
         Self::fill(&containers, eggnog, 0)

@@ -31,21 +31,21 @@ impl Solution18 {
 }
 
 impl Solution for Solution18 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
         let initial_grid = Self::parse(input);
-        let steps = if _is_sample { 4 } else { 100 };
+        let steps = if is_sample { 4 } else { 100 };
         let final_grid = (0..steps).fold(initial_grid, |state, _| Self::animation_step(state, false));
 
         final_grid.iter().filter(|c| **c).count().into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
         let mut initial_grid = Self::parse(input);
         for corner in initial_grid.corners() {
             initial_grid.set(&corner, true);
         }
 
-        let steps = if _is_sample { 5 } else { 100 };
+        let steps = if is_sample { 5 } else { 100 };
         let final_grid = (0..steps).fold(initial_grid, |state, _| Self::animation_step(state, true));
 
         final_grid.iter().filter(|c| **c).count().into_some()

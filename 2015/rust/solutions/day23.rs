@@ -67,21 +67,21 @@ impl Solution23 {
 }
 
 impl Solution for Solution23 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
         let program = Self::parse(input);
         let mut registers = HashMap::from([(String::from("a"), 0u32), (String::from("b"), 0u32)]);
         Self::run_program(&program, &mut registers);
 
-        let target = if _is_sample { "a" } else { "b" };
+        let target = if is_sample { "a" } else { "b" };
         registers[target].into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
         let program = Self::parse(input);
         let mut registers = HashMap::from([(String::from("a"), 1u32), (String::from("b"), 0u32)]);
         Self::run_program(&program, &mut registers);
 
-        let target = if _is_sample { "a" } else { "b" };
+        let target = if is_sample { "a" } else { "b" };
         registers[target].into_some()
     }
 }

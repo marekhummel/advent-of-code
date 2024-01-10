@@ -90,9 +90,9 @@ impl Solution10 {
 }
 
 impl Solution for Solution10 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
         let instructions = Self::parse(input);
-        let chips = if _is_sample { (2, 5) } else { (17, 61) };
+        let chips = if is_sample { (2, 5) } else { (17, 61) };
 
         let (exchanges, _) = Self::run_instructions(instructions);
         exchanges

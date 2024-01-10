@@ -47,8 +47,8 @@ impl Solution21 {
 }
 
 impl Solution for Solution21 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        if _is_sample {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+        if is_sample {
             return None;
         }
 
@@ -65,8 +65,8 @@ impl Solution for Solution21 {
             .into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        if _is_sample {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+        if is_sample {
             return None;
         }
 

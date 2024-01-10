@@ -237,8 +237,8 @@ impl Solution22 {
 }
 
 impl Solution for Solution22 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        let player = if _is_sample { (10, 0, 250) } else { (50, 0, 500) };
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+        let player = if is_sample { (10, 0, 250) } else { (50, 0, 500) };
         let boss = Self::parse(input);
 
         let mut game_state = GameState {
@@ -252,8 +252,8 @@ impl Solution for Solution22 {
         Self::emulate_game(&mut game_state, false, &mut cache).into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        let player = if _is_sample { (15, 0, 250) } else { (50, 0, 500) };
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+        let player = if is_sample { (15, 0, 250) } else { (50, 0, 500) };
         let boss = Self::parse(input);
 
         let mut game_state = GameState {

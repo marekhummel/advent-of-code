@@ -15,8 +15,8 @@ impl Solution18 {
 }
 
 impl Solution for Solution18 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        let total_rows = if _is_sample { 10 } else { 40 };
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+        let total_rows = if is_sample { 10 } else { 40 };
         let mut row = input.string().chars().map(|c| c == '.').collect_vec();
         let mut safe_tiles = 0;
         for _ in 0..total_rows {
@@ -27,8 +27,8 @@ impl Solution for Solution18 {
         safe_tiles.into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        let total_rows = if _is_sample { 10 } else { 400000 };
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+        let total_rows = if is_sample { 10 } else { 400000 };
         let mut row = input.string().chars().map(|c| c == '.').collect_vec();
         let mut safe_tiles = 0;
         for _ in 0..total_rows {

@@ -61,10 +61,10 @@ impl Solution13 {
 }
 
 impl Solution for Solution13 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
         let fav = input.string().parse().unwrap();
         let start = Index { i: 1, j: 1 };
-        let goal = if _is_sample {
+        let goal = if is_sample {
             Index { i: 7, j: 4 }
         } else {
             Index { i: 31, j: 39 }

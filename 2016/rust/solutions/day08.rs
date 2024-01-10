@@ -40,9 +40,9 @@ impl Solution08 {
 }
 
 impl Solution for Solution08 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
         let instructions = Self::parse(input);
-        let mut screen = if _is_sample {
+        let mut screen = if is_sample {
             Grid::empty(Size { width: 7, height: 3 }, false)
         } else {
             Grid::empty(Size { width: 50, height: 6 }, false)
