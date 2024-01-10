@@ -9,7 +9,6 @@ impl Solution12 {}
 impl Solution for Solution12 {
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let mut program = Program::from_input(input);
-        program.init_registers(vec!["a", "b", "c", "d"]);
 
         program.run();
         program.registers["a"].into_some()
@@ -21,7 +20,6 @@ impl Solution for Solution12 {
             .instructions
             .insert(0, Instruction::Copy(Value::Immediate(1), "c".to_string()));
 
-        program.init_registers(vec!["a", "b", "c", "d"]);
         program.run();
         program.registers["a"].into_some()
     }
