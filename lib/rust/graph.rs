@@ -15,6 +15,7 @@ fn floyd_marshall(graph: &HashMap<String, HashSet<String>>) -> HashMap<(String, 
         }
     }
 
+    #[allow(clippy::needless_range_loop)]
     for vi in 0..n {
         dist[vi][vi] = 0;
     }

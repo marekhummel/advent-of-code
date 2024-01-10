@@ -9,13 +9,14 @@ pub struct Solution25;
 impl Solution25 {}
 
 impl Solution for Solution25 {
+    // Still runs for a couple of seconds, even after code optimization
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
         if is_sample {
             return None;
         }
 
         let mut program = Program::from_input(input);
-        println!("{}", program.optimize_multiplication());
+        assert!(program.optimize_multiplication(), "Expected optimization");
         program
             .instructions
             .insert(0, Instruction::Copy(Value::Immediate(0), "a".to_string()));
@@ -60,7 +61,7 @@ impl Solution for Solution25 {
         unreachable!()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, _input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         // No part 2
         None
     }

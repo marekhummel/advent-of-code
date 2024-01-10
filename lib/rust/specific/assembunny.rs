@@ -169,25 +169,22 @@ impl Program {
         self.output.clear();
     }
 
-     // Finds nested for loops which implement multiplication by repeated addition
-    pub fn optimize_multiplication(&mut self) -> bool{
+    // Finds nested for loops which implement multiplication by repeated addition
+    pub fn optimize_multiplication(&mut self) -> bool {
         // -> a := a + c*d, c, d := 0
-        // cpy b c 
-        // inc a   
-        // dec c   
+        // cpy b c
+        // inc a
+        // dec c
         // jnz c -2
-        // dec d   
+        // dec d
         // jnz d -5
         let mut replacements = Vec::new();
         for (i, slice) in self.instructions[..].windows(6).enumerate() {
-            let [
-                Instruction::Copy(s1, t1),
-                Instruction::Inc(s2), 
-                Instruction::Dec(s3),
-                Instruction::JumpNotZero(Value::Register(s4), Value::Immediate(-2)), 
-                Instruction::Dec(s5),
-                Instruction::JumpNotZero(Value::Register(s6), Value::Immediate(-5)),
-                ] = slice else { continue; };
+            let [Instruction::Copy(s1, t1), Instruction::Inc(s2), Instruction::Dec(s3), Instruction::JumpNotZero(Value::Register(s4), Value::Immediate(-2)), Instruction::Dec(s5), Instruction::JumpNotZero(Value::Register(s6), Value::Immediate(-5))] =
+                slice
+            else {
+                continue;
+            };
 
             if [t1, s3, s4].iter().all_equal() && [s5, s6].iter().all_equal() {
                 replacements.push((
