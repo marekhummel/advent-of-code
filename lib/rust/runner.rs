@@ -37,15 +37,16 @@ impl AocRunner {
             for version in [1, 2] {
                 for sample in [true, false] {
                     let data = self.get_input(self.year, day as u8 + 1, version, sample);
+                    print!("  V{version} {0}:  ", Self::SAMPLE_STR[sample as usize]);
                     match data {
                         Some(input) => match s.solve(input, version, sample) {
                             Some((v, e)) => {
-                                println!("  V{version} {0}:  {v}", Self::SAMPLE_STR[sample as usize]);
+                                println!("{v}");
                                 total_time += e;
                             }
-                            None => println!("  V{version} {0}:  <Unsolved>", Self::SAMPLE_STR[sample as usize]),
+                            None => println!("<Unsolved>"),
                         },
-                        None => println!("  V{version} {0}:  <No Input>", Self::SAMPLE_STR[sample as usize]),
+                        None => println!("<No Input>"),
                     }
                 }
             }
@@ -60,16 +61,18 @@ impl AocRunner {
         let mut total_time = Duration::ZERO;
         for version in [1, 2] {
             for sample in [true, false] {
-                let input = self.get_input(self.year, day as u8, version, sample);
-                let (v, e) = input.map_or((String::from("<Missing Input>"), Duration::ZERO), |i| {
-                    s.solve(i, version, sample)
-                        .map_or((String::from("<Unsolved>"), Duration::ZERO), |(v, e)| {
-                            (v.to_string(), e)
-                        })
-                });
-
-                total_time += e;
-                println!("V{version} {0}:  {v}", Self::SAMPLE_STR[sample as usize]);
+                let data = self.get_input(self.year, day as u8, version, sample);
+                print!("V{version} {}:  ", Self::SAMPLE_STR[sample as usize]);
+                match data {
+                    Some(input) => match s.solve(input, version, sample) {
+                        Some((v, e)) => {
+                            println!("{v}");
+                            total_time += e;
+                        }
+                        None => println!("<Unsolved>"),
+                    },
+                    None => println!("<No Input>"),
+                }
             }
         }
         println!("\nTotal Runtime: {total_time:?}");
