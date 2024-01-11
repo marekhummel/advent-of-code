@@ -4,6 +4,7 @@ use aoc_lib::runner::AocRunner;
 use solutions::day01;
 use solutions::day02;
 use solutions::day03;
+use solutions::day04;
 use std::env;
 
 use aoc_lib::solution::Solution;
@@ -17,6 +18,7 @@ fn main() {
         Box::new(day01::Solution01 {}),
         Box::new(day02::Solution02 {}),
         Box::new(day03::Solution03 {}),
+        Box::new(day04::Solution04 {}),
         //
     ];
 

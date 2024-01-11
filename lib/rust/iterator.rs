@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use std::{collections::HashSet, hash::Hash, str::FromStr};
 
 pub struct Parsed<I, T>
 where
@@ -38,3 +38,16 @@ pub trait ParsedExt: Iterator {
 }
 
 impl<I: Iterator> ParsedExt for I {}
+
+pub trait IsUniqueExt: Iterator {
+    fn is_unique(&mut self) -> bool
+    where
+        Self: Sized,
+        Self::Item: Eq + Hash,
+    {
+        let mut uniq = HashSet::new();
+        self.all(move |x| uniq.insert(x))
+    }
+}
+
+impl<I: Iterator> IsUniqueExt for I {}
