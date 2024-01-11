@@ -51,7 +51,7 @@ impl Solution18 {
     }
 
     fn find_vertices(edges: &[(Direction, usize)]) -> Vec<Position> {
-        let mut vertex = Position { x: 0, y: 0 };
+        let mut vertex = Position::zero();
         let mut vertices = Vec::from([vertex]);
         for (dir, count) in edges {
             vertex = vertex.advance_by(*dir, *count as i128);

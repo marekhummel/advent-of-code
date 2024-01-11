@@ -137,6 +137,10 @@ pub struct Position {
 }
 
 impl Position {
+    pub fn zero() -> Self {
+        Position { x: 0, y: 0 }
+    }
+
     pub fn advance_by(&self, dir: Direction, delta: i128) -> Self {
         match dir {
             Direction::North => Position {
@@ -179,12 +183,28 @@ impl Position {
             .collect()
     }
 
+    pub fn moore_neighbors(&self) -> Vec<Position> {
+        Direction::compass()
+            .into_iter()
+            .flat_map(|dir| {
+                [
+                    self.advance_by(dir, 1),
+                    self.advance_by(dir, 1).advance_by(dir.turn()[0], 1),
+                ]
+            })
+            .collect()
+    }
+
     pub fn wrap_modular(&self, size: Size) -> Index {
         let (mx, my) = (size.width as i128, size.height as i128);
         Index {
             i: (((self.x % mx) + mx) % mx) as usize,
             j: (((self.y % my) + my) % my) as usize,
         }
+    }
+
+    pub fn dist(&self, other: &Position) -> u128 {
+        self.x.abs_diff(other.x) + self.y.abs_diff(other.y)
     }
 }
 

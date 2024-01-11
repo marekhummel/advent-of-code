@@ -23,7 +23,7 @@ impl Solution01 {
 impl Solution for Solution01 {
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let instructions = Self::parse(input);
-        let mut pos = Position { x: 0, y: 0 };
+        let mut pos = Position::zero();
         let mut dir = Direction::North;
 
         for (turn, length) in instructions {
@@ -36,7 +36,7 @@ impl Solution for Solution01 {
 
     fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let instructions = Self::parse(input);
-        let mut pos = Position { x: 0, y: 0 };
+        let mut pos = Position::zero();
         let mut dir = Direction::North;
 
         let mut visited = HashSet::from([pos]);
