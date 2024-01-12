@@ -1,4 +1,3 @@
-use std::sync::Arc;
 use std::usize;
 
 use aoc_lib::iterator::ParsedExt;
