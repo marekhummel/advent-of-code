@@ -16,6 +16,20 @@ pub fn gcd(a: u64, b: u64) -> u64 {
     gcd(b, a % b)
 }
 
+pub fn bits<const L: usize>(mut n: u128) -> [bool; L] {
+    let mut bits = [false; L];
+    for i in (0..L).rev() {
+        bits[i] = n & 1 == 1;
+        n >>= 1;
+
+        if n < 1 {
+            break;
+        }
+    }
+
+    bits
+}
+
 // Unused, but saved for later (originated from attempts in 2023-24)
 pub fn gauss_jordan(a: &mut [&mut [f64]], b: &mut [f64]) {
     // Find pivot and create 1
