@@ -23,7 +23,7 @@ impl Solution15 {
             .collect_vec()
     }
 
-    // Could also be solved with the Chinese Remainer Theorem, since all p are pairwise coprime.
+    // Could also be solved with the Chinese Remainder Theorem, since all p are pairwise coprime.
     // However the search space is limited by the product of all p, which is ~4M and thus viable for brute force.
     fn find_time_naive(discs: &[Disc]) -> u32 {
         for t in 0.. {
