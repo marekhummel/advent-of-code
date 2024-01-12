@@ -1,8 +1,11 @@
-use std::collections::{BinaryHeap, HashMap, HashSet};
+use std::{
+    collections::{BinaryHeap, HashMap, HashSet, VecDeque},
+    hash::Hash,
+};
 
 use itertools::Itertools;
 
-fn floyd_marshall(graph: &HashMap<String, HashSet<String>>) -> HashMap<(String, String), i32> {
+pub fn floyd_marshall<V: Clone + Eq + Hash>(graph: &HashMap<V, HashSet<V>>) -> HashMap<(V, V), i32> {
     let vertices = graph.keys().cloned().collect_vec();
     let n = vertices.len();
     let mut dist = vec![vec![i32::MAX as i64; n]; n];
@@ -41,23 +44,23 @@ fn floyd_marshall(graph: &HashMap<String, HashSet<String>>) -> HashMap<(String, 
         .collect()
 }
 
-fn dijkstra(graph: &HashMap<String, HashSet<String>>, start: &str) -> HashMap<String, Vec<String>> {
+pub fn dijkstra<V: Eq + Hash + Clone + Ord>(graph: &HashMap<V, HashSet<V>>, start: &V) -> HashMap<V, Vec<V>> {
     let vertices = graph.keys().cloned().collect_vec();
     let mut prev = HashMap::new();
     let mut dist = vertices
         .iter()
-        .map(|v| (v.as_str(), i32::MAX - 1))
+        .map(|v| (v.clone(), i32::MAX - 1))
         .collect::<HashMap<_, _>>();
     *dist.get_mut(start).unwrap() = 0;
 
-    let mut queue: BinaryHeap<(i32, &str)> = vertices.iter().map(|v| (-dist[v.as_str()], v.as_str())).collect();
+    let mut queue: BinaryHeap<(i32, &V)> = vertices.iter().map(|v| (-dist[&v], v)).collect();
 
     while let Some((_, u)) = queue.pop() {
         for v in graph[u].iter() {
-            let alt = dist[u] + 1;
-            if alt < dist[v.as_str()] {
-                *dist.get_mut(v.as_str()).unwrap() = alt;
-                prev.entry(v.as_str()).and_modify(|e| *e = u).or_insert(u);
+            let alt = dist[&u] + 1;
+            if alt < dist[&v] {
+                *dist.get_mut(v).unwrap() = alt;
+                prev.entry(v.clone()).and_modify(|e| *e = u).or_insert(u);
                 queue.push((-alt, v))
             }
         }
@@ -65,15 +68,15 @@ fn dijkstra(graph: &HashMap<String, HashSet<String>>, start: &str) -> HashMap<St
 
     let mut paths = HashMap::new();
     for v in vertices.iter() {
-        if *v == start {
+        if v == start {
             continue;
         }
 
-        let mut curr = v.as_str();
+        let mut curr = v;
         let mut path = vec![v.clone()];
         while curr != start {
-            curr = prev[curr];
-            path.push(curr.to_string());
+            curr = prev[&curr];
+            path.push(curr.clone());
         }
         path.reverse();
 
@@ -81,4 +84,32 @@ fn dijkstra(graph: &HashMap<String, HashSet<String>>, start: &str) -> HashMap<St
     }
 
     paths
+}
+
+pub fn components<V: Eq + Hash + Clone>(graph: &HashMap<V, HashSet<V>>) -> Vec<HashSet<V>> {
+    let mut seen = HashSet::new();
+    let mut components = Vec::new();
+
+    while seen.len() < graph.len() {
+        let vertex = graph.keys().find(|p| !seen.contains(*p)).unwrap();
+
+        let mut comp = HashSet::new();
+        let mut queue = VecDeque::from([vertex.clone()]);
+        while let Some(u) = queue.pop_front() {
+            comp.insert(u.clone());
+            if seen.contains(&u) {
+                continue;
+            }
+
+            seen.insert(u.clone());
+
+            for w in graph[&u].iter() {
+                queue.push_back(w.clone());
+            }
+        }
+
+        components.push(comp);
+    }
+
+    components
 }
