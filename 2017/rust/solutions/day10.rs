@@ -10,8 +10,8 @@ pub struct Solution10;
 impl Solution10 {}
 
 impl Solution for Solution10 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        let n = if _is_sample { 5 } else { 256 };
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+        let n = if is_sample { 5 } else { 256 };
         let lengths = input.string().split(',').parsed::<usize>().collect_vec();
 
         let mut knot = KnotHash::custom(n, lengths);
