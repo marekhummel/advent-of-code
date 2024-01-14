@@ -76,3 +76,17 @@ pub fn gauss_jordan(a: &mut [&mut [f64]], b: &mut [f64]) {
         .enumerate()
         .for_each(|(i, v)| *v -= subs[i].iter().sum::<f64>());
 }
+
+pub fn is_prime(n: u128) -> bool {
+    // Simple primality test, could be improved with miller rabin if needed
+    if n < 2 {
+        return false;
+    }
+
+    if n & 1 == 0 {
+        return n == 2;
+    }
+
+    let root = (n as f64).sqrt() as u128;
+    (3..=root).step_by(2).all(|f| n % f != 0)
+}
