@@ -21,7 +21,9 @@ impl Solution for Solution02 {
         spreadsheet
             .into_iter()
             .map(|row| {
-                let MinMaxResult::MinMax(x, y) = row.iter().minmax() else {return 0;};
+                let MinMaxResult::MinMax(x, y) = row.iter().minmax() else {
+                    return 0;
+                };
                 y - x
             })
             .sum::<u32>()
