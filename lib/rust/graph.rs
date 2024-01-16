@@ -53,12 +53,12 @@ pub fn dijkstra<V: Eq + Hash + Clone + Ord>(graph: &HashMap<V, HashSet<V>>, star
         .collect::<HashMap<_, _>>();
     *dist.get_mut(start).unwrap() = 0;
 
-    let mut queue: BinaryHeap<(i32, &V)> = vertices.iter().map(|v| (-dist[&v], v)).collect();
+    let mut queue: BinaryHeap<(i32, &V)> = vertices.iter().map(|v| (-dist[v], v)).collect();
 
     while let Some((_, u)) = queue.pop() {
         for v in graph[u].iter() {
-            let alt = dist[&u] + 1;
-            if alt < dist[&v] {
+            let alt = dist[u] + 1;
+            if alt < dist[v] {
                 *dist.get_mut(v).unwrap() = alt;
                 prev.entry(v.clone()).and_modify(|e| *e = u).or_insert(u);
                 queue.push((-alt, v))
@@ -75,7 +75,7 @@ pub fn dijkstra<V: Eq + Hash + Clone + Ord>(graph: &HashMap<V, HashSet<V>>, star
         let mut curr = v;
         let mut path = vec![v.clone()];
         while curr != start {
-            curr = prev[&curr];
+            curr = prev[curr];
             path.push(curr.clone());
         }
         path.reverse();

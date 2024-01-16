@@ -57,7 +57,7 @@ impl Solution for Solution13 {
         let mut table = Self::parse(input);
         let me = String::from("Me");
         table.iter_mut().for_each(|(_, vals)| _ = vals.insert(me.clone(), 0i16));
-        table.insert(me.clone(), table.keys().map(|o| (o.clone(), 0i16)).collect());
+        table.insert(me, table.keys().map(|o| (o.clone(), 0i16)).collect());
 
         // Takes about 4secs
         Self::optimal_happiness(&table).into_some()
