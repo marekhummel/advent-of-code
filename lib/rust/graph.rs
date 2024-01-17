@@ -1,3 +1,4 @@
+use std::cmp::Reverse;
 use std::{
     collections::{BinaryHeap, HashMap, HashSet, VecDeque},
     hash::Hash,
@@ -112,4 +113,56 @@ pub fn components<V: Eq + Hash + Clone>(graph: &HashMap<V, HashSet<V>>) -> Vec<H
     }
 
     components
+}
+
+// Kahn's Algorithm
+pub fn topo_sorting<V: Eq + Ord + Hash + Clone>(graph: &HashMap<V, HashSet<V>>) -> Option<Vec<V>> {
+    // Invert graph to map trg to source nodes
+    let mut sources = invert(graph);
+
+    let mut sorted = Vec::new();
+    let mut next: BinaryHeap<_> = sources
+        .iter()
+        .filter(|(_, srcs)| srcs.is_empty())
+        .map(|(trg, _)| Reverse(trg.clone())) // Use reverse to ensure smaller nodes are chosen first
+        .collect();
+
+    while let Some(node) = next.pop() {
+        if sources.remove(&node.0).is_some() {
+            sorted.push(node.0.clone());
+            for (trg, srcs) in sources.iter_mut() {
+                srcs.remove(&node.0);
+                if srcs.is_empty() {
+                    next.push(Reverse(trg.clone()));
+                }
+            }
+        }
+    }
+
+    if sources.is_empty() {
+        Some(sorted)
+    } else {
+        None
+    }
+}
+
+pub fn vertices<V: Eq + Hash + Clone>(graph: &HashMap<V, HashSet<V>>) -> HashSet<V> {
+    graph.keys().chain(graph.values().flatten()).cloned().collect()
+}
+
+// Invert graph to map trg to source nodes
+pub fn invert<V: Eq + Hash + Clone>(graph: &HashMap<V, HashSet<V>>) -> HashMap<V, HashSet<V>> {
+    vertices(graph)
+        .into_iter()
+        .map(|trg| {
+            (
+                trg.clone(),
+                graph
+                    .iter()
+                    .filter(|(_, trgs)| trgs.contains(&trg))
+                    .map(|(src, _)| src.clone())
+                    .collect(),
+            )
+        })
+        .collect()
 }
