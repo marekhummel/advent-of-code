@@ -8,12 +8,13 @@ use solutions::day04;
 use solutions::day05;
 use solutions::day06;
 use solutions::day07;
+use solutions::day08;
 use std::env;
 
 use aoc_lib::solution::Solution;
 
 const ALL: bool = true;
-const VERSION: u8 = 2;
+const VERSION: u8 = 1;
 const USE_SAMPLE: bool = true;
 
 fn main() {
@@ -25,6 +26,7 @@ fn main() {
         Box::new(day05::Solution05 {}),
         Box::new(day06::Solution06 {}),
         Box::new(day07::Solution07 {}),
+        Box::new(day08::Solution08 {}),
         //
     ];
 
