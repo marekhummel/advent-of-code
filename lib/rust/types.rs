@@ -162,3 +162,9 @@ impl IntoSome<ProblemResult> for String {
         Some(ProblemResult::String(self))
     }
 }
+
+impl IntoSome<ProblemResult> for &str {
+    fn into_some(self) -> Option<ProblemResult> {
+        Some(ProblemResult::String(self.to_string()))
+    }
+}
