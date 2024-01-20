@@ -7,8 +7,8 @@ use itertools::Itertools;
 pub enum Direction {
     North,
     East,
-    West,
     South,
+    West,
     None,
 }
 
@@ -17,8 +17,8 @@ impl Direction {
         match self {
             Direction::North => Direction::South,
             Direction::East => Direction::West,
-            Direction::West => Direction::East,
             Direction::South => Direction::North,
+            Direction::West => Direction::East,
             Direction::None => Direction::None,
         }
     }
@@ -28,11 +28,25 @@ impl Direction {
     }
 
     pub fn turn(&self) -> [Direction; 2] {
+        [self.left(), self.right()]
+    }
+
+    pub fn left(&self) -> Direction {
         match self {
-            Direction::North => [Direction::West, Direction::East],
-            Direction::East => [Direction::North, Direction::South],
-            Direction::West => [Direction::South, Direction::North],
-            Direction::South => [Direction::East, Direction::West],
+            Direction::North => Direction::West,
+            Direction::East => Direction::North,
+            Direction::South => Direction::East,
+            Direction::West => Direction::South,
+            Direction::None => panic!(),
+        }
+    }
+
+    pub fn right(&self) -> Direction {
+        match self {
+            Direction::North => Direction::East,
+            Direction::East => Direction::South,
+            Direction::South => Direction::West,
+            Direction::West => Direction::North,
             Direction::None => panic!(),
         }
     }
@@ -75,8 +89,8 @@ impl Index {
         match dir {
             Direction::North if self.j > 0 => Some(self.advance(dir)),
             Direction::East if self.i < size.width - 1 => Some(self.advance(dir)),
-            Direction::West if self.i > 0 => Some(self.advance(dir)),
             Direction::South if self.j < size.height - 1 => Some(self.advance(dir)),
+            Direction::West if self.i > 0 => Some(self.advance(dir)),
             Direction::None => Some(*self),
             _ => None,
         }
@@ -151,13 +165,13 @@ impl Position {
                 x: self.x + delta,
                 y: self.y,
             },
-            Direction::West => Position {
-                x: self.x - delta,
-                y: self.y,
-            },
             Direction::South => Position {
                 x: self.x,
                 y: self.y + delta,
+            },
+            Direction::West => Position {
+                x: self.x - delta,
+                y: self.y,
             },
             Direction::None => *self,
         }
