@@ -110,7 +110,7 @@ impl Index {
                 [
                     self.advance_check(dir, size),
                     self.advance_check(dir, size)
-                        .and_then(|next| next.advance_check(dir.turn()[0], size)),
+                        .and_then(|next| next.advance_check(dir.left(), size)),
                 ]
             })
             .flatten()
@@ -203,7 +203,7 @@ impl Position {
             .flat_map(|dir| {
                 [
                     self.advance_by(dir, 1),
-                    self.advance_by(dir, 1).advance_by(dir.turn()[0], 1),
+                    self.advance_by(dir, 1).advance_by(dir.left(), 1),
                 ]
             })
             .collect()

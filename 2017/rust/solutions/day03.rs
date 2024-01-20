@@ -31,11 +31,11 @@ impl Iterator for SpiralPosIterator {
         self.step += 1;
 
         if self.dir == Direction::East && self.step == self.steps + 1 {
-            self.dir = self.dir.turn()[0];
+            self.dir = self.dir.left();
             self.step = 1;
             self.steps += 2;
         } else if self.dir != Direction::East && self.step == self.steps {
-            self.dir = self.dir.turn()[0];
+            self.dir = self.dir.left();
             self.step = 0;
         }
 

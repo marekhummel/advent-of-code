@@ -71,13 +71,10 @@ impl Solution for Solution22 {
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let mut grid = Self::parse(input);
 
-        let burst_func = |state: &State, dir: &Direction| {
-            let [left, right] = dir.turn();
-            match state {
-                State::Clean => (left, State::Infected),
-                State::Infected => (right, State::Clean),
-                _ => unreachable!(),
-            }
+        let burst_func = |state: &State, dir: &Direction| match state {
+            State::Clean => (dir.left(), State::Infected),
+            State::Infected => (dir.right(), State::Clean),
+            _ => unreachable!(),
         };
 
         let infections = Self::spread(&mut grid, burst_func, 10_000);
@@ -87,14 +84,11 @@ impl Solution for Solution22 {
     fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let mut grid = Self::parse(input);
 
-        let burst_func = |state: &State, dir: &Direction| {
-            let [left, right] = dir.turn();
-            match state {
-                State::Clean => (left, State::Weakened),
-                State::Weakened => (*dir, State::Infected),
-                State::Infected => (right, State::Flagged),
-                State::Flagged => (dir.inverse(), State::Clean),
-            }
+        let burst_func = |state: &State, dir: &Direction| match state {
+            State::Clean => (dir.left(), State::Weakened),
+            State::Weakened => (*dir, State::Infected),
+            State::Infected => (dir.right(), State::Flagged),
+            State::Flagged => (dir.inverse(), State::Clean),
         };
 
         let infections = Self::spread(&mut grid, burst_func, 10_000_000);
