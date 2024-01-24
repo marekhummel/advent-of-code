@@ -78,7 +78,7 @@ impl Solution for Solution13 {
         let (tracks, mut carts) = Self::parse(input);
 
         loop {
-            carts.sort_by_key(|cart| (cart.borrow().idx.j, cart.borrow().idx.i));
+            carts.sort_by_key(|cart| cart.borrow().idx);
 
             for (i, mut cart) in carts.iter().map(|rc| rc.borrow_mut()).enumerate() {
                 Self::cart_tick(&mut cart, &tracks);

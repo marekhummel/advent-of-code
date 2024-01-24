@@ -52,7 +52,7 @@ impl Direction {
     }
 }
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Index {
     pub i: usize,
     pub j: usize,
@@ -141,6 +141,18 @@ impl From<Position> for Index {
             i: pos.x as usize,
             j: pos.y as usize,
         }
+    }
+}
+
+impl PartialOrd for Index {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        (self.j, self.i).partial_cmp(&(other.j, other.i))
+    }
+}
+
+impl Ord for Index {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        (self.j, self.i).cmp(&(other.j, other.i))
     }
 }
 
