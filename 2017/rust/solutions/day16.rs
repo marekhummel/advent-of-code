@@ -1,5 +1,4 @@
-use std::collections::HashMap;
-
+use aoc_lib::algo;
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 use itertools::Itertools;
@@ -71,20 +70,8 @@ impl Solution for Solution16 {
 
         let moves = Self::parse(input);
 
-        let mut programs = (0..16).map(|i| (b'a' + i) as char).join("");
-
-        let mut seen = HashMap::new();
-        let mut counter = 0;
-        while !seen.contains_key(&programs) {
-            seen.insert(programs.clone(), counter);
-            programs = Self::dance(&programs, &moves);
-            counter += 1;
-        }
-
-        let last_counter = seen[&programs];
-        let period = counter - last_counter;
-        let offset = (1_000_000_000 - last_counter) % period;
-        let formation = (0..offset).fold(programs, |form, _| Self::dance(&form, &moves));
+        let programs = (0..16).map(|i| (b'a' + i) as char).join("");
+        let formation = algo::find_final_state(programs, |progs| Self::dance(&progs, &moves), 1_000_000_000);
 
         formation.into_some()
     }
