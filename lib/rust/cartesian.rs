@@ -1,5 +1,5 @@
 use core::panic;
-use std::fmt::Display;
+use std::fmt::{Debug, Display};
 
 use itertools::Itertools;
 
@@ -146,7 +146,7 @@ impl From<Position> for Index {
 
 impl PartialOrd for Index {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        (self.j, self.i).partial_cmp(&(other.j, other.i))
+        Some(self.cmp(other))
     }
 }
 
@@ -156,10 +156,28 @@ impl Ord for Index {
     }
 }
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Position {
     pub x: i128,
     pub y: i128,
+}
+
+impl Debug for Position {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "({}|{})", self.x, self.y)
+    }
+}
+
+impl PartialOrd for Position {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for Position {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        (self.y, self.x).cmp(&(other.y, other.x))
+    }
 }
 
 impl Position {
