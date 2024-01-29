@@ -1,7 +1,6 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::specific::wristdevice::{Instruction, Op};
+use aoc_lib::specific::wristdevice::Instruction;
 use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
-use itertools::Itertools;
 
 pub struct Solution19;
 impl Solution19 {
@@ -9,39 +8,7 @@ impl Solution19 {
         let lines = input.lines();
 
         let pc_link = lines[0].strip_prefix("#ip ").unwrap().parse().unwrap();
-
-        let instructions = lines[1..]
-            .iter()
-            .map(|l| {
-                let (op_str, a, b, c) = l.split_whitespace().collect_tuple().unwrap();
-                let opcode = match op_str {
-                    "addi" => Op::Addi,
-                    "addr" => Op::Addr,
-                    "muli" => Op::Muli,
-                    "mulr" => Op::Mulr,
-                    "bani" => Op::Bani,
-                    "banr" => Op::Banr,
-                    "bori" => Op::Bori,
-                    "borr" => Op::Borr,
-                    "seti" => Op::Seti,
-                    "setr" => Op::Setr,
-                    "gtir" => Op::Gtir,
-                    "gtri" => Op::Gtri,
-                    "gtrr" => Op::Gtrr,
-                    "eqir" => Op::Eqir,
-                    "eqri" => Op::Eqri,
-                    "eqrr" => Op::Eqrr,
-                    _ => unreachable!(),
-                };
-
-                Instruction {
-                    opcode,
-                    a: a.parse().unwrap(),
-                    b: b.parse().unwrap(),
-                    c: c.parse().unwrap(),
-                }
-            })
-            .collect();
+        let instructions = lines[1..].iter().map(|l| Instruction::from_line(l)).collect();
 
         (instructions, pc_link)
     }
