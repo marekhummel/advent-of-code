@@ -20,17 +20,7 @@ impl Solution13 {
 
         let carts = initial
             .enumerate()
-            .filter_map(|(idx, ch)| {
-                let dir = match ch {
-                    '^' => Direction::North,
-                    '>' => Direction::East,
-                    'v' => Direction::South,
-                    '<' => Direction::West,
-                    _ => return None,
-                };
-
-                Some(RefCell::new(Cart { idx, dir, turn: 0 }))
-            })
+            .filter_map(|(idx, &ch)| ch.try_into().ok().map(|dir| RefCell::new(Cart { idx, dir, turn: 0 })))
             .collect_vec();
 
         let tracks = initial.map_elements(|ch| match ch {

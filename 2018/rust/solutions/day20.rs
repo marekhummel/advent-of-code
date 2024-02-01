@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet, VecDeque};
 
-use aoc_lib::cartesian::{Direction, Position};
+use aoc_lib::cartesian::Position;
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 
@@ -18,13 +18,7 @@ impl Solution20 {
             match ch {
                 'N' | 'E' | 'S' | 'W' => {
                     // Pass through door and mark in map
-                    let dir = match ch {
-                        'N' => Direction::North,
-                        'E' => Direction::East,
-                        'S' => Direction::South,
-                        'W' => Direction::West,
-                        _ => unreachable!(),
-                    };
+                    let dir = ch.try_into().unwrap();
 
                     let mut next_pos = HashSet::new();
                     for pos in current {

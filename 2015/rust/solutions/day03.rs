@@ -8,17 +8,7 @@ pub struct Solution03;
 
 impl Solution03 {
     fn parse(input: ProblemInput) -> Vec<Direction> {
-        input
-            .string()
-            .chars()
-            .map(|c| match c {
-                '^' => Direction::North,
-                '>' => Direction::East,
-                'v' => Direction::South,
-                '<' => Direction::West,
-                _ => panic!(),
-            })
-            .collect_vec()
+        input.string().chars().map(|c| c.try_into().unwrap()).collect_vec()
     }
 
     fn visit_houses(start: Position, directions: &[Direction]) -> HashSet<Position> {

@@ -13,7 +13,7 @@ pub enum Direction {
 }
 
 impl Direction {
-    pub fn inverse(&self) -> Direction {
+    pub fn inverse(&self) -> Self {
         match self {
             Direction::North => Direction::South,
             Direction::East => Direction::West,
@@ -23,15 +23,15 @@ impl Direction {
         }
     }
 
-    pub fn compass() -> [Direction; 4] {
+    pub fn compass() -> [Self; 4] {
         [Direction::North, Direction::East, Direction::South, Direction::West]
     }
 
-    pub fn turn(&self) -> [Direction; 2] {
+    pub fn turn(&self) -> [Self; 2] {
         [self.left(), self.right()]
     }
 
-    pub fn left(&self) -> Direction {
+    pub fn left(&self) -> Self {
         match self {
             Direction::North => Direction::West,
             Direction::East => Direction::North,
@@ -41,7 +41,7 @@ impl Direction {
         }
     }
 
-    pub fn right(&self) -> Direction {
+    pub fn right(&self) -> Self {
         match self {
             Direction::North => Direction::East,
             Direction::East => Direction::South,
@@ -49,6 +49,28 @@ impl Direction {
             Direction::West => Direction::North,
             Direction::None => panic!(),
         }
+    }
+}
+
+impl TryFrom<&str> for Direction {
+    type Error = ();
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        match value {
+            "U" | "N" | "^" => Ok(Direction::North),
+            "R" | "E" | ">" => Ok(Direction::East),
+            "D" | "S" | "v" => Ok(Direction::South),
+            "L" | "W" | "<" => Ok(Direction::West),
+            _ => Err(()),
+        }
+    }
+}
+
+impl TryFrom<char> for Direction {
+    type Error = ();
+
+    fn try_from(value: char) -> Result<Self, Self::Error> {
+        value.to_string().as_str().try_into()
     }
 }
 

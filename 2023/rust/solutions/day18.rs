@@ -12,13 +12,7 @@ impl Solution18 {
             .map(|line| {
                 let (ds, ls, _) = line.split_whitespace().collect_tuple().unwrap();
 
-                let dir = match ds {
-                    "U" => Direction::North,
-                    "R" => Direction::East,
-                    "D" => Direction::South,
-                    "L" => Direction::West,
-                    _ => unreachable!(),
-                };
+                let dir = ds.try_into().unwrap();
                 let len = ls.parse().unwrap();
                 (dir, len)
             })

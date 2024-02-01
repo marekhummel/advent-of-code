@@ -9,17 +9,7 @@ impl Solution02 {
         input
             .lines()
             .into_iter()
-            .map(|l| {
-                l.chars()
-                    .map(|c| match c {
-                        'U' => Direction::North,
-                        'D' => Direction::South,
-                        'L' => Direction::West,
-                        'R' => Direction::East,
-                        _ => panic!(),
-                    })
-                    .collect_vec()
-            })
+            .map(|l| l.chars().map(|c| c.try_into().unwrap()).collect_vec())
             .collect_vec()
     }
 }

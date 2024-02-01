@@ -15,16 +15,8 @@ impl Solution03 {
             .map(|line| {
                 line.split(',')
                     .map(|segment| {
-                        let (dir_str, length_str) = segment.split_at(1);
-                        let dir = match dir_str {
-                            "U" => Direction::North,
-                            "R" => Direction::East,
-                            "D" => Direction::South,
-                            "L" => Direction::West,
-                            _ => unreachable!(),
-                        };
-
-                        (dir, length_str.parse().unwrap())
+                        let (dir, length) = segment.split_at(1);
+                        (dir.try_into().unwrap(), length.parse().unwrap())
                     })
                     .collect()
             })
