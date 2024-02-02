@@ -5,7 +5,7 @@ use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 
 pub struct Solution02;
 impl Solution02 {
-    fn parse(input: ProblemInput) -> Vec<u32> {
+    fn parse(input: ProblemInput) -> Vec<i32> {
         input.string().split(',').parsed().collect()
     }
 }
@@ -19,23 +19,21 @@ impl Solution for Solution02 {
             *intcode.get_mut(2).unwrap() = 2;
         }
 
-        let mut program = Program { intcode };
+        let mut program = Program::init(intcode);
         program.execute();
         program.intcode[0].into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
         let intcode = Self::parse(input);
 
-        if _is_sample {
+        if is_sample {
             return None;
         }
 
         for noun in 0..100 {
             for verb in 0..100 {
-                let mut program = Program {
-                    intcode: intcode.clone(),
-                };
+                let mut program = Program::init(intcode.clone());
                 *program.intcode.get_mut(1).unwrap() = noun;
                 *program.intcode.get_mut(2).unwrap() = verb;
 
