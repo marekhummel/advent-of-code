@@ -1,4 +1,5 @@
 use itertools::Itertools;
+use num::Integer;
 
 pub fn lcm(nums: &[u64]) -> u64 {
     if nums.len() == 1 {
@@ -6,14 +7,7 @@ pub fn lcm(nums: &[u64]) -> u64 {
     }
     let a = nums[0];
     let b = lcm(&nums[1..]);
-    a * b / gcd(a, b)
-}
-
-pub fn gcd(a: u64, b: u64) -> u64 {
-    if b == 0 {
-        return a;
-    }
-    gcd(b, a % b)
+    a * b / a.gcd(&b)
 }
 
 pub fn bits<const L: usize>(mut n: u128) -> [bool; L] {
