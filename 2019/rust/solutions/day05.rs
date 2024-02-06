@@ -14,7 +14,7 @@ impl Solution for Solution05 {
 
         let intcode = input.string().split(',').parsed().collect();
         let mut program = Program::init(intcode);
-        program.input = 1;
+        program.input.push_back(1);
 
         program.execute();
         program.output.iter().last().unwrap().into_some()
@@ -23,7 +23,7 @@ impl Solution for Solution05 {
     fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let intcode = input.string().split(',').parsed().collect();
         let mut program = Program::init(intcode);
-        program.input = if _is_sample { 20 } else { 5 };
+        program.input.push_back(if _is_sample { 20 } else { 5 });
 
         program.execute();
         program.output.iter().last().unwrap().into_some()
