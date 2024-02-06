@@ -1,4 +1,3 @@
-use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
 use aoc_lib::specific::intcode::Program;
 use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
@@ -12,8 +11,7 @@ impl Solution for Solution05 {
             return None;
         }
 
-        let intcode = input.string().split(',').parsed().collect();
-        let mut program = Program::init(intcode);
+        let mut program = Program::init(&input.string());
         program.input.push_back(1);
 
         program.execute();
@@ -21,8 +19,7 @@ impl Solution for Solution05 {
     }
 
     fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        let intcode = input.string().split(',').parsed().collect();
-        let mut program = Program::init(intcode);
+        let mut program = Program::init(&input.string());
         program.input.push_back(if _is_sample { 20 } else { 5 });
 
         program.execute();

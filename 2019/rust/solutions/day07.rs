@@ -1,4 +1,3 @@
-use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
 use aoc_lib::specific::intcode::Program;
 use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
@@ -9,13 +8,11 @@ impl Solution07 {}
 
 impl Solution for Solution07 {
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        let intcode = input.string().split(',').parsed::<i32>().collect_vec();
-
-        let mut thruster_signal = i32::MIN;
+        let mut thruster_signal = i128::MIN;
         for phase_settings in (0..5).permutations(5) {
             let mut output = 0;
             for phase in phase_settings {
-                let mut amp_program = Program::init(intcode.clone());
+                let mut amp_program = Program::init(&input.string());
                 amp_program.input.push_back(phase);
                 amp_program.input.push_back(output);
 
@@ -30,12 +27,10 @@ impl Solution for Solution07 {
     }
 
     fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        let intcode = input.string().split(',').parsed::<i32>().collect_vec();
-
-        let mut thruster_signal = i32::MIN;
+        let mut thruster_signal = i128::MIN;
         for phase_settings in (5..10).permutations(5) {
             // Init amplifiers
-            let mut amplifiers = (0..5).map(|_| Program::init(intcode.clone())).collect_vec();
+            let mut amplifiers = (0..5).map(|_| Program::init(&input.string())).collect_vec();
             for (amp, phase) in amplifiers.iter_mut().zip_eq(phase_settings.iter()) {
                 amp.input.push_back(*phase);
             }
