@@ -19,24 +19,24 @@ impl Solution06 {
             })
             .collect_vec();
 
-        let Some((min_i, max_i)) = indices.iter().minmax_by_key(|idx| idx.i).into_option() else {
+        let Some((min_i, max_i)) = indices.iter().map(|idx| idx.i).minmax().into_option() else {
             panic!()
         };
-        let Some((min_j, max_j)) = indices.iter().minmax_by_key(|idx| idx.j).into_option() else {
+        let Some((min_j, max_j)) = indices.iter().map(|idx| idx.j).minmax().into_option() else {
             panic!()
         };
 
         let size = Size {
             // Add padding of 1 around
-            width: max_i.i - min_i.i + 3,
-            height: max_j.j - min_j.j + 3,
+            width: max_i - min_i + 3,
+            height: max_j - min_j + 3,
         };
 
         let normalized_indices = indices
             .iter()
             .map(|idx| Index {
-                i: idx.i - min_i.i + 1,
-                j: idx.j - min_j.j + 1,
+                i: idx.i - min_i + 1,
+                j: idx.j - min_j + 1,
             })
             .collect();
 

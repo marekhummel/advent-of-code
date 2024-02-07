@@ -53,7 +53,7 @@ impl Solution10 {
                 //         if lights.iter().any(|((px, py), _)| x == *px && y == *py) {
                 //             print!("#");
                 //         } else {
-                //             print!(".");
+                //             print!(" ");
                 //         }
                 //     }
                 //     println!()

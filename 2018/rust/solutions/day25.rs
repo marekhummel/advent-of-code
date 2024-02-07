@@ -68,7 +68,7 @@ impl Solution for Solution25 {
         constellations.len().into_some()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, _input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         None
     }
 }

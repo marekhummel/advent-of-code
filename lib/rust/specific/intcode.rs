@@ -177,7 +177,7 @@ impl From<i128> for Instruction {
             8 => Instruction::Equals,
             9 => Instruction::AdjRelBase,
             99 => Instruction::Halt,
-            _ => panic!(),
+            _ => panic!("Invalid opcode: '{value}'"),
         }
     }
 }
@@ -195,7 +195,7 @@ impl From<i128> for ParameterMode {
             0 => ParameterMode::Position,
             1 => ParameterMode::Immediate,
             2 => ParameterMode::Relative,
-            _ => panic!(),
+            _ => panic!("Invalid parameter mode"),
         }
     }
 }
