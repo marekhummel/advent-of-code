@@ -1,14 +1,14 @@
 use std::cmp::Reverse;
-use std::collections::{BinaryHeap, HashMap, HashSet};
+use std::collections::{BinaryHeap, HashSet};
 
-use aoc_lib::graph;
+use aoc_lib::graph::{self, Graph};
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 use itertools::Itertools;
 
 pub struct Solution07;
 impl Solution07 {
-    fn parse(input: ProblemInput) -> HashMap<char, HashSet<char>> {
+    fn parse(input: ProblemInput) -> Graph<char> {
         input
             .lines()
             .into_iter()

@@ -38,7 +38,7 @@ impl Solution for Solution08 {
         let final_image = layers.into_iter().fold(vec![2; w * h], |image, layer| {
             image
                 .into_iter()
-                .zip_eq(layer.into_iter())
+                .zip_eq(layer)
                 .map(|(top, px)| match top {
                     0 | 1 => top,
                     2 => px,

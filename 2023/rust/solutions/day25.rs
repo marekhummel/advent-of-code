@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-use aoc_lib::graph;
+use aoc_lib::graph::{self, Graph};
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 use itertools::Itertools;
@@ -8,7 +8,7 @@ use rayon::iter::*;
 
 pub struct Solution25;
 impl Solution25 {
-    fn parse(input: ProblemInput) -> HashMap<String, HashSet<String>> {
+    fn parse(input: ProblemInput) -> Graph<String> {
         let mut connections = HashMap::new();
         for line in input.lines() {
             let (left, right) = line.split_once(':').unwrap();
@@ -28,7 +28,7 @@ impl Solution25 {
     }
 
     // Count edges for all pairs of shortest paths (apsp)
-    fn count_edges_apsp(graph: &HashMap<String, HashSet<String>>) -> HashMap<(String, String), i32> {
+    fn count_edges_apsp(graph: &Graph<String>) -> HashMap<(String, String), i32> {
         graph
             .keys()
             .collect_vec()
@@ -51,7 +51,7 @@ impl Solution25 {
             })
     }
 
-    fn find_components(graph: &HashMap<String, HashSet<String>>) -> Vec<HashSet<String>> {
+    fn find_components(graph: &Graph<String>) -> Vec<HashSet<String>> {
         let mut components = graph.keys().map(|v| HashSet::from([v.clone()])).collect_vec();
 
         for (v, neighbors) in graph.iter() {

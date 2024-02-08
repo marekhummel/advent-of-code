@@ -6,7 +6,9 @@ use std::{
 
 use itertools::Itertools;
 
-pub fn floyd_marshall<V: Clone + Eq + Hash>(graph: &HashMap<V, HashSet<V>>) -> HashMap<(V, V), i32> {
+pub type Graph<V> = HashMap<V, HashSet<V>>;
+
+pub fn floyd_marshall<V: Clone + Eq + Hash>(graph: &Graph<V>) -> HashMap<(V, V), i32> {
     let vertices = graph.keys().cloned().collect_vec();
     let n = vertices.len();
     let mut dist = vec![vec![i32::MAX as i64; n]; n];
@@ -45,7 +47,7 @@ pub fn floyd_marshall<V: Clone + Eq + Hash>(graph: &HashMap<V, HashSet<V>>) -> H
         .collect()
 }
 
-pub fn dijkstra<V: Eq + Hash + Clone + Ord>(graph: &HashMap<V, HashSet<V>>, start: &V) -> HashMap<V, Vec<V>> {
+pub fn dijkstra<V: Eq + Hash + Clone + Ord>(graph: &Graph<V>, start: &V) -> HashMap<V, Vec<V>> {
     let vertices = graph.keys().cloned().collect_vec();
     let mut prev = HashMap::new();
     let mut dist = vertices
@@ -87,7 +89,7 @@ pub fn dijkstra<V: Eq + Hash + Clone + Ord>(graph: &HashMap<V, HashSet<V>>, star
     paths
 }
 
-pub fn components<V: Eq + Hash + Clone>(graph: &HashMap<V, HashSet<V>>) -> Vec<HashSet<V>> {
+pub fn components<V: Eq + Hash + Clone>(graph: &Graph<V>) -> Vec<HashSet<V>> {
     let mut seen = HashSet::new();
     let mut components = Vec::new();
 
@@ -116,7 +118,7 @@ pub fn components<V: Eq + Hash + Clone>(graph: &HashMap<V, HashSet<V>>) -> Vec<H
 }
 
 // Kahn's Algorithm
-pub fn topo_sorting<V: Eq + Ord + Hash + Clone>(graph: &HashMap<V, HashSet<V>>) -> Option<Vec<V>> {
+pub fn topo_sorting<V: Eq + Ord + Hash + Clone>(graph: &Graph<V>) -> Option<Vec<V>> {
     // Invert graph to map trg to source nodes
     let mut sources = invert(graph);
 
@@ -146,12 +148,12 @@ pub fn topo_sorting<V: Eq + Ord + Hash + Clone>(graph: &HashMap<V, HashSet<V>>) 
     }
 }
 
-pub fn vertices<V: Eq + Hash + Clone>(graph: &HashMap<V, HashSet<V>>) -> HashSet<V> {
+pub fn vertices<V: Eq + Hash + Clone>(graph: &Graph<V>) -> HashSet<V> {
     graph.keys().chain(graph.values().flatten()).cloned().collect()
 }
 
 // Invert graph to map trg to source nodes
-pub fn invert<V: Eq + Hash + Clone>(graph: &HashMap<V, HashSet<V>>) -> HashMap<V, HashSet<V>> {
+pub fn invert<V: Eq + Hash + Clone>(graph: &Graph<V>) -> Graph<V> {
     vertices(graph)
         .into_iter()
         .map(|trg| {

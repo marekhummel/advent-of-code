@@ -1,6 +1,7 @@
 use std::collections::{HashMap, HashSet, VecDeque};
 
 use aoc_lib::cartesian::Position;
+use aoc_lib::graph::Graph;
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 
@@ -8,7 +9,7 @@ pub struct Solution20;
 impl Solution20 {
     fn build_map<I: Iterator<Item = char>>(
         regex: &mut I,
-        map: &mut HashMap<Position, HashSet<Position>>,
+        map: &mut Graph<Position>,
         initial: HashSet<Position>,
     ) -> HashSet<Position> {
         let mut current = initial.clone();
@@ -47,7 +48,7 @@ impl Solution20 {
         new_positions
     }
 
-    fn dists(map: &HashMap<Position, HashSet<Position>>) -> HashMap<Position, u32> {
+    fn dists(map: &Graph<Position>) -> HashMap<Position, u32> {
         // Simple bfs to find distance to each room
         let mut queue = VecDeque::from([(Position::zero(), 0)]);
         let mut dists = HashMap::new();

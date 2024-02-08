@@ -1,12 +1,12 @@
 use std::collections::{HashMap, HashSet};
 
-use aoc_lib::graph;
+use aoc_lib::graph::{self, Graph};
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 
 pub struct Solution06;
 impl Solution06 {
-    fn parse(input: ProblemInput) -> HashMap<String, HashSet<String>> {
+    fn parse(input: ProblemInput) -> Graph<String> {
         let mut tree = HashMap::new();
         input.lines().into_iter().for_each(|line| {
             let (center, orbit) = line.split_once(')').unwrap();
@@ -19,7 +19,7 @@ impl Solution06 {
         tree
     }
 
-    fn orbits(obj: &str, tree: &HashMap<String, HashSet<String>>, depth: u32) -> u32 {
+    fn orbits(obj: &str, tree: &Graph<String>, depth: u32) -> u32 {
         let mut orbits = depth;
         if let Some(orbiting) = tree.get(obj) {
             for orbit in orbiting {
