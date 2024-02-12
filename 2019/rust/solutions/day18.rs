@@ -70,6 +70,7 @@ impl Path {
     }
 }
 
+// Store collected keys in single int for performance
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct CollectedKeys {
     keys: u32,
@@ -129,40 +130,46 @@ impl Solution18 {
     }
 
     // Shortest path to collect all keys
-    fn collect_keys(graph: &HashMap<Tile, HashMap<Tile, Path>>, all_keys: &[char], start: Tile) -> u32 {
-        let mut queue = BinaryHeap::from([(Reverse(0), Reverse(CollectedKeys { keys: 0 }), start)]);
+    fn collect_keys<const R: usize>(
+        graph: &HashMap<Tile, HashMap<Tile, Path>>,
+        all_keys: &[char],
+        starts: [Tile; R],
+    ) -> u32 {
+        // Queue tracks total steps taken, shared list of collected keys and start positions
+        let mut queue = BinaryHeap::from([(Reverse(0), Reverse(CollectedKeys { keys: 0 }), starts)]);
         let mut visited = HashSet::new();
-        while let Some((Reverse(steps), Reverse(keys), tile)) = queue.pop() {
+        while let Some((Reverse(steps), Reverse(keys), pos)) = queue.pop() {
             // Collected all keys
             if keys.num_collected() == all_keys.len() {
                 return steps;
             }
 
-            // Don't revisit same key with same path before
-            if visited.contains(&(tile, keys)) {
+            // Don't revisit same key with same paths before
+            if !visited.insert((pos, keys)) {
                 continue;
             }
-            visited.insert((tile, keys));
 
-            // Try possible next keys
-            for next_key in all_keys {
-                // No need to collect this key again
-                if keys.in_possession(*next_key) {
-                    continue;
-                }
+            // Try possible next keys for each robot
+            for robot in 0..starts.len() {
+                let tile = pos[robot];
+                for next_key in all_keys {
+                    // No need to collect this key again
+                    if keys.in_possession(*next_key) {
+                        continue;
+                    }
 
-                let key_tile = Tile::Key(*next_key);
-                let path = &graph[&tile][&key_tile];
-
-                // Only accept this path if we have all keys for it (and the key is collectible for this robot)
-                if path
-                    .doors
-                    .iter()
-                    .all(|door| !all_keys.contains(door) || keys.in_possession(*door))
-                {
-                    let mut new_keys = keys;
-                    path.keys.iter().for_each(|ck| new_keys.collect(*ck));
-                    queue.push((Reverse(steps + path.length), Reverse(new_keys), key_tile));
+                    // Try to collect key if reachable
+                    let key_tile = Tile::Key(*next_key);
+                    if let Some(path) = &graph[&tile].get(&key_tile) {
+                        // Only accept this path if we have all keys for it
+                        if path.doors.iter().all(|door| keys.in_possession(*door)) {
+                            let mut new_keys = keys;
+                            path.keys.iter().for_each(|ck| new_keys.collect(*ck));
+                            let mut new_pos = pos;
+                            new_pos[robot] = key_tile;
+                            queue.push((Reverse(steps + path.length), Reverse(new_keys), new_pos));
+                        }
+                    }
                 }
             }
         }
@@ -181,7 +188,7 @@ impl Solution for Solution18 {
             .filter_map(|t| if let Tile::Key(k) = t { Some(*k) } else { None })
             .collect_vec();
 
-        Self::collect_keys(&graph, &all_keys, Tile::Entrance).into_some()
+        Self::collect_keys(&graph, &all_keys, [Tile::Entrance]).into_some()
     }
 
     fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
@@ -207,24 +214,13 @@ impl Solution for Solution18 {
         // Create graph
         let graph = Self::create_graph(&map);
 
-        // Shortest paths in each section, ignoring doors where keys are elsewhere
-        // Technically not fool proof (if sections are too dependent), but works here
-        let shortest_paths = (0..4)
-            .map(|si| {
-                let sub_entrance = Tile::SubEntrance(si);
-                let reachable_keys = graph[&sub_entrance]
-                    .keys()
-                    .filter_map(|t| match t {
-                        Tile::Key(k) => Some(*k),
-                        _ => None,
-                    })
-                    .collect_vec();
-
-                Self::collect_keys(&graph, &reachable_keys, sub_entrance)
-            })
+        // List keys
+        let all_keys = map
+            .iter()
+            .filter_map(|t| if let Tile::Key(k) = t { Some(*k) } else { None })
             .collect_vec();
 
-        // Sum each section
-        shortest_paths.into_iter().sum::<u32>().into_some()
+        // Collect them, but this time with four robots
+        Self::collect_keys(&graph, &all_keys, [0, 1, 2, 3].map(Tile::SubEntrance)).into_some()
     }
 }
