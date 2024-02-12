@@ -26,8 +26,7 @@ impl Solution10 {
     }
 
     fn find_path_beginning(&self, start: Index, grid: &CharGrid) -> (Index, Direction) {
-        let size = grid.size();
-        if let Some(up) = start.advance_check(Direction::North, size) {
+        if let Some(up) = start.advance_check(Direction::North, grid.size) {
             let symbol = grid.get(&up);
             match symbol {
                 '|' => return (up, Direction::North),
@@ -37,7 +36,7 @@ impl Solution10 {
             }
         }
 
-        if let Some(down) = start.advance_check(Direction::South, size) {
+        if let Some(down) = start.advance_check(Direction::South, grid.size) {
             let symbol = grid.get(&down);
             match symbol {
                 '|' => return (down, Direction::South),
@@ -47,7 +46,7 @@ impl Solution10 {
             }
         }
 
-        if let Some(left) = start.advance_check(Direction::West, size) {
+        if let Some(left) = start.advance_check(Direction::West, grid.size) {
             let symbol = grid.get(&left);
             match symbol {
                 '-' => return (left, Direction::West),
@@ -57,7 +56,7 @@ impl Solution10 {
             }
         }
 
-        if let Some(right) = start.advance_check(Direction::East, size) {
+        if let Some(right) = start.advance_check(Direction::East, grid.size) {
             let symbol = grid.get(&right);
             match symbol {
                 '-' => return (right, Direction::East),

@@ -11,11 +11,12 @@ impl Solution13 {
         input
             .lines()
             .split(|row| row.is_empty())
-            .map(|grid| Grid {
-                rows: grid
-                    .iter()
-                    .map(|s| s.chars().map(|c| c == '#').collect_vec())
-                    .collect_vec(),
+            .map(|grid| {
+                Grid::new(
+                    grid.iter()
+                        .map(|s| s.chars().map(|c| c == '#').collect_vec())
+                        .collect_vec(),
+                )
             })
             .collect_vec()
     }
@@ -56,7 +57,7 @@ impl Solution13 {
             .into_iter()
             .find(|(mirror, row_pairs)| {
                 let mut smudges = 0;
-                for offset in Self::offset_range(*mirror, grid.size().height) {
+                for offset in Self::offset_range(*mirror, grid.size.height) {
                     let (low, high) = (mirror - offset, mirror + 1 + offset);
                     match row_pairs.iter().find(|&(i, j, _)| *i == low && *j == high) {
                         Some((_, _, false)) => (),

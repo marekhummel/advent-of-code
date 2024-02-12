@@ -16,10 +16,9 @@ pub struct Solution22;
 impl Solution22 {
     fn parse(input: ProblemInput) -> HashMap<Position, State> {
         let grid = input.grid();
-        let size = grid.size();
         let center = Position {
-            x: size.width as i128 / 2,
-            y: size.height as i128 / 2,
+            x: grid.size.width as i128 / 2,
+            y: grid.size.height as i128 / 2,
         };
 
         grid.enumerate()

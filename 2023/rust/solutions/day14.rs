@@ -17,7 +17,7 @@ impl Solution14 {
     fn eval_load(grid: &CharGrid) -> usize {
         grid.enumerate()
             .filter(|(_, c)| **c == 'O')
-            .map(|(idx, _)| (grid.size().height - idx.j))
+            .map(|(idx, _)| (grid.size.height - idx.j))
             .sum()
     }
 
@@ -35,12 +35,10 @@ impl Solution14 {
             true => &grid_t,
         };
 
-        let mapped_grid = Grid {
-            rows: match reverse {
-                false => grid_iter.rows.iter().map(|l| Self::tilt_line_left(l)).collect_vec(),
-                true => grid_iter.rows.iter().map(|l| Self::tilt_line_right(l)).collect_vec(),
-            },
-        };
+        let mapped_grid = Grid::new(match reverse {
+            false => grid_iter.rows.iter().map(|l| Self::tilt_line_left(l)).collect_vec(),
+            true => grid_iter.rows.iter().map(|l| Self::tilt_line_right(l)).collect_vec(),
+        });
 
         match transpose {
             false => mapped_grid,

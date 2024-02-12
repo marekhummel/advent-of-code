@@ -292,6 +292,7 @@ pub struct Size {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Grid<T> {
     pub rows: Vec<Vec<T>>,
+    pub size: Size,
 }
 
 impl<T> Grid<T> {
@@ -301,11 +302,24 @@ impl<T> Grid<T> {
     {
         Grid {
             rows: vec![vec![default; size.width]; size.height],
+            size,
         }
+    }
+
+    pub fn new(rows: Vec<Vec<T>>) -> Self {
+        let size = Size {
+            width: rows[0].len(),
+            height: rows.len(),
+        };
+        Grid { rows, size }
     }
 
     pub fn get(&self, idx: &Index) -> &T {
         &self.rows[idx.j][idx.i]
+    }
+
+    pub fn get_checked(&self, idx: &Index) -> Option<&T> {
+        self.rows.get(idx.j).and_then(|r| r.get(idx.i))
     }
 
     pub fn get_mut(&mut self, idx: &Index) -> &mut T {
@@ -316,28 +330,20 @@ impl<T> Grid<T> {
         self.rows[idx.j][idx.i] = value;
     }
 
-    pub fn size(&self) -> Size {
-        Size {
-            height: self.rows.len(),
-            width: self.rows[0].len(),
-        }
-    }
-
     pub fn corners(&self) -> [Index; 4] {
-        let size = self.size();
         [
             Index { i: 0, j: 0 },
             Index {
                 i: 0,
-                j: size.height - 1,
+                j: self.size.height - 1,
             },
             Index {
-                i: size.width - 1,
+                i: self.size.width - 1,
                 j: 0,
             },
             Index {
-                i: size.width - 1,
-                j: size.height - 1,
+                i: self.size.width - 1,
+                j: self.size.height - 1,
             },
         ]
     }
@@ -360,6 +366,7 @@ impl<T> Grid<T> {
                 .into_iter()
                 .map(|row| row.iter().map(&func).collect_vec())
                 .collect_vec(),
+            size: self.size,
         }
     }
 
@@ -371,6 +378,10 @@ impl<T> Grid<T> {
             rows: (0..self.rows[0].len())
                 .map(|i| self.rows.iter().map(|inner| inner[i]).collect_vec())
                 .collect(),
+            size: Size {
+                width: self.size.height,
+                height: self.size.width,
+            },
         }
     }
 

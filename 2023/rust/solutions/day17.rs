@@ -15,7 +15,7 @@ impl Solution17 {
             .map_elements(|elem| elem.to_string().parse::<u32>().unwrap());
 
         LatticeGraph {
-            size: grid.size(),
+            size: grid.size,
             weights: grid,
         }
     }

@@ -48,10 +48,7 @@ impl Solution17 {
         let (min_x, max_x) = xs.chain([500]).minmax().into_option().unwrap();
         let (min_y, max_y) = ys.minmax().into_option().unwrap();
 
-        let mut ground = Grid {
-            rows: vec![vec![Ground::Dirt; max_x - min_x + 3]; max_y + 1],
-        };
-
+        let mut ground = Grid::new(vec![vec![Ground::Dirt; max_x - min_x + 3]; max_y + 1]);
         for (fixed, low, high, is_vertical) in clay {
             for range in low..=high {
                 let (i, j) = if is_vertical { (fixed, range) } else { (range, fixed) };
@@ -63,13 +60,13 @@ impl Solution17 {
     }
 
     fn flow(ground: &mut Grid<Ground>, start: Index) {
-        let ground_size = ground.size();
-
         let mut idx = start;
 
         loop {
             ground.set(&idx, Ground::Flowing);
-            let Some(down) = idx.advance_check(Direction::South, ground_size) else { return; };
+            let Some(down) = idx.advance_check(Direction::South, ground.size) else {
+                return;
+            };
 
             match ground.get(&down) {
                 Ground::Dirt => idx = down,

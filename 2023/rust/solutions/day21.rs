@@ -17,8 +17,6 @@ impl Solution21 {
     }
 
     fn walk(grid: &BoolGrid, current: &[Position], steps: usize) -> Vec<Position> {
-        let size = grid.size();
-
         let mut positions = current.iter().cloned().collect_vec();
         for _ in 0..steps {
             let mut new_positions = HashSet::new();
@@ -26,7 +24,7 @@ impl Solution21 {
                 let reached = pos
                     .von_neumann_neighbors(1)
                     .into_iter()
-                    .filter(|p| *grid.get(&p.wrap_modular(size)));
+                    .filter(|p| *grid.get(&p.wrap_modular(grid.size)));
                 new_positions.extend(reached);
             }
 

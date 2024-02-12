@@ -64,21 +64,18 @@ impl Solution17 {
         // Pad each row
         let max_row = rows.iter().map(|r| r.len()).max().unwrap();
         rows.iter_mut().for_each(|r| r.resize(max_row, false));
-        (Grid { rows }, robot_info.unwrap())
+        (Grid::new(rows), robot_info.unwrap())
     }
 
     fn compute_path(grid: &Grid<bool>, mut pos: Index, mut dir: Direction) -> Vec<Command> {
-        let size = grid.size();
         let mut path = vec![];
         let mut steps = 0;
         loop {
             // Try straight first
-            if let Some(front) = pos.advance_check(dir, size) {
-                if *grid.get(&front) {
-                    steps += 1;
-                    pos = front;
-                    continue;
-                }
+            if let Some(true) = grid.get_checked(&pos.advance(dir)) {
+                steps += 1;
+                pos = pos.advance(dir);
+                continue;
             }
 
             // We can't continue forward, track steps
@@ -88,21 +85,17 @@ impl Solution17 {
             }
 
             // Turn left
-            if let Some(left) = pos.advance_check(dir.left(), size) {
-                if *grid.get(&left) {
-                    path.push(Command::Left);
-                    dir = dir.left();
-                    continue;
-                }
+            if let Some(true) = grid.get_checked(&pos.advance(dir.left())) {
+                path.push(Command::Left);
+                dir = dir.left();
+                continue;
             }
 
             // Turn right
-            if let Some(right) = pos.advance_check(dir.right(), size) {
-                if *grid.get(&right) {
-                    path.push(Command::Right);
-                    dir = dir.right();
-                    continue;
-                }
+            if let Some(true) = grid.get_checked(&pos.advance(dir.right())) {
+                path.push(Command::Right);
+                dir = dir.right();
+                continue;
             }
 
             // No more options, end of scaffold
@@ -176,13 +169,12 @@ impl Solution for Solution17 {
         };
 
         // Find intersections
-        let size = grid.size();
         let intersections = grid
             .enumerate()
             .filter(|(idx, scaff)| {
                 **scaff
                     && idx
-                        .von_neumann_neighbors(size)
+                        .von_neumann_neighbors(grid.size)
                         .into_iter()
                         .filter(|nb| *grid.get(nb))
                         .count()

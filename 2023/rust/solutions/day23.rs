@@ -11,7 +11,7 @@ pub struct Solution23;
 impl Solution23 {
     fn parse(input: ProblemInput) -> (Grid<char>, Index, Index) {
         let hiking_map = input.grid();
-        let height = hiking_map.size().height;
+        let height = hiking_map.size.height;
         let start = Index {
             i: hiking_map.rows[0].iter().position(|c| *c == '.').unwrap(),
             j: 0,
@@ -66,7 +66,6 @@ impl Solution23 {
     }
 
     fn get_neighbors(grid: &Grid<char>, idx: Index, slippery_slopes: bool) -> Vec<Index> {
-        let map_size = grid.size();
         let directions = match slippery_slopes {
             true => match grid.get(&idx) {
                 '>' => vec![Direction::East],
@@ -81,7 +80,7 @@ impl Solution23 {
 
         directions
             .into_iter()
-            .filter_map(|d| idx.advance_check(d, map_size))
+            .filter_map(|d| idx.advance_check(d, grid.size))
             .filter(|np| *grid.get(np) != '#')
             .collect()
     }

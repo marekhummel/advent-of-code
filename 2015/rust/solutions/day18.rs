@@ -9,7 +9,7 @@ impl Solution18 {
     }
 
     fn animation_step(state: Grid<bool>, broken_grid: bool) -> Grid<bool> {
-        let size = state.size();
+        let size = state.size;
         let mut next_state = Grid::empty(size, false);
         for (idx, value) in state.enumerate() {
             let active_neighbors = idx.moore_neighbors(size).into_iter().filter(|n| *state.get(n)).count();

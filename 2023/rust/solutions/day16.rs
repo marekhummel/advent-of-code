@@ -48,7 +48,7 @@ impl Solution16 {
             };
 
             for dir in new_dirs {
-                if let Some(next_pos) = b.pos.advance_check(dir, grid.size()) {
+                if let Some(next_pos) = b.pos.advance_check(dir, grid.size) {
                     let new_beam = Beam { pos: next_pos, dir };
                     if !beam_history.contains(&new_beam) {
                         beam_history.insert(new_beam.clone());
@@ -76,28 +76,27 @@ impl Solution for Solution16 {
 
     fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
         let grid = input.grid();
-        let size = grid.size();
 
         let mut start_beams = Vec::new();
-        start_beams.extend((0..size.height).map(|y| Beam {
+        start_beams.extend((0..grid.size.height).map(|y| Beam {
             pos: Index { i: 0, j: y },
             dir: Direction::East,
         }));
-        start_beams.extend((0..size.height).map(|y| Beam {
+        start_beams.extend((0..grid.size.height).map(|y| Beam {
             pos: Index {
-                i: size.width - 1,
+                i: grid.size.width - 1,
                 j: y,
             },
             dir: Direction::West,
         }));
-        start_beams.extend((0..size.width).map(|x| Beam {
+        start_beams.extend((0..grid.size.width).map(|x| Beam {
             pos: Index { i: x, j: 0 },
             dir: Direction::South,
         }));
-        start_beams.extend((0..size.width).map(|x| Beam {
+        start_beams.extend((0..grid.size.width).map(|x| Beam {
             pos: Index {
                 i: x,
-                j: size.height - 1,
+                j: grid.size.height - 1,
             },
             dir: Direction::North,
         }));

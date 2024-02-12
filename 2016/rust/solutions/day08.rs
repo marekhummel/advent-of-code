@@ -58,14 +58,14 @@ impl Solution for Solution08 {
                     }
                 }
                 Instruction::RotateColumn(x, l) => {
-                    let length = screen.size().height;
+                    let length = screen.size.height;
                     screen = screen.transpose();
                     let col = screen.rows.get_mut(x).unwrap();
                     *col = [&col[length - l..], &col[0..length - l]].concat();
                     screen = screen.transpose();
                 }
                 Instruction::RotateRow(y, l) => {
-                    let length = screen.size().width;
+                    let length = screen.size.width;
                     let row = screen.rows.get_mut(y).unwrap();
                     *row = [&row[length - l..], &row[0..length - l]].concat();
                 }

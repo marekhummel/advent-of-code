@@ -37,15 +37,15 @@ impl Solution22 {
             })
             .collect_vec();
 
-        Grid {
-            rows: nodes
+        Grid::new(
+            nodes
                 .into_iter()
                 .into_group_map_by(|n| n.idx.j)
                 .into_iter()
                 .sorted_by_key(|(j, _)| *j)
                 .map(|(_, nodes)| nodes.into_iter().sorted_by_key(|n| n.idx.i).collect_vec())
                 .collect_vec(),
-        }
+        )
     }
 
     #[allow(dead_code)]
@@ -55,7 +55,7 @@ impl Solution22 {
                 "S"
             } else if idx
                 == (Index {
-                    i: nodes.size().width - 1,
+                    i: nodes.size.width - 1,
                     j: 0,
                 })
             {
@@ -111,10 +111,10 @@ impl Solution for Solution22 {
         // 2. Move empty node upwards through that spot into the top row just left of G.
         total_swaps += empty_node.i.abs_diff(best_spot.idx.i);
         total_swaps += empty_node.j;
-        total_swaps += (nodes.size().width - 2) - best_spot.idx.i;
+        total_swaps += (nodes.size.width - 2) - best_spot.idx.i;
 
         // 3. Repeat until G is in x = 1: Swap _ with G, then move empty node around to the left of G again (4 swaps)
-        let steps_left = nodes.size().width - 2;
+        let steps_left = nodes.size.width - 2;
         total_swaps += steps_left * (1 + 4);
 
         // 4. Single swap from G into S.

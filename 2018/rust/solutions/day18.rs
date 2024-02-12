@@ -23,11 +23,10 @@ impl Solution18 {
     }
 
     fn magic(state: Grid<Acre>) -> Grid<Acre> {
-        let area_size = state.size();
-        let mut new_state = Grid::empty(area_size, Acre::Open);
+        let mut new_state = Grid::empty(state.size, Acre::Open);
 
         for (idx, acre) in state.enumerate() {
-            let nbs = idx.moore_neighbors(area_size);
+            let nbs = idx.moore_neighbors(state.size);
             let nb_acres = nbs.into_iter().map(|idx| state.get(&idx)).counts();
             let adj_trees = *nb_acres.get(&Acre::Tree).unwrap_or(&0);
             let adj_lumber = *nb_acres.get(&Acre::Lumberyard).unwrap_or(&0);

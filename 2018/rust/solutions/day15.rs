@@ -87,7 +87,6 @@ impl Solution15 {
         let curr_idx = unit.borrow().idx;
         if targets.iter().all(|t| t.borrow().idx.dist(&curr_idx) > 1) {
             // Move
-            let cave_size = caves.size();
             let entity_squares: HashSet<_> = entities
                 .iter()
                 .filter(|e| e.borrow().hitpoints > 0 && e.borrow().idx != curr_idx)
@@ -95,7 +94,7 @@ impl Solution15 {
                 .collect();
             let in_range_squares = targets
                 .iter()
-                .flat_map(|t| t.borrow().idx.von_neumann_neighbors(cave_size))
+                .flat_map(|t| t.borrow().idx.von_neumann_neighbors(caves.size))
                 .filter(|sq| *caves.get(sq) && !entity_squares.contains(sq))
                 .unique()
                 .collect_vec();
@@ -104,7 +103,7 @@ impl Solution15 {
             if let Some(chosen_square) = chosen {
                 let step = Self::find_chosen_square(
                     chosen_square,
-                    &curr_idx.von_neumann_neighbors(cave_size),
+                    &curr_idx.von_neumann_neighbors(caves.size),
                     caves,
                     &entity_squares,
                 );
@@ -132,8 +131,6 @@ impl Solution15 {
         caves: &Grid<bool>,
         entity_squares: &HashSet<Index>,
     ) -> Option<Index> {
-        let cave_size = caves.size();
-
         let mut seen = HashSet::new();
         let mut queue = BinaryHeap::from([Reverse((0, start))]);
 
@@ -147,7 +144,7 @@ impl Solution15 {
             }
 
             seen.insert(idx);
-            for nb in idx.von_neumann_neighbors(cave_size) {
+            for nb in idx.von_neumann_neighbors(caves.size) {
                 queue.push(Reverse((dist + 1, nb)))
             }
         }

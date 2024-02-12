@@ -32,15 +32,14 @@ impl Solution for Solution14 {
             rows.push(row);
         }
 
-        let grid = Grid { rows };
-        let size = grid.size();
+        let grid = Grid::new(rows);
         let graph = grid
             .enumerate()
             .filter(|(_, used)| **used)
             .map(|(idx, _)| {
                 (
                     idx,
-                    idx.von_neumann_neighbors(size)
+                    idx.von_neumann_neighbors(grid.size)
                         .into_iter()
                         .filter(|n| *grid.get(n))
                         .collect(),

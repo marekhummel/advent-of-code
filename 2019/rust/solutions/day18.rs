@@ -99,13 +99,12 @@ impl Solution18 {
             .filter(|(_, c)| c.is_keypoint())
             .map(|(start, c)| {
                 // BFS to find shortest path to other stops given a start.
-                let size = map.size();
                 let mut seen = HashSet::from([(start)]);
                 let mut queue = VecDeque::from([(start, 0, vec![], vec![])]);
                 let mut found = HashMap::new();
 
                 while let Some((pos, steps, keys, doors)) = queue.pop_front() {
-                    for next_pos in pos.von_neumann_neighbors(size) {
+                    for next_pos in pos.von_neumann_neighbors(map.size) {
                         let tile = *map.get(&next_pos);
                         if !matches!(tile, Tile::Wall) && !seen.contains(&next_pos) {
                             seen.insert(next_pos);
@@ -201,7 +200,7 @@ impl Solution for Solution18 {
             .unwrap()
             .0;
         map.set(&main, Tile::Wall);
-        for idx in main.von_neumann_neighbors(map.size()) {
+        for idx in main.von_neumann_neighbors(map.size) {
             map.set(&idx, Tile::Wall);
         }
         let north = main.advance(Direction::North);

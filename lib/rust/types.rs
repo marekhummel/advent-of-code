@@ -31,9 +31,7 @@ impl ProblemInput {
     }
 
     pub fn grid(&self) -> Grid<char> {
-        Grid {
-            rows: self.lines.iter().map(|row| row.chars().collect_vec()).collect_vec(),
-        }
+        Grid::new(self.lines.iter().map(|row| row.chars().collect_vec()).collect_vec())
     }
 
     // pub fn enumerated_grid(&self) -> EnumeratedGrid {

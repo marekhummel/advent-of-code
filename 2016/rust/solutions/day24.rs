@@ -9,13 +9,12 @@ pub struct Solution24;
 impl Solution24 {
     // BFS to find shortest path to other stops given a start.
     fn shortest_paths(map: &Grid<char>, start: Index) -> HashMap<char, usize> {
-        let size = map.size();
         let mut seen = HashSet::from([(start)]);
         let mut queue = VecDeque::from([(start, 0)]);
         let mut found = HashMap::new();
 
         while let Some((pos, steps)) = queue.pop_front() {
-            for next_pos in pos.von_neumann_neighbors(size) {
+            for next_pos in pos.von_neumann_neighbors(map.size) {
                 let tile = *map.get(&next_pos);
                 if tile != '#' && !seen.contains(&next_pos) {
                     seen.insert(next_pos);

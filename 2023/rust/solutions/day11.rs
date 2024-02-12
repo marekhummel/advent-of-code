@@ -16,7 +16,7 @@ impl Solution11 {
             .map(|(idx, _)| idx)
             .collect_vec();
 
-        (galaxies, grid.size())
+        (galaxies, grid.size)
     }
 
     fn min_distances(&self, exp_galaxies: &[Index]) -> usize {
