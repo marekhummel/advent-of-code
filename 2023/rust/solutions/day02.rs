@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 use std::collections::HashMap;
 
@@ -40,20 +40,20 @@ impl Solution02 {
 }
 
 impl Solution for Solution02 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         self.parse(input)
             .iter()
             .filter(|(_, reveals)| self.is_valid(reveals, 12, 13, 14))
             .map(|(g, _)| g)
             .sum::<u16>()
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         self.parse(input)
             .iter()
             .map(|(_, reveals)| self.power(reveals))
             .sum::<i32>()
-            .into_some()
+            .to_result()
     }
 }

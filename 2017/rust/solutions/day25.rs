@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Debug)]
@@ -63,18 +63,18 @@ pub struct Solution25;
 impl Solution25 {}
 
 impl Solution for Solution25 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut turing = Turing::parse(input);
 
         for _ in 0..turing.diagnostic_after {
             turing.step();
         }
 
-        turing.checksum().into_some()
+        turing.checksum().to_result()
     }
 
-    fn solve_version02(&self, _input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, _input: ProblemInput, _is_sample: bool) -> ProblemResult {
         // No part 2
-        None
+        ProblemResult::NoPartTwo
     }
 }

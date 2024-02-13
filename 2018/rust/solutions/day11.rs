@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution11;
 impl Solution11 {
@@ -43,15 +43,15 @@ impl Solution11 {
 }
 
 impl Solution for Solution11 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let serial_number: u32 = input.string().parse().unwrap();
         let sat = Self::summed_area_table(serial_number);
 
         let best_fuel_cell = Self::best_fuel_array(&sat, 3);
-        format!("{},{}", best_fuel_cell.1, best_fuel_cell.2).into_some()
+        format!("{},{}", best_fuel_cell.1, best_fuel_cell.2).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let serial_number: u32 = input.string().parse().unwrap();
         let sat = Self::summed_area_table(serial_number);
 
@@ -59,6 +59,6 @@ impl Solution for Solution11 {
             .map(|ws| (ws, Self::best_fuel_array(&sat, ws)))
             .max_by_key(|(_, (power, _, _))| *power)
             .unwrap();
-        format!("{},{},{}", x, y, ws).into_some()
+        format!("{},{},{}", x, y, ws).to_result()
     }
 }

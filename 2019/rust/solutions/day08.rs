@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 pub struct Solution08;
@@ -17,7 +17,7 @@ impl Solution08 {
 }
 
 impl Solution for Solution08 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let (w, h) = if is_sample { (3, 2) } else { (25, 6) };
         let layers = Self::parse(input, w, h);
 
@@ -27,10 +27,10 @@ impl Solution for Solution08 {
             .min_by_key(|counts| *counts.get(&0).unwrap_or(&0))
             .unwrap();
 
-        (zero_layer.get(&1).unwrap_or(&0) * zero_layer.get(&2).unwrap_or(&0)).into_some()
+        (zero_layer.get(&1).unwrap_or(&0) * zero_layer.get(&2).unwrap_or(&0)).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let (w, h) = if is_sample { (2, 2) } else { (25, 6) };
         let layers = Self::parse(input, w, h);
 
@@ -56,6 +56,6 @@ impl Solution for Solution08 {
         //     println!()
         // }
 
-        (if is_sample { "/" } else { "LEJKC" }).into_some()
+        (if is_sample { "/" } else { "LEJKC" }).to_result()
     }
 }

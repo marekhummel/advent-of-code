@@ -1,6 +1,6 @@
 use aoc_lib::cartesian::{Direction, Index, Size};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 pub struct Solution02;
@@ -15,7 +15,7 @@ impl Solution02 {
 }
 
 impl Solution for Solution02 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let pad_size = Size { width: 3, height: 3 };
         let mut pos = Index { i: 1, j: 1 };
         let mut code = 0;
@@ -27,10 +27,10 @@ impl Solution for Solution02 {
             code = code * 10 + (pos.j * 3 + pos.i + 1)
         }
 
-        code.into_some()
+        code.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let pad_size = Size { width: 5, height: 5 };
         let mut pos = Index { i: 0, j: 2 };
         let mut code = String::new();
@@ -49,6 +49,6 @@ impl Solution for Solution02 {
             code.push_str(format!("{:X}", valid_indices.iter().position(|i| *i == pos).unwrap() + 1).as_str())
         }
 
-        code.into_some()
+        code.to_result()
     }
 }

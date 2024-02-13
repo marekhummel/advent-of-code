@@ -1,6 +1,6 @@
 use aoc_lib::cartesian::{Direction, Position};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 pub struct Solution18;
 
@@ -71,15 +71,15 @@ impl Solution18 {
 }
 
 impl Solution for Solution18 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let edges = Self::parse(input);
         let vertices = Self::find_vertices(&edges);
-        Self::compute_area(&vertices, &edges).into_some()
+        Self::compute_area(&vertices, &edges).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let edges = Self::parse2(input);
         let vertices = Self::find_vertices(&edges);
-        Self::compute_area(&vertices, &edges).into_some()
+        Self::compute_area(&vertices, &edges).to_result()
     }
 }

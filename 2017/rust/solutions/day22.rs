@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use aoc_lib::cartesian::{Direction, Position};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 #[derive(Clone, PartialEq)]
 enum State {
@@ -67,7 +67,7 @@ impl Solution22 {
 }
 
 impl Solution for Solution22 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut grid = Self::parse(input);
 
         let burst_func = |state: &State, dir: &Direction| match state {
@@ -77,10 +77,10 @@ impl Solution for Solution22 {
         };
 
         let infections = Self::spread(&mut grid, burst_func, 10_000);
-        infections.into_some()
+        infections.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut grid = Self::parse(input);
 
         let burst_func = |state: &State, dir: &Direction| match state {
@@ -91,6 +91,6 @@ impl Solution for Solution22 {
         };
 
         let infections = Self::spread(&mut grid, burst_func, 10_000_000);
-        infections.into_some()
+        infections.to_result()
     }
 }

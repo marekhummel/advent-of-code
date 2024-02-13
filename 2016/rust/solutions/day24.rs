@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet, VecDeque};
 
 use aoc_lib::cartesian::{Grid, Index};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 pub struct Solution24;
@@ -56,7 +56,7 @@ impl Solution24 {
 }
 
 impl Solution for Solution24 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let map = input.grid();
 
         let graph = Self::create_graph(&map);
@@ -65,10 +65,10 @@ impl Solution for Solution24 {
             .min()
             .unwrap();
 
-        shortest_route.into_some()
+        shortest_route.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let map = input.grid();
 
         let graph = Self::create_graph(&map);
@@ -81,6 +81,6 @@ impl Solution for Solution24 {
             .min()
             .unwrap();
 
-        shortest_route.into_some()
+        shortest_route.to_result()
     }
 }

@@ -1,22 +1,22 @@
 use aoc_lib::solution::Solution;
 use aoc_lib::specific::duet::{Instruction, Program, StepResult, Value};
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution18;
 impl Solution18 {}
 
 impl Solution for Solution18 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut prog = Program::parse(&input, true);
 
         loop {
             if let StepResult::Recover(x) = prog.step() {
-                return x.into_some();
+                return x.to_result();
             }
         }
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut p0 = Program::parse(&input, false);
         let mut p1 = Program::parse(&input, false);
 
@@ -48,6 +48,6 @@ impl Solution for Solution18 {
             }
         }
 
-        p1_counter.into_some()
+        p1_counter.to_result()
     }
 }

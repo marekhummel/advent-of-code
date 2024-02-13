@@ -44,6 +44,10 @@ impl ProblemInput {
 }
 
 pub enum ProblemResult {
+    NoInput,
+    NoSample,
+    Unsolved,
+    NoPartTwo,
     I128(i128),
     I64(i64),
     I32(i32),
@@ -75,94 +79,98 @@ impl Display for ProblemResult {
             ProblemResult::USize(v) => write!(f, "{}", v),
             ProblemResult::BigInt(v) => write!(f, "{}", v),
             ProblemResult::String(v) => write!(f, "{}", v),
+            ProblemResult::NoInput => write!(f, "<No Input Available>"),
+            ProblemResult::NoSample => write!(f, "<No Sample Defined>"),
+            ProblemResult::Unsolved => write!(f, "<No Solution Implemented>"),
+            ProblemResult::NoPartTwo => write!(f, "<No Part Two>"),
         }
     }
 }
 
-pub trait IntoSome<T> {
-    fn into_some(self) -> Option<T>;
+pub trait ToResult {
+    fn to_result(self) -> ProblemResult;
 }
 
-impl IntoSome<ProblemResult> for i128 {
-    fn into_some(self) -> Option<ProblemResult> {
-        Some(ProblemResult::I128(self))
+impl ToResult for i128 {
+    fn to_result(self) -> ProblemResult {
+        ProblemResult::I128(self)
     }
 }
 
-impl IntoSome<ProblemResult> for i64 {
-    fn into_some(self) -> Option<ProblemResult> {
-        Some(ProblemResult::I64(self))
+impl ToResult for i64 {
+    fn to_result(self) -> ProblemResult {
+        ProblemResult::I64(self)
     }
 }
 
-impl IntoSome<ProblemResult> for i32 {
-    fn into_some(self) -> Option<ProblemResult> {
-        Some(ProblemResult::I32(self))
+impl ToResult for i32 {
+    fn to_result(self) -> ProblemResult {
+        ProblemResult::I32(self)
     }
 }
 
-impl IntoSome<ProblemResult> for i16 {
-    fn into_some(self) -> Option<ProblemResult> {
-        Some(ProblemResult::I16(self))
+impl ToResult for i16 {
+    fn to_result(self) -> ProblemResult {
+        ProblemResult::I16(self)
     }
 }
 
-impl IntoSome<ProblemResult> for i8 {
-    fn into_some(self) -> Option<ProblemResult> {
-        Some(ProblemResult::I8(self))
+impl ToResult for i8 {
+    fn to_result(self) -> ProblemResult {
+        ProblemResult::I8(self)
     }
 }
 
-impl IntoSome<ProblemResult> for u128 {
-    fn into_some(self) -> Option<ProblemResult> {
-        Some(ProblemResult::U128(self))
+impl ToResult for u128 {
+    fn to_result(self) -> ProblemResult {
+        ProblemResult::U128(self)
     }
 }
 
-impl IntoSome<ProblemResult> for u64 {
-    fn into_some(self) -> Option<ProblemResult> {
-        Some(ProblemResult::U64(self))
+impl ToResult for u64 {
+    fn to_result(self) -> ProblemResult {
+        ProblemResult::U64(self)
     }
 }
 
-impl IntoSome<ProblemResult> for u32 {
-    fn into_some(self) -> Option<ProblemResult> {
-        Some(ProblemResult::U32(self))
+impl ToResult for u32 {
+    fn to_result(self) -> ProblemResult {
+        ProblemResult::U32(self)
     }
 }
 
-impl IntoSome<ProblemResult> for u16 {
-    fn into_some(self) -> Option<ProblemResult> {
-        Some(ProblemResult::U16(self))
+impl ToResult for u16 {
+    fn to_result(self) -> ProblemResult {
+        ProblemResult::U16(self)
     }
 }
 
-impl IntoSome<ProblemResult> for u8 {
-    fn into_some(self) -> Option<ProblemResult> {
-        Some(ProblemResult::U8(self))
+impl ToResult for u8 {
+    fn to_result(self) -> ProblemResult {
+        ProblemResult::U8(self)
     }
 }
 
-impl IntoSome<ProblemResult> for usize {
-    fn into_some(self) -> Option<ProblemResult> {
-        Some(ProblemResult::USize(self))
+impl ToResult for usize {
+    fn to_result(self) -> ProblemResult {
+        ProblemResult::USize(self)
     }
 }
 
-impl IntoSome<ProblemResult> for BigInt {
-    fn into_some(self) -> Option<ProblemResult> {
-        Some(ProblemResult::BigInt(self))
+impl ToResult for BigInt {
+    fn to_result(self) -> ProblemResult {
+        ProblemResult::BigInt(self)
     }
 }
 
-impl IntoSome<ProblemResult> for String {
-    fn into_some(self) -> Option<ProblemResult> {
-        Some(ProblemResult::String(self))
+impl ToResult for String {
+    fn to_result(self) -> ProblemResult {
+        ProblemResult::String(self)
     }
 }
 
-impl IntoSome<ProblemResult> for &str {
-    fn into_some(self) -> Option<ProblemResult> {
-        Some(ProblemResult::String(self.to_string()))
+impl ToResult for &str {
+    fn to_result(self) -> ProblemResult {
+        ProblemResult::String(self.to_string())
     }
 }

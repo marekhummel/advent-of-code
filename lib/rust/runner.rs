@@ -1,6 +1,9 @@
 use std::{path::Path, time::Duration};
 
-use crate::{solution::Solution, types::ProblemInput};
+use crate::{
+    solution::Solution,
+    types::{ProblemInput, ProblemResult},
+};
 
 pub struct AocRunner {
     pub year: u16,
@@ -32,22 +35,13 @@ impl AocRunner {
 
     fn run_full_year(&self) {
         let mut total_time = Duration::ZERO;
-        for (day, s) in self.solutions.iter().enumerate() {
+        for day in 0..self.solutions.len() {
             println!("Day {0:02}:", day + 1);
             for version in [1, 2] {
-                for sample in [true, false] {
-                    let data = self.get_input(self.year, day as u8 + 1, version, sample);
-                    print!("  V{version} {0}:  ", Self::SAMPLE_STR[sample as usize]);
-                    match data {
-                        Some(input) => match s.solve(input, version, sample) {
-                            Some((v, e)) => {
-                                println!("{v}");
-                                total_time += e;
-                            }
-                            None => println!("<Unsolved>"),
-                        },
-                        None => println!("<No Input>"),
-                    }
+                for use_sample in [true, false] {
+                    let (result, elapsed) = self.get_result(day + 1, version, use_sample);
+                    total_time += elapsed;
+                    println!("  V{version} {}:  {result}", Self::SAMPLE_STR[use_sample as usize]);
                 }
             }
             println!()
@@ -57,22 +51,12 @@ impl AocRunner {
     }
 
     fn run_day(&self, day: usize) {
-        let s = &self.solutions[day - 1];
         let mut total_time = Duration::ZERO;
         for version in [1, 2] {
-            for sample in [true, false] {
-                let data = self.get_input(self.year, day as u8, version, sample);
-                print!("V{version} {}:  ", Self::SAMPLE_STR[sample as usize]);
-                match data {
-                    Some(input) => match s.solve(input, version, sample) {
-                        Some((v, e)) => {
-                            println!("{v}");
-                            total_time += e;
-                        }
-                        None => println!("<Unsolved>"),
-                    },
-                    None => println!("<No Input>"),
-                }
+            for use_sample in [true, false] {
+                let (result, elapsed) = self.get_result(day, version, use_sample);
+                total_time += elapsed;
+                println!("V{version} {}:  {result}", Self::SAMPLE_STR[use_sample as usize]);
             }
         }
         println!("\nTotal Runtime: {total_time:?}");
@@ -84,18 +68,12 @@ impl AocRunner {
             return;
         }
 
-        let s = &self.solutions[day - 1];
-        let input = self
-            .get_input(self.year, day as u8, version, use_sample)
-            .expect("No input");
-        let (v, e) = s
-            .solve(input, version, use_sample)
-            .map_or((String::from("<Unsolved>"), Duration::ZERO), |(v, e)| {
-                (v.to_string(), e)
-            });
+        let (result, elapsed) = self.get_result(day, version, use_sample);
         println!(
-            "Day {day:02} / Version {version} / Data '{0}' => {e:?}\n{v}",
-            Self::SAMPLE_STR[use_sample as usize]
+            "Day {day:02} / Version {version} / Data '{}' => {:?}\n{}",
+            Self::SAMPLE_STR[use_sample as usize],
+            elapsed,
+            result
         );
     }
 
@@ -107,5 +85,13 @@ impl AocRunner {
         }
 
         ProblemInput::read(&fullname)
+    }
+
+    fn get_result(&self, day: usize, version: u8, use_sample: bool) -> (ProblemResult, Duration) {
+        let s = &self.solutions[day - 1];
+        match self.get_input(self.year, day as u8, version, use_sample) {
+            Some(input) => s.solve(input, version, use_sample),
+            None => (ProblemResult::NoInput, Duration::ZERO),
+        }
     }
 }

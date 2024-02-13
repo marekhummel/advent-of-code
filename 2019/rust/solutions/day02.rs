@@ -1,12 +1,12 @@
 use aoc_lib::solution::Solution;
 use aoc_lib::specific::intcode::Program;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution02;
 impl Solution02 {}
 
 impl Solution for Solution02 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let mut program = Program::init(&input.string());
         if !is_sample {
             *program.memory.get_mut(&1).unwrap() = 12;
@@ -14,14 +14,14 @@ impl Solution for Solution02 {
         }
 
         program.execute();
-        program.memory[&0].into_some()
+        program.memory[&0].to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let intcode = input.string();
 
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         }
 
         for noun in 0..100 {
@@ -33,7 +33,7 @@ impl Solution for Solution02 {
                 program.execute();
 
                 if program.memory[&0] == 19690720 {
-                    return (noun * 100 + verb).into_some();
+                    return (noun * 100 + verb).to_result();
                 }
             }
         }

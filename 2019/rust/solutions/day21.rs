@@ -1,15 +1,15 @@
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
 use aoc_lib::specific::intcode::Program;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution21;
 impl Solution21 {}
 
 impl Solution for Solution21 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         }
 
         // Rules @ABCD:
@@ -39,12 +39,12 @@ impl Solution for Solution21 {
 
         droid.execute();
         // droid.print_as_ascii();
-        droid.output.last().unwrap().into_some()
+        droid.output.last().unwrap().to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         }
 
         // Rules @ABCD:
@@ -92,6 +92,6 @@ impl Solution for Solution21 {
 
         droid.execute();
         // droid.print_as_ascii();
-        droid.output.last().unwrap().into_some()
+        droid.output.last().unwrap().to_result()
     }
 }

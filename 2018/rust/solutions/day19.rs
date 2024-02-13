@@ -1,6 +1,6 @@
 use aoc_lib::solution::Solution;
 use aoc_lib::specific::wristdevice::Instruction;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution19;
 impl Solution19 {
@@ -15,7 +15,7 @@ impl Solution19 {
 }
 
 impl Solution for Solution19 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (program, pc_link) = Self::parse(input);
 
         let mut registers = vec![0; 6];
@@ -27,12 +27,12 @@ impl Solution for Solution19 {
             pc += 1;
         }
 
-        registers[0].into_some()
+        registers[0].to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         }
 
         let (program, pc_link) = Self::parse(input);
@@ -77,6 +77,6 @@ impl Solution for Solution19 {
         let n = registers[5] as u32;
         let root = (n as f64).sqrt() as u32;
         let divsum: u32 = (1..=root).filter(|f| n % f == 0).map(|f| f + n / f).sum();
-        divsum.into_some()
+        divsum.to_result()
     }
 }

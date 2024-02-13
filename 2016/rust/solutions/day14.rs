@@ -1,7 +1,7 @@
 use std::collections::{HashMap, HashSet};
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 pub struct Solution14;
@@ -66,20 +66,20 @@ impl Solution14 {
 }
 
 impl Solution for Solution14 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let salt = input.string();
         let n = 64;
         let passkeys = Self::find_passkeys(salt.trim(), n, 1);
 
-        passkeys.into_iter().sorted().nth(n - 1).unwrap().into_some()
+        passkeys.into_iter().sorted().nth(n - 1).unwrap().to_result()
     }
 
     // Takes about a minute, both in sample and real
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let salt = input.string();
         let n = 64;
         let passkeys = Self::find_passkeys(salt.trim(), n, 2017);
 
-        passkeys.into_iter().sorted().nth(n - 1).unwrap().into_some()
+        passkeys.into_iter().sorted().nth(n - 1).unwrap().to_result()
     }
 }

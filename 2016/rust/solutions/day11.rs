@@ -1,7 +1,7 @@
 use std::collections::{HashSet, VecDeque};
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 use regex::Regex;
 
@@ -125,16 +125,16 @@ impl Solution11 {
 }
 
 impl Solution for Solution11 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let floors = Self::parse(input);
 
         let min_steps = Self::run(ColumnState { floors, elevator: 0 });
-        min_steps.into_some()
+        min_steps.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         }
 
         let mut floors = Self::parse(input);
@@ -146,6 +146,6 @@ impl Solution for Solution11 {
         ]);
 
         let min_steps = Self::run(ColumnState { floors, elevator: 0 });
-        min_steps.into_some()
+        min_steps.to_result()
     }
 }

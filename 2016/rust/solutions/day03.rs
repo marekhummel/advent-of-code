@@ -1,6 +1,6 @@
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 pub struct Solution03;
@@ -45,13 +45,13 @@ impl Solution03 {
 }
 
 impl Solution for Solution03 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let triangles = Self::parse(input);
-        triangles.into_iter().filter(Self::is_triangle).count().into_some()
+        triangles.into_iter().filter(Self::is_triangle).count().to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let triangles = Self::parse2(input);
-        triangles.into_iter().filter(Self::is_triangle).count().into_some()
+        triangles.into_iter().filter(Self::is_triangle).count().to_result()
     }
 }

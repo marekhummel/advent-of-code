@@ -1,6 +1,6 @@
 use aoc_lib::algo;
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Debug, Clone)]
@@ -55,17 +55,17 @@ impl Solution16 {
 }
 
 impl Solution for Solution16 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let moves = Self::parse(input);
 
         let n = if is_sample { 5 } else { 16 };
         let programs = (0..n).map(|i| (b'a' + i) as char).join("");
-        Self::dance(&programs, &moves).into_some()
+        Self::dance(&programs, &moves).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         }
 
         let moves = Self::parse(input);
@@ -73,6 +73,6 @@ impl Solution for Solution16 {
         let programs = (0..16).map(|i| (b'a' + i) as char).join("");
         let formation = algo::find_final_state(programs, |progs| Self::dance(&progs, &moves), 1_000_000_000);
 
-        formation.into_some()
+        formation.to_result()
     }
 }

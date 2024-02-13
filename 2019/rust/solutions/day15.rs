@@ -4,7 +4,7 @@ use std::collections::{HashMap, HashSet};
 use aoc_lib::cartesian::{Direction, Position};
 use aoc_lib::solution::Solution;
 use aoc_lib::specific::intcode::Program;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution15;
 impl Solution15 {
@@ -55,19 +55,19 @@ impl Solution15 {
 }
 
 impl Solution for Solution15 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         }
 
         let droid = Program::init(&input.string());
         let (dist, _, _) = Self::find_oxygen_system(droid);
-        dist.into_some()
+        dist.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         }
 
         // Run droid
@@ -91,7 +91,7 @@ impl Solution for Solution15 {
             }
 
             if new_frontiers.is_empty() {
-                return min.into_some();
+                return min.to_result();
             }
 
             frontiers = new_frontiers;

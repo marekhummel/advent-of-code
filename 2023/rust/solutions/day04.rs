@@ -2,7 +2,7 @@ use aoc_lib::iterator::ParsedExt;
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use std::collections::HashSet;
 
 type Hand = HashSet<u8>;
@@ -38,15 +38,15 @@ impl Solution04 {
 }
 
 impl Solution for Solution04 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         self.parse(input)
             .iter()
             .map(|(winning, mine)| self.compute_value(winning, mine))
             .sum::<u32>()
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut copies = vec![1u32; input.lines().len()];
         for (i, (winning, mine)) in self.parse(input).iter().enumerate() {
             let value = self.count_hits(winning, mine);
@@ -56,6 +56,6 @@ impl Solution for Solution04 {
             }
         }
 
-        copies.iter().sum::<u32>().into_some()
+        copies.iter().sum::<u32>().to_result()
     }
 }

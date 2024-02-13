@@ -1,11 +1,11 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution09;
 impl Solution09 {}
 
 impl Solution for Solution09 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let stream = input.string();
 
         let mut garbage = false;
@@ -38,10 +38,10 @@ impl Solution for Solution09 {
             }
         }
 
-        score.into_some()
+        score.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let stream = input.string();
 
         let mut garbage = false;
@@ -65,6 +65,6 @@ impl Solution for Solution09 {
             }
         }
 
-        garbage_count.into_some()
+        garbage_count.to_result()
     }
 }

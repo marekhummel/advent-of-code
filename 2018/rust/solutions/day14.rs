@@ -1,6 +1,6 @@
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution14;
 impl Solution14 {
@@ -18,7 +18,7 @@ impl Solution14 {
 }
 
 impl Solution for Solution14 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let counter: usize = input.string().parse().unwrap();
 
         let mut recipes = vec![3, 7];
@@ -34,10 +34,10 @@ impl Solution for Solution14 {
 
         let digits = &recipes[counter..counter + 10];
         let value = digits.iter().fold(0, |val, d| val * 10 + d);
-        value.into_some()
+        value.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let subset: Vec<u8> = input.string().chars().parsed().collect();
 
         let mut recipes = vec![3, 7];
@@ -58,7 +58,7 @@ impl Solution for Solution14 {
                 }
 
                 if found {
-                    return si.into_some();
+                    return si.to_result();
                 }
             }
 

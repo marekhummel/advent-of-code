@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 use rayon::iter::*;
 pub struct Solution05;
@@ -19,17 +19,17 @@ impl Solution05 {
 
 // Total day needs 24secs on release mode
 impl Solution for Solution05 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let door = input.string();
 
         Self::find_hashes(door)
             .take(8)
             .map(|h| h.chars().nth(5).unwrap())
             .join("")
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let door = input.string();
 
         let mut password = [None; 8];
@@ -46,6 +46,6 @@ impl Solution for Solution05 {
             }
         }
 
-        password.map(|c| c.unwrap()).iter().join("").into_some()
+        password.map(|c| c.unwrap()).iter().join("").to_result()
     }
 }

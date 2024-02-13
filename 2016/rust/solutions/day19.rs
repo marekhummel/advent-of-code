@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 pub struct Solution19;
 impl Solution19 {
     fn josephus(n: u32) -> u32 {
@@ -42,11 +42,11 @@ impl Solution19 {
 }
 
 impl Solution for Solution19 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        Self::josephus(input.string().parse().unwrap()).into_some()
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
+        Self::josephus(input.string().parse().unwrap()).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        Self::josephus2(input.string().parse().unwrap()).into_some()
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
+        Self::josephus2(input.string().parse().unwrap()).to_result()
     }
 }

@@ -1,6 +1,6 @@
 use aoc_lib::cartesian::{Direction, Grid, Index};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -130,23 +130,23 @@ impl Solution17 {
 }
 
 impl Solution for Solution17 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let clay = Self::parse(input);
         let (mut ground, (min_x, min_y)) = Self::create_ground_grid(clay);
 
         let start = Index { i: 501 - min_x, j: 0 };
         Self::flow(&mut ground, start);
 
-        (ground.iter().filter(|g| g.is_water()).count() - min_y).into_some()
+        (ground.iter().filter(|g| g.is_water()).count() - min_y).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let clay = Self::parse(input);
         let (mut ground, (min_x, _)) = Self::create_ground_grid(clay);
 
         let start = Index { i: 501 - min_x, j: 0 };
         Self::flow(&mut ground, start);
 
-        ground.iter().filter(|g| **g == Ground::Water).count().into_some()
+        ground.iter().filter(|g| **g == Ground::Water).count().to_result()
     }
 }

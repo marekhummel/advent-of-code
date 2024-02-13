@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution06;
 impl Solution06 {
@@ -22,12 +22,12 @@ impl Solution06 {
 }
 
 impl Solution for Solution06 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut memory = Self::parse(input);
         let mut seen = HashSet::new();
         for i in 0.. {
             if seen.contains(&memory) {
-                return i.into_some();
+                return i.to_result();
             }
 
             seen.insert(memory.clone());
@@ -37,13 +37,13 @@ impl Solution for Solution06 {
         unreachable!()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut memory = Self::parse(input);
         let mut seen = HashMap::new();
         for i in 0u32.. {
             if let Some(pi) = seen.get(&memory) {
                 let loop_sz: u32 = i - *pi;
-                return loop_sz.into_some();
+                return loop_sz.to_result();
             }
 
             seen.insert(memory.clone(), i);

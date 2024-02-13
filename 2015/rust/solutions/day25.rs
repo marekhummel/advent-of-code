@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use regex::Regex;
 
 pub struct Solution25;
@@ -15,7 +15,7 @@ impl Solution25 {
 }
 
 impl Solution for Solution25 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (trow, tcol) = Self::parse(input);
         let (mut row, mut col) = (1, 1);
         let mut code = 20151125u64;
@@ -30,11 +30,11 @@ impl Solution for Solution25 {
             }
         }
 
-        code.into_some()
+        code.to_result()
     }
 
-    fn solve_version02(&self, _input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, _input: ProblemInput, _is_sample: bool) -> ProblemResult {
         // No part two
-        None
+        ProblemResult::NoPartTwo
     }
 }

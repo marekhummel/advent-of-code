@@ -2,7 +2,7 @@ use std::collections::{HashSet, VecDeque};
 
 use aoc_lib::cartesian::{Index, Size};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution13;
 impl Solution13 {
@@ -61,7 +61,7 @@ impl Solution13 {
 }
 
 impl Solution for Solution13 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let fav = input.string().parse().unwrap();
         let start = Index { i: 1, j: 1 };
         let goal = if is_sample {
@@ -70,13 +70,13 @@ impl Solution for Solution13 {
             Index { i: 31, j: 39 }
         };
 
-        Self::find(fav, start, goal).into_some()
+        Self::find(fav, start, goal).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let fav = input.string().parse().unwrap();
         let start = Index { i: 1, j: 1 };
 
-        Self::spread(fav, start, 50).into_some()
+        Self::spread(fav, start, 50).to_result()
     }
 }

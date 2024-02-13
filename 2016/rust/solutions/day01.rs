@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use aoc_lib::cartesian::{Direction, Position};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 pub struct Solution01;
@@ -21,7 +21,7 @@ impl Solution01 {
 }
 
 impl Solution for Solution01 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let instructions = Self::parse(input);
         let mut pos = Position::zero();
         let mut dir = Direction::North;
@@ -31,10 +31,10 @@ impl Solution for Solution01 {
             pos = pos.advance_by(dir, length);
         }
 
-        (pos.x.abs() + pos.y.abs()).into_some()
+        (pos.x.abs() + pos.y.abs()).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let instructions = Self::parse(input);
         let mut pos = Position::zero();
         let mut dir = Direction::North;
@@ -45,12 +45,12 @@ impl Solution for Solution01 {
             for _ in 0..length {
                 pos = pos.advance_by(dir, 1);
                 if visited.contains(&pos) {
-                    return (pos.x.abs() + pos.y.abs()).into_some();
+                    return (pos.x.abs() + pos.y.abs()).to_result();
                 }
                 visited.insert(pos);
             }
         }
 
-        None
+        ProblemResult::Unsolved
     }
 }

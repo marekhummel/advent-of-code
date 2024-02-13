@@ -1,6 +1,6 @@
 use aoc_lib::cartesian::{Direction, Grid, Index};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution19;
 impl Solution19 {
@@ -40,17 +40,17 @@ impl Solution19 {
 }
 
 impl Solution for Solution19 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let pipes = input.grid();
         let (letters, _) = Self::follow_pipes(&pipes);
 
-        letters.into_some()
+        letters.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let pipes = input.grid();
         let (_, steps) = Self::follow_pipes(&pipes);
 
-        steps.into_some()
+        steps.to_result()
     }
 }

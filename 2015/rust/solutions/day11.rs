@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 pub struct Solution11;
@@ -74,16 +74,16 @@ impl Solution11 {
 }
 
 impl Solution for Solution11 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let pwd = Self::parse(input);
         let new_pwd = Self::iterate_next(&pwd);
-        Self::pwd_to_string(&new_pwd).into_some()
+        Self::pwd_to_string(&new_pwd).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let pwd = Self::parse(input);
         let new_pwd = Self::iterate_next(&pwd);
         let new_new_pwd = Self::iterate_next(&new_pwd);
-        Self::pwd_to_string(&new_new_pwd).into_some()
+        Self::pwd_to_string(&new_new_pwd).to_result()
     }
 }

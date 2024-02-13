@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::fmt::Debug;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Debug)]
@@ -182,7 +182,7 @@ impl Solution19 {
 }
 
 impl Solution for Solution19 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (parts, workflows) = Self::parse(input);
         let exec_workflows: HashMap<_, _> = workflows
             .into_iter()
@@ -194,10 +194,10 @@ impl Solution for Solution19 {
             .filter(|part| Self::check_part(part, &exec_workflows))
             .map(|part| part.x + part.m + part.a + part.s)
             .sum::<u32>()
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (_, workflows) = Self::parse(input);
 
         let initial_part = Part {
@@ -261,6 +261,6 @@ impl Solution for Solution19 {
             .into_iter()
             .map(|r| r.x.size() as u128 * r.m.size() as u128 * r.a.size() as u128 * r.s.size() as u128)
             .sum::<u128>()
-            .into_some()
+            .to_result()
     }
 }

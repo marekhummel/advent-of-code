@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 type Present = u128;
@@ -38,20 +38,20 @@ impl Solution24 {
 }
 
 impl Solution for Solution24 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let presents = Self::parse(input);
         let weight_per_group = presents.iter().sum::<Present>() / 3;
 
         // Takes about 14secs in debug
         let best_front = Self::pack(&presents, weight_per_group, vec![]).unwrap();
-        best_front.iter().product::<Present>().into_some()
+        best_front.iter().product::<Present>().to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let presents = Self::parse(input);
         let weight_per_group = presents.iter().sum::<Present>() / 4;
 
         let best_front = Self::pack(&presents, weight_per_group, vec![]).unwrap();
-        best_front.iter().product::<Present>().into_some()
+        best_front.iter().product::<Present>().to_result()
     }
 }

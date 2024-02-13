@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use serde_json::Value;
 
 pub struct Solution12;
@@ -22,15 +22,15 @@ impl Solution12 {
 }
 
 impl Solution for Solution12 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let dump = input.string();
         let json = serde_json::from_str(&dump).unwrap();
-        Self::sum_values(&json, false).into_some()
+        Self::sum_values(&json, false).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let dump = input.string();
         let json = serde_json::from_str(&dump).unwrap();
-        Self::sum_values(&json, true).into_some()
+        Self::sum_values(&json, true).to_result()
     }
 }

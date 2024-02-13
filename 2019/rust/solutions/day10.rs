@@ -2,7 +2,7 @@ use std::f64::consts::PI;
 
 use aoc_lib::cartesian::Index;
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 use num::Integer;
 
@@ -48,15 +48,15 @@ impl Solution10 {
 }
 
 impl Solution for Solution10 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let map = input.grid().map_elements(|c| *c == '#');
         let asteroids = map.enumerate().filter(|(_, a)| **a).map(|(idx, _)| idx).collect_vec();
 
         let (_, in_sight) = Self::best_station(&asteroids);
-        in_sight.into_some()
+        in_sight.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let map = input.grid().map_elements(|c| *c == '#');
         let asteroids = map.enumerate().filter(|(_, a)| **a).map(|(idx, _)| idx).collect_vec();
 
@@ -101,6 +101,6 @@ impl Solution for Solution10 {
             .find(|asteroids| !asteroids.is_empty())
             .unwrap()[0];
 
-        (bet.i * 100 + bet.j).into_some()
+        (bet.i * 100 + bet.j).to_result()
     }
 }

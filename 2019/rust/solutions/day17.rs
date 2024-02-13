@@ -1,7 +1,7 @@
 use aoc_lib::cartesian::{Direction, Grid, Index};
 use aoc_lib::solution::Solution;
 use aoc_lib::specific::intcode::Program;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 type Robot = (Index, Direction);
@@ -160,7 +160,7 @@ impl Solution17 {
 }
 
 impl Solution for Solution17 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         // Create grid
         let grid = if is_sample {
             input.grid().map_elements(|c| *c != '.')
@@ -184,10 +184,10 @@ impl Solution for Solution17 {
 
         // Compute alignments
         let calibration = intersections.into_iter().map(|(idx, _)| idx.i * idx.j).sum::<usize>();
-        calibration.into_some()
+        calibration.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
             // -- Helper input to check path finding and function generation
             // let grid_input = input.grid();
@@ -196,7 +196,7 @@ impl Solution for Solution17 {
             //     .find_map(|(idx, &c)| c.try_into().ok().map(|d| (idx, d)))
             //     .unwrap();
             // let grid = grid_input.map_elements(|c| *c != '.');
-            return None;
+            return ProblemResult::NoSample;
         }
 
         // Create grid
@@ -221,6 +221,6 @@ impl Solution for Solution17 {
 
         // Run robot (other output is camera view before and after)
         robot.execute();
-        robot.output.last().unwrap().into_some()
+        robot.output.last().unwrap().to_result()
     }
 }

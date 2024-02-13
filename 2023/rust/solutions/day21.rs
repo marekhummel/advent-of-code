@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use aoc_lib::cartesian::{Grid, Index, Position};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 type BoolGrid = Grid<bool>;
@@ -46,20 +46,20 @@ impl Solution21 {
 }
 
 impl Solution for Solution21 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let (grid, start) = Self::parse(input);
         let steps = if is_sample { 6 } else { 64 };
 
         let plots = Self::walk(&grid, &[start.into()], steps);
-        plots.len().into_some()
+        plots.len().to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let (grid, start) = Self::parse(input);
         let steps = 26501365;
 
         if is_sample {
-            return None; // Won't be able to solve sample case
+            return ProblemResult::NoSample; // Won't be able to solve sample case
         }
 
         // Lets note that the grid is 131 cells wide in both dimensions, the start point is exactly centered.
@@ -84,6 +84,6 @@ impl Solution for Solution21 {
         let y = y0 * (x - x1) * (x - x2) / ((x0 - x1) * (x0 - x2))
             + y1 * (x - x0) * (x - x2) / ((x1 - x0) * (x1 - x2))
             + y2 * (x - x0) * (x - x1) / ((x2 - x0) * (x2 - x1));
-        y.into_some()
+        y.to_result()
     }
 }

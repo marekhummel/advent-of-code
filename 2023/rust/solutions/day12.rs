@@ -5,7 +5,7 @@ use aoc_lib::iterator::ParsedExt;
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 type Cache = HashMap<(String, Vec<usize>, Option<char>), usize>;
 
@@ -85,22 +85,22 @@ impl Solution12 {
 }
 
 impl Solution for Solution12 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut c = Cache::new();
         self.parse(input)
             .into_iter()
             .map(|(line, groups)| Self::find_arrangements(&line, &groups, None, &mut c))
             .sum::<usize>()
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         // Takes a couple of seconds for real input
         let mut c = Cache::new();
         self.parse2(input)
             .into_iter()
             .map(|(line, groups)| Self::find_arrangements(&line, &groups, None, &mut c))
             .sum::<usize>()
-            .into_some()
+            .to_result()
     }
 }

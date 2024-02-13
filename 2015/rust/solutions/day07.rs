@@ -2,7 +2,7 @@ use std::collections::hash_map::Entry;
 use std::collections::{HashMap, VecDeque};
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
@@ -108,13 +108,13 @@ impl Solution07 {
 }
 
 impl Solution for Solution07 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let target = if is_sample { "i" } else { "a" };
         let signals = Self::build_circuit(&Self::parse(input));
-        signals[target].into_some()
+        signals[target].to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let mut instructions = Self::parse(input);
         let signals1 = Self::build_circuit(&instructions);
 
@@ -122,6 +122,6 @@ impl Solution for Solution07 {
         let rewire_instruction = Instruction::Signal(Input::Value(signals1[target]), "b".to_string());
         instructions.insert(0, rewire_instruction);
         let signals2 = Self::build_circuit(&instructions);
-        signals2[target].into_some()
+        signals2[target].to_result()
     }
 }

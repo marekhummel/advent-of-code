@@ -4,7 +4,7 @@ use aoc_lib::cartesian::{Index, Size};
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution11;
 impl Solution11 {
@@ -51,15 +51,15 @@ impl Solution11 {
 }
 
 impl Solution for Solution11 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (galaxies, size) = self.parse(input);
         let expanded_galaxies = self.expand_galaxies(size, galaxies, 2);
-        self.min_distances(&expanded_galaxies).into_some()
+        self.min_distances(&expanded_galaxies).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (galaxies, size) = self.parse(input);
         let expanded_galaxies = self.expand_galaxies(size, galaxies, 1000000);
-        self.min_distances(&expanded_galaxies).into_some()
+        self.min_distances(&expanded_galaxies).to_result()
     }
 }

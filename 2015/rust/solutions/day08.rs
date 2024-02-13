@@ -1,12 +1,12 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use regex::Regex;
 
 pub struct Solution08;
 impl Solution08 {}
 
 impl Solution for Solution08 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let hexa_rgx = Regex::new(r"\\x[0-9a-fA-F]{2}").unwrap();
 
         let mut delta = 0;
@@ -21,10 +21,10 @@ impl Solution for Solution08 {
             delta += code_len - char_len;
         }
 
-        delta.into_some()
+        delta.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut delta = 0;
         for code_string in input.lines() {
             let code_len = code_string.len();
@@ -37,6 +37,6 @@ impl Solution for Solution08 {
             delta += escaped_len - code_len;
         }
 
-        delta.into_some()
+        delta.to_result()
     }
 }

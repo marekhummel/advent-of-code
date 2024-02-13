@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 const DIGITS: &[&str] = &[
     "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "0", "1", "2", "3", "4", "5", "6",
@@ -38,11 +38,11 @@ impl Solution01 {
 }
 
 impl Solution for Solution01 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        input.lines().iter().map(|s| self.value01(s)).sum::<u32>().into_some()
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
+        input.lines().iter().map(|s| self.value01(s)).sum::<u32>().to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        input.lines().iter().map(|s| self.value02(s)).sum::<u32>().into_some()
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
+        input.lines().iter().map(|s| self.value02(s)).sum::<u32>().to_result()
     }
 }

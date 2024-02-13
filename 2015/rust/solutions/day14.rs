@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 use regex::Regex;
 
@@ -46,7 +46,7 @@ impl Solution14 {
 }
 
 impl Solution for Solution14 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let race_length = if is_sample { 1000 } else { 2503 };
 
         let reindeers = Self::parse(input);
@@ -55,10 +55,10 @@ impl Solution for Solution14 {
             .map(|reindeer| Self::distance(&reindeer, race_length))
             .max()
             .unwrap()
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let race_length = if is_sample { 1000 } else { 2503 };
 
         let reindeers = Self::parse(input);
@@ -74,6 +74,6 @@ impl Solution for Solution14 {
             }
         }
 
-        points.values().max().unwrap().into_some()
+        points.values().max().unwrap().to_result()
     }
 }

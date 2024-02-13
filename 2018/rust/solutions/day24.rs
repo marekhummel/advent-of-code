@@ -1,7 +1,7 @@
 use std::collections::{HashMap, HashSet};
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 use regex::Regex;
 
@@ -188,13 +188,13 @@ impl Solution24 {
 }
 
 impl Solution for Solution24 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let divisions = Self::parse(input);
         let (_, remaining) = Self::fight(divisions).unwrap();
-        remaining.into_some()
+        remaining.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let divisions = Self::parse(input);
 
         let mut low = 1;
@@ -210,6 +210,6 @@ impl Solution for Solution24 {
             }
         }
 
-        Self::fight_boosted(divisions, high).unwrap().1.into_some()
+        Self::fight_boosted(divisions, high).unwrap().1.to_result()
     }
 }

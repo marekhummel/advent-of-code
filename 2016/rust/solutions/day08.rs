@@ -1,6 +1,6 @@
 use aoc_lib::cartesian::{Grid, Index, Size};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Debug)]
@@ -40,7 +40,7 @@ impl Solution08 {
 }
 
 impl Solution for Solution08 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let instructions = Self::parse(input);
         let mut screen = if is_sample {
             Grid::empty(Size { width: 7, height: 3 }, false)
@@ -73,11 +73,11 @@ impl Solution for Solution08 {
         }
 
         // screen.print(|_, led| if *led { '#' } else { '.' });
-        screen.enumerate().filter(|(_, led)| **led).count().into_some()
+        screen.enumerate().filter(|(_, led)| **led).count().to_result()
     }
 
-    fn solve_version02(&self, _input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, _input: ProblemInput, _is_sample: bool) -> ProblemResult {
         // Run part 1 and print final screen.
-        String::from("UPOJFLBCEZ").into_some()
+        String::from("UPOJFLBCEZ").to_result()
     }
 }

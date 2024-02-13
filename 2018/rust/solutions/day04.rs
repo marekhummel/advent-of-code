@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 type Date = (u16, u16, u16);
@@ -50,7 +50,7 @@ impl Solution04 {
                 Record::ShiftBegin(id) => on_duty = *id,
                 Record::Sleep => asleep_since = Some(time.1),
                 Record::Wakeup => {
-                    let Some(start) = asleep_since else { unreachable!()};
+                    let Some(start) = asleep_since else { unreachable!() };
                     let chart = sleep_map.entry(on_duty).or_insert(vec![0; 60]);
                     for minute in start..time.1 {
                         chart[minute as usize] += 1;
@@ -64,7 +64,7 @@ impl Solution04 {
 }
 
 impl Solution for Solution04 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let records = Self::parse(input);
         let sleep_map = Self::create_sleep_map(&records);
 
@@ -75,10 +75,10 @@ impl Solution for Solution04 {
 
         let best_minute = sleep_chart.into_iter().position_max_by_key(|count| *count).unwrap();
 
-        (id * best_minute as u32).into_some()
+        (id * best_minute as u32).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let records = Self::parse(input);
         let sleep_map = Self::create_sleep_map(&records);
 
@@ -88,6 +88,6 @@ impl Solution for Solution04 {
             .max_by_key(|(_, (_, c))| *c)
             .unwrap();
 
-        (id * sleepiest_minute.0 as u32).into_some()
+        (id * sleepiest_minute.0 as u32).to_result()
     }
 }

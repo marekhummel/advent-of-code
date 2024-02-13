@@ -1,6 +1,6 @@
 use aoc_lib::cartesian::{Direction, Position};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 use std::collections::HashSet;
 
@@ -39,7 +39,7 @@ impl Solution03 {
 }
 
 impl Solution for Solution03 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (path1, path2) = Self::parse(input);
         let trace1: HashSet<_> = HashSet::from_iter(Self::trace_path(path1));
         let trace2: HashSet<_> = HashSet::from_iter(Self::trace_path(path2));
@@ -51,10 +51,10 @@ impl Solution for Solution03 {
             .map(|pos| pos.dist(&Position::zero()))
             .min()
             .unwrap()
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (path1, path2) = Self::parse(input);
         let trace1 = Self::trace_path(path1);
         let trace2 = Self::trace_path(path2);
@@ -68,6 +68,6 @@ impl Solution for Solution03 {
             .map(|&pos| trace1.iter().position(|t| t == pos).unwrap() + trace2.iter().position(|t| t == pos).unwrap())
             .min()
             .unwrap();
-        (closest_intersection + 2).into_some()
+        (closest_intersection + 2).to_result()
     }
 }

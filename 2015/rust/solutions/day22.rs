@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use std::hash::Hash;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 #[derive(Debug, Default)]
 struct Spell {
@@ -237,7 +237,7 @@ impl Solution22 {
 }
 
 impl Solution for Solution22 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let player = if is_sample { (10, 0, 250) } else { (50, 0, 500) };
         let boss = Self::parse(input);
 
@@ -249,10 +249,10 @@ impl Solution for Solution22 {
         };
 
         let mut cache = HashMap::new();
-        Self::emulate_game(&mut game_state, false, &mut cache).into_some()
+        Self::emulate_game(&mut game_state, false, &mut cache).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let player = if is_sample { (15, 0, 250) } else { (50, 0, 500) };
         let boss = Self::parse(input);
 
@@ -264,6 +264,6 @@ impl Solution for Solution22 {
         };
 
         let mut cache = HashMap::new();
-        Self::emulate_game(&mut game_state, true, &mut cache).into_some()
+        Self::emulate_game(&mut game_state, true, &mut cache).to_result()
     }
 }

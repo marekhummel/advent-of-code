@@ -1,6 +1,6 @@
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 pub struct Solution16;
@@ -41,19 +41,19 @@ impl Solution16 {
 
 // Can be implemented on strings as well, but using bools improves performance by x10
 impl Solution for Solution16 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let disk_size = if is_sample { 20 } else { 272 };
         let data = Self::create_data(Self::parse(input), disk_size);
         let checksum = Self::checksum(data, disk_size);
 
-        Self::format(checksum).into_some()
+        Self::format(checksum).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let disk_size = if is_sample { 20 } else { 35651584 };
         let data = Self::create_data(Self::parse(input), disk_size);
         let checksum = Self::checksum(data, disk_size);
 
-        Self::format(checksum).into_some()
+        Self::format(checksum).to_result()
     }
 }

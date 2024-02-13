@@ -3,7 +3,7 @@ use std::collections::{HashMap, HashSet, VecDeque};
 use aoc_lib::cartesian::Position;
 use aoc_lib::graph::Graph;
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution20;
 impl Solution20 {
@@ -70,7 +70,7 @@ impl Solution20 {
 }
 
 impl Solution for Solution20 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let input_str = input.string();
         let mut regex = input_str.trim_start_matches('^').trim_end_matches('$').chars();
 
@@ -78,10 +78,10 @@ impl Solution for Solution20 {
         Self::build_map(&mut regex, &mut map, HashSet::from([Position::zero()]));
 
         let dists = Self::dists(&map);
-        dists.values().max().unwrap().into_some()
+        dists.values().max().unwrap().to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let input_str = input.string();
         let mut regex = input_str.trim_start_matches('^').trim_end_matches('$').chars();
 
@@ -89,6 +89,6 @@ impl Solution for Solution20 {
         Self::build_map(&mut regex, &mut map, HashSet::from([Position::zero()]));
 
         let dists = Self::dists(&map);
-        dists.values().filter(|dist| **dist >= 1000).count().into_some()
+        dists.values().filter(|dist| **dist >= 1000).count().to_result()
     }
 }

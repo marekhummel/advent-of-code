@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 use regex::Regex;
 
@@ -38,14 +38,14 @@ impl Solution15 {
 }
 
 impl Solution for Solution15 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let discs = Self::parse(input);
-        Self::find_time_naive(&discs).into_some()
+        Self::find_time_naive(&discs).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut discs = Self::parse(input);
         discs.push((discs.len() as u32 + 1, 11, 0));
-        Self::find_time_naive(&discs).into_some()
+        Self::find_time_naive(&discs).to_result()
     }
 }

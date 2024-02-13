@@ -3,7 +3,7 @@ use std::collections::{HashSet, VecDeque};
 
 use aoc_lib::cartesian::{Direction, Grid, Index};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 struct Beam {
@@ -65,16 +65,16 @@ impl Solution16 {
 }
 
 impl Solution for Solution16 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let grid = input.grid();
         let beam_start = Beam {
             pos: Index { i: 0, j: 0 },
             dir: Direction::East,
         };
-        Self::traverse(&grid, beam_start).into_some()
+        Self::traverse(&grid, beam_start).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let grid = input.grid();
 
         let mut start_beams = Vec::new();
@@ -106,6 +106,6 @@ impl Solution for Solution16 {
             .map(|start| Self::traverse(&grid, start))
             .max()
             .unwrap()
-            .into_some()
+            .to_result()
     }
 }

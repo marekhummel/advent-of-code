@@ -4,7 +4,7 @@ use std::hash::Hash;
 
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(PartialEq, Debug, Eq, Hash, Clone)]
@@ -142,20 +142,20 @@ impl Solution22 {
 }
 
 impl Solution for Solution22 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut bricks = Self::parse(input);
         Self::let_bricks_fall(&mut bricks);
         let disintegration = Self::compute_disintegration_chain(&bricks);
 
         // Bricks that can be disintegrated have chain length of zero
-        disintegration.values().filter(|chain| **chain == 0).count().into_some()
+        disintegration.values().filter(|chain| **chain == 0).count().to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut bricks = Self::parse(input);
         Self::let_bricks_fall(&mut bricks);
         let disintegration = Self::compute_disintegration_chain(&bricks);
 
-        disintegration.values().sum::<u32>().into_some()
+        disintegration.values().sum::<u32>().to_result()
     }
 }

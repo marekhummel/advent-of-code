@@ -4,7 +4,7 @@ use std::fmt::Debug;
 
 use aoc_lib::cartesian::{Direction, Grid, Index};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -189,13 +189,13 @@ impl Solution20 {
 }
 
 impl Solution for Solution20 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let grid = Self::parse(input);
-        Self::find_exit(&grid, false).into_some()
+        Self::find_exit(&grid, false).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let grid = Self::parse(input);
-        Self::find_exit(&grid, true).into_some()
+        Self::find_exit(&grid, true).to_result()
     }
 }

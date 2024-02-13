@@ -3,7 +3,7 @@ use std::collections::{BinaryHeap, HashSet};
 
 use aoc_lib::graph::{self, Graph};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 pub struct Solution07;
@@ -24,14 +24,14 @@ impl Solution07 {
 }
 
 impl Solution for Solution07 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let graph = Self::parse(input);
         let sorting = graph::topo_sorting(&graph).unwrap();
 
-        sorting.into_iter().join("").into_some()
+        sorting.into_iter().join("").to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let graph = Self::parse(input);
         let num_workers = if is_sample { 2 } else { 5 };
         let workload = |task: &char| -> u8 { (*task as u8 - b'A') + 1 + if is_sample { 0 } else { 60 } };
@@ -84,6 +84,6 @@ impl Solution for Solution07 {
             time += 1;
         }
 
-        (time - 1).into_some()
+        (time - 1).to_result()
     }
 }

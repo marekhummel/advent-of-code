@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use aoc_lib::cartesian::{Direction, Position};
 use aoc_lib::solution::Solution;
 use aoc_lib::specific::intcode::Program;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 pub struct Solution11;
@@ -15,8 +15,12 @@ impl Solution11 {
         loop {
             let color = *panels.get(&pos).unwrap_or(&0);
             brain.input.push_back(color);
-            let Some(paint) = brain.execute_until_output() else { break; };
-            let Some(turn) = brain.execute_until_output() else { break;};
+            let Some(paint) = brain.execute_until_output() else {
+                break;
+            };
+            let Some(turn) = brain.execute_until_output() else {
+                break;
+            };
 
             panels.insert(pos, paint);
             dir = match turn {
@@ -56,21 +60,21 @@ impl Solution11 {
 }
 
 impl Solution for Solution11 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         }
 
         let brain = Program::init(&input.string());
         let mut panels = HashMap::new();
         Self::run_robot(brain, &mut panels);
 
-        panels.len().into_some()
+        panels.len().to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         }
 
         let brain = Program::init(&input.string());
@@ -79,6 +83,6 @@ impl Solution for Solution11 {
 
         // --- Print to see message
         // Self::print_panels(&panels);
-        "PGUEPLPR".into_some()
+        "PGUEPLPR".to_result()
     }
 }

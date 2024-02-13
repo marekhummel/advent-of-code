@@ -1,7 +1,7 @@
 use aoc_lib::solution::Solution;
 
 use aoc_lib::cartesian::{Direction, Grid, Index};
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 type CharGrid = Grid<char>;
@@ -113,14 +113,14 @@ impl Solution10 {
 }
 
 impl Solution for Solution10 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         // Add one to account for odd-length paths
-        ((self.find_loop(&self.parse(input)).len() + 1) / 2).into_some()
+        ((self.find_loop(&self.parse(input)).len() + 1) / 2).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let grid = self.parse(input);
         let loop_path = self.find_loop(&grid);
-        self.compute_area(&grid, loop_path).into_some()
+        self.compute_area(&grid, loop_path).to_result()
     }
 }

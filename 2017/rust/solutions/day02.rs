@@ -1,6 +1,6 @@
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::{Itertools, MinMaxResult};
 
 pub struct Solution02;
@@ -15,7 +15,7 @@ impl Solution02 {
 }
 
 impl Solution for Solution02 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let spreadsheet = Self::parse(input);
 
         spreadsheet
@@ -27,10 +27,10 @@ impl Solution for Solution02 {
                 y - x
             })
             .sum::<u32>()
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let spreadsheet = Self::parse(input);
 
         spreadsheet
@@ -45,6 +45,6 @@ impl Solution for Solution02 {
                 a / b
             })
             .sum::<u32>()
-            .into_some()
+            .to_result()
     }
 }

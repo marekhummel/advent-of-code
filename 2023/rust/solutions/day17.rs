@@ -4,7 +4,7 @@ use std::fmt::Debug;
 
 use aoc_lib::cartesian::{Direction, Grid, Index, Size};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 pub struct Solution17;
 
@@ -22,7 +22,7 @@ impl Solution17 {
 }
 
 impl Solution for Solution17 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let graph = Self::get_graph(input);
         let start = Index { i: 0, j: 0 };
         let goal = Index {
@@ -30,10 +30,10 @@ impl Solution for Solution17 {
             j: graph.size.height - 1,
         };
 
-        graph.shortest_path(start, goal, 0, 3).unwrap().heat.into_some()
+        graph.shortest_path(start, goal, 0, 3).unwrap().heat.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let graph = Self::get_graph(input);
         let start = Index { i: 0, j: 0 };
         let goal = Index {
@@ -41,7 +41,7 @@ impl Solution for Solution17 {
             j: graph.size.height - 1,
         };
 
-        graph.shortest_path(start, goal, 4, 10).unwrap().heat.into_some()
+        graph.shortest_path(start, goal, 4, 10).unwrap().heat.to_result()
     }
 }
 

@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::iproduct;
 
 pub struct Solution03;
@@ -37,7 +37,7 @@ impl Solution03 {
 }
 
 impl Solution for Solution03 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let claims = Self::parse(input);
         let mut fabric = vec![vec![HashSet::new(); 1000]; 1000];
         Self::claim_fabric(&mut fabric, &claims);
@@ -47,10 +47,10 @@ impl Solution for Solution03 {
             .flatten()
             .filter(|ids| ids.len() > 1)
             .count()
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let claims = Self::parse(input);
         let mut fabric = vec![vec![HashSet::new(); 1000]; 1000];
         Self::claim_fabric(&mut fabric, &claims);
@@ -67,6 +67,6 @@ impl Solution for Solution03 {
             .find(|(id, ..)| !overlaps.contains(id))
             .unwrap()
             .0
-            .into_some()
+            .to_result()
     }
 }

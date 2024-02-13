@@ -1,7 +1,7 @@
 use aoc_lib::algo;
 use aoc_lib::cartesian::Grid;
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Clone, PartialEq, Eq, Hash)]
@@ -48,7 +48,7 @@ impl Solution18 {
 }
 
 impl Solution for Solution18 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut state = Self::parse(input);
 
         for _ in 0..10 {
@@ -56,15 +56,15 @@ impl Solution for Solution18 {
         }
 
         let counts = state.iter().counts();
-        (counts[&Acre::Tree] * counts[&Acre::Lumberyard]).into_some()
+        (counts[&Acre::Tree] * counts[&Acre::Lumberyard]).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let state = Self::parse(input);
 
         let final_state = algo::find_final_state(state, Self::magic, 1_000_000_000);
         let counts = final_state.iter().counts();
 
-        (counts.get(&Acre::Tree).unwrap_or(&0) * counts.get(&Acre::Lumberyard).unwrap_or(&0)).into_some()
+        (counts.get(&Acre::Tree).unwrap_or(&0) * counts.get(&Acre::Lumberyard).unwrap_or(&0)).to_result()
     }
 }

@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::{iproduct, Itertools};
 
 #[derive(Debug, Clone)]
@@ -31,7 +31,7 @@ impl Solution25 {
 }
 
 impl Solution for Solution25 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let points = Self::parse(input);
 
         // Union Find struct
@@ -65,10 +65,10 @@ impl Solution for Solution25 {
             constellations = new_constellations;
         }
 
-        constellations.len().into_some()
+        constellations.len().to_result()
     }
 
-    fn solve_version02(&self, _input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        None
+    fn solve_version02(&self, _input: ProblemInput, _is_sample: bool) -> ProblemResult {
+        ProblemResult::NoPartTwo
     }
 }

@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution24;
 impl Solution24 {
@@ -48,7 +48,7 @@ impl Solution24 {
 }
 
 impl Solution for Solution24 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let components = Self::parse(input);
         let bridges = Self::build_bridges(&components, 0, &mut HashSet::new());
 
@@ -57,13 +57,13 @@ impl Solution for Solution24 {
             .max_by_key(|(_, strength)| *strength)
             .unwrap()
             .1
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let components = Self::parse(input);
         let bridges = Self::build_bridges(&components, 0, &mut HashSet::new());
 
-        bridges.into_iter().max().unwrap().1.into_some()
+        bridges.into_iter().max().unwrap().1.to_result()
     }
 }

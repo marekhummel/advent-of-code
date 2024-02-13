@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution15;
 impl Solution15 {
@@ -26,15 +26,15 @@ impl Solution15 {
 }
 
 impl Solution for Solution15 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         Self::parse(input)
             .iter()
             .map(|s| Self::hash(s) as u32)
             .sum::<u32>()
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut boxes: [Vec<(String, u8)>; 256] = vec![Vec::new(); 256].try_into().unwrap();
 
         for step in Self::parse(input) {
@@ -62,6 +62,6 @@ impl Solution for Solution15 {
                     .collect_vec()
             })
             .sum::<u32>();
-        focus_power.into_some()
+        focus_power.to_result()
     }
 }

@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 struct Generator {
@@ -35,7 +35,7 @@ impl Solution15 {
 }
 
 impl Solution for Solution15 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (ga, gb) = Self::parse(input);
 
         let total = ga
@@ -44,10 +44,10 @@ impl Solution for Solution15 {
             .filter(|(a, b)| a & 0xffff == b & 0xffff)
             .count();
 
-        total.into_some()
+        total.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (ga, gb) = Self::parse(input);
 
         let picky_ga = ga.filter(|a| a % 4 == 0);
@@ -59,6 +59,6 @@ impl Solution for Solution15 {
             .filter(|(a, b)| a & 0xffff == b & 0xffff)
             .count();
 
-        total.into_some()
+        total.to_result()
     }
 }

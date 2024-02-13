@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 #[derive(Debug)]
 struct Number {
     value: u32,
@@ -108,22 +108,22 @@ impl Solution03 {
 }
 
 impl Solution for Solution03 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (numbers, symbols) = self.parse(input);
         numbers
             .iter()
             .filter(|n| self.is_part(n, &symbols))
             .map(|n| n.value)
             .sum::<u32>()
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (numbers, symbols) = self.parse(input);
         symbols
             .iter()
             .map(|s| self.gear_ratio(s, &numbers))
             .sum::<u32>()
-            .into_some()
+            .to_result()
     }
 }

@@ -2,7 +2,7 @@ use std::cmp::Reverse;
 use std::collections::BinaryHeap;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::{iproduct, Itertools};
 
 #[derive(PartialEq, Eq, PartialOrd, Ord)]
@@ -72,7 +72,7 @@ impl Solution23 {
 }
 
 impl Solution for Solution23 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let nanobots = Self::parse(input);
 
         let strongest = nanobots.iter().max_by_key(|nb| nb.rad).unwrap();
@@ -81,10 +81,10 @@ impl Solution for Solution23 {
             .filter(|nb| strongest.pos.mandist(&nb.pos) <= strongest.rad)
             .count();
 
-        in_range.into_some()
+        in_range.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         // https://www.reddit.com/r/adventofcode/comments/a8s17l/comment/ecfmpy0/
         let nanobots = Self::parse(input);
         let max_dist = nanobots
@@ -122,7 +122,7 @@ impl Solution for Solution23 {
 
         while let Some((_reach, sz, Reverse(dist_to_orig), bbox)) = workheap.pop() {
             if sz == 1 {
-                return dist_to_orig.into_some();
+                return dist_to_orig.to_result();
             }
 
             // Split box into eight octants, each with half the side length
@@ -147,6 +147,6 @@ impl Solution for Solution23 {
             }
         }
 
-        None
+        unreachable!()
     }
 }

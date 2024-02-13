@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Debug)]
@@ -67,21 +67,21 @@ impl Solution23 {
 }
 
 impl Solution for Solution23 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let program = Self::parse(input);
         let mut registers = HashMap::from([(String::from("a"), 0u32), (String::from("b"), 0u32)]);
         Self::run_program(&program, &mut registers);
 
         let target = if is_sample { "a" } else { "b" };
-        registers[target].into_some()
+        registers[target].to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let program = Self::parse(input);
         let mut registers = HashMap::from([(String::from("a"), 1u32), (String::from("b"), 0u32)]);
         Self::run_program(&program, &mut registers);
 
         let target = if is_sample { "a" } else { "b" };
-        registers[target].into_some()
+        registers[target].to_result()
     }
 }

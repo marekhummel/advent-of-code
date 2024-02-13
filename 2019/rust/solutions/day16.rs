@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 pub struct Solution16;
@@ -29,13 +29,13 @@ impl Solution16 {
 }
 
 impl Solution for Solution16 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let signal = input.string().bytes().map(|b| b - b'0').collect_vec();
         let decoded = (0..100).fold(signal, |phase_signal, _| Self::fft(phase_signal));
-        decoded.into_iter().take(8).map(|s| s.to_string()).join("").into_some()
+        decoded.into_iter().take(8).map(|s| s.to_string()).join("").to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let sig_str = input.string();
         let length = sig_str.len() * 10000;
         let mut signal = sig_str.bytes().map(|b| b - b'0').cycle().take(length).collect_vec();
@@ -63,6 +63,6 @@ impl Solution for Solution16 {
             new_signal
         });
 
-        decoded.into_iter().take(8).map(|s| s.to_string()).join("").into_some()
+        decoded.into_iter().take(8).map(|s| s.to_string()).join("").to_result()
     }
 }

@@ -1,6 +1,6 @@
 use aoc_lib::cartesian::{Index, Size};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::{iproduct, Itertools};
 use std::collections::{HashMap, HashSet};
 
@@ -45,7 +45,7 @@ impl Solution06 {
 }
 
 impl Solution for Solution06 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (locations, size) = Self::parse(input);
 
         let mut infinite = HashSet::new();
@@ -71,10 +71,10 @@ impl Solution for Solution06 {
             .map(|(_, area)| area)
             .max()
             .unwrap()
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let (locations, size) = Self::parse(input);
         let range = if is_sample { 32 } else { 10000 };
 
@@ -83,6 +83,6 @@ impl Solution for Solution06 {
             .map(|idx| locations.iter().map(|loc| loc.dist(&idx)).sum::<usize>())
             .filter(|dist| *dist < range)
             .count()
-            .into_some()
+            .to_result()
     }
 }

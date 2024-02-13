@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use aoc_lib::solution::Solution;
 use aoc_lib::specific::assembunny::{Instruction, Program, Value};
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 pub struct Solution25;
@@ -10,9 +10,9 @@ impl Solution25 {}
 
 impl Solution for Solution25 {
     // Still runs for a couple of seconds, even after code optimization
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         }
 
         let mut program = Program::from_input(input);
@@ -49,7 +49,7 @@ impl Solution for Solution25 {
 
                 if let Some(history_last_output) = history.get(&(program.pc, reg_snap.clone())) {
                     if history_last_output == &last_output {
-                        return a.into_some();
+                        return a.to_result();
                     }
                 }
 
@@ -61,8 +61,8 @@ impl Solution for Solution25 {
         unreachable!()
     }
 
-    fn solve_version02(&self, _input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, _input: ProblemInput, _is_sample: bool) -> ProblemResult {
         // No part 2
-        None
+        ProblemResult::NoPartTwo
     }
 }

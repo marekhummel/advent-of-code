@@ -4,7 +4,7 @@ use std::collections::{BinaryHeap, HashSet};
 
 use aoc_lib::cartesian::{Grid, Index};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -154,14 +154,14 @@ impl Solution15 {
 }
 
 impl Solution for Solution15 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (caves, entities) = Self::parse(input);
 
-        Self::combat(&caves, &entities).into_some()
+        Self::combat(&caves, &entities).to_result()
     }
 
     // Needs 5-10 secs.
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (caves, entities) = Self::parse(input);
 
         loop {
@@ -178,7 +178,7 @@ impl Solution for Solution15 {
                 .filter(|e| e.borrow().team == Team::Elf)
                 .all(|e| e.borrow().hitpoints > 0)
             {
-                return outcome.into_some();
+                return outcome.to_result();
             }
         }
     }

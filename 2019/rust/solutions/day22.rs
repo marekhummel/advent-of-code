@@ -1,6 +1,6 @@
 use aoc_lib::math;
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 enum Shuffle {
     DealNew,
@@ -56,17 +56,17 @@ impl Solution22 {
 }
 
 impl Solution for Solution22 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let (deck_size, card) = if is_sample { (10, 0) } else { (10007, 2019) };
         let shuffles = Self::parse(input);
         let mut deck = (0..deck_size).collect_vec();
         for shuffle in shuffles {
             deck = shuffle.apply(&deck);
         }
-        deck.into_iter().position(|c| c == card).unwrap().into_some()
+        deck.into_iter().position(|c| c == card).unwrap().to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let deck_size = if is_sample { 10 } else { 119315717514047 };
         let mut pos = if is_sample { 0 } else { 2020 };
         let mut reps: i128 = if is_sample { 1 } else { 101741582076661 };
@@ -98,6 +98,6 @@ impl Solution for Solution22 {
                 reps >>= 1;
             }
         }
-        pos.rem_euclid(deck_size).into_some()
+        pos.rem_euclid(deck_size).to_result()
     }
 }

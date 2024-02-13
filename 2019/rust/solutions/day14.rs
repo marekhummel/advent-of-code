@@ -3,7 +3,7 @@ use std::collections::HashMap;
 
 use aoc_lib::graph::{self, Graph};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct Quantity(u64, String);
@@ -70,12 +70,12 @@ impl Solution14 {
 }
 
 impl Solution for Solution14 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let graph = Self::parse(input);
-        Self::compute_required_ore(&graph, 1).into_some()
+        Self::compute_required_ore(&graph, 1).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let graph = Self::parse(input);
         let total_ore = 1_000_000_000_000;
 
@@ -94,6 +94,6 @@ impl Solution for Solution14 {
             }
         }
 
-        low.into_some()
+        low.to_result()
     }
 }

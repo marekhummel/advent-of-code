@@ -3,7 +3,7 @@ use std::collections::{HashMap, HashSet};
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
 use aoc_lib::specific::wristdevice::{Instruction, Op};
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 type Registers = Vec<usize>;
@@ -79,7 +79,7 @@ impl Solution16 {
 }
 
 impl Solution for Solution16 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (samples, _) = Self::parse(input);
 
         let mut solution = 0;
@@ -100,12 +100,12 @@ impl Solution for Solution16 {
             }
         }
 
-        solution.into_some()
+        solution.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         }
 
         let (samples, program) = Self::parse(input);
@@ -137,6 +137,6 @@ impl Solution for Solution16 {
             inst.execute(&mut registers);
         }
 
-        registers[0].into_some()
+        registers[0].to_result()
     }
 }

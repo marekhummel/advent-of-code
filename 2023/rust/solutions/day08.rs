@@ -4,7 +4,7 @@ use aoc_lib::math::lcm;
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 pub struct Solution08;
 
 impl Solution08 {
@@ -27,7 +27,7 @@ impl Solution08 {
 }
 
 impl Solution for Solution08 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (instruction, network) = self.parse(input);
 
         let mut node = String::from("AAA");
@@ -37,13 +37,13 @@ impl Solution for Solution08 {
                 node = network[&node][&inst].clone();
                 steps += 1;
                 if node == "ZZZ" {
-                    return steps.into_some();
+                    return steps.to_result();
                 }
             }
         }
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (instruction, network) = self.parse(input);
 
         // define starting nodes and count when each starting node reaches an end state
@@ -78,6 +78,6 @@ impl Solution for Solution08 {
             .map(|fs| lcm(&fs[..]))
             .min()
             .unwrap()
-            .into_some()
+            .to_result()
     }
 }

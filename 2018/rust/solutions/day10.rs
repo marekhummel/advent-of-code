@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 use regex::Regex;
 
@@ -70,17 +70,17 @@ impl Solution10 {
 }
 
 impl Solution for Solution10 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let lights = Self::parse(input);
 
         let (message, _) = Self::find_message(lights, is_sample);
-        message.into_some()
+        message.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let lights = Self::parse(input);
 
         let (_, time) = Self::find_message(lights, is_sample);
-        time.into_some()
+        time.to_result()
     }
 }

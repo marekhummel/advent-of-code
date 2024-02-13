@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use aoc_lib::graph::{self, Graph};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution06;
 impl Solution06 {
@@ -32,12 +32,12 @@ impl Solution06 {
 }
 
 impl Solution for Solution06 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let system = Self::parse(input);
-        Self::orbits("COM", &system, 0).into_some()
+        Self::orbits("COM", &system, 0).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut system = Self::parse(input);
 
         // Build full graph
@@ -51,6 +51,6 @@ impl Solution for Solution06 {
         let path = shortest_paths.get("SAN").unwrap();
 
         // Remove YOU and SAN from path (-2), and count edges between vertices (= vertices - 1)
-        (path.len() - 3).into_some()
+        (path.len() - 3).to_result()
     }
 }

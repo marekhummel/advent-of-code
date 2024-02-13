@@ -2,7 +2,7 @@ use aoc_lib::iterator::ParsedExt;
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 #[derive(Debug)]
 struct Race {
     time: f64,
@@ -63,17 +63,17 @@ impl Solution06 {
 }
 
 impl Solution for Solution06 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let races = self.parse(input);
         races
             .into_iter()
             .map(|r| self.solve_race(&r))
             .product::<u32>()
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let race = self.parse2(input);
-        self.solve_race(&race).into_some()
+        self.solve_race(&race).to_result()
     }
 }

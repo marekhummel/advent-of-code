@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -65,7 +65,7 @@ impl Solution20 {
 }
 
 impl Solution for Solution20 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let particles = Self::parse(input);
 
         // Just works due to lucky input I guess
@@ -74,10 +74,10 @@ impl Solution for Solution20 {
             .min_by_key(|p| (p.acc.mandist(), p.vel.mandist(), p.pos.mandist()))
             .unwrap()
             .id
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut particles = Self::parse(input);
 
         let mut last_collision = 0;
@@ -107,6 +107,6 @@ impl Solution for Solution20 {
             particles.retain(|p| !collision_pos.contains(&p.pos));
         }
 
-        particles.len().into_some()
+        particles.len().to_result()
     }
 }

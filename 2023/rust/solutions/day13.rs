@@ -2,7 +2,7 @@ use aoc_lib::cartesian::Grid;
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 type BoolGrid = Grid<bool>;
 pub struct Solution13;
@@ -81,19 +81,19 @@ impl Solution13 {
 }
 
 impl Solution for Solution13 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         self.parse(input)
             .into_iter()
             .map(|grid| self.compute_reflection_value(&grid, 0))
             .sum::<usize>()
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         self.parse(input)
             .into_iter()
             .map(|grid| self.compute_reflection_value(&grid, 1))
             .sum::<usize>()
-            .into_some()
+            .to_result()
     }
 }

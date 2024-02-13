@@ -1,6 +1,6 @@
 use aoc_lib::solution::Solution;
 use aoc_lib::specific::intcode::Program;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::{iproduct, Itertools};
 
 pub struct Solution19;
@@ -15,9 +15,9 @@ impl Solution19 {
 }
 
 impl Solution for Solution19 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        if _is_sample {
-            return None;
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
+        if is_sample {
+            return ProblemResult::NoSample;
         }
 
         let intcode = input.string();
@@ -25,12 +25,12 @@ impl Solution for Solution19 {
             .filter(|(x, y)| Self::is_pulled(&intcode, *x, *y))
             .count();
 
-        tractor.into_some()
+        tractor.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
-        if _is_sample {
-            return None;
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
+        if is_sample {
+            return ProblemResult::NoSample;
         }
 
         let intcode = input.string();
@@ -66,7 +66,7 @@ impl Solution for Solution19 {
 
             // Check if ship fits
             if y >= 99 && start_x + 99 <= beam_ends[y as usize - 99] {
-                return (start_x * 10000 + (y - 99)).into_some();
+                return (start_x * 10000 + (y - 99)).to_result();
             }
         }
 

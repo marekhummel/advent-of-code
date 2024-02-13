@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use aoc_lib::math::lcm;
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -112,7 +112,7 @@ impl Solution20 {
 }
 
 impl Solution for Solution20 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         const BUTTON_PRESSES: usize = 1000;
         let mut modules = Self::parse(input);
         let mut states = Vec::new();
@@ -135,10 +135,10 @@ impl Solution for Solution20 {
             .cycle()
             .take(BUTTON_PRESSES)
             .fold((0, 0), |(acc_l, acc_h), (l, h)| (acc_l + l, acc_h + h));
-        (lows * highs).into_some()
+        (lows * highs).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let mut modules = Self::parse(input);
 
         // Looking at the input, we know rx is only the target of one conjuction: "cs"
@@ -146,7 +146,7 @@ impl Solution for Solution20 {
 
         // Not defined for sample
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         }
 
         if let ModuleType::Conjunction(states) = &modules[FINAL].mtype {
@@ -170,7 +170,7 @@ impl Solution for Solution20 {
 
             // Once all inputs have sent a high once, the first iteration on which all inputs send high
             // and thus make "cs" send a high to "rx" is the lcm of all those stored values.
-            return (lcm(&first_high.values().cloned().collect_vec())).into_some();
+            return (lcm(&first_high.values().cloned().collect_vec())).to_result();
         };
 
         unreachable!()

@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use rayon::iter::*;
 pub struct Solution04;
 
@@ -25,13 +25,13 @@ impl Solution04 {
 }
 
 impl Solution for Solution04 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let key = input.string();
-        Self::find_hash(&key, "00000").into_some()
+        Self::find_hash(&key, "00000").to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let key = input.string();
-        Self::find_hash(&key, "000000").into_some()
+        Self::find_hash(&key, "000000").to_result()
     }
 }

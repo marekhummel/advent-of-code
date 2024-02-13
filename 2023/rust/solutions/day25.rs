@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use aoc_lib::graph::{self, Graph};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 use rayon::iter::*;
 
@@ -73,7 +73,7 @@ impl Solution25 {
 
 impl Solution for Solution25 {
     // Takes about 13 secs / 3 secs (with and without release)
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut connections = Self::parse(input);
 
         // Run dijkstra for all pairs of vertices. Since the given network is a small world network
@@ -91,11 +91,11 @@ impl Solution for Solution25 {
         // Find components and their sizes
         let components = Self::find_components(&connections);
         assert_eq!(components.len(), 2);
-        components.into_iter().map(|c| c.len()).product::<usize>().into_some()
+        components.into_iter().map(|c| c.len()).product::<usize>().to_result()
     }
 
-    fn solve_version02(&self, _input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, _input: ProblemInput, _is_sample: bool) -> ProblemResult {
         // Just a button press :)
-        None
+        ProblemResult::NoPartTwo
     }
 }

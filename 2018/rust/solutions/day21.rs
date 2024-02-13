@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution21;
 impl Solution21 {
@@ -45,21 +45,21 @@ impl Solution21 {
 }
 
 impl Solution for Solution21 {
-    fn solve_version01(&self, _input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, _input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         }
 
         let fs = Self::run();
-        fs[0].into_some()
+        fs[0].to_result()
     }
 
-    fn solve_version02(&self, _input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, _input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         }
 
         let fs = Self::run();
-        fs.into_iter().last().unwrap().into_some()
+        fs.into_iter().last().unwrap().to_result()
     }
 }

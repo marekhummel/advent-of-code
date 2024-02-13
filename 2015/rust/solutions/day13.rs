@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 use regex::Regex;
 
@@ -48,18 +48,18 @@ impl Solution13 {
 }
 
 impl Solution for Solution13 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let table = Self::parse(input);
-        Self::optimal_happiness(&table).into_some()
+        Self::optimal_happiness(&table).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut table = Self::parse(input);
         let me = String::from("Me");
         table.iter_mut().for_each(|(_, vals)| _ = vals.insert(me.clone(), 0i16));
         table.insert(me, table.keys().map(|o| (o.clone(), 0i16)).collect());
 
         // Takes about 4secs
-        Self::optimal_happiness(&table).into_some()
+        Self::optimal_happiness(&table).to_result()
     }
 }

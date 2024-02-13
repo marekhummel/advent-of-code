@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use aoc_lib::cartesian::{Direction, Position};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 struct SpiralPosIterator {
     pos: Position,
@@ -47,15 +47,15 @@ pub struct Solution03;
 impl Solution03 {}
 
 impl Solution for Solution03 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let n = input.string().parse::<usize>().unwrap();
 
         let mut it = SpiralPosIterator::new();
         let pos = it.nth(n - 1).unwrap();
-        pos.dist(&Position::zero()).into_some()
+        pos.dist(&Position::zero()).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let n = input.string().parse::<u64>().unwrap();
         let it = SpiralPosIterator::new();
 
@@ -64,7 +64,7 @@ impl Solution for Solution03 {
             let adjacent_sum: u64 = pos.moore_neighbors().into_iter().flat_map(|n| spiral.get(&n)).sum();
 
             if adjacent_sum > n {
-                return adjacent_sum.into_some();
+                return adjacent_sum.to_result();
             }
 
             spiral.insert(pos, adjacent_sum);

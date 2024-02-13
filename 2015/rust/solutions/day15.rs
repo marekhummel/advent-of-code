@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 use regex::Regex;
 
@@ -55,13 +55,13 @@ impl Solution15 {
 }
 
 impl Solution for Solution15 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let ingredients = Self::parse(input);
-        Self::score(&ingredients, (0, 0, 0, 0, 0), 100, false).into_some()
+        Self::score(&ingredients, (0, 0, 0, 0, 0), 100, false).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let ingredients = Self::parse(input);
-        Self::score(&ingredients, (0, 0, 0, 0, 0), 100, true).into_some()
+        Self::score(&ingredients, (0, 0, 0, 0, 0), 100, true).to_result()
     }
 }

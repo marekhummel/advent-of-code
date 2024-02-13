@@ -1,15 +1,15 @@
 use aoc_lib::math;
 use aoc_lib::solution::Solution;
 use aoc_lib::specific::duet::{Instruction, Program, StepResult, Value};
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution23;
 impl Solution23 {}
 
 impl Solution for Solution23 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         };
 
         let mut prog = Program::parse(&input, true);
@@ -25,12 +25,12 @@ impl Solution for Solution23 {
 
         // Check below to see that with n = 99, the two nested loops do 97 iterations each,
         // giving 97 * 97 = 9409 multiplications in total
-        multiplies.into_some()
+        multiplies.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         };
 
         // Assuming a != 0, this is the readable version of the code, a (inverted) primality test:
@@ -84,6 +84,6 @@ impl Solution for Solution23 {
             .step_by(-increment as usize)
             .filter(|n| !math::is_prime(*n))
             .count()
-            .into_some()
+            .to_result()
     }
 }

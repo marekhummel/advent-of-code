@@ -1,7 +1,7 @@
 use std::collections::{HashMap, VecDeque};
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Debug, Clone, Copy)]
@@ -90,7 +90,7 @@ impl Solution10 {
 }
 
 impl Solution for Solution10 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let instructions = Self::parse(input);
         let chips = if is_sample { (2, 5) } else { (17, 61) };
 
@@ -100,13 +100,13 @@ impl Solution for Solution10 {
             .find(|(_, low, high)| (*low, *high) == chips)
             .unwrap()
             .0
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let instructions = Self::parse(input);
 
         let (_, outputs) = Self::run_instructions(instructions);
-        [0, 1, 2].iter().flat_map(|o| &outputs[o]).product::<u32>().into_some()
+        [0, 1, 2].iter().flat_map(|o| &outputs[o]).product::<u32>().to_result()
     }
 }

@@ -4,7 +4,7 @@ use std::fmt::Display;
 
 use aoc_lib::cartesian::{Direction, Grid};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -178,7 +178,7 @@ impl Solution18 {
 }
 
 impl Solution for Solution18 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let map = input.grid().map_elements(Tile::from_char);
         let graph = Self::create_graph(&map);
 
@@ -187,10 +187,10 @@ impl Solution for Solution18 {
             .filter_map(|t| if let Tile::Key(k) = t { Some(*k) } else { None })
             .collect_vec();
 
-        Self::collect_keys(&graph, &all_keys, [Tile::Entrance]).into_some()
+        Self::collect_keys(&graph, &all_keys, [Tile::Entrance]).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut map = input.grid().map_elements(Tile::from_char);
 
         // Transform entrance
@@ -220,6 +220,6 @@ impl Solution for Solution18 {
             .collect_vec();
 
         // Collect them, but this time with four robots
-        Self::collect_keys(&graph, &all_keys, [0, 1, 2, 3].map(Tile::SubEntrance)).into_some()
+        Self::collect_keys(&graph, &all_keys, [0, 1, 2, 3].map(Tile::SubEntrance)).to_result()
     }
 }

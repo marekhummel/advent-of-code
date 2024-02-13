@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 pub struct Solution12;
@@ -47,7 +47,7 @@ impl Solution12 {
 }
 
 impl Solution for Solution12 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (initial_state, rules) = Self::parse(input);
 
         let mut state = initial_state
@@ -60,10 +60,10 @@ impl Solution for Solution12 {
             state = Self::next_gen(&state, &rules);
         }
 
-        state.into_iter().sum::<i64>().into_some()
+        state.into_iter().sum::<i64>().to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (initial_state, rules) = Self::parse(input);
 
         let mut state = initial_state
@@ -89,7 +89,7 @@ impl Solution for Solution12 {
 
                 // Between each period, the score shifts, count increments to the 50 billionth step
                 let score_inc = ((50_000_000_000 - last_g) / period - 1) as i64 * (score - last_score);
-                return (final_state.into_iter().sum::<i64>() + score_inc).into_some();
+                return (final_state.into_iter().sum::<i64>() + score_inc).to_result();
             }
         }
 

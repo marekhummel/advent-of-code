@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Debug)]
@@ -61,17 +61,17 @@ impl Solution08 {
 }
 
 impl Solution for Solution08 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let instructions = Self::parse(input);
         let mut registers = HashMap::new();
 
         for inst in instructions {
             Self::step(&inst, &mut registers);
         }
-        registers.values().max().unwrap().into_some()
+        registers.values().max().unwrap().to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let instructions = Self::parse(input);
         let mut registers = HashMap::new();
 
@@ -80,6 +80,6 @@ impl Solution for Solution08 {
             Self::step(&inst, &mut registers);
             highest = highest.max(*registers.values().max().unwrap_or(&0));
         }
-        highest.into_some()
+        highest.to_result()
     }
 }

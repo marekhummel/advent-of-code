@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Debug, Clone, Copy)]
@@ -77,7 +77,7 @@ impl Solution11 {
 }
 
 impl Solution for Solution11 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let path = Self::parse(input);
 
         let start = HexIndex { x: 0, y: 0 };
@@ -86,10 +86,10 @@ impl Solution for Solution11 {
             target = target.step(dir);
         }
 
-        start.dist(&target).into_some()
+        start.dist(&target).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let path = Self::parse(input);
 
         let start = HexIndex { x: 0, y: 0 };
@@ -100,6 +100,6 @@ impl Solution for Solution11 {
             max_dist = max_dist.max(start.dist(&target))
         }
 
-        max_dist.into_some()
+        max_dist.to_result()
     }
 }

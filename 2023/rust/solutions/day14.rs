@@ -4,7 +4,7 @@ use itertools::Itertools;
 use std::{collections::HashMap, iter};
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 type CharGrid = Grid<char>;
 
@@ -91,13 +91,13 @@ impl Solution14 {
 }
 
 impl Solution for Solution14 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let grid = self.parse(input);
         let tilted = Self::tilt(&grid, true, false); // North
-        Self::eval_load(&tilted).into_some()
+        Self::eval_load(&tilted).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut dish = self.parse(input);
         let mut iterations = HashMap::from([(dish.clone(), 0)]);
 
@@ -110,7 +110,7 @@ impl Solution for Solution14 {
                 for _ in 0..offset {
                     dish = Self::cycle(&dish);
                 }
-                return Self::eval_load(&dish).into_some();
+                return Self::eval_load(&dish).to_result();
             }
 
             iterations.insert(dish.clone(), i);

@@ -3,7 +3,7 @@ use std::collections::HashSet;
 
 use aoc_lib::math::lcm;
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 use regex::Regex;
 
@@ -92,7 +92,7 @@ impl Solution12 {
 }
 
 impl Solution for Solution12 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let moons = Self::parse(input);
         let steps = if is_sample { 10 } else { 1000 };
 
@@ -104,10 +104,10 @@ impl Solution for Solution12 {
             .into_iter()
             .map(|m| m.borrow().total_energy())
             .sum::<i32>()
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let moons = Self::parse(input);
         let mut states_x = HashSet::new();
         let mut states_y = HashSet::new();
@@ -149,7 +149,7 @@ impl Solution for Solution12 {
 
             // If period has been found for all dimensions, return lcm of those
             if let (Some(px), Some(py), Some(pz)) = (period_x, period_y, period_z) {
-                return lcm(&[px, py, pz]).into_some();
+                return lcm(&[px, py, pz]).to_result();
             }
 
             // Update moons

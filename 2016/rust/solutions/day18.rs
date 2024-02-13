@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 pub struct Solution18;
@@ -15,7 +15,7 @@ impl Solution18 {
 }
 
 impl Solution for Solution18 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let total_rows = if is_sample { 10 } else { 40 };
         let mut row = input.string().chars().map(|c| c == '.').collect_vec();
         let mut safe_tiles = 0;
@@ -24,10 +24,10 @@ impl Solution for Solution18 {
             row = Self::next_row(row);
         }
 
-        safe_tiles.into_some()
+        safe_tiles.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let total_rows = if is_sample { 10 } else { 400000 };
         let mut row = input.string().chars().map(|c| c == '.').collect_vec();
         let mut safe_tiles = 0;
@@ -36,6 +36,6 @@ impl Solution for Solution18 {
             row = Self::next_row(row);
         }
 
-        safe_tiles.into_some()
+        safe_tiles.to_result()
     }
 }

@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use regex::Regex;
 
 pub struct Solution09;
@@ -52,21 +52,21 @@ impl Solution09 {
 }
 
 impl Solution for Solution09 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         input
             .lines()
             .into_iter()
             .map(|line| Self::decompress(&line).len())
             .sum::<usize>()
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         input
             .lines()
             .into_iter()
             .map(|line| Self::decompress_v2(&line))
             .sum::<u64>()
-            .into_some()
+            .to_result()
     }
 }

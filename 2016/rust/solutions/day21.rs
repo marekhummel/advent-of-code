@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::usize;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Debug, Clone, Copy)]
@@ -125,7 +125,7 @@ impl Solution21 {
 }
 
 impl Solution for Solution21 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let instructions = Self::parse(input);
         let password = if is_sample { "abcde" } else { "abcdefgh" };
 
@@ -134,10 +134,10 @@ impl Solution for Solution21 {
             scramble = inst.perform(&scramble);
         }
 
-        scramble.into_some()
+        scramble.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let instructions = Self::parse(input);
         let password = if is_sample { "decab" } else { "fbgdceah" };
         let rot_letter_map = Self::create_mapping_rev_letter(password.len());
@@ -148,6 +148,6 @@ impl Solution for Solution21 {
             unscramble = inv_inst.perform(&unscramble);
         }
 
-        unscramble.into_some()
+        unscramble.to_result()
     }
 }

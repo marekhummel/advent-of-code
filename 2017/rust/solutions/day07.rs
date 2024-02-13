@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::{Either, Itertools};
 
 #[derive(Debug, Clone)]
@@ -87,18 +87,18 @@ impl Solution07 {
 }
 
 impl Solution for Solution07 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let programs = Self::parse(input);
-        Self::find_root(&programs).name.into_some()
+        Self::find_root(&programs).name.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let programs = Self::parse(input);
 
         let root = Self::find_root(&programs).name;
         let lookup = programs.into_iter().map(|p| (p.name.clone(), p)).collect();
         let unbalanced = Self::find_unbalanced(&root, &lookup);
 
-        unbalanced.left().unwrap().1.into_some()
+        unbalanced.left().unwrap().1.to_result()
     }
 }

@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use aoc_lib::cartesian::{Direction, Index};
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::{iproduct, Itertools};
 
 type Instruction = (String, Index, Index);
@@ -77,7 +77,7 @@ impl Solution06 {
 }
 
 impl Solution for Solution06 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let instructions = Self::parse(input);
         let (ii, jj) = Self::get_relevant_indices(&instructions);
 
@@ -93,10 +93,10 @@ impl Solution for Solution06 {
             .map(|(bj, bi)| bj * bi)
             .collect_vec();
         let flat_grid = grid.into_iter().flatten().map(|l| l as u128).collect_vec();
-        Self::compute_illumination(&flat_grid, &block_sizes).into_some()
+        Self::compute_illumination(&flat_grid, &block_sizes).to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let instructions = Self::parse(input);
         let (ii, jj) = Self::get_relevant_indices(&instructions);
 
@@ -113,6 +113,6 @@ impl Solution for Solution06 {
             .collect_vec();
 
         let flat_grid = grid.into_iter().flatten().collect_vec();
-        Self::compute_illumination(&flat_grid, &block_sizes).into_some()
+        Self::compute_illumination(&flat_grid, &block_sizes).to_result()
     }
 }

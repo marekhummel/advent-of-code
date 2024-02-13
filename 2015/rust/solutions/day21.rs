@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::{iproduct, Itertools};
 
 type Item = (u32, u32, u32);
@@ -47,9 +47,9 @@ impl Solution21 {
 }
 
 impl Solution for Solution21 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         }
 
         let (bhp, bdmg, barmor) = Self::parse(input);
@@ -62,12 +62,12 @@ impl Solution for Solution21 {
             .min()
             .unwrap()
             .0
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         }
 
         let (bhp, bdmg, barmor) = Self::parse(input);
@@ -80,6 +80,6 @@ impl Solution for Solution21 {
             .max()
             .unwrap()
             .0
-            .into_some()
+            .to_result()
     }
 }

@@ -1,6 +1,6 @@
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 #[derive(Debug)]
 struct Node {
@@ -43,15 +43,15 @@ impl Solution08 {
 }
 
 impl Solution for Solution08 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let licence = Self::parse(input);
         let root = Node::from_licence(&mut licence.into_iter());
-        root.total_metadata().into_some()
+        root.total_metadata().to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let licence = Self::parse(input);
         let root = Node::from_licence(&mut licence.into_iter());
-        root.value().into_some()
+        root.value().to_result()
     }
 }

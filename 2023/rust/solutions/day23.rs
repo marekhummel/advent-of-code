@@ -4,7 +4,7 @@ use std::collections::{HashMap, HashSet};
 
 use aoc_lib::cartesian::{Direction, Grid, Index};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 pub struct Solution23;
@@ -116,22 +116,22 @@ impl Solution23 {
 }
 
 impl Solution for Solution23 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (map, start, end) = Self::parse(input);
         let trail_graph = Self::create_trail_graph(&map, true);
         let mut visited = HashSet::from([start]);
         Self::longest_path(&trail_graph, &mut visited, start, end)
             .unwrap()
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (map, start, end) = Self::parse(input);
         let trail_graph = Self::create_trail_graph(&map, false);
         let mut visited = HashSet::from([start]);
         // Runs a couple of seconds, especially without release mode (60s)
         Self::longest_path(&trail_graph, &mut visited, start, end)
             .unwrap()
-            .into_some()
+            .to_result()
     }
 }

@@ -1,6 +1,6 @@
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 use num::bigint::BigInt;
 use num::traits::{One, Zero};
@@ -135,7 +135,7 @@ impl Solution24 {
 }
 
 impl Solution for Solution24 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let range = if is_sample { 7.0..=27.0 } else { 2e14..=4e14 };
         let hailstones = Self::parse(input);
 
@@ -149,10 +149,10 @@ impl Solution for Solution24 {
                 false
             })
             .count()
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         /*
         STONE: P + t * Q
         Hailstones: P[i] + t * Q[i]
@@ -236,6 +236,6 @@ impl Solution for Solution24 {
 
         let solution = Self::solve_system(Matrix::new(a), b);
         // println!("{solution:?}");
-        solution.iter().take(3).sum::<BigInt>().into_some()
+        solution.iter().take(3).sum::<BigInt>().to_result()
     }
 }

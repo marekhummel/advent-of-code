@@ -3,7 +3,7 @@ use std::collections::{HashMap, HashSet, VecDeque};
 use std::fmt::Display;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Clone)]
@@ -241,7 +241,7 @@ impl Solution19 {
 }
 
 impl Solution for Solution19 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (molecule, rules) = Self::parse(input);
 
         let mut new_molecules = HashSet::new();
@@ -250,15 +250,15 @@ impl Solution for Solution19 {
             let positions = molecule.iter().positions(|elem| *elem == src).collect_vec();
             for pos in positions {
                 let new_molecule = [&molecule[0..pos], &rule.nonterminals(), &molecule[pos + 1..]].concat();
-                println!("{new_molecule:?} ({rule} on {pos})");
+                // println!("{new_molecule:?} ({rule} on {pos})");
                 new_molecules.insert(new_molecule);
             }
         }
 
-        new_molecules.len().into_some()
+        new_molecules.len().to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (mut word, mut cfg) = Self::parse(input);
         let start = "e";
 
@@ -277,6 +277,6 @@ impl Solution for Solution19 {
             .into_iter()
             .filter(|p| matches!(p, Rule::Iterative { src, vars: _ } if !src.starts_with("Sub")))
             .count()
-            .into_some()
+            .to_result()
     }
 }

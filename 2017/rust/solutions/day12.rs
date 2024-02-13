@@ -1,7 +1,7 @@
 use aoc_lib::graph::{self, Graph};
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution12;
 impl Solution12 {
@@ -19,17 +19,17 @@ impl Solution12 {
 }
 
 impl Solution for Solution12 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let pipes = Self::parse(input);
         let components = graph::components(&pipes);
 
         let group0 = components.into_iter().find(|c| c.contains(&0)).unwrap();
-        group0.len().into_some()
+        group0.len().to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let pipes = Self::parse(input);
         let components = graph::components(&pipes);
-        components.len().into_some()
+        components.len().to_result()
     }
 }

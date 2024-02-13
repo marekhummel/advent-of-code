@@ -3,7 +3,7 @@ use std::collections::{BinaryHeap, HashMap, HashSet};
 
 use aoc_lib::cartesian::{Index, Size};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::iproduct;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -82,7 +82,7 @@ impl Solution22 {
 }
 
 impl Solution for Solution22 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (depth, target) = Self::parse(input);
 
         let mut cave = Cave {
@@ -95,10 +95,10 @@ impl Solution for Solution22 {
         iproduct!(0..=target.i, 0..=target.j)
             .map(|(i, j)| cave.erosion_level(Index { i, j }) % 3)
             .sum::<usize>()
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (depth, target) = Self::parse(input);
 
         let mut cave = Cave {
@@ -117,7 +117,7 @@ impl Solution for Solution22 {
 
         while let Some(Reverse((time, idx, gear))) = queue.pop() {
             if idx == target && gear == Gear::Torch {
-                return time.into_some();
+                return time.to_result();
             }
 
             // No need to revisit regions with the same tool
@@ -153,6 +153,6 @@ impl Solution for Solution22 {
             }
         }
 
-        None
+        unreachable!()
     }
 }

@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution16;
 impl Solution16 {
@@ -25,9 +25,9 @@ impl Solution16 {
 }
 
 impl Solution for Solution16 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         }
 
         let message = HashMap::from([
@@ -46,15 +46,15 @@ impl Solution for Solution16 {
         let sues = Self::parse(input);
         for (i, sue) in sues.into_iter().enumerate() {
             if sue.iter().all(|(prop, value)| message[prop.as_str()] == *value) {
-                return (i + 1).into_some();
+                return (i + 1).to_result();
             }
         }
         panic!("No sue found")
     }
 
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
-            return None;
+            return ProblemResult::NoSample;
         }
 
         let message = HashMap::from([
@@ -80,7 +80,7 @@ impl Solution for Solution16 {
                 "pomeranians" | "goldfish" => message[prop.as_str()] > *value,
                 _ => unreachable!(),
             }) {
-                return (i + 1).into_some();
+                return (i + 1).to_result();
             }
         }
         panic!("No sue found")

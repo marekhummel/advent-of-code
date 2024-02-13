@@ -3,7 +3,7 @@ use std::collections::HashSet;
 
 use aoc_lib::cartesian::{Direction, Grid, Index};
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Debug)]
@@ -64,7 +64,7 @@ impl Solution13 {
 }
 
 impl Solution for Solution13 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (tracks, mut carts) = Self::parse(input);
 
         loop {
@@ -80,13 +80,13 @@ impl Solution for Solution13 {
                     .enumerate()
                     .any(|(j, other)| i != j && cart.idx == other.borrow().idx)
                 {
-                    return format!("{},{}", cart.idx.i, cart.idx.j).into_some();
+                    return format!("{},{}", cart.idx.i, cart.idx.j).to_result();
                 }
             }
         }
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (tracks, mut carts) = Self::parse(input);
 
         loop {
@@ -112,7 +112,7 @@ impl Solution for Solution13 {
 
             if carts.len() == 1 {
                 let idx = carts[0].borrow().idx;
-                return format!("{},{}", idx.i, idx.j).into_some();
+                return format!("{},{}", idx.i, idx.j).to_result();
             }
         }
     }

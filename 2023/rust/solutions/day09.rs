@@ -2,7 +2,7 @@ use aoc_lib::iterator::ParsedExt;
 use itertools::Itertools;
 
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 type Sequence = Vec<i64>;
 
@@ -39,21 +39,21 @@ impl Solution09 {
 }
 
 impl Solution for Solution09 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let sequences = self.parse(input);
         sequences
             .into_iter()
             .map(|s| self.extrapolate(&s))
             .sum::<i64>()
-            .into_some()
+            .to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let sequences = self.parse(input);
         sequences
             .into_iter()
             .map(|s| self.extrapolate(&s.iter().cloned().rev().collect_vec()))
             .sum::<i64>()
-            .into_some()
+            .to_result()
     }
 }

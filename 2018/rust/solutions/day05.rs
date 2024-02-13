@@ -1,5 +1,5 @@
 use aoc_lib::solution::Solution;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
@@ -28,13 +28,13 @@ impl Solution05 {
 }
 
 impl Solution for Solution05 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let polymer = Self::parse(input);
         let reduced = Self::reduce(polymer);
-        reduced.len().into_some()
+        reduced.len().to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let polymer = Self::reduce(Self::parse(input)); // Start with a reduced polymer cause these steps can always be taken.
         let units = polymer.iter().map(|(c, _)| c).unique().collect_vec();
 
@@ -47,6 +47,6 @@ impl Solution for Solution05 {
             })
             .min()
             .unwrap()
-            .into_some()
+            .to_result()
     }
 }

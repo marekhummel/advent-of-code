@@ -1,13 +1,13 @@
 use aoc_lib::solution::Solution;
 use aoc_lib::specific::intcode::Program;
-use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
+use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 pub struct Solution07;
 impl Solution07 {}
 
 impl Solution for Solution07 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut thruster_signal = i128::MIN;
         for phase_settings in (0..5).permutations(5) {
             let mut output = 0;
@@ -23,10 +23,10 @@ impl Solution for Solution07 {
             thruster_signal = thruster_signal.max(output)
         }
 
-        thruster_signal.into_some()
+        thruster_signal.to_result()
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> Option<ProblemResult> {
+    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut thruster_signal = i128::MIN;
         for phase_settings in (5..10).permutations(5) {
             // Init amplifiers
@@ -53,6 +53,6 @@ impl Solution for Solution07 {
             thruster_signal = thruster_signal.max(*final_output)
         }
 
-        thruster_signal.into_some()
+        thruster_signal.to_result()
     }
 }
