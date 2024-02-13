@@ -1,5 +1,5 @@
 use std::collections::{BinaryHeap, HashMap, HashSet};
-use std::fmt::Debug;
+use std::fmt::{Debug, Display};
 use std::hash::Hash;
 
 use aoc_lib::iterator::ParsedExt;
@@ -7,14 +7,14 @@ use aoc_lib::solution::Solution;
 use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
 use itertools::Itertools;
 
-#[derive(PartialEq, Eq, Hash, Clone)]
+#[derive(PartialEq, Debug, Eq, Hash, Clone)]
 struct Position3 {
     x: usize,
     y: usize,
     z: usize,
 }
 
-impl Debug for Position3 {
+impl Display for Position3 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{0},{1},{2}", self.x, self.y, self.z)
     }

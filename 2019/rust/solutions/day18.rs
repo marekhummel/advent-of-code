@@ -1,6 +1,6 @@
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, HashMap, HashSet, VecDeque};
-use std::fmt::Debug;
+use std::fmt::Display;
 
 use aoc_lib::cartesian::{Direction, Grid};
 use aoc_lib::solution::Solution;
@@ -17,7 +17,7 @@ enum Tile {
     Door(char),
 }
 
-impl Debug for Tile {
+impl Display for Tile {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Entrance => write!(f, "@"),

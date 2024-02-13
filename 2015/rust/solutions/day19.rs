@@ -1,6 +1,6 @@
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet, VecDeque};
-use std::fmt::Debug;
+use std::fmt::Display;
 
 use aoc_lib::solution::Solution;
 use aoc_lib::types::{IntoSome, ProblemInput, ProblemResult};
@@ -44,7 +44,7 @@ impl Rule {
     }
 }
 
-impl Debug for Rule {
+impl Display for Rule {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Rule::Unit { src: source, terminal } => write!(f, "{} -> {}", source, terminal),
@@ -250,7 +250,7 @@ impl Solution for Solution19 {
             let positions = molecule.iter().positions(|elem| *elem == src).collect_vec();
             for pos in positions {
                 let new_molecule = [&molecule[0..pos], &rule.nonterminals(), &molecule[pos + 1..]].concat();
-                // println!("{new_molecule:?} ({rule:?} on {pos})");
+                println!("{new_molecule:?} ({rule} on {pos})");
                 new_molecules.insert(new_molecule);
             }
         }
