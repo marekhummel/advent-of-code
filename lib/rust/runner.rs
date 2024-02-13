@@ -34,20 +34,23 @@ impl AocRunner {
     }
 
     fn run_full_year(&self) {
-        let mut total_time = Duration::ZERO;
+        let mut total_elapsed = Duration::ZERO;
         for day in 0..self.solutions.len() {
             println!("Day {0:02}:", day + 1);
+            let mut day_elapsed = Duration::ZERO;
             for version in [1, 2] {
                 for use_sample in [true, false] {
                     let (result, elapsed) = self.get_result(day + 1, version, use_sample);
-                    total_time += elapsed;
+                    day_elapsed += elapsed;
                     println!("  V{version} {}:  {result}", Self::SAMPLE_STR[use_sample as usize]);
                 }
             }
+            total_elapsed += day_elapsed;
+            println!("  > Runtime:  {day_elapsed:?}");
             println!()
         }
 
-        println!("\n\nTotal Runtime: {total_time:?}");
+        println!("\n\nTotal Runtime: {total_elapsed:?}");
     }
 
     fn run_day(&self, day: usize) {
@@ -56,7 +59,10 @@ impl AocRunner {
             for use_sample in [true, false] {
                 let (result, elapsed) = self.get_result(day, version, use_sample);
                 total_time += elapsed;
-                println!("V{version} {}:  {result}", Self::SAMPLE_STR[use_sample as usize]);
+                println!(
+                    "V{version} {} in {elapsed: >10.4?}:    {result}",
+                    Self::SAMPLE_STR[use_sample as usize]
+                );
             }
         }
         println!("\nTotal Runtime: {total_time:?}");
