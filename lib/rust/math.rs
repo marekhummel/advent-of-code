@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use num::Integer;
+use num::{Integer, Signed};
 
 pub fn lcm(nums: &[u64]) -> u64 {
     if nums.len() == 1 {
@@ -83,4 +83,20 @@ pub fn is_prime(n: u128) -> bool {
 
     let root = (n as f64).sqrt() as u128;
     (3..=root).step_by(2).all(|f| n % f != 0)
+}
+
+pub fn mod_inverse<T: Copy + Integer + Signed>(n: T, modulus: T) -> Option<T> {
+    match extended_gcd(n, modulus) {
+        (g, x, _) if g.is_one() => Some((x % modulus + modulus) % modulus),
+        _ => None,
+    }
+}
+
+fn extended_gcd<T: Copy + Integer + Signed>(a: T, b: T) -> (T, T, T) {
+    if a == T::zero() {
+        (b, T::zero(), T::one())
+    } else {
+        let (g, x, y) = extended_gcd(b % a, a);
+        (g, y - (b / a) * x, x)
+    }
 }
