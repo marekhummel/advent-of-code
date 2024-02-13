@@ -43,6 +43,13 @@ impl Program {
         None
     }
 
+    pub fn print_as_ascii(&self) {
+        println!();
+        for c in &self.output {
+            print!("{}", *c as u8 as char);
+        }
+    }
+
     fn parse_current_opcode(&self) -> (Instruction, Vec<ParameterMode>) {
         let mut opcode = self.read_memory(self.pc);
         let inst: Instruction = (opcode % 100).into();
