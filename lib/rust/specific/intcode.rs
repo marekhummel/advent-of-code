@@ -3,10 +3,12 @@ use std::collections::{HashMap, VecDeque};
 
 use crate::iterator::ParsedExt;
 
+#[derive(Clone)]
 pub struct Program {
     pub memory: HashMap<usize, i128>,
     pub input: VecDeque<i128>,
     pub output: Vec<i128>,
+    pub default_input: Option<i128>,
     pc: usize,
     halted: bool,
     relative_base: i128,
@@ -21,19 +23,20 @@ impl Program {
             pc: 0,
             halted: false,
             relative_base: 0,
+            default_input: None,
         }
     }
 
     pub fn execute(&mut self) {
         while !self.halted {
-            self.execute_instruction();
+            self.execute_next_instruction();
         }
     }
 
     pub fn execute_until_output(&mut self) -> Option<i128> {
         while !self.halted {
             let before = self.output.len();
-            self.execute_instruction();
+            self.execute_next_instruction();
 
             if self.output.len() > before {
                 return self.output.last().copied();
@@ -89,7 +92,7 @@ impl Program {
         self.memory.entry(index as usize).or_insert(0)
     }
 
-    fn execute_instruction(&mut self) {
+    pub fn execute_next_instruction(&mut self) {
         let (inst, pms) = self.parse_current_opcode();
         let mut pc_modified = false;
 
@@ -108,7 +111,7 @@ impl Program {
                 }
             }
             Instruction::Input => {
-                let input_value = self.input.pop_front().expect("No inputs left");
+                let input_value = self.input.pop_front().or(self.default_input).expect("No inputs left");
                 let target = self.get_target(1, &pms);
                 *target = input_value;
             }
