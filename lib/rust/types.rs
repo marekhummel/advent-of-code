@@ -33,14 +33,6 @@ impl ProblemInput {
     pub fn grid(&self) -> Grid<char> {
         Grid::new(self.lines.iter().map(|row| row.chars().collect_vec()).collect_vec())
     }
-
-    // pub fn enumerated_grid(&self) -> EnumeratedGrid {
-    //     self.lines
-    //         .iter()
-    //         .enumerate()
-    //         .map(|(j, row)| row.chars().enumerate().map(|(i, c)| (Index { i, j }, c)).collect_vec())
-    //         .collect_vec()
-    // }
 }
 
 pub enum ProblemResult {
@@ -91,83 +83,31 @@ pub trait ToResult {
     fn to_result(self) -> ProblemResult;
 }
 
-impl ToResult for i128 {
-    fn to_result(self) -> ProblemResult {
-        ProblemResult::I128(self)
-    }
+macro_rules! impl_to_result {
+    ($e:path,$t:ty) => {
+        impl ToResult for $t {
+            fn to_result(self) -> ProblemResult {
+                $e(self)
+            }
+        }
+    };
 }
 
-impl ToResult for i64 {
-    fn to_result(self) -> ProblemResult {
-        ProblemResult::I64(self)
-    }
-}
+impl_to_result!(ProblemResult::I128, i128);
+impl_to_result!(ProblemResult::I64, i64);
+impl_to_result!(ProblemResult::I32, i32);
+impl_to_result!(ProblemResult::I16, i16);
+impl_to_result!(ProblemResult::I8, i8);
 
-impl ToResult for i32 {
-    fn to_result(self) -> ProblemResult {
-        ProblemResult::I32(self)
-    }
-}
+impl_to_result!(ProblemResult::U128, u128);
+impl_to_result!(ProblemResult::U64, u64);
+impl_to_result!(ProblemResult::U32, u32);
+impl_to_result!(ProblemResult::U16, u16);
+impl_to_result!(ProblemResult::U8, u8);
 
-impl ToResult for i16 {
-    fn to_result(self) -> ProblemResult {
-        ProblemResult::I16(self)
-    }
-}
-
-impl ToResult for i8 {
-    fn to_result(self) -> ProblemResult {
-        ProblemResult::I8(self)
-    }
-}
-
-impl ToResult for u128 {
-    fn to_result(self) -> ProblemResult {
-        ProblemResult::U128(self)
-    }
-}
-
-impl ToResult for u64 {
-    fn to_result(self) -> ProblemResult {
-        ProblemResult::U64(self)
-    }
-}
-
-impl ToResult for u32 {
-    fn to_result(self) -> ProblemResult {
-        ProblemResult::U32(self)
-    }
-}
-
-impl ToResult for u16 {
-    fn to_result(self) -> ProblemResult {
-        ProblemResult::U16(self)
-    }
-}
-
-impl ToResult for u8 {
-    fn to_result(self) -> ProblemResult {
-        ProblemResult::U8(self)
-    }
-}
-
-impl ToResult for usize {
-    fn to_result(self) -> ProblemResult {
-        ProblemResult::USize(self)
-    }
-}
-
-impl ToResult for BigInt {
-    fn to_result(self) -> ProblemResult {
-        ProblemResult::BigInt(self)
-    }
-}
-
-impl ToResult for String {
-    fn to_result(self) -> ProblemResult {
-        ProblemResult::String(self)
-    }
-}
+impl_to_result!(ProblemResult::USize, usize);
+impl_to_result!(ProblemResult::BigInt, BigInt);
+impl_to_result!(ProblemResult::String, String);
 
 impl ToResult for &str {
     fn to_result(self) -> ProblemResult {
