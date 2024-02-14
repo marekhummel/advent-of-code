@@ -348,11 +348,11 @@ impl<T> Grid<T> {
         ]
     }
 
-    pub fn iter(&self) -> impl Iterator<Item = &T> {
+    pub fn iter(&self) -> impl DoubleEndedIterator<Item = &T> {
         self.rows.iter().flatten()
     }
 
-    pub fn enumerate(&self) -> impl Iterator<Item = (Index, &T)> {
+    pub fn enumerate(&self) -> impl DoubleEndedIterator<Item = (Index, &T)> {
         self.rows
             .iter()
             .enumerate()
