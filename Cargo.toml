@@ -7,6 +7,10 @@ edition = "2021"
 name = "main2023"
 path = "2023/rust/main.rs"
 
+|[[bin]]
+name = main2020
+path = 2020/rust/main.rs
+
 [[bin]]
 name = "main2019"
 path = "2019/rust/main.rs"
