@@ -57,10 +57,10 @@ impl TryFrom<&str> for Direction {
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
         match value {
-            "U" | "N" | "^" => Ok(Direction::North),
-            "R" | "E" | ">" => Ok(Direction::East),
-            "D" | "S" | "v" => Ok(Direction::South),
-            "L" | "W" | "<" => Ok(Direction::West),
+            "north" | "U" | "N" | "^" => Ok(Direction::North),
+            "east" | "R" | "E" | ">" => Ok(Direction::East),
+            "south" | "D" | "S" | "v" => Ok(Direction::South),
+            "west" | "L" | "W" | "<" => Ok(Direction::West),
             _ => Err(()),
         }
     }
