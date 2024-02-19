@@ -1,3 +1,5 @@
+use std::ops::{AddAssign, Rem};
+
 use itertools::Itertools;
 use num::{Integer, Signed};
 
@@ -99,4 +101,19 @@ fn extended_gcd<T: Copy + Integer + Signed>(a: T, b: T) -> (T, T, T) {
         let (g, x, y) = extended_gcd(b % a, a);
         (g, y - (b / a) * x, x)
     }
+}
+
+pub fn chinese_remainder<T>(residues: &[T], modulii: &[T]) -> Option<T>
+where
+    T: Copy + Integer + Signed + std::iter::Product<T> + Rem<Output = T> + AddAssign,
+{
+    let prod = modulii.iter().copied().product::<T>();
+
+    let mut sum = T::zero();
+    for (&residue, &modulus) in residues.iter().zip(modulii) {
+        let p = prod / modulus;
+        sum += residue * mod_inverse(p, modulus)? * p
+    }
+
+    Some(sum % prod)
 }

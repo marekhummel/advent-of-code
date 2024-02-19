@@ -154,7 +154,7 @@ impl Solution17 {
         Itertools::intersperse(func.into_iter().map(|c| c.to_ascii()), vec![b','])
             .flatten()
             .chain([b'\n'])
-            .map(|b| b as i128)
+            .map_into()
             .collect()
     }
 }
