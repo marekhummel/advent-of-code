@@ -11,6 +11,7 @@ use solutions::day07;
 use solutions::day08;
 use solutions::day09;
 use solutions::day10;
+use solutions::day11;
 use std::env;
 
 use aoc_lib::solution::Solution;
@@ -31,6 +32,7 @@ fn main() {
         Box::new(day08::Solution08 {}),
         Box::new(day09::Solution09 {}),
         Box::new(day10::Solution10 {}),
+        Box::new(day11::Solution11 {}),
         //
     ];
 
