@@ -1,8 +1,8 @@
 use std::cmp::Reverse;
 use std::collections::BinaryHeap;
 
-use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::solution::Solution;
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::{iproduct, Itertools};
 
 #[derive(PartialEq, Eq, PartialOrd, Ord)]

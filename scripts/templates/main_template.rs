@@ -1,9 +1,9 @@
 mod solutions;
 
-use aoc_lib::runner::AocRunner;
+use aoc_lib::prelude::runner::AocRunner;
 use std::env;
 
-use aoc_lib::solution::Solution;
+use aoc_lib::prelude::solution::Solution;
 
 const ALL: bool = true;
 const VERSION: u8 = 1;

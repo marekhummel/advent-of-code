@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 use std::usize;
 
-use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::solution::Solution;
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution08;
 impl Solution08 {

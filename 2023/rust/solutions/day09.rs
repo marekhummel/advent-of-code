@@ -1,8 +1,8 @@
 use aoc_lib::iterator::ParsedExt;
 use itertools::Itertools;
 
-use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::solution::Solution;
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 
 type Sequence = Vec<i64>;
 

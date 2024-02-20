@@ -1,7 +1,7 @@
 use aoc_lib::math;
-use aoc_lib::solution::Solution;
+use aoc_lib::prelude::solution::Solution;
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use aoc_lib::specific::duet::{Instruction, Program, StepResult, Value};
-use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution23;
 impl Solution23 {}

@@ -2,8 +2,8 @@ use std::collections::HashSet;
 use std::ops::Add;
 
 use aoc_lib::cartesian::Grid;
-use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::solution::Solution;
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]

@@ -2,9 +2,9 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 
 use aoc_lib::cartesian::Position;
-use aoc_lib::solution::Solution;
+use aoc_lib::prelude::solution::Solution;
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use aoc_lib::specific::intcode::Program;
-use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution13;
 impl Solution13 {}

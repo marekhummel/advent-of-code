@@ -31,7 +31,7 @@ impl ProblemInput {
     }
 
     pub fn grid(&self) -> Grid<char> {
-        Grid::new(self.lines.iter().map(|row| row.chars().collect_vec()).collect_vec())
+        Grid::new(self.lines.iter().map(|row| row.chars().collect()).collect())
     }
 }
 

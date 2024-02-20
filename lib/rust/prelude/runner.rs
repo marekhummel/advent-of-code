@@ -1,6 +1,6 @@
 use std::{path::Path, time::Duration};
 
-use crate::{
+use crate::prelude::{
     solution::Solution,
     types::{ProblemInput, ProblemResult},
 };

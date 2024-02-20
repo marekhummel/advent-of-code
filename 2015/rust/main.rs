@@ -1,6 +1,6 @@
 mod solutions;
 
-use aoc_lib::runner::AocRunner;
+use aoc_lib::prelude::runner::AocRunner;
 use solutions::day01;
 use solutions::day02;
 use solutions::day03;
@@ -28,7 +28,7 @@ use solutions::day24;
 use solutions::day25;
 use std::env;
 
-use aoc_lib::solution::Solution;
+use aoc_lib::prelude::solution::Solution;
 
 const ALL: bool = true;
 const VERSION: u8 = 1;

@@ -1,6 +1,6 @@
 use std::time::{Duration, Instant};
 
-use crate::types::{ProblemInput, ProblemResult};
+use crate::prelude::types::{ProblemInput, ProblemResult};
 
 pub trait Solution {
     fn solve(&self, data: ProblemInput, version: u8, is_sample: bool) -> (ProblemResult, Duration) {

@@ -1,7 +1,7 @@
 use aoc_lib::graph::{self, Graph};
 use aoc_lib::iterator::ParsedExt;
-use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::solution::Solution;
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution12;
 impl Solution12 {

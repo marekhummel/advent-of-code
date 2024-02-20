@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use itertools::Itertools;
 
-use crate::types::ProblemInput;
+use crate::prelude::types::ProblemInput;
 
 #[derive(Debug, Clone)]
 pub enum Value {

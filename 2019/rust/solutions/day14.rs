@@ -2,8 +2,8 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 
 use aoc_lib::graph::{self, Graph};
-use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::solution::Solution;
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct Quantity(u64, String);

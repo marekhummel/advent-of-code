@@ -1,6 +1,6 @@
-use aoc_lib::solution::Solution;
+use aoc_lib::prelude::solution::Solution;
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use aoc_lib::specific::intcode::Program;
-use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution09;
 impl Solution09 {}

@@ -3,8 +3,8 @@ use std::collections::HashSet;
 use aoc_lib::cartesian::{Index, Size};
 use itertools::Itertools;
 
-use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::solution::Solution;
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 
 pub struct Solution11;
 impl Solution11 {

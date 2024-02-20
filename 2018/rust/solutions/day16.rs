@@ -1,9 +1,9 @@
 use std::collections::{HashMap, HashSet};
 
 use aoc_lib::iterator::ParsedExt;
-use aoc_lib::solution::Solution;
+use aoc_lib::prelude::solution::Solution;
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use aoc_lib::specific::wristdevice::{Instruction, Op};
-use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 type Registers = Vec<usize>;

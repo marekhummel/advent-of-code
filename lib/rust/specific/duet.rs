@@ -2,7 +2,7 @@ use std::collections::{HashMap, VecDeque};
 
 use itertools::Itertools;
 
-use crate::types::ProblemInput;
+use crate::prelude::types::ProblemInput;
 
 type RegValue = i64;
 

@@ -3,8 +3,8 @@ use std::collections::{BinaryHeap, HashMap, HashSet};
 use std::fmt::Debug;
 
 use aoc_lib::cartesian::{Direction, Grid, Index};
-use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::solution::Solution;
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]

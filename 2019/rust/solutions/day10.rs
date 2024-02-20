@@ -1,8 +1,8 @@
 use std::f64::consts::PI;
 
 use aoc_lib::cartesian::Index;
-use aoc_lib::solution::Solution;
-use aoc_lib::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::solution::Solution;
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 use num::Integer;
 
