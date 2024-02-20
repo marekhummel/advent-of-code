@@ -1,5 +1,11 @@
 year=$1
 day=$(printf "%02d" $2)
+
+if [ $2 -gt 25 ]; then
+    echo "Invalid day"
+    exit 1
+fi
+
 cp scripts/templates/day_template.rs $year/rust/solutions/day$day.rs
 sed -i s:XX:$day: $year/rust/solutions/day$day.rs
 
