@@ -26,7 +26,7 @@ pub fn bits<const L: usize>(mut n: u128) -> [bool; L] {
     bits
 }
 
-// Unused, but saved for later (originated from attempts in 2023-24)
+/// Unused, but saved for later (originated from attempts in 2023-24)
 pub fn gauss_jordan(a: &mut [&mut [f64]], b: &mut [f64]) {
     // Find pivot and create 1
     let p = a[0][0];
@@ -73,8 +73,8 @@ pub fn gauss_jordan(a: &mut [&mut [f64]], b: &mut [f64]) {
         .for_each(|(i, v)| *v -= subs[i].iter().sum::<f64>());
 }
 
+/// Simple primality test, could be improved with miller rabin if needed
 pub fn is_prime(n: u128) -> bool {
-    // Simple primality test, could be improved with miller rabin if needed
     if n < 2 {
         return false;
     }

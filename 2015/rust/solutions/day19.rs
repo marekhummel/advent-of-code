@@ -1,70 +1,15 @@
-use std::cell::RefCell;
-use std::collections::{HashMap, HashSet, VecDeque};
-use std::fmt::Display;
+use std::collections::HashSet;
 
+use aoc_lib::grammar::{Rule, CFG};
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
-#[derive(Clone)]
-enum Rule {
-    Unit { src: String, terminal: String },
-    Iterative { src: String, vars: [String; 2] },
-    Extended { src: String, vars: Vec<String> }, // used during parsing only
-}
-
-impl Rule {
-    fn source(&self) -> &str {
-        match self {
-            Rule::Unit {
-                src: source,
-                terminal: _,
-            } => source,
-            Rule::Iterative { src: source, vars: _ } => source,
-            Rule::Extended { src: source, vars: _ } => source,
-        }
-    }
-
-    fn nonterminals(&self) -> Vec<String> {
-        match self {
-            Rule::Unit { src: _, terminal: _ } => vec![],
-            Rule::Iterative {
-                src: _,
-                vars: non_terminals,
-            } => non_terminals.to_vec(),
-            Rule::Extended {
-                src: _,
-                vars: non_terminals,
-            } => non_terminals.clone(),
-        }
-    }
-
-    fn is_extended(&self) -> bool {
-        matches!(self, Rule::Extended { src: _, vars: _ })
-    }
-}
-
-impl Display for Rule {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Rule::Unit { src: source, terminal } => write!(f, "{} -> {}", source, terminal),
-            Rule::Iterative {
-                src: source,
-                vars: non_terminals,
-            } => {
-                write!(f, "{} -> {} {}", source, non_terminals[0], non_terminals[1])
-            }
-            Rule::Extended {
-                src: source,
-                vars: non_terminals,
-            } => write!(f, "{} -> {:?}", source, non_terminals),
-        }
-    }
-}
+type MRule = Rule<String, String>;
 
 pub struct Solution19;
 impl Solution19 {
-    fn parse(input: ProblemInput) -> (Vec<String>, Vec<Rule>) {
+    fn parse(input: ProblemInput) -> (Vec<String>, Vec<MRule>) {
         let lines = input.lines();
 
         let rules = lines
@@ -115,57 +60,7 @@ impl Solution19 {
         parts
     }
 
-    fn transform_cnf(rules: &mut Vec<Rule>) {
-        // Find extended rules and create substitute rules to meet CNF
-        let mut shorten: VecDeque<_> = rules.iter().filter(|p| p.is_extended()).cloned().collect();
-        rules.retain(|p| !p.is_extended());
-
-        let mut substitutes: HashMap<(String, String), String> = HashMap::new();
-        while let Some(Rule::Extended { src, vars }) = shorten.pop_front() {
-            // Create substitute for every two of the non terminals
-            let mut subs = Vec::new();
-            for chunk in vars.iter().chunks(2).into_iter() {
-                if let Some((nt1, nt2)) = chunk.collect_tuple() {
-                    if let Some(sub) = substitutes.get(&(nt1.clone(), nt2.clone())) {
-                        subs.push(sub.clone());
-                    } else {
-                        let new_sub = format!("Sub{}", substitutes.len() + 1);
-                        substitutes.insert((nt1.clone(), nt2.clone()), new_sub.clone());
-                        subs.push(new_sub.clone());
-                    }
-                }
-            }
-
-            if let [s1, s2] = &subs[..] {
-                // If only two subs used, we have a new final rule
-                rules.push(Rule::Iterative {
-                    src,
-                    vars: [s1.clone(), s2.clone()],
-                });
-            } else if let [s] = &subs[..] {
-                // If only one sub left, combine it with the left over non terminal
-                if vars.len() & 1 == 1 {
-                    rules.push(Rule::Iterative {
-                        src,
-                        vars: [s.clone(), vars.last().unwrap().clone()],
-                    });
-                }
-            } else {
-                // Too many subs left, repeat process on this new rule
-                shorten.push_back(Rule::Extended { src, vars: subs });
-            }
-        }
-
-        // Append all substitutions
-        for ((nt1, nt2), source) in substitutes {
-            rules.push(Rule::Iterative {
-                src: source,
-                vars: [nt1, nt2],
-            });
-        }
-    }
-
-    fn add_terminals(rules: &mut Vec<Rule>, start: &str) {
+    fn add_terminals(rules: &mut Vec<MRule>, start: &str) {
         // Find all nonterminals in current rules
         let mut nonterminals = HashSet::new();
         nonterminals.extend(rules.iter().map(|p| p.source().to_string()));
@@ -181,63 +76,6 @@ impl Solution19 {
             }
         }
     }
-
-    fn cyk_algorithm(rules: &[Rule], word: &[String], start: String) -> Vec<Rule> {
-        let n = word.len();
-        let v = vec![vec![RefCell::new(vec![]); n]; n];
-        let trace = vec![vec![RefCell::new(vec![]); n]; n];
-
-        // Apply unit rules (length 1 rules)
-        for (i, wi) in word.iter().enumerate() {
-            for rule in rules {
-                if let Rule::Unit { src: source, terminal } = rule {
-                    if terminal == wi {
-                        v[i][0].borrow_mut().push(source);
-                        trace[i][0].borrow_mut().push((rule, (0, 0, 0), (0, 0, 0)));
-                    }
-                }
-            }
-        }
-
-        // DP to iteratively concatenate two NTs Y and Z to X if X -> YZ is a rule
-        for length in 2..=n {
-            for s1 in 0..n - length + 1 {
-                for p1 in 1..length {
-                    let s2 = s1 + p1;
-                    let p2 = length - p1;
-                    for rule in rules {
-                        if let Rule::Iterative { src, vars } = rule {
-                            let [y, z] = vars;
-                            if let Some(py) = v[s1][p1 - 1].borrow().iter().position(|nt| nt == &y) {
-                                if let Some(pz) = v[s2][p2 - 1].borrow().iter().position(|nt| nt == &z) {
-                                    v[s1][length - 1].borrow_mut().push(src);
-                                    trace[s1][length - 1]
-                                        .borrow_mut()
-                                        .push((rule, (s1, p1, py), (s2, p2, pz)));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Must've found start symbol in top left node
-        assert!(v[0][n - 1].borrow().contains(&&start));
-
-        // Retrace rules
-        let mut production_tree = Vec::new();
-        let mut tree = vec![trace[0][n - 1].borrow().clone()[0]]; // Choose rule with S
-        while let Some((rule, (s1, p1, pos1), (s2, p2, pos2))) = tree.pop() {
-            production_tree.push(rule.clone());
-            if !matches!(rule, Rule::Unit { src: _, terminal: _ }) {
-                tree.insert(0, *trace[s1][p1 - 1].borrow().get(pos1).unwrap());
-                tree.insert(1, *trace[s2][p2 - 1].borrow().get(pos2).unwrap());
-            }
-        }
-
-        production_tree
-    }
 }
 
 impl Solution for Solution19 {
@@ -247,7 +85,7 @@ impl Solution for Solution19 {
         let mut new_molecules = HashSet::new();
         for rule in rules {
             let src = rule.source();
-            let positions = molecule.iter().positions(|elem| *elem == src).collect_vec();
+            let positions = molecule.iter().positions(|elem| elem == src).collect_vec();
             for pos in positions {
                 let new_molecule = [&molecule[0..pos], &rule.nonterminals(), &molecule[pos + 1..]].concat();
                 // println!("{new_molecule:?} ({rule} on {pos})");
@@ -259,18 +97,23 @@ impl Solution for Solution19 {
     }
 
     fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let (mut word, mut cfg) = Self::parse(input);
+        let (mut word, rules) = Self::parse(input);
         let start = "e";
 
         // Transform given CFG to CNF for CYK algorithm
-        Self::transform_cnf(&mut cfg);
-        Self::add_terminals(&mut cfg, start);
+        let mut cfg = CFG {
+            rules,
+            start: String::from("e"),
+            sub_func: |sub_len| format!("Sub{sub_len}"),
+        };
+        cfg.transform_cnf();
+        Self::add_terminals(&mut cfg.rules, start);
 
         // Transform word to lower case to work with terminals
         word = word.into_iter().map(|elem| elem.to_lowercase()).collect_vec();
 
         // Sample is one application short due to manual adaptation of language for start symbol
-        let rules = Self::cyk_algorithm(&cfg, &word, start.to_string());
+        let rules = cfg.cyk_algorithm(&word).unwrap();
 
         // Count all rules, except for the substitute and terminal ones as they weren't in the original
         rules

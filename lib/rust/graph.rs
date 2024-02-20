@@ -46,6 +46,7 @@ pub fn floyd_marshall<V: Clone + Eq + Hash>(graph: &Graph<V>) -> HashMap<(V, V),
         .collect()
 }
 
+/// Shortest paths from start to all other nodes
 pub fn dijkstra<V: Eq + Hash + Clone + Ord>(graph: &Graph<V>, start: &V) -> HashMap<V, Vec<V>> {
     let vertices = graph.keys().cloned().collect_vec();
     let mut prev = HashMap::new();
@@ -116,7 +117,7 @@ pub fn components<V: Eq + Hash + Clone>(graph: &Graph<V>) -> Vec<HashSet<V>> {
     components
 }
 
-// Kahn's Algorithm
+/// Kahn's Algorithm
 pub fn topo_sorting<V: Eq + Ord + Hash + Clone>(graph: &Graph<V>) -> Option<Vec<V>> {
     // Invert graph to map trg to source nodes
     let mut sources = invert(graph);
