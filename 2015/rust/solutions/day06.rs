@@ -58,7 +58,6 @@ impl Solution06 {
         let jj_map: HashMap<_, _> = jj.iter().enumerate().map(|(ej, j)| (j, ej)).collect();
 
         for (action, start, end) in instructions {
-            #[allow(clippy::needless_range_loop)]
             for j in jj_map[&start.j]..jj_map[&end.j] {
                 for i in ii_map[&start.i]..ii_map[&end.i] {
                     f(action, &mut grid[j][i]);

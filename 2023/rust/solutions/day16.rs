@@ -1,4 +1,3 @@
-#![allow(unused_variables)]
 use std::collections::{HashSet, VecDeque};
 
 use aoc_lib::cartesian::{Direction, Grid, Index};

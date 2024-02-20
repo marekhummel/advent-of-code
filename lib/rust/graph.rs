@@ -21,7 +21,6 @@ pub fn floyd_marshall<V: Clone + Eq + Hash>(graph: &Graph<V>) -> HashMap<(V, V),
         }
     }
 
-    #[allow(clippy::needless_range_loop)]
     for vi in 0..n {
         dist[vi][vi] = 0;
     }

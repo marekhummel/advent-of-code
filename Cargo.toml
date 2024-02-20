@@ -35,6 +35,9 @@ path = "2015/rust/main.rs"
 name = "aoc_lib"
 path = "lib/rust/aoc_lib.rs"
 
+[lints.clippy]
+needless_range_loop = { level = "allow", priority = 0 }
+
 [dependencies]
 regex = "1"
 itertools = "0.10.5"
