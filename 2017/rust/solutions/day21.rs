@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use aoc_lib::cartesian::Grid;
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::{iproduct, Itertools};
@@ -15,24 +16,10 @@ impl Solution21 {
                 let outcome: String = outcome_str.trim().split('/').collect();
 
                 // Every pattern has 8 rotations / flips, see dihedral group 4 (symmetry of a square)
-                let mut block = pattern.trim().split('/').map(|s| s.chars().collect_vec()).collect_vec();
                 let mut rules = Vec::new();
-                for _ in 0..2 {
-                    for _ in 0..4 {
-                        rules.push((
-                            block.iter().map(|r| r.iter().collect::<String>()).join(""),
-                            outcome.clone(),
-                        ));
-
-                        // rotate
-                        block = (0..block.len())
-                            .rev()
-                            .map(|c| (0..block.len()).map(|r| block[r][c]).collect_vec())
-                            .collect_vec()
-                    }
-
-                    // flip
-                    block = block.into_iter().map(|r| r.into_iter().rev().collect()).collect();
+                let grid = Grid::new(pattern.trim().split('/').map(|s| s.chars().collect()).collect());
+                for block in grid.symmetry_group() {
+                    rules.push((block.iter().collect::<String>(), outcome.clone()));
                 }
 
                 rules

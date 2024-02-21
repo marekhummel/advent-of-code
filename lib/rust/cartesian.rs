@@ -411,6 +411,24 @@ impl<T> Grid<T> {
         }
     }
 
+    /// Creates array of all 8 symmetries of this grid / square
+    pub fn symmetry_group(&self) -> [Self; 8]
+    where
+        T: Copy + Debug,
+    {
+        let mut symmetries = Vec::new();
+        let mut clone = self.clone();
+        for _flip in [0, 1] {
+            for _rotate in [0, 1, 2, 3] {
+                symmetries.push(clone.clone());
+                clone = clone.rotate_left();
+            }
+            clone = clone.flip_vertical();
+        }
+
+        symmetries.try_into().unwrap()
+    }
+
     pub fn print<F: Fn(Index, &T) -> S, S: Display>(&self, display_fn: F) {
         for (j, row) in self.rows.iter().enumerate() {
             for (i, item) in row.iter().enumerate() {

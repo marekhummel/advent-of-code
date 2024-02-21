@@ -46,22 +46,17 @@ impl Solution20 {
                     .map(|l| l.bytes().map(|c| c == b'#').collect_vec())
                     .collect_vec();
 
-                let mut grid = Grid::new(rows);
+                let grid = Grid::new(rows);
 
                 let mut edges = [Edges::new(0, 0, 0, 0); 8];
-                for flip in [0, 1] {
-                    for rotate in [0, 1, 2, 3] {
-                        let grid_transposed = grid.transpose();
+                for (i, flip_rot_grid) in grid.symmetry_group().into_iter().enumerate() {
+                    let flip_rot_grid_transposed = flip_rot_grid.transpose();
 
-                        let edge_top = Self::edge_to_uint(&grid.rows[0]);
-                        let edge_bot = Self::edge_to_uint(&grid.rows[grid.rows.len() - 1]);
-                        let edge_left = Self::edge_to_uint(&grid_transposed.rows[0]);
-                        let edge_right = Self::edge_to_uint(&grid_transposed.rows[grid.rows.len() - 1]);
-                        edges[flip * 4 + rotate] = Edges::new(edge_top, edge_left, edge_bot, edge_right);
-
-                        grid = grid.rotate_left();
-                    }
-                    grid = grid.flip_vertical();
+                    let edge_top = Self::edge_to_uint(&flip_rot_grid.rows[0]);
+                    let edge_bot = Self::edge_to_uint(&flip_rot_grid.rows[flip_rot_grid.rows.len() - 1]);
+                    let edge_left = Self::edge_to_uint(&flip_rot_grid_transposed.rows[0]);
+                    let edge_right = Self::edge_to_uint(&flip_rot_grid_transposed.rows[flip_rot_grid.rows.len() - 1]);
+                    edges[i] = Edges::new(edge_top, edge_left, edge_bot, edge_right);
                 }
 
                 ((tile_id, edges), grid)
@@ -219,23 +214,18 @@ impl Solution for Solution20 {
         let width = tiles.len().sqrt();
         let _ = Self::assemble_tiles(&mut image_tiles, &mut tiles, width).unwrap();
 
-        let mut image = Self::build_image(&image_tiles, &tile_grids);
+        let image = Self::build_image(&image_tiles, &tile_grids);
         let (seamonster_idcs, seamonster_size) = Self::create_seamonster();
 
-        for _flip in [0, 1] {
-            for _rotate in [0, 1, 2, 3] {
-                let seamonster_tiles = Self::find_seamonster(&image, &seamonster_idcs, &seamonster_size);
-                if !seamonster_tiles.is_empty() {
-                    let roughness = image
-                        .enumerate()
-                        .filter(|(idx, water)| **water && !seamonster_tiles.contains(idx))
-                        .count();
-                    return roughness.to_result();
-                }
-
-                image = image.rotate_left();
+        for flip_rot_image in image.symmetry_group() {
+            let seamonster_tiles = Self::find_seamonster(&flip_rot_image, &seamonster_idcs, &seamonster_size);
+            if !seamonster_tiles.is_empty() {
+                let roughness = flip_rot_image
+                    .enumerate()
+                    .filter(|(idx, water)| **water && !seamonster_tiles.contains(idx))
+                    .count();
+                return roughness.to_result();
             }
-            image = image.flip_vertical();
         }
 
         unreachable!()
