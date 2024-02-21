@@ -16,8 +16,8 @@ impl Solution02 {
 
 impl Solution for Solution02 {
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let pad_size = Size { width: 3, height: 3 };
-        let mut pos = Index { i: 1, j: 1 };
+        let pad_size = Size::square(3);
+        let mut pos = Index::new(1, 1);
         let mut code = 0;
 
         for instruction in Self::parse(input) {
@@ -31,8 +31,8 @@ impl Solution for Solution02 {
     }
 
     fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let pad_size = Size { width: 5, height: 5 };
-        let mut pos = Index { i: 0, j: 2 };
+        let pad_size = Size::square(5);
+        let mut pos = Index::new(0, 2);
         let mut code = String::new();
         let valid_indices = (0usize..5)
             .flat_map(|j| {

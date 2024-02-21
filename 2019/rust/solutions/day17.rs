@@ -44,13 +44,7 @@ impl Solution17 {
                 '.' => row.push(false),
                 '#' => row.push(true),
                 r @ ('^' | '<' | '>' | 'v') => {
-                    robot_info = Some((
-                        Index {
-                            i: row.len(),
-                            j: rows.len(),
-                        },
-                        r.try_into().unwrap(),
-                    ));
+                    robot_info = Some((Index::new(row.len(), rows.len()), r.try_into().unwrap()));
                     row.push(true);
                 }
                 '\n' => {

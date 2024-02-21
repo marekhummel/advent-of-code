@@ -12,10 +12,7 @@ impl Solution13 {
     }
 
     fn find(fav: usize, start: Index, goal: Index) -> u32 {
-        let size = Size {
-            width: usize::MAX,
-            height: usize::MAX,
-        };
+        let size = Size::square(usize::MAX);
         let mut seen = HashSet::from([(start)]);
         let mut queue = VecDeque::from([(0u32, start)]);
 
@@ -36,10 +33,7 @@ impl Solution13 {
     }
 
     fn spread(fav: usize, start: Index, max_steps: u32) -> usize {
-        let size = Size {
-            width: usize::MAX,
-            height: usize::MAX,
-        };
+        let size = Size::square(usize::MAX);
         let mut seen = HashSet::from([(start)]);
         let mut queue = VecDeque::from([(0u32, start)]);
 
@@ -63,11 +57,11 @@ impl Solution13 {
 impl Solution for Solution13 {
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let fav = input.string().parse().unwrap();
-        let start = Index { i: 1, j: 1 };
+        let start = Index::new(1, 1);
         let goal = if is_sample {
-            Index { i: 7, j: 4 }
+            Index::new(7, 4)
         } else {
-            Index { i: 31, j: 39 }
+            Index::new(31, 39)
         };
 
         Self::find(fav, start, goal).to_result()
@@ -75,7 +69,7 @@ impl Solution for Solution13 {
 
     fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let fav = input.string().parse().unwrap();
-        let start = Index { i: 1, j: 1 };
+        let start = Index::new(1, 1);
 
         Self::spread(fav, start, 50).to_result()
     }

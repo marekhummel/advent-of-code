@@ -72,10 +72,7 @@ impl Solution22 {
 
         let depth = lines[0].split_once(' ').unwrap().1.parse().unwrap();
         let (i, j) = lines[1].split_once(' ').unwrap().1.split_once(',').unwrap();
-        let target = Index {
-            i: i.parse().unwrap(),
-            j: j.parse().unwrap(),
-        };
+        let target = Index::new(i.parse().unwrap(), j.parse().unwrap());
 
         (depth, target)
     }
@@ -108,11 +105,8 @@ impl Solution for Solution22 {
             erosion: HashMap::new(),
         };
 
-        let cave_size = Size {
-            width: usize::MAX,
-            height: usize::MAX,
-        };
-        let mut queue = BinaryHeap::from([Reverse((0, Index { i: 0, j: 0 }, Gear::Torch))]);
+        let cave_size = Size::square(usize::MAX);
+        let mut queue = BinaryHeap::from([Reverse((0, Index::new(0, 0), Gear::Torch))]);
         let mut seen = HashSet::new();
 
         while let Some(Reverse((time, idx, gear))) = queue.pop() {

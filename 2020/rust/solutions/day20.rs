@@ -119,13 +119,7 @@ impl Solution20 {
     fn build_image(image_tiles: &[PlacedTile], tile_grids: &[(Tile, Grid<bool>)]) -> Grid<bool> {
         let tiled_size = image_tiles.len().sqrt();
         let cropped_tile_size = tile_grids[0].1.size.width - 2;
-        let mut image = Grid::empty(
-            Size {
-                width: cropped_tile_size * tiled_size,
-                height: cropped_tile_size * tiled_size,
-            },
-            false,
-        );
+        let mut image = Grid::empty(Size::square(cropped_tile_size * tiled_size), false);
 
         for (idx, (tile_id, flip_rot)) in image_tiles.iter().enumerate() {
             // Find actual grid and the flip and rotation
@@ -146,11 +140,8 @@ impl Solution20 {
             // Set grid in image
             for dj in 1..=cropped_tile_size {
                 for di in 1..=cropped_tile_size {
-                    let image_idx = Index {
-                        i: ti * cropped_tile_size + di - 1,
-                        j: tj * cropped_tile_size + dj - 1,
-                    };
-                    let tile_idx = Index { i: di, j: dj };
+                    let image_idx = Index::new(ti * cropped_tile_size + di - 1, tj * cropped_tile_size + dj - 1);
+                    let tile_idx = Index::new(di, dj);
                     image.set(&image_idx, *grid.get(&tile_idx));
                 }
             }
@@ -174,7 +165,7 @@ impl Solution20 {
         let width = seamonster_indices.iter().map(|idx| idx.i).max().unwrap() + 1;
         let height = seamonster_indices.iter().map(|idx| idx.j).max().unwrap() + 1;
 
-        (seamonster_indices, Size { width, height })
+        (seamonster_indices, Size::new(width, height))
     }
 
     fn find_seamonster(image: &Grid<bool>, seamonster: &[Index], seamonster_size: &Size) -> HashSet<Index> {
@@ -183,10 +174,7 @@ impl Solution20 {
             for i in 0..image.size.width - seamonster_size.width {
                 let idcs = seamonster
                     .iter()
-                    .map(|offset| Index {
-                        i: i + offset.i,
-                        j: j + offset.j,
-                    })
+                    .map(|offset| Index::new(i + offset.i, j + offset.j))
                     .collect_vec();
                 if idcs.iter().all(|idx| *image.get(idx)) {
                     seamonster_tiles.extend(idcs);

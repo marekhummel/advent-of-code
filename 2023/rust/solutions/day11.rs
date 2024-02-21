@@ -38,9 +38,11 @@ impl Solution11 {
 
         galaxies
             .into_iter()
-            .map(|idx| Index {
-                i: idx.i + exp_cols.iter().take_while(|&&&ei| ei < idx.i).count() * (expansion - 1),
-                j: idx.j + exp_rows.iter().take_while(|&&&ej| ej < idx.j).count() * (expansion - 1),
+            .map(|idx| {
+                Index::new(
+                    idx.i + exp_cols.iter().take_while(|&&&ei| ei < idx.i).count() * (expansion - 1),
+                    idx.j + exp_rows.iter().take_while(|&&&ej| ej < idx.j).count() * (expansion - 1),
+                )
             })
             .collect_vec()
     }

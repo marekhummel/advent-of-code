@@ -134,7 +134,7 @@ impl Solution for Solution17 {
         let clay = Self::parse(input);
         let (mut ground, (min_x, min_y)) = Self::create_ground_grid(clay);
 
-        let start = Index { i: 501 - min_x, j: 0 };
+        let start = Index::new(501 - min_x, 0);
         Self::flow(&mut ground, start);
 
         (ground.iter().filter(|g| g.is_water()).count() - min_y).to_result()
@@ -144,7 +144,7 @@ impl Solution for Solution17 {
         let clay = Self::parse(input);
         let (mut ground, (min_x, _)) = Self::create_ground_grid(clay);
 
-        let start = Index { i: 501 - min_x, j: 0 };
+        let start = Index::new(501 - min_x, 0);
         Self::flow(&mut ground, start);
 
         ground.iter().filter(|g| **g == Ground::Water).count().to_result()

@@ -81,28 +81,20 @@ pub struct Index {
 }
 
 impl Index {
+    pub fn new(i: usize, j: usize) -> Self {
+        Self { i, j }
+    }
+
     pub fn from_tuple(tuple: (usize, usize)) -> Self {
         Self { i: tuple.0, j: tuple.1 }
     }
 
     pub fn advance(&self, dir: Direction) -> Self {
         match dir {
-            Direction::North => Index {
-                i: self.i,
-                j: self.j - 1,
-            },
-            Direction::East => Index {
-                i: self.i + 1,
-                j: self.j,
-            },
-            Direction::West => Index {
-                i: self.i - 1,
-                j: self.j,
-            },
-            Direction::South => Index {
-                i: self.i,
-                j: self.j + 1,
-            },
+            Direction::North => Index::new(self.i, self.j - 1),
+            Direction::East => Index::new(self.i + 1, self.j),
+            Direction::West => Index::new(self.i - 1, self.j),
+            Direction::South => Index::new(self.i, self.j + 1),
             Direction::None => *self,
         }
     }
@@ -159,10 +151,7 @@ impl Index {
 
 impl From<Position> for Index {
     fn from(pos: Position) -> Self {
-        Index {
-            i: pos.x as usize,
-            j: pos.y as usize,
-        }
+        Index::new(pos.x as usize, pos.y as usize)
     }
 }
 
@@ -203,28 +192,20 @@ impl Ord for Position {
 }
 
 impl Position {
+    pub fn new(x: i128, y: i128) -> Self {
+        Self { x, y }
+    }
+
     pub fn zero() -> Self {
-        Position { x: 0, y: 0 }
+        Self { x: 0, y: 0 }
     }
 
     pub fn advance_by(&self, dir: Direction, delta: i128) -> Self {
         match dir {
-            Direction::North => Position {
-                x: self.x,
-                y: self.y - delta,
-            },
-            Direction::East => Position {
-                x: self.x + delta,
-                y: self.y,
-            },
-            Direction::South => Position {
-                x: self.x,
-                y: self.y + delta,
-            },
-            Direction::West => Position {
-                x: self.x - delta,
-                y: self.y,
-            },
+            Direction::North => Position::new(self.x, self.y - delta),
+            Direction::East => Position::new(self.x + delta, self.y),
+            Direction::South => Position::new(self.x, self.y + delta),
+            Direction::West => Position::new(self.x - delta, self.y),
             Direction::None => *self,
         }
     }
@@ -263,10 +244,7 @@ impl Position {
 
     pub fn wrap_modular(&self, size: Size) -> Index {
         let (mx, my) = (size.width as i128, size.height as i128);
-        Index {
-            i: (((self.x % mx) + mx) % mx) as usize,
-            j: (((self.y % my) + my) % my) as usize,
-        }
+        Index::new((((self.x % mx) + mx) % mx) as usize, (((self.y % my) + my) % my) as usize)
     }
 
     pub fn dist(&self, other: &Position) -> u128 {
@@ -276,7 +254,7 @@ impl Position {
 
 impl From<Index> for Position {
     fn from(idx: Index) -> Self {
-        Position {
+        Self {
             x: idx.i as i128,
             y: idx.j as i128,
         }
@@ -287,6 +265,19 @@ impl From<Index> for Position {
 pub struct Size {
     pub width: usize,
     pub height: usize,
+}
+
+impl Size {
+    pub fn new(width: usize, height: usize) -> Self {
+        Self { width, height }
+    }
+
+    pub fn square(size: usize) -> Self {
+        Self {
+            width: size,
+            height: size,
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -332,19 +323,10 @@ impl<T> Grid<T> {
 
     pub fn corners(&self) -> [Index; 4] {
         [
-            Index { i: 0, j: 0 },
-            Index {
-                i: 0,
-                j: self.size.height - 1,
-            },
-            Index {
-                i: self.size.width - 1,
-                j: 0,
-            },
-            Index {
-                i: self.size.width - 1,
-                j: self.size.height - 1,
-            },
+            Index::new(0, 0),
+            Index::new(0, self.size.height - 1),
+            Index::new(self.size.width - 1, 0),
+            Index::new(self.size.width - 1, self.size.height - 1),
         ]
     }
 

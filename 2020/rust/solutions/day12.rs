@@ -32,7 +32,7 @@ impl Solution for Solution12 {
 
     fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut ship = Position::zero();
-        let mut waypoint = Position { x: 10, y: -1 }; // relative to ship
+        let mut waypoint = Position::new(10, -1); // relative to ship
 
         for line in input.lines() {
             let (action, value_str) = line.split_at(1);
@@ -40,27 +40,13 @@ impl Solution for Solution12 {
 
             match action {
                 "N" | "E" | "S" | "W" => waypoint = waypoint.advance_by(action.try_into().unwrap(), value),
-                "F" => {
-                    ship = Position {
-                        x: ship.x + waypoint.x * value,
-                        y: ship.y + waypoint.y * value,
-                    }
-                }
+                "F" => ship = Position::new(ship.x + waypoint.x * value, ship.y + waypoint.y * value),
                 "L" | "R" => {
                     // Note that L and R are essentially swapped, cause we use North as negative coordinates.
                     waypoint = match (action, value) {
-                        ("L", 90) | ("R", 270) => Position {
-                            x: waypoint.y,
-                            y: -waypoint.x,
-                        },
-                        ("L", 180) | ("R", 180) => Position {
-                            x: -waypoint.x,
-                            y: -waypoint.y,
-                        },
-                        ("L", 270) | ("R", 90) => Position {
-                            x: -waypoint.y,
-                            y: waypoint.x,
-                        },
+                        ("L", 90) | ("R", 270) => Position::new(waypoint.y, -waypoint.x),
+                        ("L", 180) | ("R", 180) => Position::new(-waypoint.x, -waypoint.y),
+                        ("L", 270) | ("R", 90) => Position::new(-waypoint.y, waypoint.x),
                         _ => unreachable!(),
                     }
                 }

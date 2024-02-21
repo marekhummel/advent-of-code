@@ -12,10 +12,7 @@ impl Solution06 {
             .into_iter()
             .map(|l| {
                 let (x, y) = l.split_once(',').unwrap();
-                Index {
-                    i: x.trim().parse().unwrap(),
-                    j: y.trim().parse().unwrap(),
-                }
+                Index::new(x.trim().parse().unwrap(), y.trim().parse().unwrap())
             })
             .collect_vec();
 
@@ -26,18 +23,12 @@ impl Solution06 {
             panic!()
         };
 
-        let size = Size {
-            // Add padding of 1 around
-            width: max_i - min_i + 3,
-            height: max_j - min_j + 3,
-        };
+        // Add padding of 1 around
+        let size = Size::new(max_i - min_i + 3, max_j - min_j + 3);
 
         let normalized_indices = indices
             .iter()
-            .map(|idx| Index {
-                i: idx.i - min_i + 1,
-                j: idx.j - min_j + 1,
-            })
+            .map(|idx| Index::new(idx.i - min_i + 1, idx.j - min_j + 1))
             .collect();
 
         (normalized_indices, size)

@@ -16,19 +16,13 @@ pub struct Solution22;
 impl Solution22 {
     fn parse(input: ProblemInput) -> HashMap<Position, State> {
         let grid = input.grid();
-        let center = Position {
-            x: grid.size.width as i128 / 2,
-            y: grid.size.height as i128 / 2,
-        };
+        let center = Position::new(grid.size.width as i128 / 2, grid.size.height as i128 / 2);
 
         grid.enumerate()
             .filter(|(_, c)| **c == '#')
             .map(|(idx, _)| {
                 (
-                    Position {
-                        x: idx.i as i128 - center.x,
-                        y: idx.j as i128 - center.y,
-                    },
+                    Position::new(idx.i as i128 - center.x, idx.j as i128 - center.y),
                     State::Infected,
                 )
             })

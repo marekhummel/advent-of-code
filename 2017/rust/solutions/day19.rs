@@ -10,7 +10,7 @@ impl Solution19 {
         let mut letters = Vec::new();
         let mut steps = 0;
 
-        let mut pos = Index { i: start_i, j: 0 };
+        let mut pos = Index::new(start_i, 0);
         let mut dir = Direction::South;
         loop {
             match pipes.get(&pos) {

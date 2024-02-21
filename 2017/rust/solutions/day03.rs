@@ -15,7 +15,7 @@ impl SpiralPosIterator {
     fn new() -> Self {
         // Non-trivial values, but results in first element being the 1
         SpiralPosIterator {
-            pos: Position { x: 0, y: -1 },
+            pos: Position::new(0, -1),
             dir: Direction::South,
             step: -1,
             steps: 0,

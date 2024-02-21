@@ -67,7 +67,7 @@ impl Solution for Solution16 {
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let grid = input.grid();
         let beam_start = Beam {
-            pos: Index { i: 0, j: 0 },
+            pos: Index::new(0, 0),
             dir: Direction::East,
         };
         Self::traverse(&grid, beam_start).to_result()
@@ -78,25 +78,19 @@ impl Solution for Solution16 {
 
         let mut start_beams = Vec::new();
         start_beams.extend((0..grid.size.height).map(|y| Beam {
-            pos: Index { i: 0, j: y },
+            pos: Index::new(0, y),
             dir: Direction::East,
         }));
         start_beams.extend((0..grid.size.height).map(|y| Beam {
-            pos: Index {
-                i: grid.size.width - 1,
-                j: y,
-            },
+            pos: Index::new(grid.size.width - 1, y),
             dir: Direction::West,
         }));
         start_beams.extend((0..grid.size.width).map(|x| Beam {
-            pos: Index { i: x, j: 0 },
+            pos: Index::new(x, 0),
             dir: Direction::South,
         }));
         start_beams.extend((0..grid.size.width).map(|x| Beam {
-            pos: Index {
-                i: x,
-                j: grid.size.height - 1,
-            },
+            pos: Index::new(x, grid.size.height - 1),
             dir: Direction::North,
         }));
 

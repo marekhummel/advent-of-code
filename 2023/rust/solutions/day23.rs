@@ -12,14 +12,11 @@ impl Solution23 {
     fn parse(input: ProblemInput) -> (Grid<char>, Index, Index) {
         let hiking_map = input.grid();
         let height = hiking_map.size.height;
-        let start = Index {
-            i: hiking_map.rows[0].iter().position(|c| *c == '.').unwrap(),
-            j: 0,
-        };
-        let end = Index {
-            i: hiking_map.rows[height - 1].iter().position(|c| *c == '.').unwrap(),
-            j: height - 1,
-        };
+        let start = Index::new(hiking_map.rows[0].iter().position(|c| *c == '.').unwrap(), 0);
+        let end = Index::new(
+            hiking_map.rows[height - 1].iter().position(|c| *c == '.').unwrap(),
+            height - 1,
+        );
 
         (hiking_map, start, end)
     }

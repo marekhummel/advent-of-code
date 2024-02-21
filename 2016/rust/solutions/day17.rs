@@ -46,7 +46,7 @@ impl Rooms {
     fn paths_to_vault(&self) -> PathsIterator {
         PathsIterator {
             rooms: self,
-            queue: VecDeque::from([(Index { i: 0, j: 0 }, vec![])]),
+            queue: VecDeque::from([(Index::new(0, 0), vec![])]),
         }
     }
 }
@@ -83,8 +83,8 @@ impl Solution for Solution17 {
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let rooms = Rooms {
             passcode: input.string(),
-            size: Size { width: 4, height: 4 },
-            vault: Index { i: 3, j: 3 },
+            size: Size::square(4),
+            vault: Index::new(3, 3),
         };
 
         Rooms::format_path(&rooms.paths_to_vault().next().unwrap()).to_result()
@@ -93,8 +93,8 @@ impl Solution for Solution17 {
     fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let rooms = Rooms {
             passcode: input.string(),
-            size: Size { width: 4, height: 4 },
-            vault: Index { i: 3, j: 3 },
+            size: Size::square(4),
+            vault: Index::new(3, 3),
         };
 
         rooms.paths_to_vault().map(|p| p.len()).max().unwrap().to_result()

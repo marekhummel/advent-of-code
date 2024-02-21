@@ -51,14 +51,9 @@ impl Solution22 {
     #[allow(dead_code)]
     fn print_grid(nodes: &Grid<Node>) {
         nodes.print(|idx, n| {
-            if idx == (Index { i: 0, j: 0 }) {
+            if idx == (Index::new(0, 0)) {
                 "S"
-            } else if idx
-                == (Index {
-                    i: nodes.size.width - 1,
-                    j: 0,
-                })
-            {
+            } else if idx == (Index::new(nodes.size.width - 1, 0)) {
                 "G"
             } else if n.used == 0 {
                 "_"

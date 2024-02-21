@@ -43,9 +43,9 @@ impl Solution for Solution08 {
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let instructions = Self::parse(input);
         let mut screen = if is_sample {
-            Grid::empty(Size { width: 7, height: 3 }, false)
+            Grid::empty(Size::new(7, 3), false)
         } else {
-            Grid::empty(Size { width: 50, height: 6 }, false)
+            Grid::empty(Size::new(50, 6), false)
         };
 
         for inst in instructions {

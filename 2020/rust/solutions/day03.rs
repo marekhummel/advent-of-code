@@ -7,10 +7,7 @@ impl Solution03 {
     fn trees(area: &Grid<char>, dx: usize, dy: usize) -> usize {
         (0..area.size.height)
             .step_by(dy)
-            .map(|j| Index {
-                i: (j * dx / dy) % area.size.width,
-                j,
-            })
+            .map(|j| Index::new((j * dx / dy) % area.size.width, j))
             .filter(|idx| *area.get(idx) == '#')
             .count()
     }

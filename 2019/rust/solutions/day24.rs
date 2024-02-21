@@ -40,7 +40,7 @@ impl Solution24 {
         let mut new_states = HashMap::new();
 
         // Compute each layer
-        let size = Size { width: 5, height: 5 };
+        let size = Size::square(5);
         let Some((min, max)) = states.keys().minmax().into_option() else {
             unreachable!()
         };
@@ -83,7 +83,7 @@ impl Solution24 {
         let neumann = idx
             .von_neumann_neighbors(size)
             .into_iter()
-            .filter(|idx| *idx != Index { i: 2, j: 2 })
+            .filter(|idx| *idx != Index::new(2, 2))
             .map(|idx| (level, idx))
             .collect_vec();
 
@@ -97,16 +97,16 @@ impl Solution24 {
             _ => {
                 let mut extra = Vec::new();
                 if idx.i == 0 {
-                    extra.push((level - 1, Index { i: 1, j: 2 }))
+                    extra.push((level - 1, Index::new(1, 2)))
                 }
                 if idx.i == 4 {
-                    extra.push((level - 1, Index { i: 3, j: 2 }))
+                    extra.push((level - 1, Index::new(3, 2)))
                 }
                 if idx.j == 0 {
-                    extra.push((level - 1, Index { i: 2, j: 1 }))
+                    extra.push((level - 1, Index::new(2, 1)))
                 }
                 if idx.j == 4 {
-                    extra.push((level - 1, Index { i: 2, j: 3 }))
+                    extra.push((level - 1, Index::new(2, 3)))
                 }
                 extra
             }
