@@ -376,7 +376,33 @@ impl<T> Grid<T> {
     {
         Grid {
             rows: (0..self.rows[0].len())
-                .map(|i| self.rows.iter().map(|inner| inner[i]).collect_vec())
+                .map(|i| self.rows.iter().map(|inner| inner[i]).collect())
+                .collect(),
+            size: Size {
+                width: self.size.height,
+                height: self.size.width,
+            },
+        }
+    }
+
+    pub fn flip_vertical(&self) -> Self
+    where
+        T: Copy,
+    {
+        Grid {
+            rows: self.rows.iter().map(|r| r.iter().rev().copied().collect()).collect(),
+            size: self.size,
+        }
+    }
+
+    pub fn rotate_left(&self) -> Self
+    where
+        T: Copy,
+    {
+        Grid {
+            rows: (0..self.rows[0].len())
+                .rev()
+                .map(|i| self.rows.iter().map(|inner| inner[i]).collect())
                 .collect(),
             size: Size {
                 width: self.size.height,
