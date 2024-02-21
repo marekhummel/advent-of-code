@@ -1,5 +1,5 @@
 use std::{
-    collections::{HashMap, HashSet, VecDeque},
+    collections::{HashMap, VecDeque},
     fmt::{Debug, Display},
     hash::Hash,
 };
@@ -87,7 +87,7 @@ where
 
 impl<NT, T> CFG<NT, T>
 where
-    NT: Clone + PartialEq + Eq + Hash,
+    NT: Clone + PartialEq + Eq + Hash + Debug,
     T: Clone + PartialEq + Eq,
 {
     pub fn cyk_algorithm(&self, word: &[T]) -> Option<Vec<Rule<NT, T>>> {
@@ -192,30 +192,34 @@ where
                     if let Some(sub) = substitutes.get(&(nt1.clone(), nt2.clone())) {
                         subs.push(sub.clone());
                     } else {
-                        let new_sub = (self.sub_func)(substitutes.len()); //format!("Sub{}", substitutes.len() + 1);
+                        let new_sub = (self.sub_func)(substitutes.len());
                         substitutes.insert((nt1.clone(), nt2.clone()), new_sub.clone());
                         subs.push(new_sub.clone());
                     }
                 }
             }
 
-            if let [s1, s2] = &subs[..] {
-                // If only two subs used, we have a new final rule
-                self.rules.push(Rule::Iterative {
-                    src,
-                    vars: [s1.clone(), s2.clone()],
-                });
-            } else if let [s] = &subs[..] {
-                // If only one sub left, combine it with the left over non terminal
-                if vars.len() & 1 == 1 {
+            match subs.len() {
+                2 => {
+                    // If only two subs used, we have a new final rule
                     self.rules.push(Rule::Iterative {
                         src,
-                        vars: [s.clone(), vars.last().unwrap().clone()],
+                        vars: subs.try_into().unwrap(),
                     });
                 }
-            } else {
-                // Too many subs left, repeat process on this new rule
-                shorten.push_back(Rule::Extended { src, vars: subs });
+                1 => {
+                    // If only one sub left, combine it with the left over non terminal
+                    if vars.len() & 1 == 1 {
+                        self.rules.push(Rule::Iterative {
+                            src,
+                            vars: [subs.pop().unwrap(), vars.last().unwrap().clone()],
+                        });
+                    }
+                }
+                _ => {
+                    // Too many subs left, repeat process on this new rule
+                    shorten.push_back(Rule::Extended { src, vars: subs });
+                }
             }
         }
 

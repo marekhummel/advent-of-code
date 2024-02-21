@@ -39,7 +39,7 @@ impl Solution05 {
     fn parse(&self, input: ProblemInput) -> (Vec<Seed>, Vec<Map>) {
         let seeds = input
             .lines()
-            .get(0)
+            .first()
             .unwrap()
             .strip_prefix("seeds: ")
             .unwrap()
