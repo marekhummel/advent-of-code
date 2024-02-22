@@ -1,7 +1,7 @@
 use core::panic;
 use std::fmt::{Debug, Display};
 
-use itertools::Itertools;
+use itertools::{iproduct, Itertools};
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub enum Direction {
@@ -244,7 +244,10 @@ impl Position {
 
     pub fn wrap_modular(&self, size: Size) -> Index {
         let (mx, my) = (size.width as i128, size.height as i128);
-        Index::new((((self.x % mx) + mx) % mx) as usize, (((self.y % my) + my) % my) as usize)
+        Index::new(
+            (((self.x % mx) + mx) % mx) as usize,
+            (((self.y % my) + my) % my) as usize,
+        )
     }
 
     pub fn dist(&self, other: &Position) -> u128 {
@@ -277,6 +280,10 @@ impl Size {
             width: size,
             height: size,
         }
+    }
+
+    pub fn indices(&self) -> impl Iterator<Item = Index> {
+        iproduct!(0..self.height, 0..self.width).map(|(j, i)| Index { i, j })
     }
 }
 

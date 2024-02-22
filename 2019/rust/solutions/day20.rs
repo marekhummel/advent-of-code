@@ -57,45 +57,42 @@ impl Solution20 {
         let size = char_grid.size;
 
         // Parse portals
-        for j in 0..size.height {
-            for i in 0..size.width {
-                let idx = Index { i, j };
-                if seen.contains(&idx) {
-                    continue;
+        for idx in size.indices() {
+            if seen.contains(&idx) {
+                continue;
+            }
+
+            let letter = char_grid.get(&idx);
+            if !letter.is_ascii_alphabetic() {
+                continue;
+            }
+
+            seen.insert(idx);
+
+            let south = idx.advance(Direction::South);
+            let letter_south = char_grid.get(&south);
+            if letter_south.is_ascii_alphabetic() {
+                seen.insert(south);
+                let portal = format!("{letter}{letter_south}");
+                let outer = idx.i < 2 || idx.j < 2 || idx.i >= size.width - 2 || idx.j >= size.height - 2;
+                if let Some('.') = char_grid.get_checked(&idx.advance(Direction::North)) {
+                    grid.set(&idx, Tile::Portal(portal, Direction::North, outer));
+                } else if let Some('.') = char_grid.get_checked(&south.advance(Direction::South)) {
+                    grid.set(&south, Tile::Portal(portal, Direction::South, outer));
                 }
+            }
 
-                let letter = char_grid.get(&idx);
-                if !letter.is_ascii_alphabetic() {
-                    continue;
-                }
+            let east = idx.advance(Direction::East);
+            let letter_east = char_grid.get(&east);
+            if letter_east.is_ascii_alphabetic() {
+                seen.insert(east);
+                let portal = format!("{letter}{letter_east}");
+                let outer = idx.i < 2 || idx.j < 2 || idx.i >= size.width - 2 || idx.j >= size.height - 2;
 
-                seen.insert(idx);
-
-                let south = idx.advance(Direction::South);
-                let letter_south = char_grid.get(&south);
-                if letter_south.is_ascii_alphabetic() {
-                    seen.insert(south);
-                    let portal = format!("{letter}{letter_south}");
-                    let outer = idx.i < 2 || idx.j < 2 || idx.i >= size.width - 2 || idx.j >= size.height - 2;
-                    if let Some('.') = char_grid.get_checked(&idx.advance(Direction::North)) {
-                        grid.set(&idx, Tile::Portal(portal, Direction::North, outer));
-                    } else if let Some('.') = char_grid.get_checked(&south.advance(Direction::South)) {
-                        grid.set(&south, Tile::Portal(portal, Direction::South, outer));
-                    }
-                }
-
-                let east = idx.advance(Direction::East);
-                let letter_east = char_grid.get(&east);
-                if letter_east.is_ascii_alphabetic() {
-                    seen.insert(east);
-                    let portal = format!("{letter}{letter_east}");
-                    let outer = idx.i < 2 || idx.j < 2 || idx.i >= size.width - 2 || idx.j >= size.height - 2;
-
-                    if let Some('.') = char_grid.get_checked(&idx.advance(Direction::West)) {
-                        grid.set(&idx, Tile::Portal(portal, Direction::West, outer));
-                    } else if let Some('.') = char_grid.get_checked(&east.advance(Direction::East)) {
-                        grid.set(&east, Tile::Portal(portal, Direction::East, outer))
-                    }
+                if let Some('.') = char_grid.get_checked(&idx.advance(Direction::West)) {
+                    grid.set(&idx, Tile::Portal(portal, Direction::West, outer));
+                } else if let Some('.') = char_grid.get_checked(&east.advance(Direction::East)) {
+                    grid.set(&east, Tile::Portal(portal, Direction::East, outer))
                 }
             }
         }

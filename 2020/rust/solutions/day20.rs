@@ -127,11 +127,7 @@ impl Solution20 {
             let flip_rot_id = edges.iter().position(|e| e == flip_rot).unwrap();
 
             // Apply transformations to have same grid as was placed when assembling it
-            let mut grid = tile_grid.clone();
-            if flip_rot_id > 3 {
-                grid = grid.flip_vertical()
-            }
-            grid = (0..flip_rot_id % 4).fold(grid, |rg, _| rg.rotate_left());
+            let grid = &tile_grid.symmetry_group()[flip_rot_id];
 
             // Compute tile coordinates
             let ti = idx % tiled_size;

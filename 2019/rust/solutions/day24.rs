@@ -14,18 +14,15 @@ impl Solution24 {
 
     fn next(state: Grid<bool>) -> Grid<bool> {
         let mut new_grid = Grid::empty(state.size, false);
-        for j in 0..state.size.height {
-            for i in 0..state.size.width {
-                let idx = Index { i, j };
-                let adjacent = idx
-                    .von_neumann_neighbors(state.size)
-                    .into_iter()
-                    .filter(|nb| *state.get(nb))
-                    .count();
+        for idx in state.size.indices() {
+            let adjacent = idx
+                .von_neumann_neighbors(state.size)
+                .into_iter()
+                .filter(|nb| *state.get(nb))
+                .count();
 
-                if adjacent == 1 || (!*state.get(&idx) && adjacent == 2) {
-                    new_grid.set(&idx, true);
-                }
+            if adjacent == 1 || (!*state.get(&idx) && adjacent == 2) {
+                new_grid.set(&idx, true);
             }
         }
 
@@ -46,22 +43,18 @@ impl Solution24 {
         };
         for level in min - 1..=max + 1 {
             let mut new_grid = Grid::empty(size, false);
-            for j in 0..size.height {
-                for i in 0..size.width {
-                    if i == 2 && j == 2 {
-                        continue;
-                    }
+            for idx in size.indices() {
+                if idx.i == 2 && idx.j == 2 {
+                    continue;
+                }
+                let adjacent = Self::neighbors_recursive(level, idx, size)
+                    .into_iter()
+                    .filter(|(nl, nb)| *states.get(nl).map(|state| state.get(nb)).unwrap_or(&false))
+                    .count();
 
-                    let idx = Index { i, j };
-                    let adjacent = Self::neighbors_recursive(level, idx, size)
-                        .into_iter()
-                        .filter(|(nl, nb)| *states.get(nl).map(|state| state.get(nb)).unwrap_or(&false))
-                        .count();
-
-                    let bug = *states.get(&level).map(|state| state.get(&idx)).unwrap_or(&false);
-                    if adjacent == 1 || (!bug && adjacent == 2) {
-                        new_grid.set(&idx, true);
-                    }
+                let bug = *states.get(&level).map(|state| state.get(&idx)).unwrap_or(&false);
+                if adjacent == 1 || (!bug && adjacent == 2) {
+                    new_grid.set(&idx, true);
                 }
             }
 
