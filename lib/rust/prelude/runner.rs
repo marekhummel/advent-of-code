@@ -40,7 +40,7 @@ impl AocRunner {
         let (result, _) = self.get_result(day, version, use_sample);
 
         if result != *expected {
-            Err(format!("Got {}, expected {}", result, expected))
+            Err(format!("Got {:?}, expected {:?}", result, expected))
         } else {
             Ok(())
         }

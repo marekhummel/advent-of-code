@@ -76,10 +76,10 @@ impl Solution11 {
 impl Solution for Solution11 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::String("abcdffaa".to_string()),
+            ProblemResult::String("hxbxxyzz".to_string()),
+            ProblemResult::String("abcdffbb".to_string()),
+            ProblemResult::String("hxcaabcc".to_string()),
         ]
     }
 

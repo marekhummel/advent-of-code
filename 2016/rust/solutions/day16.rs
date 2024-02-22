@@ -43,10 +43,10 @@ impl Solution16 {
 impl Solution for Solution16 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::String("01100".to_string()),
+            ProblemResult::String("10010010110011010".to_string()),
+            ProblemResult::String("01100".to_string()),
+            ProblemResult::String("01010100101011100".to_string()),
         ]
     }
 

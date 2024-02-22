@@ -8,10 +8,10 @@ impl Solution09 {}
 impl Solution for Solution09 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::I128(1219070632396864),
+            ProblemResult::I128(3765554916),
+            ProblemResult::I128(1219070632396864),
+            ProblemResult::I128(76642),
         ]
     }
 

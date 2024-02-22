@@ -8,10 +8,10 @@ impl Solution06 {}
 impl Solution for Solution06 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::String("easter".to_string()),
+            ProblemResult::String("mshjnduc".to_string()),
+            ProblemResult::String("advent".to_string()),
+            ProblemResult::String("apfeeebz".to_string()),
         ]
     }
 

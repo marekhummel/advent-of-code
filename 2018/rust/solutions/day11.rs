@@ -45,10 +45,10 @@ impl Solution11 {
 impl Solution for Solution11 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::String("33,45".to_string()),
+            ProblemResult::String("20,68".to_string()),
+            ProblemResult::String("90,269,16".to_string()),
+            ProblemResult::String("231,273,16".to_string()),
         ]
     }
 

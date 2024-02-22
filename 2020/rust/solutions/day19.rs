@@ -59,10 +59,10 @@ impl Solution19 {
 impl Solution for Solution19 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::USize(2),
+            ProblemResult::USize(208),
+            ProblemResult::USize(12),
+            ProblemResult::USize(316),
         ]
     }
 

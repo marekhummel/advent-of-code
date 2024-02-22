@@ -70,10 +70,10 @@ impl Solution21 {
 impl Solution for Solution21 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::USize(5),
+            ProblemResult::USize(2078),
+            ProblemResult::String("mxmxvkd,sqjhc,fvjkl".to_string()),
+            ProblemResult::String("lmcqt,kcddk,npxrdnd,cfb,ldkt,fqpt,jtfmtpd,tsch".to_string()),
         ]
     }
 

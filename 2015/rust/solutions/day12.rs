@@ -24,10 +24,10 @@ impl Solution12 {
 impl Solution for Solution12 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::I32(6),
+            ProblemResult::I32(111754),
+            ProblemResult::I32(4),
+            ProblemResult::I32(65402),
         ]
     }
 

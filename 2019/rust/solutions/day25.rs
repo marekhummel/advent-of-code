@@ -169,10 +169,10 @@ impl Solution25 {}
 impl Solution for Solution25 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::NoSample,
+            ProblemResult::String("134227456".to_string()),
+            ProblemResult::NoPartTwo,
+            ProblemResult::NoPartTwo,
         ]
     }
 

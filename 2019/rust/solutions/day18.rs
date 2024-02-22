@@ -180,10 +180,10 @@ impl Solution18 {
 impl Solution for Solution18 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::U32(81),
+            ProblemResult::U32(4868),
+            ProblemResult::U32(72),
+            ProblemResult::U32(1984),
         ]
     }
 

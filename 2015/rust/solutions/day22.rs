@@ -239,10 +239,10 @@ impl Solution22 {
 impl Solution for Solution22 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::U32(641),
+            ProblemResult::U32(1824),
+            ProblemResult::U32(588),
+            ProblemResult::U32(1937),
         ]
     }
 

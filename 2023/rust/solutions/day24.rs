@@ -137,10 +137,10 @@ impl Solution24 {
 impl Solution for Solution24 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::USize(2),
+            ProblemResult::USize(16812),
+            ProblemResult::BigInt(BigInt::from(47)),
+            ProblemResult::BigInt(BigInt::from(880547248556435u64)),
         ]
     }
 

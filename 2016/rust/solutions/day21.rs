@@ -127,10 +127,10 @@ impl Solution21 {
 impl Solution for Solution21 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::String("decab".to_string()),
+            ProblemResult::String("agcebfdh".to_string()),
+            ProblemResult::String("abcde".to_string()),
+            ProblemResult::String("afhdbegc".to_string()),
         ]
     }
 

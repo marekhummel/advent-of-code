@@ -39,10 +39,10 @@ impl Solution03 {
 impl Solution for Solution03 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::USize(4),
+            ProblemResult::USize(109785),
+            ProblemResult::U32(3),
+            ProblemResult::U32(504),
         ]
     }
 

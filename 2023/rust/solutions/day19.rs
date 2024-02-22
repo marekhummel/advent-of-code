@@ -184,10 +184,10 @@ impl Solution19 {
 impl Solution for Solution19 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::U32(19114),
+            ProblemResult::U32(280909),
+            ProblemResult::U128(167409079868000),
+            ProblemResult::U128(116138474394508),
         ]
     }
 

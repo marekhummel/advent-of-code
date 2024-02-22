@@ -19,10 +19,10 @@ impl Solution08 {
 impl Solution for Solution08 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::USize(1),
+            ProblemResult::USize(1340),
+            ProblemResult::String("/".to_string()),
+            ProblemResult::String("LEJKC".to_string()),
         ]
     }
 

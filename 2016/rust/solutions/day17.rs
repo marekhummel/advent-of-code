@@ -82,10 +82,10 @@ impl<'a> Iterator for PathsIterator<'a> {
 impl Solution for Solution17 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::String("DRURDRUDDLLDLUURRDULRLDUUDDDRR".to_string()),
+            ProblemResult::String("DRDRULRDRD".to_string()),
+            ProblemResult::USize(830),
+            ProblemResult::USize(384),
         ]
     }
 

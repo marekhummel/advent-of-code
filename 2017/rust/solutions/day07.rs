@@ -89,10 +89,10 @@ impl Solution07 {
 impl Solution for Solution07 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::String("tknk".to_string()),
+            ProblemResult::String("aapssr".to_string()),
+            ProblemResult::U32(60),
+            ProblemResult::U32(1458),
         ]
     }
 

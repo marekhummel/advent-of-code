@@ -42,10 +42,10 @@ impl Solution08 {
 impl Solution for Solution08 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::USize(6),
+            ProblemResult::USize(116),
+            ProblemResult::String("UPOJFLBCEZ".to_string()),
+            ProblemResult::String("UPOJFLBCEZ".to_string()),
         ]
     }
 

@@ -48,10 +48,10 @@ impl Solution21 {
 impl Solution for Solution21 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
-            ProblemResult::Unsolved,
+            ProblemResult::USize(16),
+            ProblemResult::USize(3574),
+            ProblemResult::NoSample,
+            ProblemResult::I128(600090522932119),
         ]
     }
 
