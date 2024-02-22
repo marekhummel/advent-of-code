@@ -45,6 +45,15 @@ impl Solution03 {
 }
 
 impl Solution for Solution03 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let triangles = Self::parse(input);
         triangles.into_iter().filter(Self::is_triangle).count().to_result()

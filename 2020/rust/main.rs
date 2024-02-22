@@ -1,6 +1,8 @@
 mod solutions;
 
 use aoc_lib::prelude::runner::AocRunner;
+use aoc_lib::prelude::solution::Solution;
+
 use solutions::day01;
 use solutions::day02;
 use solutions::day03;
@@ -24,13 +26,11 @@ use solutions::day20;
 use solutions::day21;
 use std::env;
 
-use aoc_lib::prelude::solution::Solution;
-
 const ALL: bool = true;
 const VERSION: u8 = 1;
 const USE_SAMPLE: bool = true;
 
-fn main() {
+fn create_runner() -> AocRunner {
     let solutions: Vec<Box<dyn Solution>> = vec![
         Box::new(day01::Solution01 {}),
         Box::new(day02::Solution02 {}),
@@ -56,7 +56,38 @@ fn main() {
         //
     ];
 
+    AocRunner { year: 2020, solutions }
+}
+
+fn main() {
     let arg = env::args().nth(1);
-    let runner = AocRunner { year: 2020, solutions };
+    let runner = create_runner();
     runner.run(arg, ALL, VERSION, USE_SAMPLE);
+}
+
+#[cfg(test)]
+mod tests2020 {
+    use aoc_lib::test_day;
+
+    test_day!(day01);
+    test_day!(day02);
+    test_day!(day03);
+    test_day!(day04);
+    test_day!(day05);
+    test_day!(day06);
+    test_day!(day07);
+    test_day!(day08);
+    test_day!(day09);
+    test_day!(day10);
+    test_day!(day11);
+    test_day!(day12);
+    test_day!(day13);
+    test_day!(day14);
+    test_day!(day15);
+    test_day!(day16);
+    test_day!(day17);
+    test_day!(day18);
+    test_day!(day19);
+    test_day!(day20);
+    test_day!(day21);
 }

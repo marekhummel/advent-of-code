@@ -15,6 +15,15 @@ impl Solution10 {
 }
 
 impl Solution for Solution10 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let iterations = if is_sample { 5 } else { 40 };
         let final_str = (0..iterations).fold(input.string(), |value, _| Self::look_and_say(&value));

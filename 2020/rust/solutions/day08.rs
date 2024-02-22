@@ -20,6 +20,15 @@ impl Solution08 {
 }
 
 impl Solution for Solution08 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let boot_code = input.lines();
         let mut acc = 0;

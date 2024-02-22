@@ -71,6 +71,15 @@ impl Solution18 {
 }
 
 impl Solution for Solution18 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let edges = Self::parse(input);
         let vertices = Self::find_vertices(&edges);

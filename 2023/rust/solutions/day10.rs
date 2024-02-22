@@ -113,6 +113,15 @@ impl Solution10 {
 }
 
 impl Solution for Solution10 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         // Add one to account for odd-length paths
         ((self.find_loop(&self.parse(input)).len() + 1) / 2).to_result()

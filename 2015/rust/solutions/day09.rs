@@ -40,6 +40,15 @@ impl Solution09 {
 }
 
 impl Solution for Solution09 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let graph = Self::parse(input);
         Self::route_lenghts(&graph).min().unwrap().to_result()

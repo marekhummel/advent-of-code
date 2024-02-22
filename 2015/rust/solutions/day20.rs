@@ -20,6 +20,15 @@ impl Solution20 {
 }
 
 impl Solution for Solution20 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let target = input.string().parse::<u64>().unwrap();
         (1..)

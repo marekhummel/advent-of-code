@@ -39,6 +39,15 @@ impl Solution03 {
 }
 
 impl Solution for Solution03 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (path1, path2) = Self::parse(input);
         let trace1: HashSet<_> = HashSet::from_iter(Self::trace_path(path1));

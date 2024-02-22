@@ -41,6 +41,15 @@ impl Solution16 {
 
 // Can be implemented on strings as well, but using bools improves performance by x10
 impl Solution for Solution16 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let disk_size = if is_sample { 20 } else { 272 };
         let data = Self::create_data(Self::parse(input), disk_size);

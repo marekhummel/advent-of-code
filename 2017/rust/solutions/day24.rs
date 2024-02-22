@@ -48,6 +48,15 @@ impl Solution24 {
 }
 
 impl Solution for Solution24 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let components = Self::parse(input);
         let bridges = Self::build_bridges(&components, 0, &mut HashSet::new());

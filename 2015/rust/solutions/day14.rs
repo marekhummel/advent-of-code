@@ -46,6 +46,15 @@ impl Solution14 {
 }
 
 impl Solution for Solution14 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let race_length = if is_sample { 1000 } else { 2503 };
 

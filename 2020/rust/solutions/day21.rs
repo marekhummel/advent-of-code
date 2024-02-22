@@ -68,6 +68,15 @@ impl Solution21 {
 }
 
 impl Solution for Solution21 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let foods = Self::parse(input);
         let potentials = Self::find_potential_allergenic_ingredients(&foods);

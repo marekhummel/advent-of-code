@@ -42,6 +42,15 @@ impl Solution19 {
 }
 
 impl Solution for Solution19 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         Self::josephus(input.string().parse().unwrap()).to_result()
     }

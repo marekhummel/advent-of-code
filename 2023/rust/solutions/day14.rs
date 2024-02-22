@@ -91,6 +91,15 @@ impl Solution14 {
 }
 
 impl Solution for Solution14 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let grid = self.parse(input);
         let tilted = Self::tilt(&grid, true, false); // North

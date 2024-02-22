@@ -6,6 +6,15 @@ pub struct Solution09;
 impl Solution09 {}
 
 impl Solution for Solution09 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut program = Program::init(&input.string());
 

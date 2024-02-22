@@ -135,6 +135,15 @@ impl Solution24 {
 }
 
 impl Solution for Solution24 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let range = if is_sample { 7.0..=27.0 } else { 2e14..=4e14 };
         let hailstones = Self::parse(input);

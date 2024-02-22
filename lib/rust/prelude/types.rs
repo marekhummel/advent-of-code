@@ -35,6 +35,7 @@ impl ProblemInput {
     }
 }
 
+#[derive(Debug, PartialEq, Eq)]
 pub enum ProblemResult {
     NoInput,
     NoSample,

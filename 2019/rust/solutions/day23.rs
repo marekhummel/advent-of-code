@@ -100,6 +100,15 @@ pub struct Solution23;
 impl Solution23 {}
 
 impl Solution for Solution23 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
             return ProblemResult::NoSample;

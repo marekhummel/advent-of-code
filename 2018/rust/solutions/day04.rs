@@ -64,6 +64,15 @@ impl Solution04 {
 }
 
 impl Solution for Solution04 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let records = Self::parse(input);
         let sleep_map = Self::create_sleep_map(&records);

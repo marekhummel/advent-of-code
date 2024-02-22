@@ -92,6 +92,15 @@ impl Solution12 {
 }
 
 impl Solution for Solution12 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let moons = Self::parse(input);
         let steps = if is_sample { 10 } else { 1000 };

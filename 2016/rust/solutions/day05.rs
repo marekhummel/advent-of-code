@@ -19,6 +19,15 @@ impl Solution05 {
 
 // Total day needs 24secs on release mode
 impl Solution for Solution05 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let door = input.string();
 

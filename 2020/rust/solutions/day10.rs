@@ -29,6 +29,15 @@ impl Solution10 {
 }
 
 impl Solution for Solution10 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut adapters = input.lines().into_iter().parsed::<u16>().sorted().collect_vec();
         adapters.insert(0, 0);

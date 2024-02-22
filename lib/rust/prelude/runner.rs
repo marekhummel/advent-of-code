@@ -33,6 +33,19 @@ impl AocRunner {
         }
     }
 
+    pub fn verify_solution(&self, day: usize, version: u8, use_sample: bool) -> Result<(), String> {
+        let solution = &self.solutions[day - 1];
+        assert!(version == 1 || version == 2);
+        let expected = &solution.results()[(version - 1) as usize * 2 + (!use_sample as usize)];
+        let (result, _) = self.get_result(day, version, use_sample);
+
+        if result != *expected {
+            Err(format!("Got {}, expected {}", result, expected))
+        } else {
+            Ok(())
+        }
+    }
+
     fn run_full_year(&self) {
         let mut total_elapsed = Duration::ZERO;
         for day in 0..self.solutions.len() {

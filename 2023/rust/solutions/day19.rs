@@ -182,6 +182,15 @@ impl Solution19 {
 }
 
 impl Solution for Solution19 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (parts, workflows) = Self::parse(input);
         let exec_workflows: HashMap<_, _> = workflows

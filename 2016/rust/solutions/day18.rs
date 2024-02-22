@@ -15,6 +15,15 @@ impl Solution18 {
 }
 
 impl Solution for Solution18 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let total_rows = if is_sample { 10 } else { 40 };
         let mut row = input.string().chars().map(|c| c == '.').collect_vec();

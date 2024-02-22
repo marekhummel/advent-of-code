@@ -10,6 +10,15 @@ pub struct Solution10;
 impl Solution10 {}
 
 impl Solution for Solution10 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let n = if is_sample { 5 } else { 256 };
         let lengths = input.string().split(',').parsed::<usize>().collect_vec();

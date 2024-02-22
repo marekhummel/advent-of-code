@@ -63,6 +63,15 @@ pub struct Solution25;
 impl Solution25 {}
 
 impl Solution for Solution25 {
+    fn results(&self) -> [ProblemResult; 4] {
+        [
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+            ProblemResult::Unsolved,
+        ]
+    }
+
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut turing = Turing::parse(input);
 
