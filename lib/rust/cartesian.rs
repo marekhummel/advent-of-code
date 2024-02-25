@@ -428,3 +428,86 @@ impl<T> Grid<T> {
         println!();
     }
 }
+
+/// Implementation of directions in hex grid, double-height coordinates (flat side up)
+#[derive(Debug, Clone, Copy)]
+pub enum HexDirection {
+    North,
+    NorthWest,
+    NorthEast,
+    South,
+    SouthWest,
+    SouthEast,
+}
+
+impl TryFrom<&str> for HexDirection {
+    type Error = ();
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        match value {
+            "n" => Ok(HexDirection::North),
+            "nw" => Ok(HexDirection::NorthWest),
+            "ne" => Ok(HexDirection::NorthEast),
+            "s" => Ok(HexDirection::South),
+            "sw" => Ok(HexDirection::SouthWest),
+            "se" => Ok(HexDirection::SouthEast),
+            _ => Err(()),
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct HexIndex {
+    pub x: i128,
+    pub y: i128,
+}
+
+// Use double-height coordinates
+// https://www.redblobgames.com/grids/hexagons/
+impl HexIndex {
+    pub fn step(&self, dir: &HexDirection) -> HexIndex {
+        match dir {
+            HexDirection::North => HexIndex {
+                x: self.x,
+                y: self.y - 2,
+            },
+            HexDirection::NorthWest => HexIndex {
+                x: self.x - 1,
+                y: self.y - 1,
+            },
+            HexDirection::NorthEast => HexIndex {
+                x: self.x + 1,
+                y: self.y - 1,
+            },
+            HexDirection::South => HexIndex {
+                x: self.x,
+                y: self.y + 2,
+            },
+            HexDirection::SouthWest => HexIndex {
+                x: self.x - 1,
+                y: self.y + 1,
+            },
+            HexDirection::SouthEast => HexIndex {
+                x: self.x + 1,
+                y: self.y + 1,
+            },
+        }
+    }
+
+    pub fn neighbors(&self) -> [HexIndex; 6] {
+        [
+            self.step(&HexDirection::North),
+            self.step(&HexDirection::NorthEast),
+            self.step(&HexDirection::NorthWest),
+            self.step(&HexDirection::South),
+            self.step(&HexDirection::SouthEast),
+            self.step(&HexDirection::SouthWest),
+        ]
+    }
+
+    pub fn dist(&self, other: &HexIndex) -> u128 {
+        let dx = self.x.abs_diff(other.x);
+        let dy = self.y.abs_diff(other.y);
+        dx + dy.saturating_sub(dx) / 2
+    }
+}
