@@ -82,7 +82,7 @@ impl Solution for Solution22 {
             ProblemResult::U32(306),
             ProblemResult::U32(34255),
             ProblemResult::U32(291),
-            ProblemResult::U32(33368),
+            ProblemResult::U32(33369),
         ]
     }
 

@@ -38,6 +38,7 @@ path = "lib/rust/aoc_lib.rs"
 [lints.clippy]
 needless_range_loop = { level = "allow", priority = 0 }
 never_loop = { level = "warn", priority = 0 }
+if_same_then_else = { level = "warn", priority = 0 }
 
 [dependencies]
 regex = "1"
