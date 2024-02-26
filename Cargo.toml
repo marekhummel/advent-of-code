@@ -8,6 +8,10 @@ name = "main2023"
 path = "2023/rust/main.rs"
 
 [[bin]]
+name = "main2021"
+path = "2021/rust/main.rs"
+
+[[bin]]
 name = "main2020"
 path = "2020/rust/main.rs"
 
