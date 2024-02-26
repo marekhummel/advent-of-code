@@ -11,7 +11,7 @@ import re
 proc = subprocess.run(
     ["git", "status", "-s", "-uall"],
     stdout=subprocess.PIPE,
-    stderr=subprocess.PIPE,
+    stderr=subprocess.DEVNULL,
     shell=True,
 )
 files = proc.stdout.decode("utf-8")
@@ -34,10 +34,11 @@ for year, days in changed_days.items():
     for day in days:
         proc = subprocess.run(
             ["cargo", "test", "--release", "--bin", f"main{year}", day],
-            stdout=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
             shell=True,
         )
         print(f"Year {year}, Day {day.strip('day')} -> {proc.returncode}")
         if proc.returncode != 0:
+            print(proc.stdout.decode("utf-8"))
             exit(proc.returncode)
