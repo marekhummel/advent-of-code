@@ -7,6 +7,7 @@ use solutions::day01;
 use solutions::day02;
 use solutions::day03;
 use solutions::day04;
+use solutions::day05;
 use std::env;
 
 const ALL: bool = true;
@@ -19,6 +20,7 @@ fn create_runner() -> AocRunner {
         Box::new(day02::Solution02 {}),
         Box::new(day03::Solution03 {}),
         Box::new(day04::Solution04 {}),
+        Box::new(day05::Solution05 {}),
         //
     ];
 
@@ -39,5 +41,6 @@ mod tests2021 {
     test_day!(day02);
     test_day!(day03);
     test_day!(day04);
+    test_day!(day05);
     //
 }
