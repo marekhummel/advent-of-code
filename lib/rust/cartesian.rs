@@ -110,6 +110,7 @@ impl Index {
         }
     }
 
+    /// 4-Neighborhood, excluding diagonals
     pub fn von_neumann_neighbors(&self, size: Size) -> Vec<Index> {
         Direction::compass()
             .into_iter()
@@ -117,6 +118,7 @@ impl Index {
             .collect()
     }
 
+    /// 8-Neighborhood, including diagonals
     pub fn moore_neighbors(&self, size: Size) -> Vec<Index> {
         Direction::compass()
             .into_iter()
@@ -285,6 +287,10 @@ impl Size {
     pub fn indices(&self) -> impl Iterator<Item = Index> {
         iproduct!(0..self.height, 0..self.width).map(|(j, i)| Index { i, j })
     }
+
+    pub fn area(&self) -> usize {
+        self.width * self.height
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -339,6 +345,10 @@ impl<T> Grid<T> {
 
     pub fn iter(&self) -> impl DoubleEndedIterator<Item = &T> {
         self.rows.iter().flatten()
+    }
+
+    pub fn iter_mut(&mut self) -> impl DoubleEndedIterator<Item = &mut T> {
+        self.rows.iter_mut().flatten()
     }
 
     pub fn enumerate(&self) -> impl DoubleEndedIterator<Item = (Index, &T)> {
