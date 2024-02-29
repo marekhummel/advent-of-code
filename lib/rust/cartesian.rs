@@ -198,6 +198,10 @@ impl Position {
         Self { x, y }
     }
 
+    pub fn from_tuple(tuple: (i128, i128)) -> Self {
+        Self { x: tuple.0, y: tuple.1 }
+    }
+
     pub fn zero() -> Self {
         Self { x: 0, y: 0 }
     }
