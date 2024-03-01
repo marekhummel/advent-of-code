@@ -63,9 +63,19 @@ impl<V: Clone + Eq + Hash> Graph<V> {
     }
 
     pub fn add_edge(&mut self, from: &V, to: &V, directed: bool) {
-        self.adjacency.entry(from.clone()).or_default().insert(to.clone(), 1);
+        self.add_weighted_edge(from, to, 1, directed)
+    }
+
+    pub fn add_weighted_edge(&mut self, from: &V, to: &V, weight: i64, directed: bool) {
+        self.adjacency
+            .entry(from.clone())
+            .or_default()
+            .insert(to.clone(), weight);
         if !directed {
-            self.adjacency.entry(to.clone()).or_default().insert(from.clone(), 1);
+            self.adjacency
+                .entry(to.clone())
+                .or_default()
+                .insert(from.clone(), weight);
         }
     }
 
@@ -164,6 +174,45 @@ impl<V: Clone + Eq + Hash> Graph<V> {
         }
 
         paths
+    }
+
+    pub fn astar<F>(&self, start: &V, goal: &V, heuristic: F) -> Option<i64>
+    where
+        V: Ord,
+        F: Fn(&V, &V) -> i64,
+    {
+        let mut open = BinaryHeap::new();
+        let mut closed = HashSet::new();
+
+        open.push((Reverse(0), start.clone(), 0));
+
+        // Loop until you find the end
+        while let Some((_, current, g)) = open.pop() {
+            closed.insert(current.clone());
+
+            // Found the goal
+            if &current == goal {
+                return Some(g);
+            }
+
+            let children = &self.adjacency[&current];
+            for (child, weight) in children {
+                if closed.contains(child) {
+                    continue;
+                }
+
+                let child_g = g + weight;
+                let child_h = heuristic(child, goal);
+                let child_f = child_g + child_h;
+
+                if open.iter().any(|(_, o, og)| o == child && child_g >= *og) {
+                    continue;
+                }
+                open.push((Reverse(child_f), child.clone(), child_g))
+            }
+        }
+
+        None
     }
 
     pub fn components(&self) -> Vec<HashSet<V>> {
