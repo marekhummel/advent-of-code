@@ -1,40 +1,33 @@
-use std::collections::HashMap;
-
+use aoc_lib::graph::Graph;
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 
 pub struct Solution09;
 impl Solution09 {
-    fn parse(input: ProblemInput) -> HashMap<String, HashMap<String, u64>> {
-        let mut graph = HashMap::new();
+    fn parse(input: ProblemInput) -> Graph<String> {
+        let mut graph = Graph::empty();
 
         for l in input.lines() {
             let (route, distance_str) = l.split_once(" = ").unwrap();
             let (from, to) = route.trim().split_once(" to ").unwrap();
-            let dist = distance_str.trim().parse::<u64>().unwrap();
+            let dist = distance_str.trim().parse().unwrap();
 
-            graph
-                .entry(from.trim().to_string())
-                .or_insert(HashMap::new())
-                .insert(to.trim().to_string(), dist);
-
-            graph
-                .entry(to.trim().to_string())
-                .or_insert(HashMap::new())
-                .insert(from.trim().to_string(), dist);
+            graph.add_weighted_edge(&from.trim().to_string(), &to.trim().to_string(), dist, false);
         }
 
         graph
     }
 
-    fn route_lenghts(graph: &HashMap<String, HashMap<String, u64>>) -> impl Iterator<Item = u64> + '_ {
-        graph.keys().permutations(graph.len()).map(|route| {
+    fn route_lenghts(graph: &Graph<String>) -> impl Iterator<Item = i64> + '_ {
+        let vertices = graph.vertices();
+        let num_vertices = vertices.len();
+        vertices.into_iter().permutations(num_vertices).map(|route| {
             route
                 .into_iter()
                 .tuple_windows()
-                .map(|(from, to)| graph[from][to])
-                .sum::<u64>()
+                .map(|(from, to)| graph.get_weight(&from, &to))
+                .sum::<i64>()
         })
     }
 }
@@ -42,10 +35,10 @@ impl Solution09 {
 impl Solution for Solution09 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::U64(605),
-            ProblemResult::U64(117),
-            ProblemResult::U64(982),
-            ProblemResult::U64(909),
+            ProblemResult::I64(605),
+            ProblemResult::I64(117),
+            ProblemResult::I64(982),
+            ProblemResult::I64(909),
         ]
     }
 

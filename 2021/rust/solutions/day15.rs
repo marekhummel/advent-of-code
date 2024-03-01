@@ -36,7 +36,7 @@ impl Solution15 {
         // Path finding
         let start = Index::new(0, 0);
         let goal = Index::new(grid.size.width - 1, grid.size.height - 1);
-        cave.astar(&start, &goal, |from, to| from.dist(to) as i64).unwrap()
+        cave.astar(&start, &goal, |from, to| from.dist(to) as i64).unwrap().0
     }
 }
 

@@ -29,8 +29,8 @@ impl Solution for Solution06 {
         [
             ProblemResult::U32(42),
             ProblemResult::U32(344238),
-            ProblemResult::USize(4),
-            ProblemResult::USize(436),
+            ProblemResult::I64(4),
+            ProblemResult::I64(436),
         ]
     }
 
@@ -50,10 +50,8 @@ impl Solution for Solution06 {
             }
         }
 
-        let shortest_paths = system.dijkstra(&"YOU".to_string());
-        let path = shortest_paths.get("SAN").unwrap();
-
-        // Remove YOU and SAN from path (-2), and count edges between vertices (= vertices - 1)
-        (path.len() - 3).to_result()
+        // Don't count start and end
+        let shortest_path = system.astar_no_heuristic(&"YOU".to_string(), &"SAN".to_string());
+        (shortest_path.unwrap().0 - 2).to_result()
     }
 }

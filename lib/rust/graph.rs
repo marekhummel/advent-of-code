@@ -92,6 +92,10 @@ impl<V: Clone + Eq + Hash> Graph<V> {
             .map_or(vec![], |adj| adj.keys().cloned().collect())
     }
 
+    pub fn get_weight(&self, from: &V, to: &V) -> i64 {
+        self.adjacency[from][to]
+    }
+
     pub fn floyd_warshall(&self) -> HashMap<(V, V), i32> {
         let vertices = self.vertices();
         let n = vertices.len();
@@ -176,7 +180,14 @@ impl<V: Clone + Eq + Hash> Graph<V> {
         paths
     }
 
-    pub fn astar<F>(&self, start: &V, goal: &V, heuristic: F) -> Option<i64>
+    pub fn astar_no_heuristic(&self, start: &V, goal: &V) -> Option<(i64, Vec<V>)>
+    where
+        V: Ord,
+    {
+        self.astar(start, goal, |_, _| 0)
+    }
+
+    pub fn astar<F>(&self, start: &V, goal: &V, heuristic: F) -> Option<(i64, Vec<V>)>
     where
         V: Ord,
         F: Fn(&V, &V) -> i64,
@@ -184,15 +195,15 @@ impl<V: Clone + Eq + Hash> Graph<V> {
         let mut open = BinaryHeap::new();
         let mut closed = HashSet::new();
 
-        open.push((Reverse(0), start.clone(), 0));
+        open.push((Reverse(0), start.clone(), 0, vec![start.clone()]));
 
         // Loop until you find the end
-        while let Some((_, current, g)) = open.pop() {
+        while let Some((_, current, g, path)) = open.pop() {
             closed.insert(current.clone());
 
             // Found the goal
             if &current == goal {
-                return Some(g);
+                return Some((g, path));
             }
 
             let children = &self.adjacency[&current];
@@ -205,10 +216,11 @@ impl<V: Clone + Eq + Hash> Graph<V> {
                 let child_h = heuristic(child, goal);
                 let child_f = child_g + child_h;
 
-                if open.iter().any(|(_, o, og)| o == child && child_g >= *og) {
+                if open.iter().any(|(_, o, og, _)| o == child && child_g >= *og) {
                     continue;
                 }
-                open.push((Reverse(child_f), child.clone(), child_g))
+                let new_path = path.iter().cloned().chain([child.clone()].into_iter()).collect();
+                open.push((Reverse(child_f), child.clone(), child_g, new_path))
             }
         }
 
