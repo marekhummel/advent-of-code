@@ -1,5 +1,5 @@
 use aoc_lib::cartesian::Grid;
-use aoc_lib::graph;
+use aoc_lib::graph::Graph;
 use aoc_lib::math::bits;
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
@@ -42,7 +42,7 @@ impl Solution for Solution14 {
         }
 
         let grid = Grid::new(rows);
-        let graph = grid
+        let graph: Graph<_> = grid
             .enumerate()
             .filter(|(_, used)| **used)
             .map(|(idx, _)| {
@@ -56,7 +56,7 @@ impl Solution for Solution14 {
             })
             .collect();
 
-        let components = graph::components(&graph);
+        let components = graph.components();
         components.len().to_result()
     }
 }

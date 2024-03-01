@@ -7,20 +7,19 @@ use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 pub struct Solution12;
 impl Solution12 {
     fn parse(input: ProblemInput) -> Graph<String> {
-        let mut graph = Graph::new();
+        let mut graph = Graph::empty();
         for edge in input.lines() {
             let (v1, v2) = edge.split_once('-').unwrap();
-            graph.entry(v1.to_string()).or_default().insert(v2.to_string());
-            graph.entry(v2.to_string()).or_default().insert(v1.to_string());
+            graph.add_edge(&v1.to_string(), &v2.to_string(), false);
         }
         graph
     }
 
     fn count_paths(cavenet: &Graph<String>, allowed_double_visits: u16) -> u32 {
-        let mut queue = VecDeque::from([("start", HashSet::from(["start"]), 0)]);
+        let mut queue = VecDeque::from([("start".to_string(), HashSet::from(["start".to_string()]), 0)]);
         let mut paths = 0;
         while let Some((cave, visited, double_visits)) = queue.pop_front() {
-            for nb in &cavenet[cave] {
+            for nb in cavenet.adjacent_vertices(&cave.to_string()) {
                 // Path found
                 if nb == "end" {
                     paths += 1;
@@ -30,7 +29,7 @@ impl Solution12 {
                 // Check if neighbor can be visited
                 let mut new_visited = visited.clone();
                 let mut new_double_visits = double_visits;
-                if nb.chars().all(|c| c.is_ascii_lowercase()) && !new_visited.insert(nb) {
+                if nb.chars().all(|c| c.is_ascii_lowercase()) && !new_visited.insert(nb.clone()) {
                     if double_visits >= allowed_double_visits || nb == "start" {
                         continue;
                     }

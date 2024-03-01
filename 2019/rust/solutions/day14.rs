@@ -1,9 +1,10 @@
 use std::cmp::Ordering;
 use std::collections::HashMap;
 
-use aoc_lib::graph::{self, Graph};
+use aoc_lib::graph::Graph;
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use itertools::Itertools;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct Quantity(u64, String);
@@ -32,16 +33,16 @@ impl Solution14 {
 
     fn compute_required_ore(graph: &Graph<Quantity>, fuel: u64) -> u64 {
         // Sort graph to find order in which to produce chemicals
-        let dependencies = graph
+        let dependencies: Graph<_> = graph
             .iter()
-            .map(|(target, ings)| (&target.1, ings.iter().map(|ing| &ing.1).collect()))
+            .map(|(trg_quant, ings)| (&trg_quant.1, ings.iter().map(|(ing_quant, _)| &ing_quant.1).collect()))
             .collect();
-        let production_order = graph::topo_sorting(&dependencies).unwrap();
+        let production_order = dependencies.topo_sorting().unwrap();
 
         // Lookup for recipes based on target chemical
         let recipes: HashMap<_, _> = graph
             .iter()
-            .map(|(target, ingredients)| (&target.1, (target, ingredients)))
+            .map(|(trg_quant, ingredients)| (&trg_quant.1, (trg_quant, ingredients.keys().collect_vec())))
             .collect();
 
         // Get supplies
@@ -52,7 +53,7 @@ impl Solution14 {
             }
 
             // Find recipe for chemical and compute the amount this recipe has to be made
-            let (recipe_outcome, ingredients) = recipes[target_chemical];
+            let (recipe_outcome, ingredients) = &recipes[target_chemical];
             let required_amount = supplies.remove(target_chemical).unwrap();
             let factor = (required_amount - 1) / recipe_outcome.0 + 1;
 

@@ -24,8 +24,7 @@ impl Solution20 {
                     let mut next_pos = HashSet::new();
                     for pos in current {
                         let next = pos.advance_by(dir, 1);
-                        map.entry(pos).or_default().insert(next);
-                        map.entry(next).or_default().insert(pos);
+                        map.add_edge(&pos, &next, false);
                         next_pos.insert(next);
                     }
                     current = next_pos;
@@ -60,8 +59,8 @@ impl Solution20 {
 
             dists.insert(pos, dist);
 
-            for next in &map[&pos] {
-                queue.push_back((*next, dist + 1));
+            for next in map.adjacent_vertices(&pos) {
+                queue.push_back((next, dist + 1));
             }
         }
 
@@ -83,7 +82,7 @@ impl Solution for Solution20 {
         let input_str = input.string();
         let mut regex = input_str.trim_start_matches('^').trim_end_matches('$').chars();
 
-        let mut map = HashMap::new();
+        let mut map = Graph::empty();
         Self::build_map(&mut regex, &mut map, HashSet::from([Position::zero()]));
 
         let dists = Self::dists(&map);
@@ -94,7 +93,7 @@ impl Solution for Solution20 {
         let input_str = input.string();
         let mut regex = input_str.trim_start_matches('^').trim_end_matches('$').chars();
 
-        let mut map = HashMap::new();
+        let mut map = Graph::empty();
         Self::build_map(&mut regex, &mut map, HashSet::from([Position::zero()]));
 
         let dists = Self::dists(&map);

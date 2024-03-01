@@ -1,7 +1,7 @@
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, HashSet};
 
-use aoc_lib::graph::{self, Graph};
+use aoc_lib::graph::Graph;
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
@@ -35,7 +35,7 @@ impl Solution for Solution07 {
 
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let graph = Self::parse(input);
-        let sorting = graph::topo_sorting(&graph).unwrap();
+        let sorting = graph.topo_sorting().unwrap();
 
         sorting.into_iter().join("").to_result()
     }
@@ -46,12 +46,8 @@ impl Solution for Solution07 {
         let workload = |task: &char| -> u8 { (*task as u8 - b'A') + 1 + if is_sample { 0 } else { 60 } };
 
         // Invert graph to map trg to source nodes
-        let mut sources = graph::invert(&graph);
-        let mut ready: BinaryHeap<_> = sources
-            .iter()
-            .filter(|(_, srcs)| srcs.is_empty())
-            .map(|(trg, _)| Reverse(*trg)) // Use reverse to ensure smaller nodes are chosen first
-            .collect();
+        let mut sources = graph.invert();
+        let mut ready: BinaryHeap<_> = sources.sinks().into_iter().map(Reverse).collect();
 
         // Start with n idle workers
         let mut workers: Vec<Option<(Reverse<char>, u8)>> = vec![None; num_workers];
@@ -69,12 +65,11 @@ impl Solution for Solution07 {
                     }
 
                     // Remove completed task from graph (both as vertex and edges) and add vertices with no incoming edges
-                    sources.remove(job);
-                    for (trg, srcs) in sources.iter_mut() {
-                        srcs.remove(job);
-                        if srcs.is_empty() && !checked_tasks.contains(trg) {
-                            ready.push(Reverse(*trg));
-                            checked_tasks.insert(*trg);
+                    sources.remove_vertex(job);
+                    for trg in sources.sinks() {
+                        if !checked_tasks.contains(&trg) {
+                            ready.push(Reverse(trg));
+                            checked_tasks.insert(trg);
                         }
                     }
                     *worker = None;

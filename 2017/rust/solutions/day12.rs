@@ -1,4 +1,4 @@
-use aoc_lib::graph::{self, Graph};
+use aoc_lib::graph::Graph;
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
@@ -30,7 +30,7 @@ impl Solution for Solution12 {
 
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let pipes = Self::parse(input);
-        let components = graph::components(&pipes);
+        let components = pipes.components();
 
         let group0 = components.into_iter().find(|c| c.contains(&0)).unwrap();
         group0.len().to_result()
@@ -38,7 +38,7 @@ impl Solution for Solution12 {
 
     fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let pipes = Self::parse(input);
-        let components = graph::components(&pipes);
+        let components = pipes.components();
         components.len().to_result()
     }
 }

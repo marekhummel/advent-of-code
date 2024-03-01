@@ -1,4 +1,6 @@
 use std::cmp::Reverse;
+use std::collections::hash_map::Iter;
+use std::fmt::Debug;
 use std::{
     collections::{BinaryHeap, HashMap, HashSet, VecDeque},
     hash::Hash,
@@ -6,165 +8,241 @@ use std::{
 
 use itertools::Itertools;
 
-pub type Graph<V> = HashMap<V, HashSet<V>>;
+#[derive(Debug, Clone)]
+pub struct Graph<V> {
+    adjacency: HashMap<V, HashMap<V, i64>>,
+}
 
-pub fn floyd_marshall<V: Clone + Eq + Hash>(graph: &Graph<V>) -> HashMap<(V, V), i32> {
-    let vertices = graph.keys().cloned().collect_vec();
-    let n = vertices.len();
-    let mut dist = vec![vec![i32::MAX as i64; n]; n];
+impl<V: Eq + Hash> FromIterator<(V, HashSet<V>)> for Graph<V> {
+    fn from_iter<T: IntoIterator<Item = (V, HashSet<V>)>>(iter: T) -> Self {
+        Graph {
+            adjacency: iter
+                .into_iter()
+                .map(|(vertex, adjacent)| (vertex, adjacent.into_iter().map(|a| (a, 1)).collect()))
+                .collect(),
+        }
+    }
+}
 
-    for (u, neighbors) in graph {
-        let ui = vertices.iter().position(|vert| u == vert).unwrap();
-        for v in neighbors {
-            let vi = vertices.iter().position(|vert| v == vert).unwrap();
-            dist[ui][vi] = 1;
+impl<V: Clone + Eq + Hash> Graph<V> {
+    pub fn empty() -> Self {
+        Graph {
+            adjacency: HashMap::new(),
         }
     }
 
-    for vi in 0..n {
-        dist[vi][vi] = 0;
+    pub fn vertices(&self) -> Vec<V> {
+        self.adjacency
+            .keys()
+            .chain(self.adjacency.values().flat_map(|adj| adj.keys()))
+            .unique()
+            .cloned()
+            .collect()
     }
 
-    for k in 0..n {
-        for i in 0..n {
-            for j in 0..n {
-                if dist[i][j] > dist[i][k] + dist[k][j] {
-                    dist[i][j] = dist[i][k] + dist[k][j];
+    pub fn sinks(&self) -> Vec<V> {
+        self.vertices()
+            .into_iter()
+            .filter(|v| self.adjacency.get(v).map_or(true, |adj| adj.is_empty()))
+            .collect()
+    }
+
+    pub fn iter(&self) -> Iter<'_, V, HashMap<V, i64>> {
+        self.adjacency.iter()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.adjacency.is_empty()
+    }
+
+    pub fn remove_vertex(&mut self, vertex: &V) {
+        self.adjacency.remove(vertex);
+        for (_, adj) in self.adjacency.iter_mut() {
+            adj.remove(vertex);
+        }
+    }
+
+    pub fn add_edge(&mut self, from: &V, to: &V, directed: bool) {
+        self.adjacency.entry(from.clone()).or_default().insert(to.clone(), 1);
+        if !directed {
+            self.adjacency.entry(to.clone()).or_default().insert(from.clone(), 1);
+        }
+    }
+
+    pub fn remove_edge(&mut self, from: &V, to: &V, directed: bool) {
+        self.adjacency.get_mut(from).unwrap().remove(to);
+        if !directed {
+            self.adjacency.get_mut(to).unwrap().remove(from);
+        }
+    }
+
+    pub fn adjacent_vertices(&self, vertex: &V) -> Vec<V> {
+        self.adjacency
+            .get(vertex)
+            .map_or(vec![], |adj| adj.keys().cloned().collect())
+    }
+
+    pub fn floyd_warshall(&self) -> HashMap<(V, V), i32> {
+        let vertices = self.vertices();
+        let n = vertices.len();
+        let mut dist = vec![vec![i32::MAX as i64; n]; n];
+
+        for (u, neighbors) in &self.adjacency {
+            let ui = vertices.iter().position(|vert| u == vert).unwrap();
+            for (v, weight) in neighbors.iter() {
+                let vi = vertices.iter().position(|vert| v == vert).unwrap();
+                dist[ui][vi] = *weight;
+            }
+        }
+
+        for vi in 0..n {
+            dist[vi][vi] = 0;
+        }
+
+        for k in 0..n {
+            for i in 0..n {
+                for j in 0..n {
+                    if dist[i][j] > dist[i][k] + dist[k][j] {
+                        dist[i][j] = dist[i][k] + dist[k][j];
+                    }
                 }
             }
         }
+
+        (0..n)
+            .tuple_combinations()
+            .flat_map(|(ui, vi)| {
+                [
+                    ((vertices[ui].clone(), vertices[vi].clone()), dist[ui][vi] as i32),
+                    ((vertices[vi].clone(), vertices[ui].clone()), dist[vi][ui] as i32),
+                ]
+            })
+            .collect()
     }
 
-    (0..n)
-        .tuple_combinations()
-        .flat_map(|(ui, vi)| {
-            [
-                ((vertices[ui].clone(), vertices[vi].clone()), dist[ui][vi] as i32),
-                ((vertices[vi].clone(), vertices[ui].clone()), dist[vi][ui] as i32),
-            ]
-        })
-        .collect()
-}
+    /// Shortest paths from start to all other nodes
+    pub fn dijkstra(&self, start: &V) -> HashMap<V, Vec<V>>
+    where
+        V: Ord,
+    {
+        let vertices = self.vertices();
+        let mut prev = HashMap::new();
+        let mut dist = vertices
+            .iter()
+            .map(|v| (v.clone(), i64::MAX - 1))
+            .collect::<HashMap<_, _>>();
+        *dist.get_mut(start).unwrap() = 0;
 
-/// Shortest paths from start to all other nodes
-pub fn dijkstra<V: Eq + Hash + Clone + Ord>(graph: &Graph<V>, start: &V) -> HashMap<V, Vec<V>> {
-    let vertices = graph.keys().cloned().collect_vec();
-    let mut prev = HashMap::new();
-    let mut dist = vertices
-        .iter()
-        .map(|v| (v.clone(), i32::MAX - 1))
-        .collect::<HashMap<_, _>>();
-    *dist.get_mut(start).unwrap() = 0;
+        let mut queue: BinaryHeap<(i64, &V)> = vertices.iter().map(|v| (-dist[v], v)).collect();
 
-    let mut queue: BinaryHeap<(i32, &V)> = vertices.iter().map(|v| (-dist[v], v)).collect();
-
-    while let Some((_, u)) = queue.pop() {
-        for v in graph[u].iter() {
-            let alt = dist[u] + 1;
-            if alt < dist[v] {
-                *dist.get_mut(v).unwrap() = alt;
-                prev.entry(v.clone()).and_modify(|e| *e = u).or_insert(u);
-                queue.push((-alt, v))
+        while let Some((_, u)) = queue.pop() {
+            for (v, weight) in self.adjacency[u].iter() {
+                let alt = dist[u] + *weight;
+                if alt < dist[v] {
+                    *dist.get_mut(v).unwrap() = alt;
+                    prev.entry(v.clone()).and_modify(|e| *e = u).or_insert(u);
+                    queue.push((-alt, v))
+                }
             }
         }
-    }
 
-    let mut paths = HashMap::new();
-    for v in vertices.iter() {
-        if v == start {
-            continue;
-        }
-
-        let mut curr = v;
-        let mut path = vec![v.clone()];
-        while curr != start {
-            curr = prev[curr];
-            path.push(curr.clone());
-        }
-        path.reverse();
-
-        paths.insert(v.clone(), path);
-    }
-
-    paths
-}
-
-pub fn components<V: Eq + Hash + Clone>(graph: &Graph<V>) -> Vec<HashSet<V>> {
-    let mut seen = HashSet::new();
-    let mut components = Vec::new();
-
-    while seen.len() < graph.len() {
-        let vertex = graph.keys().find(|p| !seen.contains(*p)).unwrap();
-
-        let mut comp = HashSet::new();
-        let mut queue = VecDeque::from([vertex.clone()]);
-        while let Some(u) = queue.pop_front() {
-            comp.insert(u.clone());
-            if seen.contains(&u) {
+        let mut paths = HashMap::new();
+        for v in vertices.iter() {
+            if v == start {
                 continue;
             }
 
-            seen.insert(u.clone());
-
-            for w in graph[&u].iter() {
-                queue.push_back(w.clone());
+            let mut curr = v;
+            let mut path = vec![v.clone()];
+            while curr != start {
+                curr = prev[curr];
+                path.push(curr.clone());
             }
+            path.reverse();
+
+            paths.insert(v.clone(), path);
         }
 
-        components.push(comp);
+        paths
     }
 
-    components
-}
+    pub fn components(&self) -> Vec<HashSet<V>> {
+        let mut seen = HashSet::new();
+        let mut components = Vec::new();
 
-/// Kahn's Algorithm
-pub fn topo_sorting<V: Eq + Ord + Hash + Clone>(graph: &Graph<V>) -> Option<Vec<V>> {
-    // Invert graph to map trg to source nodes
-    let mut sources = invert(graph);
+        let vertices = self.vertices();
+        while seen.len() < vertices.len() {
+            let vertex = vertices.iter().find(|p| !seen.contains(*p)).unwrap();
 
-    let mut sorted = Vec::new();
-    let mut next: BinaryHeap<_> = sources
-        .iter()
-        .filter(|(_, srcs)| srcs.is_empty())
-        .map(|(trg, _)| Reverse(trg.clone())) // Use reverse to ensure smaller nodes are chosen first
-        .collect();
+            let mut comp = HashSet::new();
+            let mut queue = VecDeque::from([vertex.clone()]);
+            while let Some(u) = queue.pop_front() {
+                comp.insert(u.clone());
+                if seen.contains(&u) {
+                    continue;
+                }
 
-    while let Some(node) = next.pop() {
-        if sources.remove(&node.0).is_some() {
-            sorted.push(node.0.clone());
-            for (trg, srcs) in sources.iter_mut() {
-                srcs.remove(&node.0);
-                if srcs.is_empty() {
-                    next.push(Reverse(trg.clone()));
+                seen.insert(u.clone());
+
+                for w in self.adjacency[&u].keys() {
+                    queue.push_back(w.clone());
+                }
+            }
+
+            components.push(comp);
+        }
+
+        components
+    }
+
+    /// Kahn's Algorithm
+    pub fn topo_sorting(&self) -> Option<Vec<V>>
+    where
+        V: Ord,
+    {
+        // Invert graph to map trg to source nodes
+        let mut sources = self.invert().adjacency;
+
+        let mut sorted = Vec::new();
+        let mut next: BinaryHeap<_> = sources
+            .iter()
+            .filter(|(_, srcs)| srcs.is_empty())
+            .map(|(trg, _)| Reverse(trg.clone())) // Use reverse to ensure smaller nodes are chosen first
+            .collect();
+
+        while let Some(Reverse(node)) = next.pop() {
+            if sources.remove(&node).is_some() {
+                sorted.push(node.clone());
+                for (trg, srcs) in sources.iter_mut() {
+                    srcs.remove(&node);
+                    if srcs.is_empty() {
+                        next.push(Reverse(trg.clone()));
+                    }
                 }
             }
         }
+
+        if sources.is_empty() {
+            Some(sorted)
+        } else {
+            None
+        }
     }
 
-    if sources.is_empty() {
-        Some(sorted)
-    } else {
-        None
+    // Invert graph to map trg to source nodes
+    pub fn invert(&self) -> Self {
+        self.vertices()
+            .into_iter()
+            .map(|trg| {
+                (
+                    trg.clone(),
+                    self.adjacency
+                        .iter()
+                        .filter(|(_, trgs)| trgs.contains_key(&trg))
+                        .map(|(src, _)| src.clone())
+                        .collect::<HashSet<_>>(),
+                )
+            })
+            .collect()
     }
-}
-
-pub fn vertices<V: Eq + Hash + Clone>(graph: &Graph<V>) -> HashSet<V> {
-    graph.keys().chain(graph.values().flatten()).cloned().collect()
-}
-
-// Invert graph to map trg to source nodes
-pub fn invert<V: Eq + Hash + Clone>(graph: &Graph<V>) -> Graph<V> {
-    vertices(graph)
-        .into_iter()
-        .map(|trg| {
-            (
-                trg.clone(),
-                graph
-                    .iter()
-                    .filter(|(_, trgs)| trgs.contains(&trg))
-                    .map(|(src, _)| src.clone())
-                    .collect(),
-            )
-        })
-        .collect()
 }

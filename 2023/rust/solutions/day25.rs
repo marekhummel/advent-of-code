@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-use aoc_lib::graph::{self, Graph};
+use aoc_lib::graph::Graph;
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
@@ -24,18 +24,17 @@ impl Solution25 {
             connections.entry(src).or_insert(HashSet::new()).extend(targets);
         }
 
-        connections
+        connections.into_iter().collect()
     }
 
     // Count edges for all pairs of shortest paths (apsp)
     fn count_edges_apsp(graph: &Graph<String>) -> HashMap<(String, String), i32> {
         graph
-            .keys()
-            .collect_vec()
+            .vertices()
             .par_iter()
             .map(|v| {
                 let mut edge_counts = HashMap::new();
-                let ssp = graph::dijkstra(graph, v);
+                let ssp = graph.dijkstra(v);
                 for paths in ssp.values() {
                     for (a, b) in paths.iter().tuple_windows() {
                         *edge_counts.entry((a.min(b).clone(), a.max(b).clone())).or_insert(0) += 1;
@@ -49,25 +48,6 @@ impl Solution25 {
                 }
                 acc
             })
-    }
-
-    fn find_components(graph: &Graph<String>) -> Vec<HashSet<String>> {
-        let mut components = graph.keys().map(|v| HashSet::from([v.clone()])).collect_vec();
-
-        for (v, neighbors) in graph.iter() {
-            for u in neighbors {
-                let v_comp = components.iter().position(|c| c.contains(v)).unwrap();
-                let u_comp = components.iter().position(|c| c.contains(u)).unwrap();
-
-                if v_comp != u_comp {
-                    let other_comp = components[u_comp].clone();
-                    components.get_mut(v_comp).unwrap().extend(other_comp);
-                    components.remove(u_comp);
-                }
-            }
-        }
-
-        components
     }
 }
 
@@ -93,12 +73,12 @@ impl Solution for Solution25 {
         // Find bridges and remove from graph
         let bridges = edge_counts.into_iter().sorted_by_key(|(_, count)| -count).take(3);
         for ((from, to), _) in bridges {
-            connections.get_mut(&from).unwrap().remove(&to);
-            connections.get_mut(&to).unwrap().remove(&from);
+            connections.remove_edge(&from, &to, false);
         }
 
         // Find components and their sizes
-        let components = Self::find_components(&connections);
+        // let components = Self::find_components(&connections);
+        let components = connections.components();
         assert_eq!(components.len(), 2);
         components.into_iter().map(|c| c.len()).product::<usize>().to_result()
     }
