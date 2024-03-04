@@ -15,14 +15,14 @@ impl Solution16 {
     }
 
     fn eval(bits: &mut Vec<bool>) -> (u64, u64) {
-        let version = Self::to_num(bits.drain(0..3).collect());
-        let type_id = Self::to_num(bits.drain(0..3).collect());
+        let version = Self::to_num(bits.drain(..3).collect());
+        let type_id = Self::to_num(bits.drain(..3).collect());
 
         if type_id == 4 {
             // Literal
             let mut literal_value: Vec<bool> = Vec::new();
             loop {
-                let chunk = bits.drain(0..5).collect_vec();
+                let chunk = bits.drain(..5).collect_vec();
                 literal_value.extend(&chunk[1..]);
                 if !chunk[0] {
                     break;
@@ -32,15 +32,15 @@ impl Solution16 {
             (version, num)
         } else {
             // Operator
-            let length_type_id = bits.drain(0..1).next().unwrap();
+            let length_type_id = bits.drain(..1).next().unwrap();
             let mut subpackets = Vec::new();
             if length_type_id {
                 // Number of sub-packets
-                let num_subpackets = Self::to_num(bits.drain(0..11).collect());
+                let num_subpackets = Self::to_num(bits.drain(..11).collect());
                 subpackets.extend((0..num_subpackets).map(|_| Self::eval(bits)));
             } else {
                 // Total length in bits
-                let subpacket_length = Self::to_num(bits.drain(0..15).collect());
+                let subpacket_length = Self::to_num(bits.drain(..15).collect());
                 let mut bits_read = 0;
                 while bits_read < subpacket_length {
                     let len_before = bits.len();
