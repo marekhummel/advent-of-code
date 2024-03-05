@@ -35,12 +35,8 @@ impl Solution11 {
 
     #[allow(dead_code)]
     fn print_panels(panels: &HashMap<Position, i128>) {
-        let Some((min_x, max_x)) = panels.keys().map(|pos| pos.x).minmax().into_option() else {
-            panic!()
-        };
-        let Some((min_y, max_y)) = panels.keys().map(|pos| pos.y).minmax().into_option() else {
-            panic!()
-        };
+        let Some((min_x, max_x)) = panels.keys().map(|pos| pos.x).minmax().into_option() else { panic!() };
+        let Some((min_y, max_y)) = panels.keys().map(|pos| pos.y).minmax().into_option() else { panic!() };
 
         println!();
         for y in min_y - 1..=max_y + 1 {

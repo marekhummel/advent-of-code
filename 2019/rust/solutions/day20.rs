@@ -146,9 +146,7 @@ impl Solution20 {
                 Tile::Portal(_, _, is_outer) => {
                     if !is_outer || level > 0 {
                         let target = portals[&idx];
-                        let Tile::Portal(_, dir, _) = grid.get(&target) else {
-                            unreachable!()
-                        };
+                        let Tile::Portal(_, dir, _) = grid.get(&target) else { unreachable!() };
                         let next_level = if *is_outer { level - 1 } else { level + 1 };
                         let queued_level = if use_levels { next_level } else { level };
                         queue.push((Reverse(steps), Reverse(queued_level), target.advance(*dir)))

@@ -38,9 +38,7 @@ impl Solution24 {
 
         // Compute each layer
         let size = Size::square(5);
-        let Some((min, max)) = states.keys().minmax().into_option() else {
-            unreachable!()
-        };
+        let Some((min, max)) = states.keys().minmax().into_option() else { unreachable!() };
         for level in min - 1..=max + 1 {
             let mut new_grid = Grid::empty(size, false);
             for idx in size.indices() {

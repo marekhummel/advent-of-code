@@ -16,12 +16,8 @@ impl Solution06 {
             })
             .collect_vec();
 
-        let Some((min_i, max_i)) = indices.iter().map(|idx| idx.i).minmax().into_option() else {
-            panic!()
-        };
-        let Some((min_j, max_j)) = indices.iter().map(|idx| idx.j).minmax().into_option() else {
-            panic!()
-        };
+        let Some((min_i, max_i)) = indices.iter().map(|idx| idx.i).minmax().into_option() else { panic!() };
+        let Some((min_j, max_j)) = indices.iter().map(|idx| idx.j).minmax().into_option() else { panic!() };
 
         // Add padding of 1 around
         let size = Size::new(max_i - min_i + 3, max_j - min_j + 3);

@@ -43,9 +43,7 @@ impl Droid {
     fn explore(&mut self, movements: &mut Vec<Direction>) -> bool {
         let (lines, _) = self.execute_until_command();
         let Some((room, doors, items_room)) = Self::parse_output(&lines) else {
-            let Some(last_item) = self.collected_items.last() else {
-                panic!()
-            };
+            let Some(last_item) = self.collected_items.last() else { panic!() };
             self.forbidden_items.push(last_item.clone());
             return false;
         };

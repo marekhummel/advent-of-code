@@ -84,9 +84,7 @@ impl Solution for Solution23 {
 
         // Check second to last instruction, which should have the increment for b
         let incr_inst = prog.instructions.iter().nth_back(1).unwrap();
-        let Instruction::Sub(_, Value::Immediate(increment)) = incr_inst else {
-            panic!()
-        };
+        let Instruction::Sub(_, Value::Immediate(increment)) = incr_inst else { panic!() };
 
         // Find composites in that range
         (start..=end)
