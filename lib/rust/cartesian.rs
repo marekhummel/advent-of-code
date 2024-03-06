@@ -362,6 +362,31 @@ impl<T> Grid<T> {
             .flat_map(|(j, row)| row.iter().enumerate().map(move |(i, v)| (Index { i, j }, v)))
     }
 
+    pub fn extend(&mut self, dir: Direction, value: T)
+    where
+        T: Clone,
+    {
+        match dir {
+            Direction::North => {
+                self.rows.insert(0, vec![value; self.size.width]);
+                self.size.height += 1;
+            }
+            Direction::East => {
+                self.rows.iter_mut().for_each(|r| r.push(value.clone()));
+                self.size.width += 1
+            }
+            Direction::South => {
+                self.rows.push(vec![value; self.size.width]);
+                self.size.height += 1
+            }
+            Direction::West => {
+                self.rows.iter_mut().for_each(|r| r.insert(0, value.clone()));
+                self.size.width += 1
+            }
+            Direction::None => (),
+        }
+    }
+
     pub fn map_elements<R, F: Fn(&T) -> R>(self, func: F) -> Grid<R> {
         Grid {
             rows: self
