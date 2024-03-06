@@ -1,18 +1,12 @@
 use std::cell::RefCell;
 use std::collections::HashSet;
 
+use aoc_lib::algebra::Vec3;
 use aoc_lib::math::lcm;
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 use regex::Regex;
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-struct Vec3 {
-    x: i32,
-    y: i32,
-    z: i32,
-}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct Moon {
@@ -23,35 +17,29 @@ struct Moon {
 impl Moon {
     fn apply_gravity(&mut self, other: &mut Moon) {
         let delta_x = (other.pos.x - self.pos.x).signum();
-        self.vel.x += delta_x;
-        other.vel.x -= delta_x;
-
         let delta_y = (other.pos.y - self.pos.y).signum();
-        self.vel.y += delta_y;
-        other.vel.y -= delta_y;
-
         let delta_z = (other.pos.z - self.pos.z).signum();
-        self.vel.z += delta_z;
-        other.vel.z -= delta_z;
+
+        let delta = Vec3::new(delta_x, delta_y, delta_z);
+        self.vel += delta;
+        other.vel -= delta;
     }
 
     fn apply_velocity(&mut self) {
-        self.pos.x += self.vel.x;
-        self.pos.y += self.vel.y;
-        self.pos.z += self.vel.z;
+        self.pos += self.vel;
     }
 
     fn total_energy(&self) -> i32 {
-        let pot = self.pos.x.abs() + self.pos.y.abs() + self.pos.z.abs();
-        let kin = self.vel.x.abs() + self.vel.y.abs() + self.vel.z.abs();
+        let pot = self.pos.length() as i32;
+        let kin = self.vel.length() as i32;
         pot * kin
     }
 
     fn states(&self) -> ((i32, i32), (i32, i32), (i32, i32)) {
         (
-            (self.pos.x, self.vel.x),
-            (self.pos.y, self.vel.y),
-            (self.pos.z, self.vel.z),
+            (self.pos.x as i32, self.vel.x as i32),
+            (self.pos.y as i32, self.vel.y as i32),
+            (self.pos.z as i32, self.vel.z as i32),
         )
     }
 }
@@ -59,7 +47,6 @@ impl Moon {
 pub struct Solution12;
 impl Solution12 {
     fn parse(input: ProblemInput) -> Vec<RefCell<Moon>> {
-        // <x=3, y=5, z=-1>
         let rgx = Regex::new(r"<x=(?P<x>-?\d+), y=(?P<y>-?\d+), z=(?P<z>-?\d+)>").unwrap();
         input
             .lines()

@@ -1,21 +1,9 @@
 use std::collections::HashSet;
 
+use aoc_lib::algebra::Vec3;
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-struct Vec3 {
-    x: i32,
-    y: i32,
-    z: i32,
-}
-
-impl Vec3 {
-    fn mandist(&self) -> i32 {
-        self.x.abs() + self.y.abs() + self.z.abs()
-    }
-}
 
 #[derive(Debug, Clone)]
 struct Particle {
@@ -27,12 +15,8 @@ struct Particle {
 
 impl Particle {
     fn update(&mut self) {
-        self.vel.x += self.acc.x;
-        self.vel.y += self.acc.y;
-        self.vel.z += self.acc.z;
-        self.pos.x += self.vel.x;
-        self.pos.y += self.vel.y;
-        self.pos.z += self.vel.z;
+        self.vel += self.acc;
+        self.pos += self.vel;
     }
 }
 
@@ -54,7 +38,7 @@ impl Solution20 {
                             .map(|c| c.trim().parse().unwrap())
                             .collect_tuple()
                             .unwrap();
-                        Vec3 { x, y, z }
+                        Vec3::new(x, y, z)
                     })
                     .collect_tuple()
                     .unwrap();
@@ -80,7 +64,7 @@ impl Solution for Solution20 {
         // Just works due to lucky input I guess
         particles
             .into_iter()
-            .min_by_key(|p| (p.acc.mandist(), p.vel.mandist(), p.pos.mandist()))
+            .min_by_key(|p| (p.acc.length(), p.vel.length(), p.pos.length()))
             .unwrap()
             .id
             .to_result()
@@ -97,7 +81,7 @@ impl Solution for Solution20 {
 
             let collision_pos: HashSet<_> = particles
                 .iter()
-                .group_by(|p| p.pos.clone())
+                .group_by(|p| p.pos)
                 .into_iter()
                 .map(|(pos, grp)| (pos, grp.count()))
                 .filter(|(_, grp)| *grp > 1)

@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 
+pub mod algebra;
 pub mod algo;
 pub mod cartesian;
 pub mod grammar;

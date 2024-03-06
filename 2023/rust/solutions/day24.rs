@@ -1,16 +1,9 @@
+use aoc_lib::algebra::{self, Matrix, Vec3};
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
 use num::bigint::BigInt;
-use num::traits::{One, Zero};
-
-#[derive(Debug, Clone, Copy)]
-struct Vec3 {
-    x: i128,
-    y: i128,
-    z: i128,
-}
 
 #[derive(Debug)]
 struct Hailstone {
@@ -25,45 +18,6 @@ enum LineRelation {
     Collinear,
 }
 
-struct Matrix {
-    values: Vec<Vec<i128>>,
-    size: usize,
-}
-
-impl Matrix {
-    fn new(values: Vec<Vec<i128>>) -> Self {
-        assert_eq!(values.len(), values[0].len());
-        Self {
-            size: values.len(),
-            values,
-        }
-    }
-
-    fn det(&self) -> BigInt {
-        if self.size == 2 {
-            return BigInt::from(self.values[0][0] * self.values[1][1] - self.values[1][0] * self.values[0][1]);
-        }
-
-        // Laplace expansion along first row
-        let mut val = BigInt::zero();
-        let mut sign = BigInt::one();
-        for c in 0..self.size {
-            let factor = self.values[0][c];
-            let submat = Matrix::new(
-                self.values
-                    .iter()
-                    .skip(1)
-                    .map(|r| [&r[0..c], &r[c + 1..self.size]].concat())
-                    .collect_vec(),
-            );
-            val += sign.clone() * factor * submat.det();
-            sign = -sign;
-        }
-
-        val
-    }
-}
-
 pub struct Solution24;
 impl Solution24 {
     fn parse(input: ProblemInput) -> Vec<Hailstone> {
@@ -72,11 +26,11 @@ impl Solution24 {
             .into_iter()
             .map(|l| {
                 let (pos_str, vel_str) = l.split_once('@').unwrap();
-                let (px, py, pz) = pos_str.split(',').parsed::<i128>().collect_tuple().unwrap();
-                let (vx, vy, vz) = vel_str.split(',').parsed::<i128>().collect_tuple().unwrap();
+                let (px, py, pz) = pos_str.split(',').parsed().collect_tuple().unwrap();
+                let (vx, vy, vz) = vel_str.split(',').parsed().collect_tuple().unwrap();
                 Hailstone {
-                    pos: Vec3 { x: px, y: py, z: pz },
-                    vel: Vec3 { x: vx, y: vy, z: vz },
+                    pos: Vec3::new(px, py, pz),
+                    vel: Vec3::new(vx, vy, vz),
                 }
             })
             .collect_vec()
@@ -113,24 +67,6 @@ impl Solution24 {
             s,
             t,
         }
-    }
-
-    fn solve_system(a: Matrix, b: Vec<i128>) -> Vec<BigInt> {
-        let det_a = a.det();
-        let mut x = vec![BigInt::zero(); b.len()];
-        for i in 0..b.len() {
-            let temp_matrix = Matrix::new(
-                a.values
-                    .iter()
-                    .enumerate()
-                    .map(|(ri, r)| [&r[0..i], &[b[ri]], &r[i + 1..]].concat())
-                    .collect_vec(),
-            );
-
-            x[i] = temp_matrix.det() / det_a.clone();
-        }
-
-        x
     }
 }
 
@@ -243,7 +179,7 @@ impl Solution for Solution24 {
             p0.y * q0.x - p0.x * q0.y - p2.y * q2.x + p2.x * q2.y,
         ];
 
-        let solution = Self::solve_system(Matrix::new(a), b);
+        let solution = algebra::solve_system(Matrix::new(a), b);
         // println!("{solution:?}");
         solution.iter().take(3).sum::<BigInt>().to_result()
     }
