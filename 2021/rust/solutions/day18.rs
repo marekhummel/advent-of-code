@@ -38,16 +38,8 @@ impl Num {
     fn add(&self, other: &Num) -> Num {
         let mut result = Num::Pair(Box::new(self.clone()), Box::new(other.clone()));
 
-        // Reduce
-        loop {
-            if result.explode(0).is_some() {
-                continue;
-            }
-            if result.split() {
-                continue;
-            }
-            break;
-        }
+        // Reduce (works bc || is short circuit)
+        while result.explode(0).is_some() || result.split() {}
 
         // Return
         result
@@ -109,12 +101,7 @@ impl Num {
                 true
             }
             Num::Regular(_) => false,
-            Num::Pair(l, r) => {
-                if l.split() {
-                    return true;
-                }
-                r.split()
-            }
+            Num::Pair(l, r) => l.split() || r.split(), // Won't split right unless left is false
         }
     }
 }
@@ -144,15 +131,8 @@ impl Solution for Solution18 {
     }
 
     fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let largest_magnitude = input
-            .lines()
-            .into_iter()
-            .map(|l| Num::parse(&mut l.chars().collect()))
-            .permutations(2)
-            .map(|perm| perm[0].add(&perm[1]).magnitute())
-            .max()
-            .unwrap();
-
-        largest_magnitude.to_result()
+        let nums = input.lines().into_iter().map(|l| Num::parse(&mut l.chars().collect()));
+        let magnitutes = nums.permutations(2).map(|perm| perm[0].add(&perm[1]).magnitute());
+        magnitutes.max().unwrap().to_result()
     }
 }
