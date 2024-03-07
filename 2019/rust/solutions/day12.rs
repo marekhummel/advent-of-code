@@ -10,8 +10,8 @@ use regex::Regex;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct Moon {
-    pos: Vec3,
-    vel: Vec3,
+    pos: Vec3<i32>,
+    vel: Vec3<i32>,
 }
 
 impl Moon {
@@ -30,16 +30,16 @@ impl Moon {
     }
 
     fn total_energy(&self) -> i32 {
-        let pot = self.pos.length() as i32;
-        let kin = self.vel.length() as i32;
+        let pot = self.pos.length();
+        let kin = self.vel.length();
         pot * kin
     }
 
     fn states(&self) -> ((i32, i32), (i32, i32), (i32, i32)) {
         (
-            (self.pos.x as i32, self.vel.x as i32),
-            (self.pos.y as i32, self.vel.y as i32),
-            (self.pos.z as i32, self.vel.z as i32),
+            (self.pos.x, self.vel.x),
+            (self.pos.y, self.vel.y),
+            (self.pos.z, self.vel.z),
         )
     }
 }

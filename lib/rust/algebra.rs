@@ -1,26 +1,30 @@
-use std::ops::{Add, AddAssign, Mul, Sub, SubAssign};
+use std::fmt::Debug;
+use std::ops::{Add, AddAssign, Mul, Neg, Sub, SubAssign};
 
 use itertools::Itertools;
-use num::{BigInt, One, Zero};
+use num::{BigInt, Integer, One, Signed, Zero};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct Vec3 {
-    pub x: i128,
-    pub y: i128,
-    pub z: i128,
+pub struct Vec3<T: Integer> {
+    pub x: T,
+    pub y: T,
+    pub z: T,
 }
 
-impl Vec3 {
-    pub fn new(x: i128, y: i128, z: i128) -> Self {
+impl<T: Integer> Vec3<T> {
+    pub fn new(x: T, y: T, z: T) -> Self {
         Vec3 { x, y, z }
     }
 
-    pub fn length(&self) -> i128 {
+    pub fn length(&self) -> T
+    where
+        T: Signed,
+    {
         self.x.abs() + self.y.abs() + self.z.abs()
     }
 }
 
-impl Add for Vec3 {
+impl<T: Integer> Add for Vec3<T> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
@@ -32,7 +36,7 @@ impl Add for Vec3 {
     }
 }
 
-impl Sub for Vec3 {
+impl<T: Integer> Sub for Vec3<T> {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
@@ -44,7 +48,7 @@ impl Sub for Vec3 {
     }
 }
 
-impl AddAssign for Vec3 {
+impl<T: Integer + AddAssign> AddAssign for Vec3<T> {
     fn add_assign(&mut self, rhs: Self) {
         self.x += rhs.x;
         self.y += rhs.y;
@@ -52,7 +56,7 @@ impl AddAssign for Vec3 {
     }
 }
 
-impl SubAssign for Vec3 {
+impl<T: Integer + SubAssign> SubAssign for Vec3<T> {
     fn sub_assign(&mut self, rhs: Self) {
         self.x -= rhs.x;
         self.y -= rhs.y;
@@ -61,13 +65,13 @@ impl SubAssign for Vec3 {
 }
 
 /// Row-major implementation
-pub struct Matrix {
-    pub values: Vec<Vec<i128>>,
+pub struct Matrix<T: Integer> {
+    pub values: Vec<Vec<T>>,
     pub size: usize,
 }
 
-impl Matrix {
-    pub fn new(values: Vec<Vec<i128>>) -> Self {
+impl<T: Integer + Clone + Copy> Matrix<T> {
+    pub fn new(values: Vec<Vec<T>>) -> Self {
         assert_eq!(values.len(), values[0].len());
         Self {
             size: values.len(),
@@ -75,16 +79,19 @@ impl Matrix {
         }
     }
 
-    pub fn det(&self) -> BigInt {
+    pub fn det<D: Zero + One + Clone + AddAssign + Neg<Output = D>>(&self) -> D
+    where
+        D: std::convert::From<T>,
+    {
         if self.size == 2 {
-            return BigInt::from(self.values[0][0] * self.values[1][1] - self.values[1][0] * self.values[0][1]);
+            return D::from(self.values[0][0] * self.values[1][1] - self.values[1][0] * self.values[0][1]);
         }
 
         // Laplace expansion along first row
-        let mut val = BigInt::zero();
-        let mut sign = BigInt::one();
+        let mut val = D::zero();
+        let mut sign = D::one();
         for c in 0..self.size {
-            let factor = self.values[0][c];
+            let factor = D::from(self.values[0][c]);
             let submat = Matrix::new(
                 self.values
                     .iter()
@@ -100,10 +107,10 @@ impl Matrix {
     }
 }
 
-impl Mul<Vec3> for &Matrix {
-    type Output = Vec3;
+impl<T: Integer + Copy> Mul<Vec3<T>> for &Matrix<T> {
+    type Output = Vec3<T>;
 
-    fn mul(self, rhs: Vec3) -> Self::Output {
+    fn mul(self, rhs: Vec3<T>) -> Self::Output {
         assert_eq!(self.size, 3);
         Vec3 {
             x: self.values[0][0] * rhs.x + self.values[0][1] * rhs.y + self.values[0][2] * rhs.z,
@@ -114,9 +121,14 @@ impl Mul<Vec3> for &Matrix {
 }
 
 /// Solves A*x = b
-pub fn solve_system(a: Matrix, b: Vec<i128>) -> Vec<BigInt> {
-    let det_a = a.det();
-    let mut x = vec![BigInt::zero(); b.len()];
+pub fn solve_system<T: Copy + Integer + Clone + Zero + Debug>(a: Matrix<T>, b: Vec<T>) -> Vec<T>
+where
+    BigInt: std::convert::From<T>,
+    T: std::convert::TryFrom<BigInt>,
+    <T as std::convert::TryFrom<BigInt>>::Error: Debug,
+{
+    let det_a: BigInt = a.det();
+    let mut x = vec![T::zero(); b.len()];
     for i in 0..b.len() {
         let temp_matrix = Matrix::new(
             a.values
@@ -126,7 +138,7 @@ pub fn solve_system(a: Matrix, b: Vec<i128>) -> Vec<BigInt> {
                 .collect_vec(),
         );
 
-        x[i] = temp_matrix.det() / det_a.clone();
+        x[i] = (temp_matrix.det::<BigInt>() / det_a.clone()).try_into().unwrap();
     }
 
     x

@@ -5,11 +5,10 @@ use aoc_lib::iterator::ParsedExt;
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::{iproduct, izip, Itertools};
-use num::{BigInt, Zero};
 
 pub struct Solution19;
 impl Solution19 {
-    fn parse(input: ProblemInput) -> Vec<Vec<Vec3>> {
+    fn parse(input: ProblemInput) -> Vec<Vec<Vec3<i32>>> {
         input
             .lines()
             .split(|l| l.is_empty())
@@ -26,7 +25,7 @@ impl Solution19 {
             .collect()
     }
 
-    fn rotations() -> Vec<Matrix> {
+    fn rotations() -> Vec<Matrix<i32>> {
         // Lists all possible orientations. Technically there are 48,
         // but half of them are just the left-handed version of the other (det < 0).
         let mut rotations = Vec::new();
@@ -37,7 +36,7 @@ impl Solution19 {
                 for (j, i, val) in izip!((0..3), &xyz, vals) {
                     matrix.values[j][*i] = val;
                 }
-                if matrix.det() > BigInt::zero() {
+                if matrix.det::<i32>() > 0 {
                     rotations.push(matrix);
                 }
             }
@@ -45,7 +44,7 @@ impl Solution19 {
         rotations
     }
 
-    fn find_absolute_locations(scanner_beacons: Vec<Vec<Vec3>>) -> (Vec<Vec3>, Vec<Vec3>) {
+    fn find_absolute_locations(scanner_beacons: Vec<Vec<Vec3<i32>>>) -> (Vec<Vec3<i32>>, Vec<Vec3<i32>>) {
         let rotations = Self::rotations();
 
         // Start with first scanner as absolute, try to match other scanners
@@ -88,8 +87,8 @@ impl Solution for Solution19 {
         [
             ProblemResult::USize(79),
             ProblemResult::USize(372),
-            ProblemResult::I128(3621),
-            ProblemResult::I128(12241),
+            ProblemResult::I32(3621),
+            ProblemResult::I32(12241),
         ]
     }
 

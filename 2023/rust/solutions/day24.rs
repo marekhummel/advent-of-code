@@ -7,8 +7,8 @@ use num::bigint::BigInt;
 
 #[derive(Debug)]
 struct Hailstone {
-    pos: Vec3,
-    vel: Vec3,
+    pos: Vec3<i128>,
+    vel: Vec3<i128>,
 }
 
 #[derive(Debug)]

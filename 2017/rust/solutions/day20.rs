@@ -8,9 +8,9 @@ use itertools::Itertools;
 #[derive(Debug, Clone)]
 struct Particle {
     id: usize,
-    pos: Vec3,
-    vel: Vec3,
-    acc: Vec3,
+    pos: Vec3<i32>,
+    vel: Vec3<i32>,
+    acc: Vec3<i32>,
 }
 
 impl Particle {
