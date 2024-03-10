@@ -180,53 +180,6 @@ impl<V: Clone + Eq + Hash> Graph<V> {
         paths
     }
 
-    pub fn astar_no_heuristic(&self, start: &V, goal: &V) -> Option<(i64, Vec<V>)>
-    where
-        V: Ord,
-    {
-        self.astar(start, goal, |_, _| 0)
-    }
-
-    pub fn astar<F>(&self, start: &V, goal: &V, heuristic: F) -> Option<(i64, Vec<V>)>
-    where
-        V: Ord,
-        F: Fn(&V, &V) -> i64,
-    {
-        let mut open = BinaryHeap::new();
-        let mut closed = HashSet::new();
-
-        open.push((Reverse(0), start.clone(), 0, vec![start.clone()]));
-
-        // Loop until you find the end
-        while let Some((_, current, g, path)) = open.pop() {
-            closed.insert(current.clone());
-
-            // Found the goal
-            if &current == goal {
-                return Some((g, path));
-            }
-
-            let children = &self.adjacency[&current];
-            for (child, weight) in children {
-                if closed.contains(child) {
-                    continue;
-                }
-
-                let child_g = g + weight;
-                let child_h = heuristic(child, goal);
-                let child_f = child_g + child_h;
-
-                if open.iter().any(|(_, o, og, _)| o == child && child_g >= *og) {
-                    continue;
-                }
-                let new_path = path.iter().cloned().chain([child.clone()].into_iter()).collect();
-                open.push((Reverse(child_f), child.clone(), child_g, new_path))
-            }
-        }
-
-        None
-    }
-
     pub fn components(&self) -> Vec<HashSet<V>> {
         let mut seen = HashSet::new();
         let mut components = Vec::new();
@@ -305,5 +258,77 @@ impl<V: Clone + Eq + Hash> Graph<V> {
                 )
             })
             .collect()
+    }
+}
+
+pub trait AStar<V: Clone + Eq + Hash + Ord> {
+    fn transitions(&self, current: &V) -> Vec<(V, i64)>;
+
+    fn astar_no_heuristic(&self, start: &V, goal: &V) -> Option<(i64, Vec<V>)> {
+        self.astar(start, goal, |_| 0)
+    }
+
+    fn astar<F>(&self, start: &V, goal: &V, heuristic: F) -> Option<(i64, Vec<V>)>
+    where
+        F: Fn(&V) -> i64,
+    {
+        let mut open = BinaryHeap::new();
+        let mut closed = HashSet::new();
+
+        open.push((Reverse(0), start.clone(), vec![start.clone()]));
+        let mut g_score_map = HashMap::from([(start.clone(), 0)]);
+
+        // Loop until you find the end
+        while let Some((_f, current, path)) = open.pop() {
+            closed.insert(current.clone());
+
+            let g = g_score_map[&current];
+
+            // Found the goal
+            if &current == goal {
+                return Some((g, path));
+            }
+
+            for (child, weight) in self.transitions(&current) {
+                if closed.contains(&child) {
+                    continue;
+                }
+
+                let child_g = g + weight;
+                if *g_score_map.get(&child).unwrap_or(&i64::MAX) <= child_g {
+                    continue;
+                }
+                g_score_map.insert(child.clone(), child_g);
+
+                let child_h = heuristic(&child);
+                let child_f = child_g + child_h;
+
+                let mut new_path = path.clone();
+                new_path.push(child.clone());
+                open.push((Reverse(child_f), child.clone(), new_path))
+            }
+        }
+
+        None
+    }
+}
+
+impl<V: Clone + Eq + Hash + Ord> AStar<V> for Graph<V> {
+    fn transitions(&self, current: &V) -> Vec<(V, i64)> {
+        if let Some(children) = self.adjacency.get(current) {
+            children.iter().map(|(v, w)| (v.clone(), *w)).collect_vec()
+        } else {
+            vec![]
+        }
+    }
+}
+
+pub struct DynamicGraph<V: Copy> {
+    pub adjacent: Box<dyn Fn(&V) -> Vec<(V, i64)>>,
+}
+
+impl<V: Clone + Eq + Hash + Ord + Copy> AStar<V> for DynamicGraph<V> {
+    fn transitions(&self, current: &V) -> Vec<(V, i64)> {
+        (self.adjacent)(current)
     }
 }

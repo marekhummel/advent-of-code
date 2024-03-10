@@ -1,4 +1,4 @@
-use aoc_lib::graph::Graph;
+use aoc_lib::graph::{AStar, Graph};
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 

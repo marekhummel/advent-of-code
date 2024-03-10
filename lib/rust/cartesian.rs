@@ -387,11 +387,11 @@ impl<T> Grid<T> {
         }
     }
 
-    pub fn map_elements<R, F: Fn(&T) -> R>(self, func: F) -> Grid<R> {
+    pub fn map_elements<R, F: Fn(&T) -> R>(&self, func: F) -> Grid<R> {
         Grid {
             rows: self
                 .rows
-                .into_iter()
+                .iter()
                 .map(|row| row.iter().map(&func).collect_vec())
                 .collect_vec(),
             size: self.size,

@@ -1,5 +1,5 @@
 use aoc_lib::cartesian::{Grid, Index, Size};
-use aoc_lib::graph::Graph;
+use aoc_lib::graph::{AStar, Graph};
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 
@@ -36,7 +36,7 @@ impl Solution15 {
         // Path finding
         let start = Index::new(0, 0);
         let goal = Index::new(grid.size.width - 1, grid.size.height - 1);
-        cave.astar(&start, &goal, |from, to| from.dist(to) as i64).unwrap().0
+        cave.astar(&start, &goal, |from| from.dist(&goal) as i64).unwrap().0
     }
 }
 

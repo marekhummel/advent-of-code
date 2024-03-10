@@ -30,7 +30,7 @@ use solutions::day24;
 use solutions::day25;
 use std::env;
 
-const ALL: bool = true;
+const ALL: bool = false;
 const VERSION: u8 = 1;
 const USE_SAMPLE: bool = true;
 
