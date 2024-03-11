@@ -4,6 +4,7 @@ use aoc_lib::prelude::runner::AocRunner;
 use aoc_lib::prelude::solution::Solution;
 
 use solutions::day01;
+use solutions::day02;
 use std::env;
 
 const ALL: bool = true;
@@ -13,6 +14,7 @@ const USE_SAMPLE: bool = true;
 fn create_runner() -> AocRunner {
     let solutions: Vec<Box<dyn Solution>> = vec![
         Box::new(day01::Solution01 {}),
+        Box::new(day02::Solution02 {}),
         //
     ];
 
@@ -30,5 +32,6 @@ mod tests2022 {
     use aoc_lib::test_day;
 
     test_day!(day01);
+    test_day!(day02);
     //
 }
