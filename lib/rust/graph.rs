@@ -324,6 +324,7 @@ impl<V: Clone + Eq + Hash + Ord> AStar<V> for Graph<V> {
 }
 
 pub struct DynamicGraph<V: Copy> {
+    #[allow(clippy::type_complexity)]
     pub adjacent: Box<dyn Fn(&V) -> Vec<(V, i64)>>,
 }
 
