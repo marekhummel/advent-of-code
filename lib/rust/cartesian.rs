@@ -93,8 +93,8 @@ impl Index {
         match dir {
             Direction::North => Index::new(self.i, self.j - 1),
             Direction::East => Index::new(self.i + 1, self.j),
-            Direction::West => Index::new(self.i - 1, self.j),
             Direction::South => Index::new(self.i, self.j + 1),
+            Direction::West => Index::new(self.i - 1, self.j),
             Direction::None => *self,
         }
     }
@@ -107,6 +107,17 @@ impl Index {
             Direction::West if self.i > 0 => Some(self.advance(dir)),
             Direction::None => Some(*self),
             _ => None,
+        }
+    }
+
+    pub fn advance_wrap(&self, dir: Direction, size: Size) -> Self {
+        let next = self.advance_check(dir, size);
+        match dir {
+            Direction::North => next.unwrap_or(Index::new(self.i, size.height - 1)),
+            Direction::East => next.unwrap_or(Index::new(0, self.j)),
+            Direction::South => next.unwrap_or(Index::new(self.i, 0)),
+            Direction::West => next.unwrap_or(Index::new(size.width - 1, self.j)),
+            Direction::None => *self,
         }
     }
 
