@@ -134,52 +134,6 @@ impl<V: Clone + Eq + Hash> Graph<V> {
             .collect()
     }
 
-    /// Shortest paths from start to all other nodes
-    pub fn dijkstra(&self, start: &V) -> HashMap<V, Vec<V>>
-    where
-        V: Ord,
-    {
-        let vertices = self.vertices();
-        let mut prev = HashMap::new();
-        let mut dist = vertices
-            .iter()
-            .map(|v| (v.clone(), i64::MAX - 1))
-            .collect::<HashMap<_, _>>();
-        *dist.get_mut(start).unwrap() = 0;
-
-        let mut queue: BinaryHeap<(i64, &V)> = vertices.iter().map(|v| (-dist[v], v)).collect();
-
-        while let Some((_, u)) = queue.pop() {
-            for (v, weight) in self.adjacency[u].iter() {
-                let alt = dist[u] + *weight;
-                if alt < dist[v] {
-                    *dist.get_mut(v).unwrap() = alt;
-                    prev.entry(v.clone()).and_modify(|e| *e = u).or_insert(u);
-                    queue.push((-alt, v))
-                }
-            }
-        }
-
-        let mut paths = HashMap::new();
-        for v in vertices.iter() {
-            if v == start {
-                continue;
-            }
-
-            let mut curr = v;
-            let mut path = vec![v.clone()];
-            while curr != start {
-                curr = prev[curr];
-                path.push(curr.clone());
-            }
-            path.reverse();
-
-            paths.insert(v.clone(), path);
-        }
-
-        paths
-    }
-
     pub fn components(&self) -> Vec<HashSet<V>> {
         let mut seen = HashSet::new();
         let mut components = Vec::new();
@@ -261,7 +215,7 @@ impl<V: Clone + Eq + Hash> Graph<V> {
     }
 }
 
-pub trait AStar<V: Clone + Eq + Hash + Ord> {
+pub trait PathFinding<V: Clone + Eq + Hash + Ord> {
     fn transitions(&self, current: &V) -> Vec<(V, i64)>;
 
     fn astar_no_heuristic(&self, start: &V, goal: &V) -> Option<(i64, Vec<V>)> {
@@ -311,9 +265,54 @@ pub trait AStar<V: Clone + Eq + Hash + Ord> {
 
         None
     }
+
+    /// Shortest paths from start to all other nodes (does not contain total cost of path)
+    fn dijkstra(&self, start: &V) -> HashMap<V, Vec<V>>
+    where
+        V: Ord,
+    {
+        let mut prev = HashMap::new();
+        let mut dist = HashMap::from([(start.clone(), 0)]);
+        let mut seen_vertices = HashSet::from([start.clone()]);
+
+        let mut queue = BinaryHeap::from([(0, start.clone())]);
+
+        while let Some((_, u)) = queue.pop() {
+            for (v, weight) in self.transitions(&u) {
+                let alt = dist.get(&u).unwrap_or(&i64::MAX).saturating_add(weight);
+                if alt < *dist.get(&v).unwrap_or(&i64::MAX) {
+                    *dist.entry(v.clone()).or_default() = alt;
+                    prev.entry(v.clone())
+                        .and_modify(|e| *e = u.clone())
+                        .or_insert(u.clone());
+                    queue.push((-alt, v.clone()));
+                    seen_vertices.insert(v.clone());
+                }
+            }
+        }
+
+        let mut paths = HashMap::new();
+        for v in seen_vertices.into_iter() {
+            if v == *start {
+                continue;
+            }
+
+            let mut curr = v.clone();
+            let mut path = vec![v.clone()];
+            while curr != *start {
+                curr = prev[&curr].clone();
+                path.push(curr.clone());
+            }
+            path.reverse();
+
+            paths.insert(v.clone(), path);
+        }
+
+        paths
+    }
 }
 
-impl<V: Clone + Eq + Hash + Ord> AStar<V> for Graph<V> {
+impl<V: Clone + Eq + Hash + Ord> PathFinding<V> for Graph<V> {
     fn transitions(&self, current: &V) -> Vec<(V, i64)> {
         if let Some(children) = self.adjacency.get(current) {
             children.iter().map(|(v, w)| (v.clone(), *w)).collect_vec()
@@ -328,7 +327,7 @@ pub struct DynamicGraph<V: Copy> {
     pub adjacent: Box<dyn Fn(&V) -> Vec<(V, i64)>>,
 }
 
-impl<V: Clone + Eq + Hash + Ord + Copy> AStar<V> for DynamicGraph<V> {
+impl<V: Clone + Eq + Hash + Ord + Copy> PathFinding<V> for DynamicGraph<V> {
     fn transitions(&self, current: &V) -> Vec<(V, i64)> {
         (self.adjacent)(current)
     }

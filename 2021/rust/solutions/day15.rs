@@ -1,5 +1,5 @@
 use aoc_lib::cartesian::{Grid, Index, Size};
-use aoc_lib::graph::{AStar, Graph};
+use aoc_lib::graph::{Graph, PathFinding};
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 

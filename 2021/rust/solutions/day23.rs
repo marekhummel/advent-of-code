@@ -2,7 +2,7 @@ use std::fmt::Display;
 use std::ops::Range;
 
 use aoc_lib::cartesian::Grid;
-use aoc_lib::graph::{AStar, DynamicGraph};
+use aoc_lib::graph::{DynamicGraph, PathFinding};
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
