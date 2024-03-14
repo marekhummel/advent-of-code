@@ -267,6 +267,7 @@ impl Position {
         )
     }
 
+    /// L1 / Manhattan dist
     pub fn dist(&self, other: &Position) -> u128 {
         self.x.abs_diff(other.x) + self.y.abs_diff(other.y)
     }
