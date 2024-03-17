@@ -1,5 +1,8 @@
 use core::panic;
-use std::fmt::{Debug, Display};
+use std::{
+    fmt::{Debug, Display},
+    ops::Add,
+};
 
 use itertools::{iproduct, Itertools};
 
@@ -201,6 +204,14 @@ impl PartialOrd for Position {
 impl Ord for Position {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         (self.y, self.x).cmp(&(other.y, other.x))
+    }
+}
+
+impl Add<(i128, i128)> for Position {
+    type Output = Position;
+
+    fn add(self, (dx, dy): (i128, i128)) -> Self::Output {
+        Position::new(self.x + dx, self.y + dy)
     }
 }
 
