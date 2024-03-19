@@ -46,6 +46,7 @@ pub enum ProblemResult {
     I32(i32),
     I16(i16),
     I8(i8),
+    ISize(isize),
     U128(u128),
     U64(u64),
     U32(u32),
@@ -64,6 +65,7 @@ impl Display for ProblemResult {
             ProblemResult::I32(v) => write!(f, "{}", v),
             ProblemResult::I16(v) => write!(f, "{}", v),
             ProblemResult::I8(v) => write!(f, "{}", v),
+            ProblemResult::ISize(v) => write!(f, "{}", v),
             ProblemResult::U128(v) => write!(f, "{}", v),
             ProblemResult::U64(v) => write!(f, "{}", v),
             ProblemResult::U32(v) => write!(f, "{}", v),
@@ -107,6 +109,7 @@ impl_to_result!(ProblemResult::U16, u16);
 impl_to_result!(ProblemResult::U8, u8);
 
 impl_to_result!(ProblemResult::USize, usize);
+impl_to_result!(ProblemResult::ISize, isize);
 impl_to_result!(ProblemResult::BigInt, BigInt);
 impl_to_result!(ProblemResult::String, String);
 
