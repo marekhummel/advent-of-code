@@ -133,6 +133,7 @@ impl Index {
     }
 
     /// 8-Neighborhood, including diagonals
+    /// Order: N NW E NE S SE W SW
     pub fn moore_neighbors(&self, size: Size) -> Vec<Index> {
         Direction::compass()
             .into_iter()
@@ -251,6 +252,7 @@ impl Position {
         }
     }
 
+    // 4 NB, in order N E S W
     pub fn von_neumann_neighbors(&self, depth: i128) -> Vec<Position> {
         Direction::compass()
             .into_iter()
@@ -258,6 +260,7 @@ impl Position {
             .collect()
     }
 
+    // 8 NB, in order N NW E NE S SE W SW
     pub fn moore_neighbors(&self) -> Vec<Position> {
         Direction::compass()
             .into_iter()
