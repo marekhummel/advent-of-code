@@ -285,8 +285,8 @@ impl Solution23 {
         }
     }
 
-    fn compute_best_config_path(cave: &Cave, config_graph: &DynamicGraph<Config>, start: Config, goal: Config) -> i64 {
-        let best_moves = config_graph.astar(&start, &goal, |current| {
+    fn compute_best_config_path(cave: &Cave, graph: &mut DynamicGraph<Config>, start: Config, goal: Config) -> i64 {
+        let best_moves = graph.astar(&start, &goal, |current| {
             let mut diffs = 0;
             for amphipod in 0..cave.amphipod_types {
                 let mut amphipod_diffs = 0;
@@ -363,9 +363,9 @@ impl Solution for Solution23 {
 
         let start = Config::from_grid(&input.grid(), cave.room_depth);
 
-        let config_graph = Self::create_config_graph(cave.clone());
+        let mut config_graph = Self::create_config_graph(cave.clone());
         let goal = cave.goal_config();
-        let best_moves = Self::compute_best_config_path(&cave, &config_graph, start, goal);
+        let best_moves = Self::compute_best_config_path(&cave, &mut config_graph, start, goal);
         best_moves.to_result()
     }
 
@@ -376,9 +376,9 @@ impl Solution for Solution23 {
         Self::extend_grid(&mut grid);
         let start = Config::from_grid(&grid, cave.room_depth);
 
-        let config_graph = Self::create_config_graph(cave.clone());
+        let mut config_graph = Self::create_config_graph(cave.clone());
         let goal = cave.goal_config();
-        let best_moves = Self::compute_best_config_path(&cave, &config_graph, start, goal);
+        let best_moves = Self::compute_best_config_path(&cave, &mut config_graph, start, goal);
         best_moves.to_result()
     }
 }

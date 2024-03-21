@@ -216,15 +216,16 @@ impl<V: Clone + Eq + Hash> Graph<V> {
 }
 
 pub trait PathFinding<V: Clone + Eq + Hash + Ord> {
-    fn transitions(&self, current: &V) -> Vec<(V, i64)>;
+    fn transitions(&mut self, current: &V) -> Vec<(V, i64)>;
 
-    fn astar_no_heuristic(&self, start: &V, goal: &V) -> Option<(i64, Vec<V>)> {
+    fn astar_no_heuristic(&mut self, start: &V, goal: &V) -> Option<(i64, Vec<V>)> {
         self.astar(start, goal, |_| 0)
     }
 
-    fn astar<F>(&self, start: &V, goal: &V, heuristic: F) -> Option<(i64, Vec<V>)>
+    fn astar_many<F, G>(&mut self, start: &V, is_goal: G, heuristic: F) -> Option<(i64, Vec<V>)>
     where
         F: Fn(&V) -> i64,
+        G: Fn(&V) -> bool,
     {
         let mut open = BinaryHeap::new();
         let mut closed = HashSet::new();
@@ -239,7 +240,7 @@ pub trait PathFinding<V: Clone + Eq + Hash + Ord> {
             let g = g_score_map[&current];
 
             // Found the goal
-            if &current == goal {
+            if is_goal(&current) {
                 return Some((g, path));
             }
 
@@ -266,8 +267,15 @@ pub trait PathFinding<V: Clone + Eq + Hash + Ord> {
         None
     }
 
+    fn astar<F>(&mut self, start: &V, goal: &V, heuristic: F) -> Option<(i64, Vec<V>)>
+    where
+        F: Fn(&V) -> i64,
+    {
+        self.astar_many(start, |g| g == goal, heuristic)
+    }
+
     /// Shortest paths from start to all other nodes (does not contain total cost of path)
-    fn dijkstra(&self, start: &V) -> HashMap<V, Vec<V>>
+    fn dijkstra(&mut self, start: &V) -> HashMap<V, Vec<V>>
     where
         V: Ord,
     {
@@ -313,7 +321,7 @@ pub trait PathFinding<V: Clone + Eq + Hash + Ord> {
 }
 
 impl<V: Clone + Eq + Hash + Ord> PathFinding<V> for Graph<V> {
-    fn transitions(&self, current: &V) -> Vec<(V, i64)> {
+    fn transitions(&mut self, current: &V) -> Vec<(V, i64)> {
         if let Some(children) = self.adjacency.get(current) {
             children.iter().map(|(v, w)| (v.clone(), *w)).collect_vec()
         } else {
@@ -324,11 +332,11 @@ impl<V: Clone + Eq + Hash + Ord> PathFinding<V> for Graph<V> {
 
 pub struct DynamicGraph<V: Copy> {
     #[allow(clippy::type_complexity)]
-    pub adjacent: Box<dyn Fn(&V) -> Vec<(V, i64)>>,
+    pub adjacent: Box<dyn FnMut(&V) -> Vec<(V, i64)>>,
 }
 
 impl<V: Clone + Eq + Hash + Ord + Copy> PathFinding<V> for DynamicGraph<V> {
-    fn transitions(&self, current: &V) -> Vec<(V, i64)> {
+    fn transitions(&mut self, current: &V) -> Vec<(V, i64)> {
         (self.adjacent)(current)
     }
 }

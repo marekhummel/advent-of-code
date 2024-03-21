@@ -37,7 +37,7 @@ impl Solution for Solution12 {
 
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let grid = input.grid();
-        let graph = Self::create_graph(&grid);
+        let mut graph = Self::create_graph(&grid);
         let goal = grid.enumerate().find(|(_, c)| **c == 'E').unwrap().0;
         let start = grid.enumerate().find(|(_, c)| **c == 'S').unwrap().0;
         let steps = graph.astar_no_heuristic(&goal, &start).unwrap().0;
@@ -47,7 +47,7 @@ impl Solution for Solution12 {
 
     fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let grid = input.grid();
-        let graph = Self::create_graph(&grid);
+        let mut graph = Self::create_graph(&grid);
         let goal = grid.enumerate().find(|(_, c)| **c == 'E').unwrap().0;
         let starts = grid.enumerate().filter(|(_, c)| ['S', 'a'].contains(c)).map(|(i, _)| i);
 

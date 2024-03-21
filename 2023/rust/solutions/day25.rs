@@ -4,7 +4,6 @@ use aoc_lib::graph::{Graph, PathFinding};
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
-use rayon::iter::*;
 
 pub struct Solution25;
 impl Solution25 {
@@ -28,10 +27,10 @@ impl Solution25 {
     }
 
     // Count edges for all pairs of shortest paths (apsp)
-    fn count_edges_apsp(graph: &Graph<String>) -> HashMap<(String, String), i32> {
+    fn count_edges_apsp(graph: &mut Graph<String>) -> HashMap<(String, String), i32> {
         graph
             .vertices()
-            .par_iter()
+            .iter()
             .map(|v| {
                 let mut edge_counts = HashMap::new();
                 let ssp = graph.dijkstra(v);
@@ -42,7 +41,7 @@ impl Solution25 {
                 }
                 edge_counts
             })
-            .reduce(HashMap::new, |mut acc, edge_counts| {
+            .fold(HashMap::new(), |mut acc, edge_counts| {
                 for (v, c) in edge_counts {
                     *acc.entry(v).or_insert(0) += c;
                 }
@@ -68,7 +67,7 @@ impl Solution for Solution25 {
         // Run dijkstra for all pairs of vertices. Since the given network is a small world network
         // with two major components and three "bridges", those bridges will be used across apsp more
         // than any other edges
-        let edge_counts = Self::count_edges_apsp(&connections);
+        let edge_counts = Self::count_edges_apsp(&mut connections);
 
         // Find bridges and remove from graph
         let bridges = edge_counts.into_iter().sorted_by_key(|(_, count)| -count).take(3);
