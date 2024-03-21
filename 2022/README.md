@@ -1,10 +1,10 @@
-# 2021
+# 2022
 
 ### Overview
-![Overview](2021_overview.png)
+![Overview](2022_overview.png)
 
 ### Final Star
-![Final Star](2021_conclusion.png)
+![Final Star](2022_conclusion.png)
 
 ### Solutions
 [Solution File](solutions.txt)
