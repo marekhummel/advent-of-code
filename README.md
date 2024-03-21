@@ -16,6 +16,9 @@ For development, there are two scripts to create rust template files for a new [
 
 Moreover, a script to [download all inputs](./scripts/download_inputs.sh) for a given year, or just a specific day if given two args (year day).
 
+Lastly, there is a script to [verify solutions](./scripts/verify_results.sh). 
+Basically it checks the results mentioned in the file for unit tests with the solutions submitted to the platform.
+
 Since input files are different for each user, make sure to create a file `./scripts/aoc_cookie.txt` which contains your session cookie, before running the scripts. Check your browser's storage for that. 
 
 

@@ -3,7 +3,6 @@ use aoc_lib::iterator::ParsedExt;
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 use itertools::Itertools;
-use num::bigint::BigInt;
 
 #[derive(Debug)]
 struct Hailstone {
@@ -75,8 +74,8 @@ impl Solution for Solution24 {
         [
             ProblemResult::USize(2),
             ProblemResult::USize(16812),
-            ProblemResult::BigInt(BigInt::from(47)),
-            ProblemResult::BigInt(BigInt::from(880547248556435u64)),
+            ProblemResult::I128(47),
+            ProblemResult::I128(880547248556435),
         ]
     }
 
@@ -181,6 +180,6 @@ impl Solution for Solution24 {
 
         let solution = algebra::solve_system(Matrix::new(a), b);
         // println!("{solution:?}");
-        solution.iter().take(3).sum::<BigInt>().to_result()
+        solution.iter().take(3).sum::<i128>().to_result()
     }
 }

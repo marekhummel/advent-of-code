@@ -20,8 +20,8 @@ impl Solution14 {
 impl Solution for Solution14 {
     fn results(&self) -> [ProblemResult; 4] {
         [
-            ProblemResult::U8(122),
-            ProblemResult::U8(89),
+            ProblemResult::U64(5941429882),
+            ProblemResult::U64(5371393113),
             ProblemResult::USize(2018),
             ProblemResult::USize(20286858),
         ]
@@ -42,7 +42,7 @@ impl Solution for Solution14 {
         }
 
         let digits = &recipes[counter..counter + 10];
-        let value = digits.iter().fold(0, |val, d| val * 10 + d);
+        let value = digits.iter().fold(0u64, |val, d| val * 10 + *d as u64);
         value.to_result()
     }
 
