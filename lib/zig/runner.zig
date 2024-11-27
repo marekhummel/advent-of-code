@@ -10,21 +10,20 @@ pub const AocRunner = struct {
     pub fn init(year: u16, impl_solutions: []const ?solution.Solution) AocRunner {
         var solutions: [25]?solution.Solution = .{null} ** 25;
         std.mem.copyForwards(?solution.Solution, &solutions, impl_solutions);
+        return .{
+            .year = year,
+            .solutions = solutions,
+        };
+    }
 
+    pub fn run(self: *AocRunner, full_day: bool, version: u8, use_sample: bool) !void {
         var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+        self._allocator = gpa.allocator();
         defer {
             const deinit_status = gpa.deinit();
             if (deinit_status == .leak) std.debug.print("LEAK", .{});
         }
 
-        return .{
-            .year = year,
-            .solutions = solutions,
-            ._allocator = gpa.allocator(),
-        };
-    }
-
-    pub fn run(self: *AocRunner, full_day: bool, version: u8, use_sample: bool) !void {
         const args = try std.process.argsAlloc(self._allocator);
         defer std.process.argsFree(self._allocator, args);
         if (args.len != 2) {
