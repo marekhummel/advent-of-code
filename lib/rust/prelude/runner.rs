@@ -96,9 +96,9 @@ impl AocRunner {
         );
     }
 
-    fn get_input(&self, year: u16, day: u8, version: u8, use_sample: bool) -> Option<ProblemInput> {
+    fn get_input(&self, day: u8, version: u8, use_sample: bool) -> Option<ProblemInput> {
         let base_filename = if use_sample { "sample" } else { "input" };
-        let mut fullname = format!("{year}\\inputs\\{base_filename}{day:02}.txt");
+        let mut fullname = format!("{0}\\inputs\\{base_filename}{day:02}.txt", self.year);
         if !Path::new(&fullname).exists() {
             fullname = fullname.replace(".txt", format!("_{version}.txt").as_str());
         }
@@ -108,7 +108,7 @@ impl AocRunner {
 
     fn get_result(&self, day: usize, version: u8, use_sample: bool) -> (ProblemResult, Duration) {
         let s = &self.solutions[day - 1];
-        match self.get_input(self.year, day as u8, version, use_sample) {
+        match self.get_input(day as u8, version, use_sample) {
             Some(input) => s.solve(input, version, use_sample),
             None => (ProblemResult::NoInput, Duration::ZERO),
         }

@@ -2,6 +2,8 @@
 /.mypy_cache
 /target
 __pycache__/
+zig-out/
+.zig-cache/
 
 scripts/aoc_cookie.txt
 **/inputs/input*.txt

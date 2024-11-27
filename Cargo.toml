@@ -4,6 +4,10 @@ version = "1.0.0"
 edition = "2021"
 
 [[bin]]
+name = "main2024"
+path = "2024/rust/main.rs"
+
+[[bin]]
 name = "main2023"
 path = "2023/rust/main.rs"
 
