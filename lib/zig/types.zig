@@ -6,8 +6,16 @@ pub const Result = union(enum) {
     Unsolved,
     NoPartTwo,
     USize: usize,
+    Int8: i8,
+    Int16: i16,
+    Int32: i32,
     Int64: i64,
+    Int128: i128,
+    UInt8: u8,
+    UInt16: u16,
+    UInt32: u32,
     UInt64: u64,
+    UInt128: u128,
     String: []u8,
 
     pub fn format(self: Result, comptime fmt: []const u8, options: std.fmt.FormatOptions, writer: anytype) !void {
@@ -19,8 +27,16 @@ pub const Result = union(enum) {
             .Unsolved => std.fmt.format(writer, "Unsolved", .{}),
             .NoPartTwo => std.fmt.format(writer, "No Part Two", .{}),
             .USize => std.fmt.format(writer, "{}", .{self.USize}),
+            .Int8 => std.fmt.format(writer, "{}", .{self.Int8}),
+            .Int16 => std.fmt.format(writer, "{}", .{self.Int16}),
+            .Int32 => std.fmt.format(writer, "{}", .{self.Int32}),
             .Int64 => std.fmt.format(writer, "{}", .{self.Int64}),
+            .Int128 => std.fmt.format(writer, "{}", .{self.Int128}),
+            .UInt8 => std.fmt.format(writer, "{}", .{self.UInt8}),
+            .UInt16 => std.fmt.format(writer, "{}", .{self.UInt16}),
+            .UInt32 => std.fmt.format(writer, "{}", .{self.UInt32}),
             .UInt64 => std.fmt.format(writer, "{}", .{self.UInt64}),
+            .UInt128 => std.fmt.format(writer, "{}", .{self.UInt128}),
             .String => std.fmt.format(writer, "{s}", .{self.String}),
         };
     }
@@ -54,6 +70,7 @@ pub const ProblemInput = struct {
 
         while (reader.streamUntilDelimiter(line.writer(), '\n', null)) {
             defer line.clearRetainingCapacity();
+            if (line.getLast() == '\r') _ = line.popOrNull();
             try lines.append(try line.toOwnedSlice());
         } else |err| switch (err) {
             error.EndOfStream => {
@@ -101,6 +118,7 @@ pub const SolvingError = error{
     InvalidDay,
     InvalidVersion,
     MissingSolution,
+    SolvingFailed,
 };
 
 pub fn getErrorDesc(err: SolvingError) []const u8 {
@@ -108,6 +126,7 @@ pub fn getErrorDesc(err: SolvingError) []const u8 {
         SolvingError.InvalidDay => return "Day is invalid",
         SolvingError.InvalidVersion => return "Version is invalid",
         SolvingError.MissingSolution => return "Solution is not registered",
+        SolvingError.SolvingFailed => return "Some error occured in solving method",
     }
 }
 

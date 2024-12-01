@@ -5,7 +5,7 @@ const day01 = @import("solutions/day01.zig");
 
 const ALL: bool = true;
 const VERSION: u8 = 1;
-const USE_SAMPLE: bool = false;
+const USE_SAMPLE: bool = true;
 
 pub fn main() !void {
     var runner = create_runner();
@@ -14,6 +14,7 @@ pub fn main() !void {
 
 fn create_runner() aoc_lib.runner.AocRunner {
     const solutions = [_]?aoc_lib.solution.Solution{
+        //
         aoc_lib.solution.makeSolution(day01),
     };
     return aoc_lib.runner.AocRunner.init(2024, &solutions);

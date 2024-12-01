@@ -37,13 +37,14 @@ pub const AocRunner = struct {
             return;
         }
 
-        const day = try std.fmt.parseInt(u8, cmd_arg[3..], 10);
-        errdefer std.debug.print("Argument should have format dayXX: {s}\n", .{cmd_arg});
-
-        if (full_day) {
-            try self.runDay(day);
-        } else {
-            try self.runSingle(day, version, use_sample);
+        if (std.fmt.parseInt(u8, cmd_arg[3..], 10)) |day| {
+            if (full_day) {
+                try self.runDay(day);
+            } else {
+                try self.runSingle(day, version, use_sample);
+            }
+        } else |_| {
+            std.debug.print("Argument should have format dayXX: {s}\n", .{cmd_arg});
         }
     }
 
@@ -53,10 +54,9 @@ pub const AocRunner = struct {
         for (self.solutions, 1..) |sol, day| {
             inline for ([_]u8{ 1, 2 }) |version| {
                 inline for ([_]bool{ true, false }) |use_sample| {
-                    std.debug.print("Testing D{0d:0>2} V{1d} '{2s}': ", .{ day, version, if (use_sample) "s" else "r" });
                     const result_union = self.getResult(@as(u8, @intCast(day)), version, use_sample);
                     if (result_union) |timed_result| {
-                        // std.debug.print("{s}", .{timed_result.result});
+                        std.debug.print("Testing D{0d:0>2} V{1d} '{2s}': ", .{ day, version, if (use_sample) "s" else "r" });
                         const index = comptime (version - 1) * 2 + (if (use_sample) 0 else 1);
                         const expected = sol.?.results()[index];
                         if (std.testing.expect(std.meta.eql(timed_result.result, expected))) |_| {
@@ -66,8 +66,9 @@ pub const AocRunner = struct {
                             success = false;
                         }
                     } else |err| switch (err) {
-                        error.MissingSolution => std.debug.print("Not implemented.\n", .{}),
+                        error.MissingSolution => {},
                         else => {
+                            std.debug.print("Testing D{0d:0>2} V{1d} '{2s}': ", .{ day, version, if (use_sample) "s" else "r" });
                             std.debug.print("ERROR RESULT ({!})\n", .{result_union});
                             success = false;
                         },
