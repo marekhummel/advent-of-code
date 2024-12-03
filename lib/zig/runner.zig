@@ -147,13 +147,13 @@ pub const AocRunner = struct {
             return types.SolvingError.MissingSolution;
         }
 
-        const input = self.getInput(day, version, use_sample);
+        var input = self.getInput(day, version, use_sample);
         if (input == null) {
             return .{ .result = types.Result.NoInput, .duration = 0 };
         }
 
         defer input.?.deinit();
-        return s.?.solve(self._allocator, input.?, version, use_sample);
+        return s.?.solve(self._allocator, &input.?, version, use_sample);
     }
 
     fn getInput(self: *const AocRunner, day: u8, version: u8, use_sample: bool) ?types.ProblemInput {

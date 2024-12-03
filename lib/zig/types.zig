@@ -53,6 +53,7 @@ pub const TimedResult = struct {
 
 pub const ProblemInput = struct {
     lines: [][]u8,
+    _string: ?[]u8 = null,
     _allocator: std.mem.Allocator = undefined,
 
     pub fn read(allocator: std.mem.Allocator, filename: []const u8) !ProblemInput {
@@ -84,34 +85,38 @@ pub const ProblemInput = struct {
         return ProblemInput{ .lines = try lines.toOwnedSlice(), ._allocator = allocator };
     }
 
+    pub fn string(self: *ProblemInput) ![]u8 {
+        if (self._string == null) {
+            var total_length: usize = 0;
+            for (self.lines) |line| {
+                total_length += line.len;
+            }
+
+            self._string = try self._allocator.alloc(u8, total_length);
+
+            var offset: usize = 0;
+            for (self.lines) |line| {
+                std.mem.copyForwards(u8, self._string.?[offset..], line);
+                offset += line.len;
+            }
+        }
+
+        return self._string.?;
+    }
+
+    // pub fn grid(&self) -> Grid<char> {
+    //     Grid::new(self.lines.iter().map(|row| row.chars().collect()).collect())
+    // }
+
     pub fn deinit(self: *const ProblemInput) void {
+        if (self._string != null)
+            self._allocator.free(self._string.?);
+
         for (self.lines) |line| {
             self._allocator.free(line);
         }
         self._allocator.free(self.lines);
     }
-
-    // impl ProblemInput {
-    // pub fn read(filename: &str) -> Option<Self> {
-    //     let file = File::open(filename).ok()?;
-    //     let buf = BufReader::new(file);
-
-    //     let lines = buf.lines().map(|l| l.expect("Could not parse line")).collect();
-    //     Some(ProblemInput { lines })
-    // }
-
-    // pub fn lines(&self) -> Vec<String> {
-    //     self.lines.iter().cloned().collect_vec()
-    // }
-
-    // pub fn string(&self) -> String {
-    //     self.lines.join("")
-    // }
-
-    // pub fn grid(&self) -> Grid<char> {
-    //     Grid::new(self.lines.iter().map(|row| row.chars().collect()).collect())
-    // }
-    // }
 };
 
 pub const SolvingError = error{

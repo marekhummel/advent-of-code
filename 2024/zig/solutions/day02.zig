@@ -12,7 +12,7 @@ pub fn results() [4]Result {
     };
 }
 
-pub fn solve_version01(allocator: std.mem.Allocator, input: ProblemInput, is_sample: bool) !Result {
+pub fn solve_version01(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
     _ = is_sample;
 
     const data = try get_reports(allocator, input);
@@ -29,7 +29,7 @@ pub fn solve_version01(allocator: std.mem.Allocator, input: ProblemInput, is_sam
     return Result{ .USize = safe_reports };
 }
 
-pub fn solve_version02(allocator: std.mem.Allocator, input: ProblemInput, is_sample: bool) !Result {
+pub fn solve_version02(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
     _ = is_sample;
 
     const data = try get_reports(allocator, input);
@@ -56,7 +56,7 @@ pub fn solve_version02(allocator: std.mem.Allocator, input: ProblemInput, is_sam
     return Result{ .USize = safe_reports };
 }
 
-fn get_reports(allocator: std.mem.Allocator, input: ProblemInput) ![][]i16 {
+fn get_reports(allocator: std.mem.Allocator, input: *ProblemInput) ![][]i16 {
     var matrix = std.ArrayList([]i16).init(allocator);
     defer matrix.deinit();
 
