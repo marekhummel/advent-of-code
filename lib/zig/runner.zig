@@ -111,10 +111,16 @@ pub const AocRunner = struct {
 
     fn runDay(self: *const AocRunner, day: u8) !void {
         var day_elapsed: f64 = 0.0;
+        var expected_match = true;
         for ([_]u8{ 1, 2 }) |version| {
             for ([_]bool{ true, false }) |use_sample| {
                 const timed_result = try self.getResult(day, version, use_sample);
                 day_elapsed += timed_result.duration;
+
+                const index: usize = (version - 1) * 2 + (if (use_sample) @as(usize, 0) else @as(usize, 1));
+                const expected = self.solutions[day - 1].?.results()[index];
+                if (!std.meta.eql(timed_result.result, expected)) expected_match = false;
+
                 std.debug.print("V{0d} {1s} in {2d:.4}s:    {3s}\n", .{
                     version,
                     if (use_sample) "samp" else "real",
@@ -124,6 +130,7 @@ pub const AocRunner = struct {
             }
         }
         std.debug.print("\nTotal Runtime: {0d}s\n", .{day_elapsed});
+        std.debug.print("Note: Results {s}match expected", .{if (expected_match) "" else "don't"});
     }
 
     fn runSingle(self: *const AocRunner, day: u8, version: u8, use_sample: bool) !void {

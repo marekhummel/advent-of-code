@@ -12,7 +12,7 @@ pub fn results() [4]Result {
     };
 }
 
-pub fn solve_version01(allocator: std.mem.Allocator, input: ProblemInput, is_sample: bool) !Result {
+pub fn solve_version01(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
     _ = allocator;
     _ = input;
     _ = is_sample;
@@ -20,7 +20,7 @@ pub fn solve_version01(allocator: std.mem.Allocator, input: ProblemInput, is_sam
     return Result.Unsolved;
 }
 
-pub fn solve_version02(allocator: std.mem.Allocator, input: ProblemInput, is_sample: bool) !Result {
+pub fn solve_version02(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
     _ = allocator;
     _ = input;
     _ = is_sample;

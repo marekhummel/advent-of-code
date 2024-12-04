@@ -54,6 +54,7 @@ pub const TimedResult = struct {
 pub const ProblemInput = struct {
     lines: [][]u8,
     _string: ?[]u8 = null,
+    _grid: ?Grid(u8) = null,
     _allocator: std.mem.Allocator = undefined,
 
     pub fn read(allocator: std.mem.Allocator, filename: []const u8) !ProblemInput {
@@ -104,13 +105,26 @@ pub const ProblemInput = struct {
         return self._string.?;
     }
 
-    // pub fn grid(&self) -> Grid<char> {
-    //     Grid::new(self.lines.iter().map(|row| row.chars().collect()).collect())
-    // }
+    pub fn grid(self: *ProblemInput) !Grid(u8) {
+        if (self._grid == null) {
+            var grid_cells = try self._allocator.alloc([]u8, self.lines.len);
+            for (self.lines, 0..) |line, i| {
+                grid_cells[i] = try self._allocator.alloc(u8, line.len);
+                std.mem.copyForwards(u8, grid_cells[i][0..line.len], line);
+            }
+
+            self._grid = Grid(u8).init(grid_cells);
+        }
+
+        return self._grid.?;
+    }
 
     pub fn deinit(self: *const ProblemInput) void {
         if (self._string != null)
             self._allocator.free(self._string.?);
+
+        if (self._grid != null)
+            self._grid.?.deinit(self._allocator);
 
         for (self.lines) |line| {
             self._allocator.free(line);
@@ -118,6 +132,80 @@ pub const ProblemInput = struct {
         self._allocator.free(self.lines);
     }
 };
+
+pub fn Grid(comptime CT: type) type {
+    return struct {
+        const Self = @This();
+
+        cells: [][]CT,
+        width: usize,
+        height: usize,
+        diags: usize,
+
+        pub fn init(cells: [][]CT) Grid(CT) {
+            const w = cells[0].len;
+            const h = cells.len;
+            return Grid(CT){ .cells = cells, .width = w, .height = h, .diags = w + h - 1 };
+        }
+
+        pub fn deinit(self: @This(), allocator: std.mem.Allocator) void {
+            for (self.cells) |line| {
+                allocator.free(line);
+            }
+            allocator.free(self.cells);
+        }
+
+        pub fn row(self: @This(), index: usize, allocator: std.mem.Allocator) ![]CT {
+            if (index >= self.height) return error.IndexOutOfBounds;
+
+            const slice = try allocator.alloc(CT, self.width);
+            std.mem.copyForwards(CT, slice, self.cells[index]);
+            return slice;
+        }
+
+        pub fn col(self: @This(), index: usize, allocator: std.mem.Allocator) ![]CT {
+            if (index >= self.width) return error.IndexOutOfBounds;
+
+            const slice = try allocator.alloc(CT, self.height);
+            for (self.cells, 0..) |line, r| {
+                slice[r] = line[index];
+            }
+            return slice;
+        }
+
+        pub fn diag_major(self: @This(), index: usize, allocator: std.mem.Allocator) ![]CT {
+            if (index >= self.diags) return error.IndexOutOfBounds;
+
+            var list = std.ArrayList(CT).init(allocator);
+            var r = self.height -| 1 -| index; // saturating sub -| (0 -| 1 = 0)
+            var c = index + 1 -| self.height; // saturating sub -|
+
+            while (r < self.height and c < self.width) {
+                try list.append(self.cells[r][c]);
+                r += 1;
+                c += 1;
+            }
+
+            return list.toOwnedSlice();
+        }
+
+        pub fn diag_minor(self: @This(), index: usize, allocator: std.mem.Allocator) ![]CT {
+            if (index >= self.diags) return error.IndexOutOfBounds;
+
+            var list = std.ArrayList(CT).init(allocator);
+            var r = @min(index, self.height - 1);
+            var c = index + 1 -| self.height; // saturating sub -|
+
+            while (r < self.height and c < self.width) {
+                try list.append(self.cells[r][c]);
+                r -%= 1;
+                c += 1;
+            }
+
+            return list.toOwnedSlice();
+        }
+    };
+}
 
 pub const SolvingError = error{
     InvalidDay,
@@ -134,25 +222,3 @@ pub fn getErrorDesc(err: SolvingError) []const u8 {
         SolvingError.SolvingFailed => return "Some error occured in solving method",
     }
 }
-
-// #[derive(Debug, PartialEq, Eq)]
-// pub enum ProblemResult {
-//     NoInput,
-//     NoSample,
-//     Unsolved,
-//     NoPartTwo,
-//     I128(i128),
-//     I64(i64),
-//     I32(i32),
-//     I16(i16),
-//     I8(i8),
-//     ISize(isize),
-//     U128(u128),
-//     U64(u64),
-//     U32(u32),
-//     U16(u16),
-//     U8(u8),
-//     USize(usize),
-//     BigInt(BigInt),
-//     String(String),
-// }
