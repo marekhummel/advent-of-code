@@ -21,21 +21,21 @@ pub fn solve_version01(allocator: std.mem.Allocator, input: *ProblemInput, is_sa
     // Loop over all rows, cols, major and minor diagonals.
     for (0..grid.height) |r| {
         const row = try grid.row(r, allocator);
-        defer allocator.free(row);
+        // defer allocator.free(row);
         search(row, &counter);
     }
 
     for (0..grid.width) |c| {
         const col = try grid.col(c, allocator);
-        defer allocator.free(col);
+        // defer allocator.free(col);
         search(col, &counter);
     }
 
     for (0..grid.diags) |d| {
         const diag_maj = try grid.diag_major(d, allocator);
         const diag_min = try grid.diag_minor(d, allocator);
-        defer allocator.free(diag_maj);
-        defer allocator.free(diag_min);
+        // defer allocator.free(diag_maj);
+        // defer allocator.free(diag_min);
 
         search(diag_maj, &counter);
         search(diag_min, &counter);

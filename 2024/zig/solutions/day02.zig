@@ -16,12 +16,8 @@ pub fn solve_version01(allocator: std.mem.Allocator, input: *ProblemInput, is_sa
     _ = is_sample;
 
     const data = try get_reports(allocator, input);
-    defer allocator.free(data);
-
     var safe_reports: usize = 0;
     for (data) |report| {
-        defer allocator.free(report);
-
         if (check_safety(report, null))
             safe_reports += 1;
     }
@@ -33,12 +29,8 @@ pub fn solve_version02(allocator: std.mem.Allocator, input: *ProblemInput, is_sa
     _ = is_sample;
 
     const data = try get_reports(allocator, input);
-    defer allocator.free(data);
-
     var safe_reports: usize = 0;
     for (data) |report| {
-        defer allocator.free(report);
-
         // Check without skips
         if (check_safety(report, null)) {
             safe_reports += 1;
@@ -58,11 +50,9 @@ pub fn solve_version02(allocator: std.mem.Allocator, input: *ProblemInput, is_sa
 
 fn get_reports(allocator: std.mem.Allocator, input: *ProblemInput) ![][]i16 {
     var matrix = std.ArrayList([]i16).init(allocator);
-    defer matrix.deinit();
 
     for (input.lines) |line| {
         var row = std.ArrayList(i16).init(allocator);
-        defer row.deinit();
 
         var tokenizer = std.mem.tokenize(u8, line, " ");
         while (tokenizer.next()) |tok| {

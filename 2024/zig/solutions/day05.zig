@@ -17,13 +17,8 @@ pub fn solve_version01(allocator: std.mem.Allocator, input: *ProblemInput, is_sa
     _ = is_sample;
 
     var rules, const updates = try parse(input, allocator);
-    defer rules.deinit();
-    defer allocator.free(updates);
-
     var result: u32 = 0;
     for (updates) |upd| {
-        defer allocator.free(upd);
-
         if (isOrdered(upd, &rules)) {
             const middle = upd[(upd.len - 1) / 2];
             result += middle;
@@ -37,12 +32,8 @@ pub fn solve_version02(allocator: std.mem.Allocator, input: *ProblemInput, is_sa
     _ = is_sample;
 
     var rules, const updates = try parse(input, allocator);
-    defer rules.deinit();
-    defer allocator.free(updates);
-
     var result: u32 = 0;
     for (updates) |upd| {
-        defer allocator.free(upd);
         if (isOrdered(upd, &rules)) continue;
 
         // For whatever reason the overall list of rules is not sortable,
@@ -50,11 +41,8 @@ pub fn solve_version02(allocator: std.mem.Allocator, input: *ProblemInput, is_sa
 
         // Reduce rule graph to occuring pages in update
         var graph = aoc_lib.graph.Graph(u16).init(allocator);
-        defer graph.deinit();
 
-        const all_rules = try rules.edges(allocator);
-        defer allocator.free(all_rules);
-        for (all_rules) |rule| {
+        for (try rules.edges(allocator)) |rule| {
             if (contains(u16, upd, rule[0]) and contains(u16, upd, rule[1])) {
                 try graph.addEdge(rule[0], rule[1], false);
             }
@@ -62,7 +50,6 @@ pub fn solve_version02(allocator: std.mem.Allocator, input: *ProblemInput, is_sa
 
         // Find topological sorting for these pages
         const sorted_pages = try graph.topoSorting(allocator);
-        defer allocator.free(sorted_pages);
 
         // Sort by rules
         const sortFunc = struct {
@@ -97,11 +84,9 @@ fn parse(input: *ProblemInput, allocator: std.mem.Allocator) !struct { aoc_lib.g
     }
 
     var updates = std.ArrayList([]u16).init(allocator);
-    defer updates.deinit();
     for (input.lines[sep + 1 ..]) |update| {
         var tokens = std.mem.tokenizeScalar(u8, update, ',');
         var pages = std.ArrayList(u16).init(allocator);
-        defer pages.deinit();
         while (tokens.next()) |page| {
             try pages.append(try std.fmt.parseInt(u16, page, 10));
         }

@@ -34,12 +34,9 @@ pub fn solve_version02(allocator: std.mem.Allocator, input: *ProblemInput, is_sa
 
     var left_list = std.ArrayList(u32).init(allocator);
     var right_list = std.ArrayList(u32).init(allocator);
-    defer left_list.deinit();
-    defer right_list.deinit();
     try get_lists(u32, input, &left_list, &right_list);
 
     var counter = std.AutoHashMap(u32, u32).init(allocator);
-    defer counter.deinit();
 
     for (right_list.items) |right| {
         const entry = try counter.getOrPut(right);

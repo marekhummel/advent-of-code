@@ -160,7 +160,13 @@ pub const AocRunner = struct {
         }
 
         defer input.?.deinit();
-        return s.?.solve(self._allocator, &input.?, version, use_sample);
+
+        // Use arena allocator in solutions for easier coding
+        var arena = std.heap.ArenaAllocator.init(self._allocator);
+        const solution_allocator = arena.allocator();
+        defer arena.deinit();
+
+        return s.?.solve(solution_allocator, &input.?, version, use_sample);
     }
 
     fn getInput(self: *const AocRunner, day: u8, version: u8, use_sample: bool) ?types.ProblemInput {
