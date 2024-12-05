@@ -72,7 +72,7 @@ pub const ProblemInput = struct {
 
         while (reader.streamUntilDelimiter(line.writer(), '\n', null)) {
             defer line.clearRetainingCapacity();
-            if (line.getLast() == '\r') _ = line.popOrNull();
+            if (line.items.len > 0 and line.getLast() == '\r') _ = line.popOrNull();
             try lines.append(try line.toOwnedSlice());
         } else |err| switch (err) {
             error.EndOfStream => {
@@ -155,7 +155,7 @@ pub fn Grid(comptime CT: type) type {
             allocator.free(self.cells);
         }
 
-        pub fn row(self: @This(), index: usize, allocator: std.mem.Allocator) ![]CT {
+        pub fn row(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
             if (index >= self.height) return error.IndexOutOfBounds;
 
             const slice = try allocator.alloc(CT, self.width);
@@ -163,7 +163,7 @@ pub fn Grid(comptime CT: type) type {
             return slice;
         }
 
-        pub fn col(self: @This(), index: usize, allocator: std.mem.Allocator) ![]CT {
+        pub fn col(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
             if (index >= self.width) return error.IndexOutOfBounds;
 
             const slice = try allocator.alloc(CT, self.height);
@@ -173,7 +173,7 @@ pub fn Grid(comptime CT: type) type {
             return slice;
         }
 
-        pub fn diag_major(self: @This(), index: usize, allocator: std.mem.Allocator) ![]CT {
+        pub fn diag_major(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
             if (index >= self.diags) return error.IndexOutOfBounds;
 
             var list = std.ArrayList(CT).init(allocator);
@@ -189,7 +189,7 @@ pub fn Grid(comptime CT: type) type {
             return list.toOwnedSlice();
         }
 
-        pub fn diag_minor(self: @This(), index: usize, allocator: std.mem.Allocator) ![]CT {
+        pub fn diag_minor(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
             if (index >= self.diags) return error.IndexOutOfBounds;
 
             var list = std.ArrayList(CT).init(allocator);

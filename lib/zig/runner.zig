@@ -130,7 +130,7 @@ pub const AocRunner = struct {
             }
         }
         std.debug.print("\nTotal Runtime: {0d}s\n", .{day_elapsed});
-        std.debug.print("Note: Results {s}match expected", .{if (expected_match) "" else "don't"});
+        std.debug.print("Note: Results {s}match expected", .{if (expected_match) "" else "don't "});
     }
 
     fn runSingle(self: *const AocRunner, day: u8, version: u8, use_sample: bool) !void {
