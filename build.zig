@@ -22,6 +22,10 @@ fn add_binary(b: *std.Build, comptime year: []const u8) void {
     });
     exe.root_module.addImport("aoc_lib", aoc_lib_mod);
 
+    // External Dependencies
+    const ziglangSet = b.dependency("ziglangSet", .{});
+    exe.root_module.addImport("ziglangSet", ziglangSet.module("ziglangSet"));
+
     // Compile step
     const install_artifact = b.addInstallArtifact(exe, .{});
     const compile_step = b.step(year ++ "_main", "Build " ++ year);

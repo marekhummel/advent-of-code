@@ -1,4 +1,5 @@
 const std = @import("std");
+const Index = @import("cartesian.zig").Index;
 
 pub const Result = union(enum) {
     NoInput,
@@ -155,6 +156,14 @@ pub fn Grid(comptime CT: type) type {
             allocator.free(self.cells);
         }
 
+        pub fn get(self: Self, index: Index) CT {
+            return self.cells[index.r][index.c];
+        }
+
+        pub fn set(self: Self, index: Index, value: CT) void {
+            self.cells[index.r][index.c] = value;
+        }
+
         pub fn row(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
             if (index >= self.height) return error.IndexOutOfBounds;
 
@@ -203,6 +212,35 @@ pub fn Grid(comptime CT: type) type {
             }
 
             return list.toOwnedSlice();
+        }
+
+        pub fn find(self: *const Self, needle: CT) ?Index {
+            for (0..self.height) |r| {
+                for (0..self.width) |c| {
+                    if (self.cells[r][c] == needle) {
+                        return Index{ .r = r, .c = c };
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        pub fn convert(
+            self: *const Self,
+            allocator: std.mem.Allocator,
+            comptime T: type,
+            comptime mapFunc: fn (char: u8, r: usize, c: usize) T,
+        ) Grid(T) {
+            var new_cells = try allocator.alloc([]T, self.height);
+            for (self.cells, 0..) |line, r| {
+                new_cells[r] = try self._allocator.alloc(T, self.width);
+                for (line, 0..) |cell, c| {
+                    new_cells[r][c] = mapFunc(cell, r, c);
+                }
+            }
+
+            return Grid(T).init(new_cells);
         }
     };
 }

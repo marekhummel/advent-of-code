@@ -41,7 +41,6 @@ pub fn solve_version02(allocator: std.mem.Allocator, input: *ProblemInput, is_sa
 
         // Reduce rule graph to occuring pages in update
         var graph = aoc_lib.graph.Graph(u16).init(allocator);
-
         for (try rules.edges(allocator)) |rule| {
             if (contains(u16, upd, rule[0]) and contains(u16, upd, rule[1])) {
                 try graph.addEdge(rule[0], rule[1], false);
