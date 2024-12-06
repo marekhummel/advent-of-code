@@ -156,6 +156,14 @@ pub fn Grid(comptime CT: type) type {
             allocator.free(self.cells);
         }
 
+        pub fn get(self: Self, index: Index) CT {
+            return self.cells[index.r][index.c];
+        }
+
+        pub fn set(self: Self, index: Index, value: CT) void {
+            self.cells[index.r][index.c] = value;
+        }
+
         pub fn row(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
             if (index >= self.height) return error.IndexOutOfBounds;
 

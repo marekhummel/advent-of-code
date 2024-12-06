@@ -19,11 +19,11 @@ pub const Index = struct {
     }
 };
 
-pub const Direction = enum {
-    North,
-    East,
-    South,
-    West,
+pub const Direction = enum(u4) {
+    North = 0b0001,
+    East = 0b0010,
+    South = 0b0100,
+    West = 0b1000,
 
     const Self = @This();
 

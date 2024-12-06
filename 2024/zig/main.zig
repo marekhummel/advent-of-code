@@ -8,11 +8,11 @@ const day04 = @import("solutions/day04.zig");
 const day05 = @import("solutions/day05.zig");
 const day06 = @import("solutions/day06.zig");
 
-const ALL: bool = false;
-const VERSION: u8 = 2;
-const USE_SAMPLE: bool = false;
+const ALL: bool = true;
+const VERSION: u8 = 1;
+const USE_SAMPLE: bool = true;
 
-const USE_ARENA: bool = false;
+const USE_ARENA: bool = true;
 
 pub fn main() !void {
     var runner = create_runner();

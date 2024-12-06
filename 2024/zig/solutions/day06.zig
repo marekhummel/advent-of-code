@@ -7,10 +7,10 @@ const Direction = aoc_lib.cartesian.Direction;
 
 pub fn results() [4]Result {
     return .{
-        Result.Unsolved,
-        Result.Unsolved,
-        Result.Unsolved,
-        Result.Unsolved,
+        Result{ .USize = 41 },
+        Result{ .USize = 4752 },
+        Result{ .USize = 6 },
+        Result{ .USize = 1719 },
     };
 }
 
@@ -18,24 +18,10 @@ pub fn solve_version01(allocator: std.mem.Allocator, input: *ProblemInput, is_sa
     _ = is_sample;
 
     const map = try input.grid();
-    var guard = map.find('^').?;
-    var dir = Direction.North;
+    const guard = map.find('^').?;
 
-    var visited = std.AutoHashMap(Index, void).init(allocator);
-    while (true) {
-        try visited.put(guard, {});
-
-        const next = guard.move(dir, map.width, map.height) orelse break;
-
-        if (map.cells[next.r][next.c] == '#') {
-            dir = dir.right();
-            continue;
-        }
-
-        guard = next;
-    }
-
-    return Result{ .USize = visited.count() };
+    const pathloop = try computePath(&map, guard, allocator);
+    return Result{ .USize = pathloop.path.len };
 }
 
 pub fn solve_version02(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
@@ -45,58 +31,62 @@ pub fn solve_version02(allocator: std.mem.Allocator, input: *ProblemInput, is_sa
     const guard = map.find('^').?;
 
     const original_path = (try computePath(&map, guard, allocator)).path;
-    defer allocator.free(original_path);
 
+    // Try to put obstacles at every point the guard would've visited
     var loops: usize = 0;
     for (original_path) |idx| {
-        if (map.cells[idx.r][idx.c] != '.') continue;
+        if (map.get(idx) != '.') continue;
 
-        map.cells[idx.r][idx.c] = '#';
-        const pathloop = try computePath(&map, guard, allocator);
-        defer allocator.free(pathloop.path);
-        if (pathloop.loop) {
+        map.set(idx, '#');
+        if ((try computePath(&map, guard, allocator)).loop) {
             loops += 1;
-            // std.debug.print("{any}\n", .{idx});
         }
-        map.cells[idx.r][idx.c] = '.';
+        map.set(idx, '.');
     }
 
     return Result{ .USize = loops };
 }
 
 fn computePath(
-    map: *aoc_lib.types.Grid(u8),
+    map: *const aoc_lib.types.Grid(u8),
     guard_start: Index,
     allocator: std.mem.Allocator,
 ) !struct { path: []Index, loop: bool } {
     var guard = guard_start;
     var dir = Direction.North;
-    var moves = std.AutoHashMap(struct { Index, Direction }, void).init(allocator);
-    defer moves.deinit();
 
-    var positions = std.AutoHashMap(Index, void).init(allocator);
-    defer positions.deinit();
-    var loop = false;
+    // We use array for all positions and mark the direction at each position,
+    // because this is much (x2-x4) faster than zigs sets (AutoArrayHashMap / ziglangSet)
+    var pathLookup = try allocator.alloc(u4, map.height * map.width);
+    for (0..pathLookup.len) |i| pathLookup[i] = 0;
+    defer allocator.free(pathLookup);
+    var positions = std.ArrayList(Index).init(allocator);
 
+    // Walk while in bounds and no loop
     while (true) {
-        try positions.put(guard, {});
-        if (try moves.fetchPut(.{ guard, dir }, {}) != null) {
-            loop = true;
-            break;
+        const index = guard.r * map.width + guard.c;
+        const samePosition = (pathLookup[index] != 0);
+        const samePath = (pathLookup[index] & @intFromEnum(dir) != 0);
+
+        // Check if guard was on same path before (same pos and dir)
+        if (samePath) {
+            return .{ .path = try positions.toOwnedSlice(), .loop = true };
+        }
+        pathLookup[index] |= @intFromEnum(dir);
+
+        // Add position to list of visited indices if new
+        if (!samePosition) {
+            try positions.append(guard);
         }
 
+        // Move guard (if next is null, we are out of bounds)
         const next = guard.move(dir, map.width, map.height) orelse break;
-
         if (map.cells[next.r][next.c] == '#') {
             dir = dir.right();
-            continue;
+        } else {
+            guard = next;
         }
-
-        guard = next;
     }
 
-    var path = std.ArrayList(Index).init(allocator);
-    var keyIterator = positions.keyIterator();
-    while (keyIterator.next()) |pos| try path.append(pos.*);
-    return .{ .path = try path.toOwnedSlice(), .loop = loop };
+    return .{ .path = try positions.toOwnedSlice(), .loop = false };
 }
