@@ -5,14 +5,16 @@ const types = @import("types.zig");
 pub const AocRunner = struct {
     year: u16,
     solutions: [25]?solution.Solution,
+    arena_enabled: bool,
     _allocator: std.mem.Allocator = undefined,
 
-    pub fn init(year: u16, impl_solutions: []const ?solution.Solution) AocRunner {
+    pub fn init(year: u16, impl_solutions: []const ?solution.Solution, use_arena: bool) AocRunner {
         var solutions: [25]?solution.Solution = .{null} ** 25;
         std.mem.copyForwards(?solution.Solution, &solutions, impl_solutions);
         return .{
             .year = year,
             .solutions = solutions,
+            .arena_enabled = use_arena,
         };
     }
 
@@ -161,12 +163,15 @@ pub const AocRunner = struct {
 
         defer input.?.deinit();
 
-        // Use arena allocator in solutions for easier coding
-        var arena = std.heap.ArenaAllocator.init(self._allocator);
-        const solution_allocator = arena.allocator();
-        defer arena.deinit();
-
-        return s.?.solve(solution_allocator, &input.?, version, use_sample);
+        if (self.arena_enabled) {
+            // Use arena allocator in solutions for easier coding
+            var arena = std.heap.ArenaAllocator.init(self._allocator);
+            const solution_allocator = arena.allocator();
+            defer arena.deinit();
+            return s.?.solve(solution_allocator, &input.?, version, use_sample);
+        } else {
+            return s.?.solve(self._allocator, &input.?, version, use_sample);
+        }
     }
 
     fn getInput(self: *const AocRunner, day: u8, version: u8, use_sample: bool) ?types.ProblemInput {

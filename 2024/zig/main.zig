@@ -6,10 +6,13 @@ const day02 = @import("solutions/day02.zig");
 const day03 = @import("solutions/day03.zig");
 const day04 = @import("solutions/day04.zig");
 const day05 = @import("solutions/day05.zig");
+const day06 = @import("solutions/day06.zig");
 
-const ALL: bool = true;
+const ALL: bool = false;
 const VERSION: u8 = 2;
 const USE_SAMPLE: bool = false;
+
+const USE_ARENA: bool = false;
 
 pub fn main() !void {
     var runner = create_runner();
@@ -23,8 +26,9 @@ fn create_runner() aoc_lib.runner.AocRunner {
         aoc_lib.solution.makeSolution(day03),
         aoc_lib.solution.makeSolution(day04),
         aoc_lib.solution.makeSolution(day05),
+        aoc_lib.solution.makeSolution(day06),
     };
-    return aoc_lib.runner.AocRunner.init(2024, &solutions);
+    return aoc_lib.runner.AocRunner.init(2024, &solutions, USE_ARENA);
 }
 
 test "implementations match solutions" {
