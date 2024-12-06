@@ -30,7 +30,7 @@ elif [ "$lang" = "zig" ] ; then
     cp scripts/templates/day_template.zig $year/zig/solutions/day$day.zig
 
     sed -i "$(($2+2)) a\const day$day = @import(\"solutions/day$day.zig\");" $year/zig/main.zig
-    sed -i "$(($2*2+16)) a\        aoc_lib.solution.makeSolution(day$day)," $year/zig/main.zig
+    sed -i "$(($2*2+17)) a\        aoc_lib.solution.makeSolution(day$day)," $year/zig/main.zig
 fi
 
 cookie=$(cat scripts/aoc_cookie.txt)

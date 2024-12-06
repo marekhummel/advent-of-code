@@ -12,6 +12,7 @@ const ALL: bool = true;
 const VERSION: u8 = 1;
 const USE_SAMPLE: bool = true;
 
+// Should usually be yes, but disable to catch "missed opportunities" for early frees
 const USE_ARENA: bool = true;
 
 pub fn main() !void {
