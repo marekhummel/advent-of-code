@@ -14,24 +14,24 @@ pub fn results() [4]Result {
 
 pub fn solvePart01(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
     _ = is_sample;
-    return Result{ .UInt64 = try calibrate(input, 2, allocator) };
+    return Result{ .UInt64 = try calibrate(input, false, allocator) };
 }
 
 pub fn solvePart02(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
     _ = is_sample;
-    return Result{ .UInt64 = try calibrate(input, 3, allocator) };
+    return Result{ .UInt64 = try calibrate(input, true, allocator) };
 }
 
 const Equation = struct { rhs: u64, values: []u64 };
 
 /// Parse every calibration equation and sum valid ones
-fn calibrate(input: *ProblemInput, num_operations: comptime_int, allocator: std.mem.Allocator) !u64 {
+fn calibrate(input: *ProblemInput, allow_concat: bool, allocator: std.mem.Allocator) !u64 {
     var calibration_result: u64 = 0;
     for (input.lines) |line| {
         const equation = try parseEquationStr(line, allocator);
         defer allocator.free(equation.values);
 
-        if (evalEquation(&equation, num_operations)) {
+        if (evalEquation(equation, allow_concat, 0)) {
             calibration_result += equation.rhs;
         }
     }
@@ -55,28 +55,15 @@ fn parseEquationStr(line: []u8, allocator: std.mem.Allocator) !Equation {
 }
 
 /// Evaluate an equation, true if combination of operators found
-fn evalEquation(equation: *const Equation, num_operators: comptime_int) bool {
-    const num_configs = std.math.pow(u64, num_operators, equation.values.len - 1);
-    // All possible combinations of operators are given in the binary / ternary represations of integers.
-    for (0..num_configs) |config| {
-        var operator_lookup = config;
-        var total: u64 = equation.values[0];
-
-        for (equation.values[1..]) |val| {
-            switch (operator_lookup % num_operators) {
-                0 => total += val,
-                1 => total *= val,
-                2 => total = total * std.math.pow(u64, 10, std.math.log10(val) + 1) + val, // Unreachable in part 1
-                else => unreachable,
-            }
-
-            operator_lookup /= num_operators;
-        }
-
-        if (total == equation.rhs) {
-            return true;
-        }
+/// Use recursion instead of looping over all operator combinations, because this avoids
+/// recomputing partial results (v[0] + v[1] is computed once here, but in every third computation otherwise)
+fn evalEquation(equation: Equation, allow_concat: bool, acc: u64) bool {
+    if (equation.values.len == 0) {
+        return equation.rhs == acc;
     }
 
-    return false;
+    const next_equation = .{ .rhs = equation.rhs, .values = equation.values[1..] };
+    return (evalEquation(next_equation, allow_concat, acc + equation.values[0]) or
+        evalEquation(next_equation, allow_concat, acc * equation.values[0]) or
+        (allow_concat and evalEquation(next_equation, allow_concat, acc * std.math.pow(u64, 10, std.math.log10(equation.values[0]) + 1) + equation.values[0])));
 }
