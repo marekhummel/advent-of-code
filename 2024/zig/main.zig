@@ -10,18 +10,18 @@ const day06 = @import("solutions/day06.zig");
 const day07 = @import("solutions/day07.zig");
 
 const ALL: bool = true;
-const VERSION: u8 = 1;
+const PART: u8 = 1;
 const USE_SAMPLE: bool = true;
 
 // Should usually be yes, but disable to catch "missed opportunities" for early frees
 const USE_ARENA: bool = true;
 
 pub fn main() !void {
-    var runner = create_runner();
-    try runner.run(ALL, VERSION, USE_SAMPLE);
+    var runner = createRunner();
+    try runner.run(ALL, PART, USE_SAMPLE);
 }
 
-fn create_runner() aoc_lib.runner.AocRunner {
+fn createRunner() aoc_lib.runner.AocRunner {
     const solutions = [_]?aoc_lib.solution.Solution{
         aoc_lib.solution.makeSolution(day01),
         aoc_lib.solution.makeSolution(day02),
@@ -35,7 +35,7 @@ fn create_runner() aoc_lib.runner.AocRunner {
 }
 
 test "implementations match solutions" {
-    var runner = create_runner();
+    var runner = createRunner();
     runner._allocator = std.testing.allocator;
     try std.testing.expect(runner.verifySolutions());
 }

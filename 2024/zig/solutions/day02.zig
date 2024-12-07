@@ -12,33 +12,33 @@ pub fn results() [4]Result {
     };
 }
 
-pub fn solve_version01(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart01(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
     _ = is_sample;
 
-    const data = try get_reports(allocator, input);
+    const data = try getReports(allocator, input);
     var safe_reports: usize = 0;
     for (data) |report| {
-        if (check_safety(report, null))
+        if (checkSafety(report, null))
             safe_reports += 1;
     }
 
     return Result{ .USize = safe_reports };
 }
 
-pub fn solve_version02(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart02(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
     _ = is_sample;
 
-    const data = try get_reports(allocator, input);
+    const data = try getReports(allocator, input);
     var safe_reports: usize = 0;
     for (data) |report| {
         // Check without skips
-        if (check_safety(report, null)) {
+        if (checkSafety(report, null)) {
             safe_reports += 1;
             continue;
         }
         // Skip each level and check
         for (0..report.len) |skip| {
-            if (check_safety(report, skip)) {
+            if (checkSafety(report, skip)) {
                 safe_reports += 1;
                 break;
             }
@@ -48,7 +48,7 @@ pub fn solve_version02(allocator: std.mem.Allocator, input: *ProblemInput, is_sa
     return Result{ .USize = safe_reports };
 }
 
-fn get_reports(allocator: std.mem.Allocator, input: *ProblemInput) ![][]i16 {
+fn getReports(allocator: std.mem.Allocator, input: *ProblemInput) ![][]i16 {
     var matrix = std.ArrayList([]i16).init(allocator);
 
     for (input.lines) |line| {
@@ -66,7 +66,7 @@ fn get_reports(allocator: std.mem.Allocator, input: *ProblemInput) ![][]i16 {
     return matrix.toOwnedSlice();
 }
 
-fn check_safety(report: []i16, skip: ?usize) bool {
+fn checkSafety(report: []i16, skip: ?usize) bool {
     var increasing: ?bool = null;
 
     for (0..report.len - 1) |i| {

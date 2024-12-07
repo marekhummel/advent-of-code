@@ -18,7 +18,7 @@ pub const AocRunner = struct {
         };
     }
 
-    pub fn run(self: *AocRunner, full_day: bool, version: u8, use_sample: bool) !void {
+    pub fn run(self: *AocRunner, full_day: bool, part: u8, use_sample: bool) !void {
         var gpa = std.heap.GeneralPurposeAllocator(.{}){};
         self._allocator = gpa.allocator();
         defer {
@@ -43,7 +43,7 @@ pub const AocRunner = struct {
             if (full_day) {
                 try self.runDay(day);
             } else {
-                try self.runSingle(day, version, use_sample);
+                try self.runSingle(day, part, use_sample);
             }
         } else |_| {
             std.debug.print("Argument should have format dayXX: {s}\n", .{cmd_arg});
@@ -54,12 +54,12 @@ pub const AocRunner = struct {
         std.debug.print("\n----------\n", .{});
         var success = true;
         for (self.solutions, 1..) |sol, day| {
-            inline for ([_]u8{ 1, 2 }) |version| {
+            inline for ([_]u8{ 1, 2 }) |part| {
                 inline for ([_]bool{ true, false }) |use_sample| {
-                    const result_union = self.getResult(@as(u8, @intCast(day)), version, use_sample);
+                    const result_union = self.getResult(@as(u8, @intCast(day)), part, use_sample);
                     if (result_union) |timed_result| {
-                        std.debug.print("Testing D{0d:0>2} V{1d} '{2s}': ", .{ day, version, if (use_sample) "s" else "r" });
-                        const index = comptime (version - 1) * 2 + (if (use_sample) 0 else 1);
+                        std.debug.print("Testing D{0d:0>2} P{1d} '{2s}': ", .{ day, part, if (use_sample) "s" else "r" });
+                        const index = comptime (part - 1) * 2 + (if (use_sample) 0 else 1);
                         const expected = sol.?.results()[index];
                         if (std.testing.expect(std.meta.eql(timed_result.result, expected))) |_| {
                             std.debug.print("PASSED\n", .{});
@@ -70,7 +70,7 @@ pub const AocRunner = struct {
                     } else |err| switch (err) {
                         error.MissingSolution => {},
                         else => {
-                            std.debug.print("Testing D{0d:0>2} V{1d} '{2s}': ", .{ day, version, if (use_sample) "s" else "r" });
+                            std.debug.print("Testing D{0d:0>2} P{1d} '{2s}': ", .{ day, part, if (use_sample) "s" else "r" });
                             std.debug.print("ERROR RESULT ({!})\n", .{result_union});
                             success = false;
                         },
@@ -87,19 +87,19 @@ pub const AocRunner = struct {
         for (self.solutions, 1..) |_, day| {
             std.debug.print("Day {0d:0>2}\n", .{day});
             var day_elapsed: f64 = 0.0;
-            for ([_]u8{ 1, 2 }) |version| {
+            for ([_]u8{ 1, 2 }) |part| {
                 for ([_]bool{ true, false }) |use_sample| {
-                    const timed_result = self.getResult(@as(u8, @intCast(day)), version, use_sample) catch |err| {
-                        std.debug.print("  V{0d} {1s}:  {2s}\n", .{
-                            version,
+                    const timed_result = self.getResult(@as(u8, @intCast(day)), part, use_sample) catch |err| {
+                        std.debug.print("  P{0d} {1s}:  {2s}\n", .{
+                            part,
                             if (use_sample) "samp" else "real",
                             types.getErrorDesc(err),
                         });
                         continue;
                     };
                     day_elapsed += timed_result.duration;
-                    std.debug.print("  V{0d} {1s}:  {2s}\n", .{
-                        version,
+                    std.debug.print("  P{0d} {1s}:  {2s}\n", .{
+                        part,
                         if (use_sample) "samp" else "real",
                         timed_result.result,
                     });
@@ -114,17 +114,17 @@ pub const AocRunner = struct {
     fn runDay(self: *const AocRunner, day: u8) !void {
         var day_elapsed: f64 = 0.0;
         var expected_match = true;
-        for ([_]u8{ 1, 2 }) |version| {
+        for ([_]u8{ 1, 2 }) |part| {
             for ([_]bool{ true, false }) |use_sample| {
-                const timed_result = try self.getResult(day, version, use_sample);
+                const timed_result = try self.getResult(day, part, use_sample);
                 day_elapsed += timed_result.duration;
 
-                const index: usize = (version - 1) * 2 + (if (use_sample) @as(usize, 0) else @as(usize, 1));
+                const index: usize = (part - 1) * 2 + (if (use_sample) @as(usize, 0) else @as(usize, 1));
                 const expected = self.solutions[day - 1].?.results()[index];
                 if (!std.meta.eql(timed_result.result, expected)) expected_match = false;
 
-                std.debug.print("V{0d} {1s} in {2d:.4}s:    {3s}\n", .{
-                    version,
+                std.debug.print("P{0d} {1s} in {2d:.4}s:    {3s}\n", .{
+                    part,
                     if (use_sample) "samp" else "real",
                     timed_result.duration,
                     timed_result.result,
@@ -135,18 +135,18 @@ pub const AocRunner = struct {
         std.debug.print("Note: Results {s}match expected", .{if (expected_match) "" else "don't "});
     }
 
-    fn runSingle(self: *const AocRunner, day: u8, version: u8, use_sample: bool) !void {
-        const timed_result = try self.getResult(day, version, use_sample);
-        std.debug.print("Day {0d:0>2} / Version {1d} / Data '{2s}' => {3d}s\n{4s}\n", .{
+    fn runSingle(self: *const AocRunner, day: u8, part: u8, use_sample: bool) !void {
+        const timed_result = try self.getResult(day, part, use_sample);
+        std.debug.print("Day {0d:0>2} / part {1d} / Data '{2s}' => {3d}s\n{4s}\n", .{
             day,
-            version,
+            part,
             if (use_sample) "samp" else "real",
             timed_result.duration,
             timed_result.result,
         });
     }
 
-    fn getResult(self: *const AocRunner, day: u8, version: u8, use_sample: bool) types.SolvingError!types.TimedResult {
+    fn getResult(self: *const AocRunner, day: u8, part: u8, use_sample: bool) types.SolvingError!types.TimedResult {
         if (day > 25 or day == 0) {
             std.debug.print("AoC only has 25 days: {d}\n", .{day});
             return types.SolvingError.InvalidDay;
@@ -156,7 +156,7 @@ pub const AocRunner = struct {
             return types.SolvingError.MissingSolution;
         }
 
-        var input = self.getInput(day, version, use_sample);
+        var input = self.getInput(day, part, use_sample);
         if (input == null) {
             return .{ .result = types.Result.NoInput, .duration = 0 };
         }
@@ -168,20 +168,20 @@ pub const AocRunner = struct {
             var arena = std.heap.ArenaAllocator.init(self._allocator);
             const solution_allocator = arena.allocator();
             defer arena.deinit();
-            return s.?.solve(solution_allocator, &input.?, version, use_sample);
+            return s.?.solve(solution_allocator, &input.?, part, use_sample);
         } else {
-            return s.?.solve(self._allocator, &input.?, version, use_sample);
+            return s.?.solve(self._allocator, &input.?, part, use_sample);
         }
     }
 
-    fn getInput(self: *const AocRunner, day: u8, version: u8, use_sample: bool) ?types.ProblemInput {
+    fn getInput(self: *const AocRunner, day: u8, part: u8, use_sample: bool) ?types.ProblemInput {
         const base_filename = if (use_sample) "sample" else "input";
         const filename = std.fmt.allocPrint(self._allocator, "{0d}\\inputs\\{1s}{2d:0>2}.txt", .{ self.year, base_filename, day }) catch return null;
         defer self._allocator.free(filename);
 
         const input = types.ProblemInput.read(self._allocator, filename) catch |err| switch (err) {
             std.fs.File.OpenError.FileNotFound => {
-                const filename_vers = std.fmt.allocPrint(self._allocator, "{0d}\\inputs\\{1s}{2d:0>2}_{3d}.txt", .{ self.year, base_filename, day, version }) catch unreachable;
+                const filename_vers = std.fmt.allocPrint(self._allocator, "{0d}\\inputs\\{1s}{2d:0>2}_{3d}.txt", .{ self.year, base_filename, day, part }) catch unreachable;
                 defer self._allocator.free(filename_vers);
                 return types.ProblemInput.read(self._allocator, filename_vers) catch return null;
             },

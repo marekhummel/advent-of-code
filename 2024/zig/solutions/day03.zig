@@ -13,25 +13,25 @@ pub fn results() [4]Result {
     };
 }
 
-pub fn solve_version01(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart01(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
     _ = allocator;
     _ = is_sample;
 
     const memory = try input.string();
-    const sum = compute_sum(memory, false);
+    const sum = computeSum(memory, false);
     return Result{ .Int32 = sum };
 }
 
-pub fn solve_version02(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart02(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
     _ = allocator;
     _ = is_sample;
 
     const memory = try input.string();
-    const sum = compute_sum(memory, true);
+    const sum = computeSum(memory, true);
     return Result{ .Int32 = sum };
 }
 
-fn compute_sum(memory: []u8, with_conditionals: bool) i32 {
+fn computeSum(memory: []u8, with_conditionals: bool) i32 {
     var sum: i32 = 0;
     var offset: usize = 0;
     var enabled: bool = true;
@@ -65,19 +65,19 @@ fn find_mul(slice: []u8) ?Mul {
     while (true) {
         // std.debug.print("{s}\n", .{@tagName(state)});
         switch (state) {
-            .MulFunc => if (!match_const_and_proceed(slice, "mul", MulState.Open, &state, &i)) return null,
-            .Open => if (!match_const_and_proceed(slice, "(", MulState.Arg1, &state, &i)) return null,
-            .Arg1 => arg1 = match_num_and_proceed(slice, MulState.Comma, &state, &i) orelse return null,
-            .Comma => if (!match_const_and_proceed(slice, ",", MulState.Arg2, &state, &i)) return null,
-            .Arg2 => arg2 = match_num_and_proceed(slice, MulState.Close, &state, &i) orelse return null,
-            .Close => if (!match_const_and_proceed(slice, ")", MulState.MulFunc, &state, &i)) return null else break,
+            .MulFunc => if (!matchConstAndProceed(slice, "mul", MulState.Open, &state, &i)) return null,
+            .Open => if (!matchConstAndProceed(slice, "(", MulState.Arg1, &state, &i)) return null,
+            .Arg1 => arg1 = matchNumAndProceed(slice, MulState.Comma, &state, &i) orelse return null,
+            .Comma => if (!matchConstAndProceed(slice, ",", MulState.Arg2, &state, &i)) return null,
+            .Arg2 => arg2 = matchNumAndProceed(slice, MulState.Close, &state, &i) orelse return null,
+            .Close => if (!matchConstAndProceed(slice, ")", MulState.MulFunc, &state, &i)) return null else break,
         }
     }
 
     return Mul{ .arg1 = arg1, .arg2 = arg2, .byte_offset = i };
 }
 
-fn match_const_and_proceed(slice: []u8, comptime match: []const u8, next_state: MulState, state_ptr: *MulState, offset_ptr: *usize) bool {
+fn matchConstAndProceed(slice: []u8, comptime match: []const u8, next_state: MulState, state_ptr: *MulState, offset_ptr: *usize) bool {
     const len = match.len;
     if (!startswith(u8, slice[offset_ptr.*..], match)) {
         return false;
@@ -87,7 +87,7 @@ fn match_const_and_proceed(slice: []u8, comptime match: []const u8, next_state: 
     return true;
 }
 
-fn match_num_and_proceed(slice: []u8, next_state: MulState, state_ptr: *MulState, offset_ptr: *usize) ?i32 {
+fn matchNumAndProceed(slice: []u8, next_state: MulState, state_ptr: *MulState, offset_ptr: *usize) ?i32 {
     var num: i32 = 0;
     while (slice.len != 0) {
         if (!std.ascii.isDigit(slice[offset_ptr.*])) break;

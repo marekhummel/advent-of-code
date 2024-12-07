@@ -12,14 +12,14 @@ pub fn results() [4]Result {
     };
 }
 
-pub fn solve_version01(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart01(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
     _ = is_sample;
 
     var left_list = std.ArrayList(i32).init(allocator);
     var right_list = std.ArrayList(i32).init(allocator);
     defer left_list.deinit();
     defer right_list.deinit();
-    try get_lists(i32, input, &left_list, &right_list);
+    try getLists(i32, input, &left_list, &right_list);
 
     var total: u32 = 0;
     for (left_list.items, right_list.items) |left, right| {
@@ -29,12 +29,12 @@ pub fn solve_version01(allocator: std.mem.Allocator, input: *ProblemInput, is_sa
     return Result{ .UInt32 = total };
 }
 
-pub fn solve_version02(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart02(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
     _ = is_sample;
 
     var left_list = std.ArrayList(u32).init(allocator);
     var right_list = std.ArrayList(u32).init(allocator);
-    try get_lists(u32, input, &left_list, &right_list);
+    try getLists(u32, input, &left_list, &right_list);
 
     var counter = std.AutoHashMap(u32, u32).init(allocator);
 
@@ -53,7 +53,7 @@ pub fn solve_version02(allocator: std.mem.Allocator, input: *ProblemInput, is_sa
     return Result{ .UInt32 = sim_score };
 }
 
-fn get_lists(comptime T: type, input: *ProblemInput, left_list: *std.ArrayList(T), right_list: *std.ArrayList(T)) !void {
+fn getLists(comptime T: type, input: *ProblemInput, left_list: *std.ArrayList(T), right_list: *std.ArrayList(T)) !void {
     for (input.lines) |line| {
         var left = true;
         var it = std.mem.split(u8, line, " ");

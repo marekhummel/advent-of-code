@@ -12,7 +12,7 @@ pub fn results() [4]Result {
     };
 }
 
-pub fn solve_version01(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart01(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
     _ = is_sample;
 
     const grid = try input.grid();
@@ -32,8 +32,8 @@ pub fn solve_version01(allocator: std.mem.Allocator, input: *ProblemInput, is_sa
     }
 
     for (0..grid.diags) |d| {
-        const diag_maj = try grid.diag_major(d, allocator);
-        const diag_min = try grid.diag_minor(d, allocator);
+        const diag_maj = try grid.diagMajor(d, allocator);
+        const diag_min = try grid.diagMinor(d, allocator);
         // defer allocator.free(diag_maj);
         // defer allocator.free(diag_min);
 
@@ -44,7 +44,7 @@ pub fn solve_version01(allocator: std.mem.Allocator, input: *ProblemInput, is_sa
     return Result{ .USize = counter };
 }
 
-pub fn solve_version02(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart02(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
     _ = allocator;
     _ = is_sample;
 

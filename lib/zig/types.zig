@@ -23,10 +23,10 @@ pub const Result = union(enum) {
         _ = fmt;
         _ = options;
         return try switch (self) {
-            .NoInput => std.fmt.format(writer, "No Input", .{}),
-            .NoSample => std.fmt.format(writer, "No Sample", .{}),
-            .Unsolved => std.fmt.format(writer, "Unsolved", .{}),
-            .NoPartTwo => std.fmt.format(writer, "No Part Two", .{}),
+            .NoInput => std.fmt.format(writer, "<No Input Available>", .{}),
+            .NoSample => std.fmt.format(writer, "<No Sample Defined>", .{}),
+            .Unsolved => std.fmt.format(writer, "<No Solution Implemented>", .{}),
+            .NoPartTwo => std.fmt.format(writer, "<No Part Two>", .{}),
             .USize => std.fmt.format(writer, "{}", .{self.USize}),
             .Int8 => std.fmt.format(writer, "{}", .{self.Int8}),
             .Int16 => std.fmt.format(writer, "{}", .{self.Int16}),
@@ -182,7 +182,7 @@ pub fn Grid(comptime CT: type) type {
             return slice;
         }
 
-        pub fn diag_major(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
+        pub fn diagMajor(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
             if (index >= self.diags) return error.IndexOutOfBounds;
 
             var list = std.ArrayList(CT).init(allocator);
@@ -198,7 +198,7 @@ pub fn Grid(comptime CT: type) type {
             return list.toOwnedSlice();
         }
 
-        pub fn diag_minor(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
+        pub fn diagMinor(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
             if (index >= self.diags) return error.IndexOutOfBounds;
 
             var list = std.ArrayList(CT).init(allocator);
@@ -247,16 +247,16 @@ pub fn Grid(comptime CT: type) type {
 
 pub const SolvingError = error{
     InvalidDay,
-    InvalidVersion,
+    InvalidPart,
     MissingSolution,
     SolvingFailed,
 };
 
 pub fn getErrorDesc(err: SolvingError) []const u8 {
     switch (err) {
-        SolvingError.InvalidDay => return "Day is invalid",
-        SolvingError.InvalidVersion => return "Version is invalid",
-        SolvingError.MissingSolution => return "Solution is not registered",
-        SolvingError.SolvingFailed => return "Some error occured in solving method",
+        SolvingError.InvalidDay => return "<Day Invalid>",
+        SolvingError.InvalidPart => return "<Part Invalid>",
+        SolvingError.MissingSolution => return "<No Solution Implemented>",
+        SolvingError.SolvingFailed => return "<Solution raised error>",
     }
 }
