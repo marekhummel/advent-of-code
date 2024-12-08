@@ -19,19 +19,19 @@ pub fn solvePart01(allocator: std.mem.Allocator, input: *ProblemInput, is_sample
     var counter: usize = 0;
 
     // Loop over all rows, cols, major and minor diagonals.
-    for (0..grid.height) |r| {
+    for (0..grid.size.height) |r| {
         const row = try grid.row(r, allocator);
         // defer allocator.free(row);
         search(row, &counter);
     }
 
-    for (0..grid.width) |c| {
+    for (0..grid.size.width) |c| {
         const col = try grid.col(c, allocator);
         // defer allocator.free(col);
         search(col, &counter);
     }
 
-    for (0..grid.diags) |d| {
+    for (0..grid.size.diags) |d| {
         const diag_maj = try grid.diagMajor(d, allocator);
         const diag_min = try grid.diagMinor(d, allocator);
         // defer allocator.free(diag_maj);
@@ -51,8 +51,8 @@ pub fn solvePart02(allocator: std.mem.Allocator, input: *ProblemInput, is_sample
     const grid = try input.grid();
     var counter: usize = 0;
 
-    for (1..grid.height - 1) |r| {
-        for (1..grid.width - 1) |c| {
+    for (1..grid.size.height - 1) |r| {
+        for (1..grid.size.width - 1) |c| {
             if (grid.cells[r][c] != 'A')
                 continue;
 

@@ -1,5 +1,7 @@
 const std = @import("std");
-const Index = @import("cartesian.zig").Index;
+const cartesian = @import("cartesian.zig");
+const Index = cartesian.Index;
+const Size = cartesian.Size;
 
 pub const Result = union(enum) {
     NoInput,
@@ -139,14 +141,12 @@ pub fn Grid(comptime CT: type) type {
         const Self = @This();
 
         cells: [][]CT,
-        width: usize,
-        height: usize,
-        diags: usize,
+        size: Size,
 
         pub fn init(cells: [][]CT) Grid(CT) {
             const w = cells[0].len;
             const h = cells.len;
-            return Grid(CT){ .cells = cells, .width = w, .height = h, .diags = w + h - 1 };
+            return Grid(CT){ .cells = cells, .size = Size{ .width = w, .height = h, .diags = w + h - 1 } };
         }
 
         pub fn deinit(self: @This(), allocator: std.mem.Allocator) void {
@@ -165,17 +165,17 @@ pub fn Grid(comptime CT: type) type {
         }
 
         pub fn row(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
-            if (index >= self.height) return error.IndexOutOfBounds;
+            if (index >= self.size.height) return error.IndexOutOfBounds;
 
-            const slice = try allocator.alloc(CT, self.width);
+            const slice = try allocator.alloc(CT, self.size.width);
             std.mem.copyForwards(CT, slice, self.cells[index]);
             return slice;
         }
 
         pub fn col(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
-            if (index >= self.width) return error.IndexOutOfBounds;
+            if (index >= self.size.width) return error.IndexOutOfBounds;
 
-            const slice = try allocator.alloc(CT, self.height);
+            const slice = try allocator.alloc(CT, self.size.height);
             for (self.cells, 0..) |line, r| {
                 slice[r] = line[index];
             }
@@ -183,13 +183,13 @@ pub fn Grid(comptime CT: type) type {
         }
 
         pub fn diagMajor(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
-            if (index >= self.diags) return error.IndexOutOfBounds;
+            if (index >= self.size.diags) return error.IndexOutOfBounds;
 
             var list = std.ArrayList(CT).init(allocator);
-            var r = self.height -| 1 -| index; // saturating sub -| (0 -| 1 = 0)
-            var c = index + 1 -| self.height; // saturating sub -|
+            var r = self.size.height -| 1 -| index; // saturating sub -| (0 -| 1 = 0)
+            var c = index + 1 -| self.size.height; // saturating sub -|
 
-            while (r < self.height and c < self.width) {
+            while (r < self.size.height and c < self.size.width) {
                 try list.append(self.cells[r][c]);
                 r += 1;
                 c += 1;
@@ -199,13 +199,13 @@ pub fn Grid(comptime CT: type) type {
         }
 
         pub fn diagMinor(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
-            if (index >= self.diags) return error.IndexOutOfBounds;
+            if (index >= self.size.diags) return error.IndexOutOfBounds;
 
             var list = std.ArrayList(CT).init(allocator);
-            var r = @min(index, self.height - 1);
-            var c = index + 1 -| self.height; // saturating sub -|
+            var r = @min(index, self.size.height - 1);
+            var c = index + 1 -| self.size.height; // saturating sub -|
 
-            while (r < self.height and c < self.width) {
+            while (r < self.size.height and c < self.size.width) {
                 try list.append(self.cells[r][c]);
                 r -%= 1;
                 c += 1;
@@ -215,8 +215,8 @@ pub fn Grid(comptime CT: type) type {
         }
 
         pub fn find(self: *const Self, needle: CT) ?Index {
-            for (0..self.height) |r| {
-                for (0..self.width) |c| {
+            for (0..self.size.height) |r| {
+                for (0..self.size.width) |c| {
                     if (self.cells[r][c] == needle) {
                         return Index{ .r = r, .c = c };
                     }
@@ -232,15 +232,51 @@ pub fn Grid(comptime CT: type) type {
             comptime T: type,
             comptime mapFunc: fn (char: u8, r: usize, c: usize) T,
         ) Grid(T) {
-            var new_cells = try allocator.alloc([]T, self.height);
+            var new_cells = try allocator.alloc([]T, self.size.height);
             for (self.cells, 0..) |line, r| {
-                new_cells[r] = try self._allocator.alloc(T, self.width);
+                new_cells[r] = try self._allocator.alloc(T, self.size.width);
                 for (line, 0..) |cell, c| {
                     new_cells[r][c] = mapFunc(cell, r, c);
                 }
             }
 
             return Grid(T).init(new_cells);
+        }
+
+        pub fn print(self: *const Self, comptime fmt: []const u8) void {
+            for (0..self.size.height) |r| {
+                for (0..self.size.width) |c| {
+                    std.debug.print(fmt, .{self.cells[r][c]});
+                }
+                std.debug.print("\n", .{});
+            }
+        }
+
+        pub const IndexIterator = struct {
+            size: Size,
+            ref: [][]CT,
+            _init: bool = true,
+            _r: usize = 0,
+            _c: usize = 0,
+
+            const ItSelf = @This();
+
+            pub fn next(self: *ItSelf) ?struct { idx: Index, value: CT } {
+                if (self._init) {
+                    self._init = false;
+                } else if (self._c < self.size.width - 1) {
+                    self._c += 1;
+                } else if (self._r < self.size.height - 1) {
+                    self._r += 1;
+                    self._c = 0;
+                } else return null;
+
+                return .{ .idx = Index{ .r = self._r, .c = self._c }, .value = self.ref[self._r][self._c] };
+            }
+        };
+
+        pub fn iterator(self: *const Self) IndexIterator {
+            return IndexIterator{ .size = self.size, .ref = self.cells };
         }
     };
 }

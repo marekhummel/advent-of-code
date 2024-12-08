@@ -101,14 +101,14 @@ fn computePath(
 
     // We use array for all positions and mark the direction at each position,
     // because this is much (x2-x4) faster than zigs sets (AutoArrayHashMap / ziglangSet)
-    var pathLookup = try allocator.alloc(u4, map.height * map.width);
+    var pathLookup = try allocator.alloc(u4, map.size.total());
     for (0..pathLookup.len) |i| pathLookup[i] = 0;
     defer allocator.free(pathLookup);
     var positions = std.ArrayList(Index).init(allocator);
 
     // Walk while in bounds and no loop
     while (true) {
-        const index = guard.r * map.width + guard.c;
+        const index = guard.r * map.size.width + guard.c;
         const samePosition = (pathLookup[index] != 0);
         const samePath = (pathLookup[index] & @intFromEnum(dir) != 0);
 
@@ -124,8 +124,8 @@ fn computePath(
         }
 
         // Move guard (if next is null, we are out of bounds)
-        const next = guard.move(dir, map.width, map.height) orelse break;
-        if (map.cells[next.r][next.c] == '#' or (obstruction != null and std.meta.eql(next, obstruction.?))) {
+        const next = guard.move(dir, map.size) orelse break;
+        if (map.get(next) == '#' or (obstruction != null and std.meta.eql(next, obstruction.?))) {
             dir = dir.right();
         } else {
             guard = next;

@@ -37,6 +37,7 @@ fn add_binary(b: *std.Build, comptime year: []const u8) void {
         .target = b.resolveTargetQuery(.{}),
     });
     unit_tests.root_module.addImport("aoc_lib", aoc_lib_mod);
+    unit_tests.root_module.addImport("ziglangSet", ziglangSet.module("ziglangSet"));
     const unittest_artifact = b.addRunArtifact(unit_tests);
     const test_step = b.step(year ++ "_test", "Run unit tests for " ++ year);
     test_step.dependOn(&unittest_artifact.step);
