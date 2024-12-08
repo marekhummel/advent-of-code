@@ -41,10 +41,9 @@ fn calibrate(input: *ProblemInput, allow_concat: bool, allocator: std.mem.Alloca
 
 /// Parses line to equation struct
 fn parseEquationStr(line: []u8, allocator: std.mem.Allocator) !Equation {
-    var num_strs = std.mem.tokenizeAny(u8, line, ": ");
-
     var values = std.ArrayList(u64).init(allocator);
 
+    var num_strs = std.mem.tokenizeAny(u8, line, ": ");
     while (num_strs.next()) |num_str| {
         const num = try std.fmt.parseInt(u64, num_str, 10);
         try values.append(num);
@@ -58,9 +57,7 @@ fn parseEquationStr(line: []u8, allocator: std.mem.Allocator) !Equation {
 /// Use recursion instead of looping over all operator combinations, because this avoids
 /// recomputing partial results (v[0] + v[1] is computed once here, but in every third computation otherwise)
 fn evalEquation(equation: Equation, allow_concat: bool, acc: u64) bool {
-    if (equation.values.len == 0) {
-        return equation.rhs == acc;
-    }
+    if (equation.values.len == 0) return equation.rhs == acc;
 
     const next_equation = .{ .rhs = equation.rhs, .values = equation.values[1..] };
     return (evalEquation(next_equation, allow_concat, acc + equation.values[0]) or
