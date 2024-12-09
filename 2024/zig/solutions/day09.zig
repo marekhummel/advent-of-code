@@ -6,10 +6,10 @@ const Result = aoc_lib.types.Result;
 
 pub fn results() [4]Result {
     return .{
-        Result.Unsolved,
-        Result.Unsolved,
-        Result.Unsolved,
-        Result.Unsolved,
+        Result{ .USize = 1928 },
+        Result{ .USize = 6262891638328 },
+        Result{ .USize = 2858 },
+        Result{ .USize = 6287317016845 },
     };
 }
 
@@ -58,13 +58,15 @@ pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) 
 }
 
 pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
-    // _ = is_sample;
+    _ = is_sample;
 
     const disk_map = try input.string();
     for (disk_map) |*c| c.* = c.* - '0';
 
     var files = std.ArrayList(Block).init(allocator);
     var free_spans = std.ArrayList(Block).init(allocator);
+    // Use init with capacity to prevent any pointer invalids when adding free spans down below
+    // var free_spans = try std.ArrayList(Block).initCapacity(allocator, disk_map.len);
 
     var index: usize = 0;
     for (disk_map, 0..) |d, i| {
@@ -78,89 +80,40 @@ pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) 
         index += d;
     }
 
-    print_state(is_sample, disk_map, &files, &free_spans);
-    std.debug.print("{any}\n\n\n", .{free_spans.items});
-
+    // Reverse through all files and move to left if possible
     var i: usize = files.items.len;
     while (i > 0) {
         i -= 1;
         const file = &files.items[i];
-        std.debug.print("{d}\n", .{file.id.?});
 
         for (free_spans.items) |*free| {
-            if (free.*.position > file.*.position) break; // Only move to left
-            if (free.*.length >= file.*.length) {
-                // std.debug.print("new free at: {d} {d}\n", .{ file.*.position, file.*.length });
-                std.debug.print("move file {any} to free {any}\n", .{ file.*, free.* });
-                try free_spans.append(Block{ .id = null, .position = file.*.position, .length = file.*.length });
-                file.*.position = free.*.position;
-                free.*.position += file.*.length;
-                free.*.length -= file.*.length;
+            if (free.position >= file.position) break; // Only move to left
+
+            // Fill free space
+            if (free.length >= file.length) {
+                // No need, new free span is always right to any next file to move
+                // free_spans.appendAssumeCapacity(Block{ .id = null, .position = file.position, .length = file.length });
+                file.position = free.position;
+                free.position += file.length;
+                free.length -= file.length;
                 break;
             }
         }
-
-        print_state(is_sample, disk_map, &files, &free_spans);
-        std.debug.print("{any}\n\n\n", .{free_spans.items});
     }
 
-    // std.debug.print("{d}\n", .{files.items.len});
-    // var max_id: usize = 0;
-    // var max_pos: usize = 0;
+    // Compute checksum
     var checksum: usize = 0;
     for (files.items) |file| {
         for (0..file.length) |offset| {
-            std.debug.print("{d} {d} {d}\n", .{ file.position, offset, file.id.? });
             checksum += (file.position + offset) * file.id.?;
         }
-        // max_id = @max(max_id, file.id.?);
-        // max_pos = @max(max_pos, file.position);
     }
 
-    // std.debug.print("{d} {d}\n", .{ max_id, max_pos });
-
-    return Result{ .UInt128 = checksum };
+    return Result{ .USize = checksum };
 }
 
 const Block = struct {
     id: ?usize,
     position: usize,
     length: usize,
-
-    pub fn format(self: @This(), comptime fmt: []const u8, options: std.fmt.FormatOptions, writer: anytype) !void {
-        _ = fmt;
-        _ = options;
-        try std.fmt.format(writer, "[{any}: {d} {d}]", .{ self.id, self.position, self.length });
-    }
 };
-
-fn print_state(guard: bool, disk_map: []u8, files: *std.ArrayList(Block), free_spans: *std.ArrayList(Block)) void {
-    if (guard) {
-        var total_disk_size: usize = 0;
-        for (disk_map) |d| total_disk_size += d;
-
-        outer: for (0..total_disk_size) |di| {
-            for (files.items) |f| {
-                if (f.position <= di and di < f.position + f.length) {
-                    std.debug.print("{d}", .{f.id.?});
-                    continue :outer;
-                }
-            }
-            std.debug.print(".", .{});
-        }
-        std.debug.print("\n", .{});
-
-        outer: for (0..total_disk_size) |di| {
-            for (free_spans.items) |f| {
-                if (f.position <= di and di < f.position + f.length) {
-                    std.debug.print(".", .{});
-                    continue :outer;
-                }
-            }
-            std.debug.print("X", .{});
-        }
-        std.debug.print("\n\n", .{});
-
-        // std.debug.print("{any}\n", .{free_spans.items});
-    }
-}
