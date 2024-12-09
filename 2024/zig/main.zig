@@ -11,8 +11,8 @@ const day07 = @import("solutions/day07.zig");
 const day08 = @import("solutions/day08.zig");
 const day09 = @import("solutions/day09.zig");
 
-const ALL: bool = true;
-const PART: u8 = 1;
+const ALL: bool = false;
+const PART: u8 = 2;
 const USE_SAMPLE: bool = true;
 
 // Should usually be yes, but disable to catch "missed opportunities" for early frees

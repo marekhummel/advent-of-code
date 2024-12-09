@@ -70,20 +70,28 @@ pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) 
     for (disk_map, 0..) |d, i| {
         const is_file = (i & 1 == 0);
         if (is_file) {
+            std.debug.assert(d > 0);
             try files.append(Block{ .id = i / 2, .position = index, .length = d });
         } else {
-            try free_spans.append(Block{ .id = null, .position = index, .length = d });
+            if (d > 0) try free_spans.append(Block{ .id = null, .position = index, .length = d });
         }
         index += d;
     }
+
+    print_state(is_sample, disk_map, &files, &free_spans);
+    std.debug.print("{any}\n\n\n", .{free_spans.items});
 
     var i: usize = files.items.len;
     while (i > 0) {
         i -= 1;
         const file = &files.items[i];
+        std.debug.print("{d}\n", .{file.id.?});
 
         for (free_spans.items) |*free| {
+            if (free.*.position > file.*.position) break; // Only move to left
             if (free.*.length >= file.*.length) {
+                // std.debug.print("new free at: {d} {d}\n", .{ file.*.position, file.*.length });
+                std.debug.print("move file {any} to free {any}\n", .{ file.*, free.* });
                 try free_spans.append(Block{ .id = null, .position = file.*.position, .length = file.*.length });
                 file.*.position = free.*.position;
                 free.*.position += file.*.length;
@@ -91,14 +99,43 @@ pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) 
                 break;
             }
         }
+
+        print_state(is_sample, disk_map, &files, &free_spans);
+        std.debug.print("{any}\n\n\n", .{free_spans.items});
     }
 
+    // std.debug.print("{d}\n", .{files.items.len});
+    // var max_id: usize = 0;
+    // var max_pos: usize = 0;
     var checksum: usize = 0;
     for (files.items) |file| {
-        for (0..file.length) |offset| checksum += (file.position + offset) * file.id.?;
+        for (0..file.length) |offset| {
+            std.debug.print("{d} {d} {d}\n", .{ file.position, offset, file.id.? });
+            checksum += (file.position + offset) * file.id.?;
+        }
+        // max_id = @max(max_id, file.id.?);
+        // max_pos = @max(max_pos, file.position);
     }
 
-    if (is_sample) {
+    // std.debug.print("{d} {d}\n", .{ max_id, max_pos });
+
+    return Result{ .UInt128 = checksum };
+}
+
+const Block = struct {
+    id: ?usize,
+    position: usize,
+    length: usize,
+
+    pub fn format(self: @This(), comptime fmt: []const u8, options: std.fmt.FormatOptions, writer: anytype) !void {
+        _ = fmt;
+        _ = options;
+        try std.fmt.format(writer, "[{any}: {d} {d}]", .{ self.id, self.position, self.length });
+    }
+};
+
+fn print_state(guard: bool, disk_map: []u8, files: *std.ArrayList(Block), free_spans: *std.ArrayList(Block)) void {
+    if (guard) {
         var total_disk_size: usize = 0;
         for (disk_map) |d| total_disk_size += d;
 
@@ -122,22 +159,8 @@ pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) 
             }
             std.debug.print("X", .{});
         }
-        std.debug.print("\n", .{});
+        std.debug.print("\n\n", .{});
 
-        std.debug.print("{any}\n", .{free_spans.items});
+        // std.debug.print("{any}\n", .{free_spans.items});
     }
-
-    return Result{ .USize = checksum };
 }
-
-const Block = struct {
-    id: ?usize,
-    position: usize,
-    length: usize,
-
-    pub fn format(self: @This(), comptime fmt: []const u8, options: std.fmt.FormatOptions, writer: anytype) !void {
-        _ = fmt;
-        _ = options;
-        try std.fmt.format(writer, "[{any}: {d} {d}]", .{ self.id, self.position, self.length });
-    }
-};
