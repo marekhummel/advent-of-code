@@ -23,15 +23,13 @@ pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) 
     var files = try std.ArrayList(Block).initCapacity(allocator, disk_map.len);
     var free_spans = try std.ArrayList(Block).initCapacity(allocator, disk_map.len);
 
-    for (blocks.files) |file|
-        for (0..file.length) |offset|
-            try files.append(Block{ .id = file.id.?, .position = file.position + offset, .length = 1 });
+    for (blocks.files) |file| for (0..file.length) |offset|
+        try files.append(Block{ .id = file.id.?, .position = file.position + offset, .length = 1 });
 
-    for (blocks.free_spans) |free|
-        for (0..free.length) |offset|
-            try free_spans.append(Block{ .id = null, .position = free.position + offset, .length = 1 });
+    for (blocks.free_spans) |free| for (0..free.length) |offset|
+        try free_spans.append(Block{ .id = null, .position = free.position + offset, .length = 1 });
 
-    // Reverse through all files and move to left if possible
+    // File compacting process
     cleanupDisk(files.items, free_spans.items, false);
 
     const checksum = computeChecksum(files.items);
