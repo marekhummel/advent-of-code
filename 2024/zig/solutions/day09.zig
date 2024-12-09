@@ -17,43 +17,24 @@ pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) 
     _ = is_sample;
 
     const disk_map = try input.string();
-    for (disk_map) |*c| c.* = c.* - '0';
+    const blocks = try createBlocks(disk_map, allocator);
 
-    var total_disk_size: usize = 0;
-    for (disk_map) |d| total_disk_size += d;
+    // For part one we split all blocks into 1-size blocks of same name to allow piece-wise moves
+    var files = try std.ArrayList(Block).initCapacity(allocator, disk_map.len);
+    var free_spans = try std.ArrayList(Block).initCapacity(allocator, disk_map.len);
 
-    var disk = try allocator.alloc(?usize, total_disk_size);
-    defer allocator.free(disk);
+    for (blocks.files) |file|
+        for (0..file.length) |offset|
+            try files.append(Block{ .id = file.id.?, .position = file.position + offset, .length = 1 });
 
-    var index: usize = 0;
-    for (disk_map, 0..) |d, i| {
-        const is_file = (i & 1 == 0);
-        const value = if (is_file) i / 2 else null;
-        for (0..d) |j| disk[index + j] = value;
-        index += d;
-    }
+    for (blocks.free_spans) |free|
+        for (0..free.length) |offset|
+            try free_spans.append(Block{ .id = null, .position = free.position + offset, .length = 1 });
 
-    // std.debug.print("{any}\n", .{disk});
+    // Reverse through all files and move to left if possible
+    cleanupDisk(files.items, free_spans.items, false);
 
-    var i: usize = 0;
-    var j: usize = disk.len - 1;
-    while (true) {
-        while (disk[j] == null and i < j) j -= 1;
-        while (disk[i] != null and i < j) i += 1;
-        if (i >= j) break;
-
-        disk[i] = disk[j];
-        disk[j] = null;
-    }
-
-    var checksum: usize = 0;
-    for (disk, 0..) |file, pos| {
-        if (file == null) break;
-        checksum += file.? * pos;
-    }
-
-    // std.debug.print("{any}\n", .{disk});
-
+    const checksum = computeChecksum(files.items);
     return Result{ .USize = checksum };
 }
 
@@ -61,59 +42,71 @@ pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) 
     _ = is_sample;
 
     const disk_map = try input.string();
-    for (disk_map) |*c| c.* = c.* - '0';
+    const blocks = try createBlocks(disk_map, allocator);
 
+    cleanupDisk(blocks.files, blocks.free_spans, true);
+
+    const checksum = computeChecksum(blocks.files);
+    return Result{ .USize = checksum };
+}
+
+/// File or free span block (id only not-null for files)
+const Block = struct { id: ?usize, position: usize, length: usize };
+
+fn createBlocks(disk_map: []u8, allocator: Allocator) !struct { files: []Block, free_spans: []Block } {
     var files = std.ArrayList(Block).init(allocator);
     var free_spans = std.ArrayList(Block).init(allocator);
-    // Use init with capacity to prevent any pointer invalids when adding free spans down below
-    // var free_spans = try std.ArrayList(Block).initCapacity(allocator, disk_map.len);
 
     var index: usize = 0;
     for (disk_map, 0..) |d, i| {
+        const len = d - '0';
         const is_file = (i & 1 == 0);
         if (is_file) {
-            std.debug.assert(d > 0);
-            try files.append(Block{ .id = i / 2, .position = index, .length = d });
+            std.debug.assert(len > 0); // 0-length files would break the algorithm
+            try files.append(Block{ .id = i / 2, .position = index, .length = len });
         } else {
-            if (d > 0) try free_spans.append(Block{ .id = null, .position = index, .length = d });
+            if (len > 0) try free_spans.append(Block{ .id = null, .position = index, .length = len });
         }
-        index += d;
+        index += len;
     }
 
-    // Reverse through all files and move to left if possible
-    var i: usize = files.items.len;
-    while (i > 0) {
-        i -= 1;
-        const file = &files.items[i];
+    return .{ .files = try files.toOwnedSlice(), .free_spans = try free_spans.toOwnedSlice() };
+}
 
-        for (free_spans.items) |*free| {
+/// Moves files on disk. If always_search_all is true, we reset the "free_span" counter to 0
+/// for each file, which is needed in part 2, as smaller files can fit in spans that larger, earlier files couldnt.
+fn cleanupDisk(files: []Block, free_spans: []Block, always_search_all: bool) void {
+    // Reverse iterate through all files and move to left if possible
+    var freespan_idx: usize = 0;
+    var file_idx: usize = files.len;
+    while (file_idx > 0) {
+        file_idx -= 1;
+        const file = &files[file_idx];
+
+        // Check all free spans to the left
+        for (free_spans[freespan_idx..], freespan_idx..) |*free, next_fs_idx| {
             if (free.position >= file.position) break; // Only move to left
 
-            // Fill free space
+            // Fill free space if big enough
             if (free.length >= file.length) {
-                // No need, new free span is always right to any next file to move
-                // free_spans.appendAssumeCapacity(Block{ .id = null, .position = file.position, .length = file.length });
+                // Could add the now free space back to the list, but it'll be always right of any file we move next, so not relevant
                 file.position = free.position;
                 free.position += file.length;
                 free.length -= file.length;
+
+                freespan_idx = if (always_search_all) 0 else next_fs_idx + 1;
                 break;
             }
         }
     }
+}
 
-    // Compute checksum
+fn computeChecksum(files: []Block) usize {
     var checksum: usize = 0;
-    for (files.items) |file| {
+    for (files) |file| {
         for (0..file.length) |offset| {
             checksum += (file.position + offset) * file.id.?;
         }
     }
-
-    return Result{ .USize = checksum };
+    return checksum;
 }
-
-const Block = struct {
-    id: ?usize,
-    position: usize,
-    length: usize,
-};
