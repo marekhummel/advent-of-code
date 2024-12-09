@@ -252,16 +252,18 @@ pub fn Grid(comptime CT: type) type {
             }
         }
 
-        pub const IndexIterator = struct {
+        pub const GridIterator = struct {
             size: Size,
             ref: [][]CT,
             _init: bool = true,
             _r: usize = 0,
             _c: usize = 0,
 
+            pub const Item = struct { idx: Index, value: CT };
+
             const ItSelf = @This();
 
-            pub fn next(self: *ItSelf) ?struct { idx: Index, value: CT } {
+            pub fn next(self: *ItSelf) ?Item {
                 if (self._init) {
                     self._init = false;
                 } else if (self._c < self.size.width - 1) {
@@ -275,8 +277,8 @@ pub fn Grid(comptime CT: type) type {
             }
         };
 
-        pub fn iterator(self: *const Self) IndexIterator {
-            return IndexIterator{ .size = self.size, .ref = self.cells };
+        pub fn iterator(self: *const Self) GridIterator {
+            return GridIterator{ .size = self.size, .ref = self.cells };
         }
     };
 }
