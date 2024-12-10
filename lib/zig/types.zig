@@ -160,6 +160,10 @@ pub fn Grid(comptime CT: type) type {
             return self.cells[index.r][index.c];
         }
 
+        pub fn get_ref(self: Self, index: Index) *CT {
+            return &self.cells[index.r][index.c];
+        }
+
         pub fn set(self: Self, index: Index, value: CT) void {
             self.cells[index.r][index.c] = value;
         }
@@ -252,33 +256,36 @@ pub fn Grid(comptime CT: type) type {
             }
         }
 
-        pub const GridIterator = struct {
-            size: Size,
-            ref: [][]CT,
-            _init: bool = true,
-            _r: usize = 0,
-            _c: usize = 0,
+        pub fn GridIterator(comptime return_ref: bool) type {
+            return struct {
+                size: Size,
+                ref: [][]CT,
+                _init: bool = true,
+                _r: usize = 0,
+                _c: usize = 0,
 
-            pub const Item = struct { idx: Index, value: CT };
+                pub const Item = struct { idx: Index, value: if (return_ref) *CT else CT };
 
-            const ItSelf = @This();
+                const ItSelf = @This();
 
-            pub fn next(self: *ItSelf) ?Item {
-                if (self._init) {
-                    self._init = false;
-                } else if (self._c < self.size.width - 1) {
-                    self._c += 1;
-                } else if (self._r < self.size.height - 1) {
-                    self._r += 1;
-                    self._c = 0;
-                } else return null;
+                pub fn next(self: *ItSelf) ?Item {
+                    if (self._init) {
+                        self._init = false;
+                    } else if (self._c < self.size.width - 1) {
+                        self._c += 1;
+                    } else if (self._r < self.size.height - 1) {
+                        self._r += 1;
+                        self._c = 0;
+                    } else return null;
 
-                return .{ .idx = Index{ .r = self._r, .c = self._c }, .value = self.ref[self._r][self._c] };
-            }
-        };
+                    const value = if (return_ref) &self.ref[self._r][self._c] else self.ref[self._r][self._c];
+                    return .{ .idx = Index{ .r = self._r, .c = self._c }, .value = value };
+                }
+            };
+        }
 
-        pub fn iterator(self: *const Self) GridIterator {
-            return GridIterator{ .size = self.size, .ref = self.cells };
+        pub fn iterator(self: *const Self, comptime ref: bool) GridIterator(ref) {
+            return GridIterator(ref){ .size = self.size, .ref = self.cells };
         }
     };
 }

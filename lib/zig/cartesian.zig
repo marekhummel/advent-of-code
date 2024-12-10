@@ -21,6 +21,16 @@ pub const Index = struct {
     pub fn asPosition(self: Self) Position {
         return Position{ .x = @intCast(self.c), .y = @intCast(self.r) };
     }
+
+    pub fn vonNeumann(self: Self, size: Size, allocator: std.mem.Allocator) ![]Index {
+        var nbs = std.ArrayList(Index).init(allocator);
+        if (self.move(Direction.North, size)) |next| try nbs.append(next);
+        if (self.move(Direction.East, size)) |next| try nbs.append(next);
+        if (self.move(Direction.South, size)) |next| try nbs.append(next);
+        if (self.move(Direction.West, size)) |next| try nbs.append(next);
+
+        return nbs.toOwnedSlice();
+    }
 };
 
 pub const Position = struct {
