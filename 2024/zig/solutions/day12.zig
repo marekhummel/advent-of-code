@@ -57,14 +57,12 @@ const Region = struct {
 
         // Find groups (sides) by checking if indices are only off set by one
         var num_sides: u64 = 1;
-        var current: Fence = self.fences.items[0];
-        for (self.fences.items[1..]) |fence| {
-            defer current = fence;
-
-            if (current.dir == fence.dir) {
-                switch (current.dir) {
-                    Direction.North, Direction.South => if (current.idx.r == fence.idx.r and current.idx.c + 1 == fence.idx.c) continue,
-                    Direction.East, Direction.West => if (current.idx.c == fence.idx.c and current.idx.r + 1 == fence.idx.r) continue,
+        var window_it = std.mem.window(Fence, self.fences.items, 2, 1);
+        while (window_it.next()) |wndw| {
+            if (wndw[0].dir == wndw[1].dir) {
+                switch (wndw[0].dir) {
+                    Direction.North, Direction.South => if (wndw[0].idx.r == wndw[1].idx.r and wndw[0].idx.c + 1 == wndw[1].idx.c) continue,
+                    Direction.East, Direction.West => if (wndw[0].idx.c == wndw[1].idx.c and wndw[0].idx.r + 1 == wndw[1].idx.r) continue,
                 }
             }
 
