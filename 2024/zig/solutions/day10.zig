@@ -68,10 +68,10 @@ fn findTrailEndsFromHere(idx: Index, topo_map: *const Grid(u8), trail_cache: *Tr
     }
 
     // Check valid neighbors with right slope and union all ends.
-    for (try idx.vonNeumann(topo_map.size, allocator)) |nb| {
-        if (topo_map.get(nb) -| curr_height == 1) {
-            const entry = trail_cache.getOrPutAssumeCapacity(nb);
-            if (!entry.found_existing) try findTrailEndsFromHere(nb, topo_map, trail_cache, allocator);
+    for (idx.vonNeumann(topo_map.size, false)) |nb| {
+        if (nb != null and topo_map.get(nb.?) -| curr_height == 1) {
+            const entry = trail_cache.getOrPutAssumeCapacity(nb.?);
+            if (!entry.found_existing) try findTrailEndsFromHere(nb.?, topo_map, trail_cache, allocator);
             try trail_ends.appendSlice(entry.value_ptr.items); // Ptr valid since no reallocations
         }
     }

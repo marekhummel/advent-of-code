@@ -22,14 +22,32 @@ pub const Index = struct {
         return Position{ .x = @intCast(self.c), .y = @intCast(self.r) };
     }
 
-    pub fn vonNeumann(self: Self, size: Size, allocator: std.mem.Allocator) ![]Index {
-        var nbs = std.ArrayList(Index).init(allocator);
-        if (self.move(Direction.North, size)) |next| try nbs.append(next);
-        if (self.move(Direction.East, size)) |next| try nbs.append(next);
-        if (self.move(Direction.South, size)) |next| try nbs.append(next);
-        if (self.move(Direction.West, size)) |next| try nbs.append(next);
+    pub fn vonNeumann(
+        self: Self,
+        size: Size,
+        comptime includeDir: bool,
+    ) if (includeDir) [4]struct { idx: ?Index, dir: Direction } else [4]?Index {
+        if (includeDir) {
+            return .{
+                .{ .idx = self.move(Direction.North, size), .dir = Direction.North },
+                .{ .idx = self.move(Direction.East, size), .dir = Direction.East },
+                .{ .idx = self.move(Direction.South, size), .dir = Direction.South },
+                .{ .idx = self.move(Direction.West, size), .dir = Direction.West },
+            };
+        } else {
+            return .{
+                self.move(Direction.North, size),
+                self.move(Direction.East, size),
+                self.move(Direction.South, size),
+                self.move(Direction.West, size),
+            };
+        }
+    }
 
-        return nbs.toOwnedSlice();
+    pub fn format(self: Self, comptime fmt: []const u8, options: std.fmt.FormatOptions, writer: anytype) !void {
+        _ = fmt;
+        _ = options;
+        return std.fmt.format(writer, "[{d}, {d}]", .{ self.r, self.c });
     }
 };
 
