@@ -7,6 +7,10 @@
             .url = "https://github.com/deckarep/ziglang-set/archive/845a2be.tar.gz",
             .hash = "1220e30d1494cccc9f6c327ed7eb41b3b20b1b3e2cc900f2dce0e901193e30fc6442",
         },
+        .zigRegex = .{
+            .url = "https://github.com/tiehuis/zig-regex/archive/7bc0fd7.tar.gz",
+            .hash = "1220b497739b6fd60f627da85862cbd0cec01f3d6b7ddaa923057a7999ecfa138704",
+        },
     },
     .paths = .{""},
 }
