@@ -74,6 +74,13 @@ pub const Position = struct {
         return Position{ .x = self.x + dx, .y = self.y + dy };
     }
 
+    pub fn offsetWrap(self: Self, dx: i64, dy: i64, size: Size) Position {
+        return Position{
+            .x = @mod(self.x + dx, @as(i64, @intCast(size.width))),
+            .y = @mod(self.y + dy, @as(i64, @intCast(size.height))),
+        };
+    }
+
     pub fn asIndex(self: Self, size: Size) ?Index {
         if (!(0 <= self.y and self.y < size.height and 0 <= self.x and self.x < size.width)) return null;
         return Index{ .r = @intCast(self.y), .c = @intCast(self.x) };
@@ -85,9 +92,12 @@ pub const PosDelta = struct { dx: i64, dy: i64 };
 pub const Size = struct {
     width: usize,
     height: usize,
-    diags: usize,
 
     const Self = @This();
+
+    pub fn diags(self: Self) usize {
+        return self.width + self.height - 1;
+    }
 
     pub fn total(self: Self) usize {
         return self.width * self.height;

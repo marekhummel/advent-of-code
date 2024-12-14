@@ -146,7 +146,7 @@ pub fn Grid(comptime CT: type) type {
         pub fn init(cells: [][]CT) Grid(CT) {
             const w = cells[0].len;
             const h = cells.len;
-            return Grid(CT){ .cells = cells, .size = Size{ .width = w, .height = h, .diags = w + h - 1 } };
+            return Grid(CT){ .cells = cells, .size = Size{ .width = w, .height = h } };
         }
 
         pub fn deinit(self: @This(), allocator: std.mem.Allocator) void {
@@ -187,7 +187,7 @@ pub fn Grid(comptime CT: type) type {
         }
 
         pub fn diagMajor(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
-            if (index >= self.size.diags) return error.IndexOutOfBounds;
+            if (index >= self.size.diags()) return error.IndexOutOfBounds;
 
             var list = std.ArrayList(CT).init(allocator);
             var r = self.size.height -| 1 -| index; // saturating sub -| (0 -| 1 = 0)
@@ -203,7 +203,7 @@ pub fn Grid(comptime CT: type) type {
         }
 
         pub fn diagMinor(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
-            if (index >= self.size.diags) return error.IndexOutOfBounds;
+            if (index >= self.size.diags()) return error.IndexOutOfBounds;
 
             var list = std.ArrayList(CT).init(allocator);
             var r = @min(index, self.size.height - 1);

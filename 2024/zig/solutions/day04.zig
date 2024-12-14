@@ -31,7 +31,7 @@ pub fn solvePart01(allocator: std.mem.Allocator, input: *ProblemInput, is_sample
         search(col, &counter);
     }
 
-    for (0..grid.size.diags) |d| {
+    for (0..grid.size.diags()) |d| {
         const diag_maj = try grid.diagMajor(d, allocator);
         const diag_min = try grid.diagMinor(d, allocator);
         // defer allocator.free(diag_maj);

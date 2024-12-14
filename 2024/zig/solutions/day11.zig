@@ -19,14 +19,14 @@ pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) 
     return Result{ .USize = num_stones };
 }
 
-const CacheKey = struct { stone: u64, blinks: usize };
-
 pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
     if (is_sample) return Result.NoSample;
 
     const num_stones = try blinkAll(try input.string(), 75, allocator);
     return Result{ .USize = num_stones };
 }
+
+const CacheKey = struct { stone: u64, blinks: usize };
 
 fn blinkAll(stone_str: []u8, blinks: usize, allocator: Allocator) !usize {
     // Parse input to slice
