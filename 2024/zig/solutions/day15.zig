@@ -65,7 +65,7 @@ fn parseInput(input: *ProblemInput, extend: bool, allocator: Allocator) !struct 
     var moves = std.ArrayList(Direction).init(allocator);
     for (input.lines[blank_line + 1 ..]) |move_line| {
         for (move_line) |mv| {
-            try moves.append(try Direction.from_char(mv));
+            try moves.append(try Direction.fromChar(mv));
         }
     }
 
@@ -93,7 +93,7 @@ fn push(warehouse: *Grid(u8), idx: Index, dir: Direction) bool {
     const cell = warehouse.get(idx);
 
     // ** Default if we try to push where no box is
-    if (!is_box(cell)) return cell == '.';
+    if (!isBox(cell)) return cell == '.';
 
     const next_idx = idx.scout(dir, warehouse.size).?;
 
@@ -102,7 +102,7 @@ fn push(warehouse: *Grid(u8), idx: Index, dir: Direction) bool {
         const next_cell = warehouse.get(next_idx);
         if (next_cell == '#') return false;
 
-        if (next_cell == '.' or (is_box(next_cell) and push(warehouse, next_idx, dir))) {
+        if (next_cell == '.' or (isBox(next_cell) and push(warehouse, next_idx, dir))) {
             warehouse.set(next_idx, cell);
             warehouse.set(idx, '.');
             return true;
@@ -153,6 +153,6 @@ fn canPush(warehouse: *Grid(u8), idx: Index, dir: Direction) bool {
     return (can_push_l and can_push_r);
 }
 
-fn is_box(cell: u8) bool {
+fn isBox(cell: u8) bool {
     return cell == 'O' or cell == '[' or cell == ']';
 }

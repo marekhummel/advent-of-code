@@ -146,7 +146,7 @@ pub const Direction = enum(u4) {
         };
     }
 
-    pub fn from_char(char: u8) error{InvalidDirectionChar}!Direction {
+    pub fn fromChar(char: u8) error{InvalidDirectionChar}!Direction {
         return switch (char) {
             '^' => Direction.North,
             '>' => Direction.East,
