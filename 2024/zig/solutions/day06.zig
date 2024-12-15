@@ -124,7 +124,7 @@ fn computePath(
         }
 
         // Move guard (if next is null, we are out of bounds)
-        const next = guard.move(dir, map.size) orelse break;
+        const next = guard.scout(dir, map.size) orelse break;
         if (map.get(next) == '#' or (obstruction != null and std.meta.eql(next, obstruction.?))) {
             dir = dir.right();
         } else {

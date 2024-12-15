@@ -187,7 +187,7 @@ pub fn Grid(comptime CT: type) type {
         }
 
         pub fn diagMajor(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
-            if (index >= self.size.diags()) return error.IndexOutOfBounds;
+            if (index >= self.size.diags()) return error.IndexOutOfBound;
 
             var list = std.ArrayList(CT).init(allocator);
             var r = self.size.height -| 1 -| index; // saturating sub -| (0 -| 1 = 0)
@@ -203,7 +203,7 @@ pub fn Grid(comptime CT: type) type {
         }
 
         pub fn diagMinor(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
-            if (index >= self.size.diags()) return error.IndexOutOfBounds;
+            if (index >= self.size.diags()) return error.IndexOutOfBound;
 
             var list = std.ArrayList(CT).init(allocator);
             var r = @min(index, self.size.height - 1);
@@ -256,36 +256,34 @@ pub fn Grid(comptime CT: type) type {
             }
         }
 
-        pub fn GridIterator(comptime return_ref: bool) type {
-            return struct {
-                size: Size,
-                ref: [][]CT,
-                _init: bool = true,
-                _r: usize = 0,
-                _c: usize = 0,
+        pub const GridIterator = struct {
+            size: Size,
+            ref: [][]CT,
+            _init: bool = true,
+            _r: usize = 0,
+            _c: usize = 0,
 
-                pub const Item = struct { idx: Index, value: if (return_ref) *CT else CT };
+            pub const Item = struct { idx: Index, value: CT };
 
-                const ItSelf = @This();
+            const ItSelf = @This();
 
-                pub fn next(self: *ItSelf) ?Item {
-                    if (self._init) {
-                        self._init = false;
-                    } else if (self._c < self.size.width - 1) {
-                        self._c += 1;
-                    } else if (self._r < self.size.height - 1) {
-                        self._r += 1;
-                        self._c = 0;
-                    } else return null;
+            pub fn next(self: *ItSelf) ?Item {
+                if (self._init) {
+                    self._init = false;
+                } else if (self._c < self.size.width - 1) {
+                    self._c += 1;
+                } else if (self._r < self.size.height - 1) {
+                    self._r += 1;
+                    self._c = 0;
+                } else return null;
 
-                    const value = if (return_ref) &self.ref[self._r][self._c] else self.ref[self._r][self._c];
-                    return .{ .idx = Index{ .r = self._r, .c = self._c }, .value = value };
-                }
-            };
-        }
+                const value = self.ref[self._r][self._c];
+                return .{ .idx = Index{ .r = self._r, .c = self._c }, .value = value };
+            }
+        };
 
-        pub fn iterator(self: *const Self, comptime ref: bool) GridIterator(ref) {
-            return GridIterator(ref){ .size = self.size, .ref = self.cells };
+        pub fn iterator(self: *const Self) GridIterator {
+            return GridIterator{ .size = self.size, .ref = self.cells };
         }
     };
 }

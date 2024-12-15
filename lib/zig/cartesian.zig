@@ -6,7 +6,16 @@ pub const Index = struct {
 
     const Self = @This();
 
-    pub fn move(self: Self, dir: Direction, size: Size) ?Index {
+    /// Moves current index towards scouted index
+    pub fn move(self: *Self, dir: Direction, size: Size) void {
+        if (self.scout(dir, size)) |next| {
+            self.r = next.r;
+            self.c = next.c;
+        }
+    }
+
+    /// Returns index towards given direction, if within size constraints
+    pub fn scout(self: Self, dir: Direction, size: Size) ?Index {
         // Prevent underflow by wrapping sub
         const next = switch (dir) {
             .North => Index{ .r = self.r -% 1, .c = self.c },
@@ -29,17 +38,17 @@ pub const Index = struct {
     ) if (includeDir) [4]struct { idx: ?Index, dir: Direction } else [4]?Index {
         if (includeDir) {
             return .{
-                .{ .idx = self.move(Direction.North, size), .dir = Direction.North },
-                .{ .idx = self.move(Direction.East, size), .dir = Direction.East },
-                .{ .idx = self.move(Direction.South, size), .dir = Direction.South },
-                .{ .idx = self.move(Direction.West, size), .dir = Direction.West },
+                .{ .idx = self.scout(Direction.North, size), .dir = Direction.North },
+                .{ .idx = self.scout(Direction.East, size), .dir = Direction.East },
+                .{ .idx = self.scout(Direction.South, size), .dir = Direction.South },
+                .{ .idx = self.scout(Direction.West, size), .dir = Direction.West },
             };
         } else {
             return .{
-                self.move(Direction.North, size),
-                self.move(Direction.East, size),
-                self.move(Direction.South, size),
-                self.move(Direction.West, size),
+                self.scout(Direction.North, size),
+                self.scout(Direction.East, size),
+                self.scout(Direction.South, size),
+                self.scout(Direction.West, size),
             };
         }
     }
@@ -57,7 +66,7 @@ pub const Position = struct {
 
     const Self = @This();
 
-    pub fn move(self: Self, dir: Direction) Position {
+    pub fn scout(self: Self, dir: Direction) Position {
         return switch (dir) {
             .North => Position{ .x = self.x - 1, .y = self.y },
             .East => Position{ .x = self.x, .y = self.y + 1 },
@@ -127,6 +136,23 @@ pub const Direction = enum(u4) {
             .East => .South,
             .South => .West,
             .West => .North,
+        };
+    }
+
+    pub fn isHorizontal(self: Self) bool {
+        return switch (self) {
+            .North, .South => false,
+            .East, .West => true,
+        };
+    }
+
+    pub fn from_char(char: u8) error{InvalidDirectionChar}!Direction {
+        return switch (char) {
+            '^' => Direction.North,
+            '>' => Direction.East,
+            'v' => Direction.South,
+            '<' => Direction.West,
+            else => error.InvalidDirectionChar,
         };
     }
 };

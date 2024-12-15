@@ -35,7 +35,7 @@ fn countTrails(topo_map: Grid(u8), only_count_ends: bool, allocator: Allocator) 
 
     // Find all trail heads
     var num_trails: usize = 0;
-    var it = topo_map.iterator(false);
+    var it = topo_map.iterator();
     while (it.next()) |elem| {
         if (elem.value != '0') continue;
 

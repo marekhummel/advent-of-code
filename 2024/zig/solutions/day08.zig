@@ -94,7 +94,7 @@ const AntennaIterator = struct {
 fn createAntennaLookup(antenna_map: *const Grid(u8), allocator: Allocator) !AntennaLookup {
     var antenna_lookup = AntennaLookup.init(allocator);
 
-    var antenna_map_it = antenna_map.iterator(false);
+    var antenna_map_it = antenna_map.iterator();
     while (antenna_map_it.next()) |elem| {
         if (elem.value == '.') continue;
 

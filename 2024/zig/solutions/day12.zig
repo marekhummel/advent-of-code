@@ -91,7 +91,7 @@ const COUNTED = '.';
 /// Compute price for entire garden
 fn computePrice(garden: *Grid(u8), priceFn: fn (Region) u64, allocator: Allocator) !u64 {
     var total_price: u64 = 0;
-    var plot_it = garden.iterator(false);
+    var plot_it = garden.iterator();
     while (plot_it.next()) |elem| {
         // Plots are marked once they've been accounted for
         if (garden.get(elem.idx) == COUNTED) continue;
