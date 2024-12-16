@@ -16,6 +16,7 @@ const day12 = @import("solutions/day12.zig");
 const day13 = @import("solutions/day13.zig");
 const day14 = @import("solutions/day14.zig");
 const day15 = @import("solutions/day15.zig");
+const day16 = @import("solutions/day16.zig");
 
 const ALL: bool = true;
 const PART: u8 = 2;
@@ -46,6 +47,7 @@ fn createRunner() aoc_lib.runner.AocRunner {
         aoc_lib.solution.makeSolution(day13),
         aoc_lib.solution.makeSolution(day14),
         aoc_lib.solution.makeSolution(day15),
+        aoc_lib.solution.makeSolution(day16),
     };
     return aoc_lib.runner.AocRunner.init(2024, &solutions, USE_ARENA);
 }

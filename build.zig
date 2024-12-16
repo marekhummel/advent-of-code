@@ -10,8 +10,13 @@ fn add_binary(b: *std.Build, comptime year: []const u8) void {
     const optimize = b.standardOptimizeOption(.{});
     const name = "main" ++ year;
 
+    // External Dependencies
+    const ziglangSet = b.dependency("ziglangSet", .{});
+    const zigRegex = b.dependency("zigRegex", .{});
+
     // Add aoc lib as module
     const aoc_lib_mod = b.addModule("aoc_lib", .{ .root_source_file = b.path("lib/zig/aoc_lib.zig") });
+    aoc_lib_mod.addImport("ziglangSet", ziglangSet.module("ziglangSet"));
 
     // Build exe
     const exe = b.addExecutable(.{
@@ -21,10 +26,6 @@ fn add_binary(b: *std.Build, comptime year: []const u8) void {
         .optimize = optimize,
     });
     exe.root_module.addImport("aoc_lib", aoc_lib_mod);
-
-    // External Dependencies
-    const ziglangSet = b.dependency("ziglangSet", .{});
-    const zigRegex = b.dependency("zigRegex", .{});
     exe.root_module.addImport("ziglangSet", ziglangSet.module("ziglangSet"));
     exe.root_module.addImport("zigRegex", zigRegex.module("regex"));
 

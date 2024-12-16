@@ -53,6 +53,12 @@ pub const Index = struct {
         }
     }
 
+    pub fn dist(self: Self, other: Index) usize {
+        const dr = (if (self.r > other.r) self.r - other.r else other.r - self.r);
+        const dc = (if (self.c > other.c) self.c - other.c else other.c - self.c);
+        return dr + dc;
+    }
+
     pub fn format(self: Self, comptime fmt: []const u8, options: std.fmt.FormatOptions, writer: anytype) !void {
         _ = fmt;
         _ = options;
@@ -121,6 +127,10 @@ pub const Direction = enum(u4) {
 
     const Self = @This();
 
+    pub fn compass() [4]Direction {
+        return [_]Direction{ Direction.North, Direction.East, Direction.South, Direction.West };
+    }
+
     pub fn left(self: Self) Direction {
         return switch (self) {
             .North => .West,
@@ -154,5 +164,11 @@ pub const Direction = enum(u4) {
             '<' => Direction.West,
             else => error.InvalidDirectionChar,
         };
+    }
+
+    pub fn format(self: Self, comptime fmt: []const u8, options: std.fmt.FormatOptions, writer: anytype) !void {
+        _ = fmt;
+        _ = options;
+        return std.fmt.format(writer, "{s}", .{@tagName(self)});
     }
 };
