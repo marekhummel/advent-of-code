@@ -148,8 +148,8 @@ fn canPush(warehouse: *Grid(u8), idx: Index, dir: Direction) bool {
     if (next_cell_l == '#' or next_cell_r == '#') return false;
 
     // Recurse if more boxes behind
-    const can_push_l = (next_cell_l == '.') or ((next_cell_l == '[' or next_cell_l == ']') and canPush(warehouse, next_idx, dir));
-    const can_push_r = (next_cell_r == '.') or ((next_cell_r == '[' or next_cell_r == ']') and canPush(warehouse, next_idx_r, dir));
+    const can_push_l = (next_cell_l == '.') or (isBox(next_cell_l) and canPush(warehouse, next_idx, dir));
+    const can_push_r = (next_cell_r == '.') or (isBox(next_cell_r) and canPush(warehouse, next_idx_r, dir));
     return (can_push_l and can_push_r);
 }
 

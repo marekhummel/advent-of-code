@@ -1,5 +1,4 @@
 const std = @import("std");
-const set = @import("ziglangSet");
 const math = std.math;
 
 pub fn Graph(comptime T: type) type {
@@ -124,126 +123,140 @@ pub fn Graph(comptime T: type) type {
     };
 }
 
-pub fn PathFinding(comptime T: anytype, comptime NT: type) type {
+pub fn PathFinding(comptime T: type) type {
+    comptime std.debug.assert(@hasDecl(T, "Node"));
+    comptime std.debug.assert(@hasDecl(T, "next"));
+    comptime std.debug.assert(@hasDecl(T, "heuristic"));
+    comptime std.debug.assert(@hasDecl(T, "isEnd"));
+
     return struct {
         base: T,
 
         const Self = @This();
         const OpenQueueItem = struct {
-            dist: i64,
-            node: NT,
-            path: []NT,
+            dist: u32,
+            node: T.Node,
 
             fn lessThan(context: void, a: OpenQueueItem, b: OpenQueueItem) math.Order {
                 _ = context;
                 return math.order(a.dist, b.dist);
             }
         };
-        const AStarResult = struct { cost: i64, path: []NT };
 
-        const AStarIterator = struct {
-            pf: *PathFinding(T, NT),
-            start: NT,
-            open: std.PriorityQueue(OpenQueueItem, void, OpenQueueItem.lessThan),
-            closed: set.Set(NT),
-            g_score_map: std.AutoHashMap(NT, i64),
-            allocator: std.mem.Allocator,
-            best_path_cost: ?i64 = null,
+        pub const Child = struct { node: T.Node, weight: u32 };
 
-            const ItSelf = @This();
+        pub const AStarResult = struct {
+            cost: u32,
+            reached_end_nodes: []T.Node,
+            history: std.AutoHashMap(T.Node, std.ArrayList(T.Node)),
 
-            fn init(pf: *PathFinding(T, NT), start: NT, allocator: std.mem.Allocator) !AStarIterator {
-                var open = std.PriorityQueue(OpenQueueItem, void, OpenQueueItem.lessThan).init(allocator, {});
-                const closed = set.Set(NT).init(allocator);
+            /// Computes all paths that lead with minimal cost to an end state
+            pub fn paths(self: *const @This(), allocator: std.mem.Allocator) ![][]T.Node {
+                var path_list = std.ArrayList([]T.Node).init(allocator);
 
-                var path = try allocator.alloc(NT, 1);
-                path[0] = start;
-                try open.add(.{ .dist = 0, .node = start, .path = path });
-
-                var g_score_map = std.AutoHashMap(NT, i64).init(allocator);
-                try g_score_map.put(start, 0);
-
-                return .{
-                    .pf = pf,
-                    .start = start,
-                    .open = open,
-                    .closed = closed,
-                    .g_score_map = g_score_map,
-                    .allocator = allocator,
-                };
-            }
-
-            fn deinit(self: *ItSelf) void {
-                self.open.deinit();
-                self.closed.deinit();
-                self.g_score_map.deinit();
-            }
-
-            fn next(self: *ItSelf) !?AStarResult {
-                while (self.open.removeOrNull()) |current| {
-                    // std.debug.print("{any}\n", .{current.node});
-
-                    // Stop if lowest possible node already exceeds best cost solution
-                    if (self.best_path_cost != null and current.dist > self.best_path_cost.?)
-                        break;
-
-                    // _ = try self.closed.add(current.node);
-
-                    const g = self.g_score_map.get(current.node).?;
-
-                    // Found the goal
-                    if (self.pf.isEnd(current.node)) {
-                        self.best_path_cost = self.best_path_cost orelse g;
-                        return .{ .cost = g, .path = current.path };
-                    }
-                    defer self.allocator.free(current.path);
-
-                    const children = try self.pf.next(current.node, self.allocator);
-                    defer self.allocator.free(children);
-                    for (children) |child| {
-                        // if (self.closed.contains(child.node)) continue;
-
-                        const child_g = g + child.weight;
-                        if (self.g_score_map.contains(child.node) and self.g_score_map.get(child.node).? < child_g) continue;
-                        try self.g_score_map.put(child.node, child_g);
-
-                        const child_h = self.pf.heuristic(child.node);
-                        const child_f = child_g + child_h;
-
-                        var child_path = try self.allocator.alloc(NT, current.path.len + 1);
-                        std.mem.copyForwards(NT, child_path, current.path);
-                        child_path[current.path.len] = child.node;
-                        try self.open.add(.{ .dist = child_f, .node = child.node, .path = child_path });
+                // Create path for each end state
+                for (self.reached_end_nodes) |end_node| {
+                    for (try self.constructPaths(end_node, allocator)) |path| {
+                        try path_list.append(path);
                     }
                 }
 
-                return null;
+                return path_list.toOwnedSlice();
+            }
+
+            /// Recursively constructs the paths with the history
+            fn constructPaths(self: *const @This(), node: T.Node, allocator: std.mem.Allocator) ![][]T.Node {
+                var path_list = std.ArrayList([]T.Node).init(allocator);
+                if (self.history.get(node)) |prevs| {
+                    // Take all previous nodes and create paths for each of them
+                    for (prevs.items) |prev| {
+                        for (try self.constructPaths(prev, allocator)) |prev_path| {
+                            defer allocator.free(prev_path);
+                            var new_path = std.ArrayList(T.Node).init(allocator);
+                            try new_path.appendSlice(prev_path);
+                            try new_path.append(node);
+                            try path_list.append(try new_path.toOwnedSlice());
+                        }
+                    }
+                } else {
+                    // No history, so this is the start node
+                    var new_path = std.ArrayList(T.Node).init(allocator);
+                    try new_path.append(node);
+                    try path_list.append(try new_path.toOwnedSlice());
+                }
+
+                return try path_list.toOwnedSlice();
             }
         };
 
-        pub fn astar_any(self: *Self, start: NT, allocator: std.mem.Allocator) !?AStarResult {
-            var iterator = try AStarIterator.init(self, start, allocator);
-            return iterator.next();
-        }
+        pub fn astar(self: *Self, start: T.Node, allocator: std.mem.Allocator) !?AStarResult {
+            // Link to previous nodes and list of reached final nodes for path tracking
+            var history = std.AutoHashMap(T.Node, std.ArrayList(T.Node)).init(allocator);
+            var end_nodes = std.ArrayList(T.Node).init(allocator);
 
-        pub fn astar_all(self: *Self, start: NT, allocator: std.mem.Allocator) ![]AStarResult {
-            var results = std.ArrayList(AStarResult).init(allocator);
-            var iterator = try AStarIterator.init(self, start, allocator);
-            while (try iterator.next()) |result| try results.append(result);
-            return results.toOwnedSlice();
-        }
+            // Frontier of nodes
+            var open = std.PriorityQueue(OpenQueueItem, void, OpenQueueItem.lessThan).init(allocator, {});
+            try open.add(.{ .dist = 0, .node = start });
+            defer open.deinit();
 
-        pub const Child = struct { node: NT, weight: i64 };
-        fn next(self: *Self, node: NT, allocator: std.mem.Allocator) ![]Child {
-            return try self.base.next(node, allocator);
-        }
+            // Cost map
+            var g_score_map = std.AutoHashMap(T.Node, u32).init(allocator);
+            try g_score_map.put(start, 0);
+            defer g_score_map.deinit();
 
-        fn heuristic(self: *Self, node: NT) i64 {
-            return self.base.heuristic(node);
-        }
+            // Best cost once found
+            var best_path_cost: ?u32 = null;
 
-        fn isEnd(self: *Self, node: NT) bool {
-            return self.base.isEnd(node);
+            while (open.removeOrNull()) |current| {
+
+                // Stop if lowest possible node already exceeds best cost solution (assumes admissible heuristic)
+                if (best_path_cost != null and current.dist > best_path_cost.?)
+                    break;
+
+                const g = g_score_map.get(current.node).?;
+
+                // Found the goal
+                if (self.base.isEnd(current.node)) {
+                    best_path_cost = best_path_cost orelse g;
+                    try end_nodes.append(current.node);
+                }
+
+                // Append all successor nodes to frontier
+                const children: []Child = try self.base.next(current.node, allocator);
+                defer allocator.free(children);
+                for (children) |child| {
+                    const child_g = g + child.weight;
+
+                    // If this child node is already evaluated, skip if this g value is worse
+                    if (g_score_map.get(child.node)) |prev_child_g| {
+                        if (prev_child_g <= child_g) {
+                            // If g values are equal, we have multiple paths with same cost, so store both in history
+                            if (prev_child_g == child_g) {
+                                try history.getPtr(child.node).?.append(current.node);
+                            }
+                            continue;
+                        }
+                    }
+                    try g_score_map.put(child.node, child_g);
+
+                    // Compute heuristical value for frontier queue
+                    const child_h: u32 = self.base.heuristic(child.node);
+                    const child_f = child_g + child_h;
+                    try open.add(.{ .dist = child_f, .node = child.node });
+
+                    // Since we have a better g value, update the history
+                    var prevs = std.ArrayList(T.Node).init(allocator);
+                    try prevs.append(current.node);
+                    try history.put(child.node, prevs);
+                }
+            }
+
+            // If best cost is still empty, goal was never found, otherwise create result
+            return if (best_path_cost == null) null else .{
+                .cost = best_path_cost.?,
+                .reached_end_nodes = try end_nodes.toOwnedSlice(),
+                .history = history,
+            };
         }
     };
 }
