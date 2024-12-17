@@ -26,7 +26,10 @@ pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) 
 
     const computer = try Computer.init(input.lines, allocator);
     std.mem.reverse(u3, computer.program); // last output determines MSB, so start there
-    return Result{ .UInt64 = findA(computer.program, 0, 0).? };
+    return Result{ .UInt64 = findAAnalytical(computer.program, 0, 0).? };
+
+    // var computer = try Computer.init(input.lines, allocator);
+    // return Result{ .UInt64 = (try findASearch(&computer, 0, 0)).? };
 }
 
 const Computer = struct {
@@ -60,10 +63,10 @@ const Computer = struct {
         };
     }
 
-    pub fn deinit(self: *Self) void {
-        self._allocator.free(self.program);
-        self._allocator.free(self.registers);
-        self.output.deinit();
+    pub fn reset(self: *Self) void {
+        self.pc = 0;
+        self.output.clearRetainingCapacity();
+        self.registers = [3]u64{ 0, 0, 0 };
     }
 
     pub fn run(self: *Self) !void {
@@ -102,7 +105,8 @@ const Computer = struct {
     }
 };
 
-fn findA(output: []u3, index: usize, current_a: u48) ?u48 {
+/// Finds A value by analyzing the programs code (how output is computed).
+fn findAAnalytical(output: []u3, index: usize, current_a: u48) ?u48 {
     // Program: 2,4,1,1,7,5,4,4,1,4,0,3,5,5,3,0
     // (2,4) B = A % 8
     // (1,1) B = B ^ 1
@@ -143,9 +147,32 @@ fn findA(output: []u3, index: usize, current_a: u48) ?u48 {
         const xor: u3 = ijk_bits ^ 5;
         const updated_a = (current_a << 3) | ijk_bits;
         if ((((updated_a >> offset) & 0b111) ^ xor) == out) {
-            if (findA(output, index + 1, updated_a)) |a|
+            if (findAAnalytical(output, index + 1, updated_a)) |a|
                 return a;
         }
     }
+    return null;
+}
+
+/// Finds A by trial and error. Note that the bits in A have independent effects on the output.
+/// So if the suffix of the output is already correct, changing the higher bits of A wont change that.
+/// While this does not need exact details of the program, we still assume the general structure of it.
+/// Meaning that A is solely responsible for the output, decreases by 3 bits every iteration etc.
+fn findASearch(computer: *Computer, a: u64, index: usize) !?u64 {
+    if (index == computer.program.len) {
+        return a;
+    }
+
+    for (0..8) |i| {
+        computer.reset();
+        computer.registers[0] = (a << 3) + i;
+        try computer.run();
+
+        if (std.mem.eql(u3, computer.output.items, computer.program[computer.program.len - index - 1 ..])) {
+            if (try findASearch(computer, (a << 3) + i, index + 1)) |solved_a|
+                return solved_a;
+        }
+    }
+
     return null;
 }

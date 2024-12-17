@@ -125,7 +125,6 @@ pub const AocRunner = struct {
                 const index: usize = (part - 1) * 2 + (if (use_sample) @as(usize, 0) else @as(usize, 1));
                 const expected = self.solutions[day - 1].?.results()[index];
                 if (!timed_result.result.eql(expected)) {
-                    std.debug.print("'{any}' - '{any}'\n", .{ timed_result.result, expected });
                     expected_match = false;
                 }
 
