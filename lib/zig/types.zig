@@ -19,7 +19,7 @@ pub const Result = union(enum) {
     UInt32: u32,
     UInt64: u64,
     UInt128: u128,
-    String: []u8,
+    String: []const u8,
 
     pub fn format(self: Result, comptime fmt: []const u8, options: std.fmt.FormatOptions, writer: anytype) !void {
         _ = fmt;
@@ -43,6 +43,16 @@ pub const Result = union(enum) {
             .String => std.fmt.format(writer, "{s}", .{self.String}),
         };
     }
+
+    pub fn eql(self: Result, other: Result) bool {
+        if (std.meta.activeTag(self) != std.meta.activeTag(other))
+            return false;
+
+        return switch (self) {
+            .String => |str_val| std.mem.eql(u8, str_val, other.String),
+            else => std.meta.eql(self, other),
+        };
+    }
 };
 
 pub const TimedResult = struct {
@@ -51,6 +61,22 @@ pub const TimedResult = struct {
 
     pub fn create(result: Result, start_time_ns: i128, end_time_ns: i128) TimedResult {
         return .{ .result = result, .duration = @as(f64, @floatFromInt(end_time_ns - start_time_ns)) / 1e9 };
+    }
+
+    /// In case the result is of type string, we need to duplicate the heap memory before its freed
+    pub fn clone(self: *const @This(), allocator: std.mem.Allocator) !TimedResult {
+        const result_copy = switch (self.result) {
+            .String => |str_val| Result{ .String = try allocator.dupe(u8, str_val) },
+            else => self.result,
+        };
+        return .{ .result = result_copy, .duration = self.duration };
+    }
+
+    pub fn deinit(self: *const @This(), allocator: std.mem.Allocator) void {
+        switch (self.result) {
+            .String => |str_val| allocator.free(str_val),
+            else => {},
+        }
     }
 };
 

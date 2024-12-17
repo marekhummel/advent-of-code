@@ -58,10 +58,11 @@ pub const AocRunner = struct {
                 inline for ([_]bool{ true, false }) |use_sample| {
                     const result_union = self.getResult(@as(u8, @intCast(day)), part, use_sample);
                     if (result_union) |timed_result| {
+                        defer timed_result.deinit(self._allocator);
                         std.debug.print("Testing D{0d:0>2} P{1d} '{2s}': ", .{ day, part, if (use_sample) "s" else "r" });
                         const index = comptime (part - 1) * 2 + (if (use_sample) 0 else 1);
                         const expected = sol.?.results()[index];
-                        if (std.testing.expect(std.meta.eql(timed_result.result, expected))) |_| {
+                        if (std.testing.expect(timed_result.result.eql(expected))) |_| {
                             std.debug.print("PASSED\n", .{});
                         } else |_| {
                             std.debug.print("FAILED: Got {0s}, expected {1s}\n", .{ timed_result.result, expected });
@@ -97,6 +98,7 @@ pub const AocRunner = struct {
                         });
                         continue;
                     };
+                    defer timed_result.deinit(self._allocator);
                     day_elapsed += timed_result.duration;
                     std.debug.print("  P{0d} {1s}:  {2s}\n", .{
                         part,
@@ -117,11 +119,15 @@ pub const AocRunner = struct {
         for ([_]u8{ 1, 2 }) |part| {
             for ([_]bool{ true, false }) |use_sample| {
                 const timed_result = try self.getResult(day, part, use_sample);
+                defer timed_result.deinit(self._allocator);
                 day_elapsed += timed_result.duration;
 
                 const index: usize = (part - 1) * 2 + (if (use_sample) @as(usize, 0) else @as(usize, 1));
                 const expected = self.solutions[day - 1].?.results()[index];
-                if (!std.meta.eql(timed_result.result, expected)) expected_match = false;
+                if (!timed_result.result.eql(expected)) {
+                    std.debug.print("'{any}' - '{any}'\n", .{ timed_result.result, expected });
+                    expected_match = false;
+                }
 
                 std.debug.print("P{0d} {1s} in {2d:.4}s:    {3s}\n", .{
                     part,
@@ -137,6 +143,7 @@ pub const AocRunner = struct {
 
     fn runSingle(self: *const AocRunner, day: u8, part: u8, use_sample: bool) !void {
         const timed_result = try self.getResult(day, part, use_sample);
+        defer timed_result.deinit(self._allocator);
         std.debug.print("Day {0d:0>2} / part {1d} / Data '{2s}' => {3d}s\n{4s}\n", .{
             day,
             part,
@@ -163,12 +170,15 @@ pub const AocRunner = struct {
 
         defer input.?.deinit();
 
+        // Use arena allocator in solutions for easier coding
         if (self.arena_enabled) {
-            // Use arena allocator in solutions for easier coding
             var arena = std.heap.ArenaAllocator.init(self._allocator);
             const solution_allocator = arena.allocator();
             defer arena.deinit();
-            return s.?.solve(solution_allocator, &input.?, part, use_sample);
+
+            // In case result contains heap allocated memory, clone with gpa before freeing
+            var original_result = try s.?.solve(solution_allocator, &input.?, part, use_sample);
+            return original_result.clone(self._allocator) catch types.SolvingError.SolvingFailed;
         } else {
             return s.?.solve(self._allocator, &input.?, part, use_sample);
         }
