@@ -17,9 +17,10 @@ const day13 = @import("solutions/day13.zig");
 const day14 = @import("solutions/day14.zig");
 const day15 = @import("solutions/day15.zig");
 const day16 = @import("solutions/day16.zig");
+const day17 = @import("solutions/day17.zig");
 
 const ALL: bool = true;
-const PART: u8 = 2;
+const PART: u8 = 1;
 const USE_SAMPLE: bool = true;
 
 // Should usually be yes, but disable to catch "missed opportunities" for early frees
@@ -48,6 +49,7 @@ fn createRunner() aoc_lib.runner.AocRunner {
         aoc_lib.solution.makeSolution(day14),
         aoc_lib.solution.makeSolution(day15),
         aoc_lib.solution.makeSolution(day16),
+        aoc_lib.solution.makeSolution(day17),
     };
     return aoc_lib.runner.AocRunner.init(2024, &solutions, USE_ARENA);
 }
