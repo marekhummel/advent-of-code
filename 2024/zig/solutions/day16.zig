@@ -75,7 +75,7 @@ const Maze = struct {
     }
 
     pub fn heuristic(self: *Self, node: Node) u32 {
-        // L1 dist to end, add 1000 if we know we have to túrn at least once (still admissable)
+        // L1 dist to end, add 1000 if we know we have to turn at least once (still admissable)
         const turn_penalty: usize = if (self.end_idx.r != node.idx.r or self.end_idx.c != node.idx.c) 1000 else 0;
         return @intCast(self.end_idx.dist(node.idx) + turn_penalty);
     }
