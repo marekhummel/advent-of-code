@@ -1,4 +1,5 @@
 const std = @import("std");
+const util = @import("util.zig");
 const math = std.math;
 
 pub fn Graph(comptime T: type) type {
@@ -130,16 +131,23 @@ pub fn PathFinding(comptime T: type) type {
     comptime std.debug.assert(@hasDecl(T, "isEnd"));
 
     return struct {
-        base: T,
+        base: *const T,
 
         const Self = @This();
         const OpenQueueItem = struct {
-            dist: u32,
+            f_score: u32,
             node: T.Node,
 
-            fn lessThan(context: void, a: OpenQueueItem, b: OpenQueueItem) math.Order {
-                _ = context;
-                return math.order(a.dist, b.dist);
+            fn lessThan(context: *std.AutoHashMap(T.Node, u32), a: OpenQueueItem, b: OpenQueueItem) math.Order {
+                // Include g score in order, so that nodes that are closer to end are preferred
+                const f_score_order = math.order(a.f_score, b.f_score);
+                return f_score_order.differ() orelse math.order(context.get(a.node).?, context.get(b.node).?).invert();
+            }
+
+            pub fn format(self: @This(), comptime fmt: []const u8, options: std.fmt.FormatOptions, writer: anytype) !void {
+                _ = fmt;
+                _ = options;
+                return std.fmt.format(writer, "({any}, {d})", .{ self.node, self.f_score });
             }
         };
 
@@ -156,9 +164,9 @@ pub fn PathFinding(comptime T: type) type {
 
                 // Create path for each end state
                 for (self.reached_end_nodes) |end_node| {
-                    for (try self.constructPaths(end_node, allocator)) |path| {
-                        try path_list.append(path);
-                    }
+                    const constructed_paths = try self.constructPaths(end_node, allocator);
+                    try path_list.appendSlice(constructed_paths);
+                    allocator.free(constructed_paths);
                 }
 
                 return path_list.toOwnedSlice();
@@ -170,7 +178,9 @@ pub fn PathFinding(comptime T: type) type {
                 if (self.history.get(node)) |prevs| {
                     // Take all previous nodes and create paths for each of them
                     for (prevs.items) |prev| {
-                        for (try self.constructPaths(prev, allocator)) |prev_path| {
+                        const constructed_paths = try self.constructPaths(prev, allocator);
+                        defer allocator.free(constructed_paths);
+                        for (constructed_paths) |prev_path| {
                             defer allocator.free(prev_path);
                             var new_path = std.ArrayList(T.Node).init(allocator);
                             try new_path.appendSlice(prev_path);
@@ -187,38 +197,48 @@ pub fn PathFinding(comptime T: type) type {
 
                 return try path_list.toOwnedSlice();
             }
+
+            pub fn deinit(self: *@This(), allocator: std.mem.Allocator) void {
+                allocator.free(self.reached_end_nodes);
+
+                var values = self.history.valueIterator();
+                while (values.next()) |val| val.deinit();
+                self.history.deinit();
+            }
         };
 
-        pub fn astar(self: *Self, start: T.Node, allocator: std.mem.Allocator) !?AStarResult {
+        /// AStar algorithm. Note that if neglect_other_paths is true, the paths construction in the result won't be complete.
+        pub fn astar(self: *const Self, start: T.Node, neglect_other_paths: bool, allocator: std.mem.Allocator) !?AStarResult {
             // Link to previous nodes and list of reached final nodes for path tracking
             var history = std.AutoHashMap(T.Node, std.ArrayList(T.Node)).init(allocator);
             var end_nodes = std.ArrayList(T.Node).init(allocator);
-
-            // Frontier of nodes
-            var open = std.PriorityQueue(OpenQueueItem, void, OpenQueueItem.lessThan).init(allocator, {});
-            try open.add(.{ .dist = 0, .node = start });
-            defer open.deinit();
 
             // Cost map
             var g_score_map = std.AutoHashMap(T.Node, u32).init(allocator);
             try g_score_map.put(start, 0);
             defer g_score_map.deinit();
 
+            // Frontier of nodes
+            var open = std.PriorityQueue(OpenQueueItem, *@TypeOf(g_score_map), OpenQueueItem.lessThan).init(allocator, &g_score_map);
+            try open.add(.{ .f_score = 0, .node = start });
+            defer open.deinit();
+
             // Best cost once found
             var best_path_cost: ?u32 = null;
 
             while (open.removeOrNull()) |current| {
-
                 // Stop if lowest possible node already exceeds best cost solution (assumes admissible heuristic)
-                if (best_path_cost != null and current.dist > best_path_cost.?)
+                if (best_path_cost != null and current.f_score > best_path_cost.?)
                     break;
 
                 const g = g_score_map.get(current.node).?;
+                // std.debug.print("{any} ({d} {d}) - {any}\n", .{ current.node, g, current.f_score, open.items });
 
                 // Found the goal
                 if (self.base.isEnd(current.node)) {
                     best_path_cost = best_path_cost orelse g;
                     try end_nodes.append(current.node);
+                    if (neglect_other_paths) break;
                 }
 
                 // Append all successor nodes to frontier
@@ -242,9 +262,10 @@ pub fn PathFinding(comptime T: type) type {
                     // Compute heuristical value for frontier queue
                     const child_h: u32 = self.base.heuristic(child.node);
                     const child_f = child_g + child_h;
-                    try open.add(.{ .dist = child_f, .node = child.node });
+                    try open.add(.{ .f_score = child_f, .node = child.node });
 
                     // Since we have a better g value, update the history
+                    if (history.getPtr(child.node)) |old_prev| old_prev.deinit();
                     var prevs = std.ArrayList(T.Node).init(allocator);
                     try prevs.append(current.node);
                     try history.put(child.node, prevs);
@@ -252,11 +273,19 @@ pub fn PathFinding(comptime T: type) type {
             }
 
             // If best cost is still empty, goal was never found, otherwise create result
-            return if (best_path_cost == null) null else .{
-                .cost = best_path_cost.?,
-                .reached_end_nodes = try end_nodes.toOwnedSlice(),
-                .history = history,
-            };
+            if (best_path_cost) |cost| {
+                return .{
+                    .cost = cost,
+                    .reached_end_nodes = try end_nodes.toOwnedSlice(),
+                    .history = history,
+                };
+            } else {
+                end_nodes.deinit();
+                var values = history.valueIterator();
+                while (values.next()) |val| val.deinit();
+                history.deinit();
+                return null;
+            }
         }
     };
 }

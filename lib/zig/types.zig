@@ -175,6 +175,16 @@ pub fn Grid(comptime CT: type) type {
             return Grid(CT){ .cells = cells, .size = Size{ .width = w, .height = h } };
         }
 
+        pub fn empty(size: Size, default: CT, allocator: std.mem.Allocator) !Grid(CT) {
+            var grid_cells = try allocator.alloc([]CT, size.height);
+            for (0..size.height) |r| {
+                grid_cells[r] = try allocator.alloc(CT, size.width);
+                @memset(grid_cells[r], default);
+            }
+
+            return Grid(CT){ .cells = grid_cells, .size = size };
+        }
+
         pub fn deinit(self: @This(), allocator: std.mem.Allocator) void {
             for (self.cells) |line| {
                 allocator.free(line);

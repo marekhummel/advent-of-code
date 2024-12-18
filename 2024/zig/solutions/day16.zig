@@ -21,14 +21,14 @@ pub fn results() [4]Result {
 pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
     _ = is_sample;
 
-    const astar_result = try runAstar(try input.grid(), allocator);
+    const astar_result = try runAstar(try input.grid(), false, allocator);
     return Result{ .UInt32 = astar_result.cost };
 }
 
 pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
     _ = is_sample;
 
-    const astar_result = try runAstar(try input.grid(), allocator);
+    const astar_result = try runAstar(try input.grid(), true, allocator);
 
     var visited_tiles = set.Set(Index).init(allocator);
     for (try astar_result.paths(allocator)) |result| {
@@ -40,14 +40,14 @@ pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) 
     return Result{ .USize = visited_tiles.cardinality() };
 }
 
-fn runAstar(map: Grid(u8), allocator: Allocator) !PathFinding(Maze).AStarResult {
+fn runAstar(map: Grid(u8), all_paths: bool, allocator: Allocator) !PathFinding(Maze).AStarResult {
     const start = Maze.Node{ .idx = map.find('S').?, .dir = Direction.East };
     const end = map.find('E').?;
 
     const maze = Maze{ .map = map, .end_idx = end };
-    var pathfinder = PathFinding(Maze){ .base = maze };
+    var pathfinder = PathFinding(Maze){ .base = &maze };
 
-    return (try pathfinder.astar(start, allocator)).?;
+    return (try pathfinder.astar(start, !all_paths, allocator)).?;
 }
 
 const Maze = struct {
@@ -59,7 +59,7 @@ const Maze = struct {
 
     pub const Node = struct { idx: Index, dir: Direction };
 
-    pub fn next(self: *Self, node: Node, allocator: std.mem.Allocator) ![]Child {
+    pub fn next(self: *const Self, node: Node, allocator: std.mem.Allocator) ![]Child {
         var next_list = std.ArrayList(Child).init(allocator);
 
         // Add turns
@@ -74,13 +74,13 @@ const Maze = struct {
         return next_list.toOwnedSlice();
     }
 
-    pub fn heuristic(self: *Self, node: Node) u32 {
+    pub fn heuristic(self: *const Self, node: Node) u32 {
         // L1 dist to end, add 1000 if we know we have to turn at least once (still admissable)
         const turn_penalty: usize = if (self.end_idx.r != node.idx.r or self.end_idx.c != node.idx.c) 1000 else 0;
         return @intCast(self.end_idx.dist(node.idx) + turn_penalty);
     }
 
-    pub fn isEnd(self: *Self, node: Node) bool {
+    pub fn isEnd(self: *const Self, node: Node) bool {
         return std.meta.eql(node.idx, self.end_idx);
     }
 };

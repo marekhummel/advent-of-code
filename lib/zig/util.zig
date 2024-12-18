@@ -12,3 +12,9 @@ pub fn contains(comptime T: type, list: []T, value: T) bool {
     }
     return false;
 }
+
+pub fn freeNested(comptime T: type, nested: [][]T, allocator: std.mem.Allocator) void {
+    for (nested) |inner|
+        allocator.free(inner);
+    allocator.free(nested);
+}
