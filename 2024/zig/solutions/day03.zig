@@ -2,7 +2,7 @@ const std = @import("std");
 const aoc_lib = @import("aoc_lib");
 const ProblemInput = aoc_lib.types.ProblemInput;
 const Result = aoc_lib.types.Result;
-const startswith = aoc_lib.util.startswith;
+const startsWith = aoc_lib.util.startsWith;
 
 pub fn results() [4]Result {
     return .{
@@ -43,9 +43,9 @@ fn computeSum(memory: []u8, with_conditionals: bool) i32 {
             offset += mul.?.byte_offset - 1; // -1 to negate +1 at loop end
         } else if (with_conditionals) {
             // If conditionals are enabled, also check for do and donts if mul didnt match
-            if (startswith(u8, memory[offset..], "do()")) {
+            if (startsWith(u8, memory[offset..], "do()")) {
                 enabled = true;
-            } else if (startswith(u8, memory[offset..], "don't()")) {
+            } else if (startsWith(u8, memory[offset..], "don't()")) {
                 enabled = false;
             }
         }
@@ -79,7 +79,7 @@ fn find_mul(slice: []u8) ?Mul {
 
 fn matchConstAndProceed(slice: []u8, comptime match: []const u8, next_state: MulState, state_ptr: *MulState, offset_ptr: *usize) bool {
     const len = match.len;
-    if (!startswith(u8, slice[offset_ptr.*..], match)) {
+    if (!startsWith(u8, slice[offset_ptr.*..], match)) {
         return false;
     }
     state_ptr.* = next_state;

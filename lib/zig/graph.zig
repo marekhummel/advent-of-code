@@ -139,7 +139,7 @@ pub fn PathFinding(comptime T: type) type {
             node: T.Node,
 
             fn lessThan(context: *std.AutoHashMap(T.Node, u32), a: OpenQueueItem, b: OpenQueueItem) math.Order {
-                // Include g score in order, so that nodes that are closer to end are preferred
+                // Include g score in ordering if f score is equal, so that nodes that are closer to end are preferred
                 const f_score_order = math.order(a.f_score, b.f_score);
                 return f_score_order.differ() orelse math.order(context.get(a.node).?, context.get(b.node).?).invert();
             }
