@@ -158,6 +158,21 @@ pub fn PathFinding(comptime T: type) type {
             reached_end_nodes: []T.Node,
             history: std.AutoHashMap(T.Node, std.ArrayList(T.Node)),
 
+            /// Compute single path
+            pub fn onePath(self: *const @This(), allocator: std.mem.Allocator) ![]T.Node {
+                var path = std.ArrayList(T.Node).init(allocator);
+
+                var node = self.reached_end_nodes[0];
+                while (true) {
+                    try path.append(node);
+                    const prevs = self.history.get(node) orelse break;
+                    node = prevs.items[0];
+                }
+
+                std.mem.reverse(T.Node, path.items);
+                return path.toOwnedSlice();
+            }
+
             /// Computes all paths that lead with minimal cost to an end state
             pub fn paths(self: *const @This(), allocator: std.mem.Allocator) ![][]T.Node {
                 var path_list = std.ArrayList([]T.Node).init(allocator);
