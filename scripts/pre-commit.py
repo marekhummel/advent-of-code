@@ -62,7 +62,7 @@ def test_zig(files: str) -> None:
 if __name__ == "__main__":
     # Get git status
     proc = subprocess.run(
-        ["git", "status", "-s", "-uall"],
+        ["git", "diff", "--name-only", "--cached"],
         stdout=subprocess.PIPE,
         stderr=subprocess.DEVNULL,
         shell=True,
