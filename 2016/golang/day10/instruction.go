@@ -1,6 +1,7 @@
 package main
 
 import (
+	lib "aoc/lib/golang"
 	"sort"
 	"strconv"
 	"strings"
@@ -12,7 +13,7 @@ type Instruction struct {
 	targets []string
 }
 
-func (inst Instruction) Compute(broker *Broker, wg *sync.WaitGroup) {
+func (inst Instruction) Compute(broker *lib.Broker[uint16], wg *sync.WaitGroup) {
 	// Receive value for args, might block until args are ready
 	values := inst.getChips(broker, wg)
 	sort.Slice(values, func(i, j int) bool { return values[i] < values[j] })
@@ -27,7 +28,7 @@ func (inst Instruction) Compute(broker *Broker, wg *sync.WaitGroup) {
 	}
 }
 
-func (inst Instruction) getChips(broker *Broker, wg *sync.WaitGroup) []uint16 {
+func (inst Instruction) getChips(broker *lib.Broker[uint16], wg *sync.WaitGroup) []uint16 {
 	if val, err := strconv.ParseUint(inst.source, 10, 16); err == nil {
 		wg.Done()
 		wg.Wait()

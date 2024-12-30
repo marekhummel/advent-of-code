@@ -1,9 +1,11 @@
 package main
 
 import (
+	lib "aoc/lib/golang"
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 )
@@ -41,7 +43,7 @@ func parseLine(inst_str string) Instruction {
 	}
 }
 
-func compute(instructions []Instruction, broker *Broker) {
+func compute(instructions []Instruction, broker *lib.Broker[uint16]) {
 	wg := new(sync.WaitGroup)
 	wg.Add(len(instructions))
 	for _, inst := range instructions {
@@ -50,7 +52,7 @@ func compute(instructions []Instruction, broker *Broker) {
 }
 
 func main_part1() uint16 {
-	broker := NewBroker()
+	broker := lib.NewBroker[uint16]()
 	go broker.Start()
 
 	instructions := parseInput()
@@ -64,11 +66,11 @@ func main_part1() uint16 {
 }
 
 func main_part2(a uint16) uint16 {
-	broker := NewBroker()
+	broker := lib.NewBroker[uint16]()
 	go broker.Start()
 
 	instructions := parseInput()
-	setup_inst := Instruction{output: "b", operation: "SIGNAL", args: []string{"46065"}}
+	setup_inst := Instruction{output: "b", operation: "SIGNAL", args: []string{strconv.Itoa(int(a))}}
 	instructions = append([]Instruction{setup_inst}, instructions...)
 
 	resultCh := broker.Subscribe("a")

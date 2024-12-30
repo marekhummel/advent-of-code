@@ -1,6 +1,7 @@
 package main
 
 import (
+	lib "aoc/lib/golang"
 	"strconv"
 	"sync"
 )
@@ -13,7 +14,7 @@ type Instruction struct {
 
 type Val = uint8
 
-func (inst Instruction) Compute(broker *Broker[Val], wg *sync.WaitGroup) {
+func (inst Instruction) Compute(broker *lib.Broker[Val], wg *sync.WaitGroup) {
 	// Receive value for args, might block until args are ready
 	values := inst.getArgs(broker, wg)
 
@@ -41,7 +42,7 @@ func (inst Instruction) Compute(broker *Broker[Val], wg *sync.WaitGroup) {
 	broker.Publish(inst.output, result)
 }
 
-func (inst Instruction) getArgs(broker *Broker[Val], wg *sync.WaitGroup) map[string]Val {
+func (inst Instruction) getArgs(broker *lib.Broker[Val], wg *sync.WaitGroup) map[string]Val {
 	// Get input values or prepare channels for that
 	values := make(map[string]Val)
 	valChs := make(map[string]chan Val)

@@ -1,6 +1,7 @@
 package main
 
 import (
+	lib "aoc/lib/golang"
 	"bufio"
 	"fmt"
 	"os"
@@ -37,7 +38,7 @@ func parseLine(inst_str string) Instruction {
 	panic("Weird instruction")
 }
 
-func compute(instructions []Instruction, broker *Broker) {
+func compute(instructions []Instruction, broker *lib.Broker[uint16]) {
 	wg := new(sync.WaitGroup)
 	wg.Add(len(instructions))
 	for _, inst := range instructions {
@@ -46,7 +47,7 @@ func compute(instructions []Instruction, broker *Broker) {
 }
 
 func main() {
-	broker := NewBroker()
+	broker := lib.NewBroker[uint16]()
 	go broker.Start()
 
 	instructions := parseInput()
