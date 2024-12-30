@@ -17,14 +17,14 @@ pub fn results() [4]Result {
     };
 }
 
-pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     const min_saved: u32 = if (!is_sample) 100 else 20;
     var course = try input.grid();
     const helpful_cheats = try countCheats(&course, .{ 2, 2 }, min_saved, allocator);
     return Result{ .USize = helpful_cheats };
 }
 
-pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     const min_saved: u32 = if (!is_sample) 100 else 50;
     var course = try input.grid();
     const helpful_cheats = try countCheats(&course, .{ 2, 20 }, min_saved, allocator);

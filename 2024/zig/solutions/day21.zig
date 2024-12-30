@@ -13,18 +13,18 @@ pub fn results() [4]Result {
     };
 }
 
-pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
-    _ = allocator;
+pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = input;
     _ = is_sample;
+    _ = allocator;
 
     return Result.Unsolved;
 }
 
-pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
-    _ = allocator;
+pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = input;
     _ = is_sample;
+    _ = allocator;
 
     return Result.Unsolved;
 }

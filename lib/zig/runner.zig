@@ -176,10 +176,10 @@ pub const AocRunner = struct {
             defer arena.deinit();
 
             // In case result contains heap allocated memory, clone with gpa before freeing
-            var original_result = try s.?.solve(solution_allocator, &input.?, part, use_sample);
+            var original_result = try s.?.solve(&input.?, part, use_sample, solution_allocator);
             return original_result.clone(self._allocator) catch types.SolvingError.SolvingFailed;
         } else {
-            return s.?.solve(self._allocator, &input.?, part, use_sample);
+            return s.?.solve(&input.?, part, use_sample, self._allocator);
         }
     }
 

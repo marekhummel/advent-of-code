@@ -13,7 +13,7 @@ pub fn results() [4]Result {
     };
 }
 
-pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
     var computer = try Computer.init(input.lines, allocator);
@@ -21,7 +21,7 @@ pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) 
     return Result{ .String = try computer.finalOutput(allocator) };
 }
 
-pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     if (is_sample) return Result.NoSample;
 
     const computer = try Computer.init(input.lines, allocator);

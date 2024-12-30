@@ -16,12 +16,12 @@ pub fn results() [4]Result {
     };
 }
 
-pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     return Result{ .USize = try countTrails(try input.grid(), true, allocator) };
 }
 
-pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     return Result{ .USize = try countTrails(try input.grid(), false, allocator) };
 }

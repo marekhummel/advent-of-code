@@ -18,7 +18,7 @@ pub fn results() [4]Result {
     };
 }
 
-pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     const size = if (!is_sample) Size{ .width = 101, .height = 103 } else Size{ .width = 11, .height = 7 };
 
     var quadrants = [_]usize{ 0, 0, 0, 0 };
@@ -40,7 +40,7 @@ pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) 
     return Result{ .USize = safety_factor };
 }
 
-pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     const size = if (!is_sample) Size{ .width = 101, .height = 103 } else return Result.NoSample;
 
     var robots = try std.ArrayList(Robot).initCapacity(allocator, input.lines.len);

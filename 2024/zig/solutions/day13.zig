@@ -14,12 +14,12 @@ pub fn results() [4]Result {
     };
 }
 
-pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     return Result{ .Int64 = try computeTokens(input, 0, allocator) };
 }
 
-pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     if (is_sample) return Result.NoSample;
     return Result{ .Int64 = try computeTokens(input, 10_000_000_000_000, allocator) };
 }

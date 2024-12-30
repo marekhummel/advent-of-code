@@ -14,7 +14,7 @@ pub fn results() [4]Result {
     };
 }
 
-pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
     var locks = std.ArrayList([]u8).init(allocator);
@@ -71,10 +71,10 @@ pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) 
     return Result{ .USize = total_fit };
 }
 
-pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
-    _ = allocator;
+pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = input;
     _ = is_sample;
+    _ = allocator;
 
     return Result.NoPartTwo;
 }

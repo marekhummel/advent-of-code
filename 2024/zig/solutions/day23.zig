@@ -18,7 +18,7 @@ pub fn results() [4]Result {
 const Pc = [2]u8;
 const Conn = [4]u8;
 
-pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
     // Create network
@@ -45,7 +45,7 @@ pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) 
     return Result{ .USize = count };
 }
 
-pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
     var network = try createNetwork(input, allocator);

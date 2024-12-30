@@ -19,7 +19,7 @@ pub fn results() [4]Result {
     };
 }
 
-pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     const size: Size = if (!is_sample) Size{ .width = 71, .height = 71 } else Size{ .width = 7, .height = 7 };
     const sim_length: usize = if (!is_sample) 1024 else 12;
 
@@ -28,7 +28,7 @@ pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) 
     return Result{ .UInt32 = escapeSteps.? };
 }
 
-pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     const size: Size = if (!is_sample) Size{ .width = 71, .height = 71 } else Size{ .width = 7, .height = 7 };
     const falling_bytes = try parseInput(input, allocator);
 

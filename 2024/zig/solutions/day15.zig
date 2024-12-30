@@ -16,13 +16,13 @@ pub fn results() [4]Result {
     };
 }
 
-pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     var warehouse, var robot, const moves = try parseInput(input, false, allocator);
     return Result{ .USize = rearrange_warehouse(&warehouse, &robot, moves) };
 }
 
-pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     var warehouse, var robot, const moves = try parseInput(input, true, allocator);
     return Result{ .USize = rearrange_warehouse(&warehouse, &robot, moves) };

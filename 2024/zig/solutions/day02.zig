@@ -1,5 +1,6 @@
 const std = @import("std");
 const aoc_lib = @import("aoc_lib");
+const Allocator = std.mem.Allocator;
 const ProblemInput = aoc_lib.types.ProblemInput;
 const Result = aoc_lib.types.Result;
 
@@ -12,7 +13,7 @@ pub fn results() [4]Result {
     };
 }
 
-pub fn solvePart01(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
     const data = try getReports(allocator, input);
@@ -25,7 +26,7 @@ pub fn solvePart01(allocator: std.mem.Allocator, input: *ProblemInput, is_sample
     return Result{ .USize = safe_reports };
 }
 
-pub fn solvePart02(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
     const data = try getReports(allocator, input);

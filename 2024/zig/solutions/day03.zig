@@ -1,5 +1,6 @@
 const std = @import("std");
 const aoc_lib = @import("aoc_lib");
+const Allocator = std.mem.Allocator;
 const ProblemInput = aoc_lib.types.ProblemInput;
 const Result = aoc_lib.types.Result;
 const startsWith = aoc_lib.util.startsWith;
@@ -13,18 +14,18 @@ pub fn results() [4]Result {
     };
 }
 
-pub fn solvePart01(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
-    _ = allocator;
+pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
+    _ = allocator;
 
     const memory = try input.string();
     const sum = computeSum(memory, false);
     return Result{ .Int32 = sum };
 }
 
-pub fn solvePart02(allocator: std.mem.Allocator, input: *ProblemInput, is_sample: bool) !Result {
-    _ = allocator;
+pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
+    _ = allocator;
 
     const memory = try input.string();
     const sum = computeSum(memory, true);

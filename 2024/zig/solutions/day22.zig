@@ -15,7 +15,7 @@ pub fn results() [4]Result {
 
 const NUM_PRICE_CHANGES = 19 * 19 * 19 * 19;
 
-pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = allocator;
     _ = is_sample;
 
@@ -29,7 +29,7 @@ pub fn solvePart01(allocator: Allocator, input: *ProblemInput, is_sample: bool) 
     return Result{ .UInt64 = sum };
 }
 
-pub fn solvePart02(allocator: Allocator, input: *ProblemInput, is_sample: bool) !Result {
+pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
     // Build lookup tables (maps each combination of price change sequences to the banana sell value)
