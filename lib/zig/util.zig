@@ -26,3 +26,13 @@ pub fn setToSlice(comptime T: type, in: *set.Set(T), allocator: std.mem.Allocato
     while (in_it.next()) |elem| try out.append(elem.*);
     return try out.toOwnedSlice();
 }
+
+pub fn join(comptime T: type, items: [][]const T, sep: []const T, allocator: std.mem.Allocator) ![]T {
+    var joined = std.ArrayList(T).init(allocator);
+    for (items) |item| {
+        try joined.appendSlice(item);
+        try joined.appendSlice(sep);
+    }
+    _ = joined.pop();
+    return joined.items;
+}

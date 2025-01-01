@@ -3,16 +3,25 @@ const util = @import("util.zig");
 const math = std.math;
 
 pub fn Graph(comptime T: type) type {
+    const hm = struct {
+        fn HashMap(comptime V: type) type {
+            return if (std.meta.eql(T, []const u8)) std.StringHashMap(V) else std.AutoHashMap(T, V);
+        }
+        fn ArrayHashMap(comptime V: type) type {
+            return if (std.meta.eql(T, []const u8)) std.StringArrayHashMap(V) else std.AutoArrayHashMap(T, V);
+        }
+    };
+
     return struct {
         const Self = @This();
-        adjacency: std.AutoHashMap(T, std.AutoArrayHashMap(T, i32)),
-        _vertices: std.AutoArrayHashMap(T, void),
+        adjacency: hm.HashMap(hm.ArrayHashMap(i32)),
+        _vertices: hm.ArrayHashMap(void),
         _allocator: std.mem.Allocator,
 
         pub fn init(allocator: std.mem.Allocator) Graph(T) {
             return .{
-                .adjacency = std.AutoHashMap(T, std.AutoArrayHashMap(T, i32)).init(allocator),
-                ._vertices = std.AutoArrayHashMap(T, void).init(allocator),
+                .adjacency = hm.HashMap(hm.ArrayHashMap(i32)).init(allocator),
+                ._vertices = hm.ArrayHashMap(void).init(allocator),
                 ._allocator = allocator,
             };
         }
@@ -36,7 +45,7 @@ pub fn Graph(comptime T: type) type {
 
             const entry = try self.adjacency.getOrPut(from);
             if (!entry.found_existing)
-                entry.value_ptr.* = std.AutoArrayHashMap(T, i32).init(self._allocator);
+                entry.value_ptr.* = hm.ArrayHashMap(i32).init(self._allocator);
             try entry.value_ptr.*.put(to, 0);
         }
 
@@ -95,7 +104,7 @@ pub fn Graph(comptime T: type) type {
             var sorted = std.ArrayList(T).init(allocator);
 
             // Start with all sinks (in inverted graph)
-            var nodes = std.AutoArrayHashMap(T, void).init(allocator);
+            var nodes = hm.ArrayHashMap(void).init(allocator);
             defer nodes.deinit();
             for (inverted._vertices.keys()) |node| {
                 if (inverted.isSink(node)) {
