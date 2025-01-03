@@ -1,0 +1,178 @@
+Day 01
+  P1 samp:  11
+  P1 real:  3714264
+  P2 samp:  31
+  P2 real:  18805872
+  > Runtime: 0
+
+Day 02
+  P1 samp:  2
+  P1 real:  242
+  P2 samp:  4
+  P2 real:  311
+  > Runtime: 0.0005032
+
+Day 03
+  P1 samp:  161
+  P1 real:  183669043
+  P2 samp:  48
+  P2 real:  59097164
+  > Runtime: 0
+
+Day 04
+  P1 samp:  18
+  P1 real:  2545
+  P2 samp:  9
+  P2 real:  1886
+  > Runtime: 0
+
+Day 05
+  P1 samp:  143
+  P1 real:  6034
+  P2 samp:  123
+  P2 real:  6305
+  > Runtime: 0.0051436
+
+Day 06
+  P1 samp:  41
+  P1 real:  4752
+  P2 samp:  6
+  P2 real:  1719
+  > Runtime: 0.1115544
+
+Day 07
+  P1 samp:  3749
+  P1 real:  1430271835320
+  P2 samp:  11387
+  P2 real:  456565678667482
+  > Runtime: 0.039290700000000005
+
+Day 08
+  P1 samp:  14
+  P1 real:  396
+  P2 samp:  34
+  P2 real:  1200
+  > Runtime: 0
+
+Day 09
+  P1 samp:  1928
+  P1 real:  6262891638328
+  P2 samp:  2858
+  P2 real:  6287317016845
+  > Runtime: 0.009685699999999998
+
+Day 10
+  P1 samp:  36
+  P1 real:  512
+  P2 samp:  81
+  P2 real:  1045
+  > Runtime: 0
+
+Day 11
+  P1 samp:  55312
+  P1 real:  233875
+  P2 samp:  <No Sample Defined>
+  P2 real:  277444936413293
+  > Runtime: 0.0100925
+
+Day 12
+  P1 samp:  1930
+  P1 real:  1456082
+  P2 samp:  1206
+  P2 real:  872382
+  > Runtime: 0.0101689
+
+Day 13
+  P1 samp:  480
+  P1 real:  32026
+  P2 samp:  <No Sample Defined>
+  P2 real:  89013607072065
+  > Runtime: 0.0010046
+
+Day 14
+  P1 samp:  12
+  P1 real:  222901875
+  P2 samp:  <No Sample Defined>
+  P2 real:  6243
+  > Runtime: 0.0333834
+
+Day 15
+  P1 samp:  10092
+  P1 real:  1479679
+  P2 samp:  9021
+  P2 real:  1509780
+  > Runtime: 0.0013551
+
+Day 16
+  P1 samp:  7036
+  P1 real:  143580
+  P2 samp:  45
+  P2 real:  645
+  > Runtime: 0.0742709
+
+Day 17
+  P1 samp:  4,6,3,5,6,3,5,2,1,0
+  P1 real:  7,4,2,0,5,0,5,3,7
+  P2 samp:  <No Sample Defined>
+  P2 real:  202991746427434
+  > Runtime: 0
+
+Day 18
+  P1 samp:  22
+  P1 real:  416
+  P2 samp:  6,1
+  P2 real:  50,23
+  > Runtime: 0.0041285
+
+Day 19
+  P1 samp:  6
+  P1 real:  206
+  P2 samp:  16
+  P2 real:  622121814629343
+  > Runtime: 0.0259869
+
+Day 20
+  P1 samp:  5
+  P1 real:  1502
+  P2 samp:  285
+  P2 real:  1028136
+  > Runtime: 0.047175499999999995
+
+Day 21
+  P1 samp:  126384
+  P1 real:  205160
+  P2 samp:  <No Sample Defined>
+  P2 real:  252473394928452
+  > Runtime: 0
+
+Day 22
+  P1 samp:  37327623
+  P1 real:  14119253575
+  P2 samp:  23
+  P2 real:  1600
+  > Runtime: 0.19027760000000002
+
+Day 23
+  P1 samp:  7
+  P1 real:  1163
+  P2 samp:  co,de,ka,ta
+  P2 real:  bm,bo,ee,fo,gt,hv,jv,kd,md,mu,nm,wx,xh
+  > Runtime: 0.0101502
+
+Day 24
+  P1 samp:  2024
+  P1 real:  46362252142374
+  P2 samp:  <No Sample Defined>
+  P2 real:  cbd,gmh,jmq,qrh,rqf,z06,z13,z38
+  > Runtime: 0.0010439
+
+Day 25
+  P1 samp:  3
+  P1 real:  3360
+  P2 samp:  <No Part Two>
+  P2 real:  <No Part Two>
+  > Runtime: 0.0005038
+
+
+
+Total Runtime: 0.5757194

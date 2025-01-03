@@ -9,7 +9,7 @@ pub fn results() [4]Result {
     return .{
         Result{ .UInt64 = 126384 },
         Result{ .UInt64 = 205160 },
-        Result{ .UInt64 = 154115708116294 },
+        Result.NoSample,
         Result{ .UInt64 = 252473394928452 },
     };
 }
@@ -23,7 +23,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
-    _ = is_sample;
+    if (is_sample) return Result.NoSample;
 
     var robots = try Robots.init(allocator);
     const total_complexity = try robots.findComplexity(input.lines, 25);

@@ -1,9 +1,9 @@
 # Advent Of Code
 Advent Of Code solutions.
-Contains solutions for all years from 2015 to 2023 (2024 ongoing), all of them solved in Rust.
-Addionally, there are some extra implementations in python (2023), golang (2015-07, 2016-10) and zig (2024).
+Contains solutions for all years from 2015 to 2024, almost all of them solved in Rust (2024 not yet, just zig).
+Addionally, there are some extra implementations in python (2023), golang (2015-07, 2016-10, 2024-24) and zig (2024).
 
-Note thatmostly for rust and a bit for zig it made sense to implement a library for reusage of code and structures and what not. Nonetheless the important part of each day should still be in the respective daily file. Moreover, both rust and zigs daily files contain the solution values for that day, so that unit tests can check if some code broke a specific day.
+Note that mostly for rust and a bit for zig it made sense to implement a library for reusage of code and structures and what not. Nonetheless the important part of each day should still be in the respective daily file. Moreover, both rust and zigs daily files contain the solution values for that day, so that unit tests can check if some code broke a specific day.
 
 ### Run
 To run, check the main files per year in each languages' directory. There are general entry points for each year in Rust, for 2023 there is also one for Python and for 2024 there is one for zig. Golang only has single single day solutions and needs to be called directly.

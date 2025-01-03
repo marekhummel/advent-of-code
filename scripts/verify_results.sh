@@ -1,22 +1,27 @@
-# Check if solutions mentioned in rust files match with submitted solutions
+# Check if rust solutions mentioned in rust files match with submitted solutions
 cookie=$(cat scripts/aoc_cookie.txt)
 
 failed=0
-for year in $(seq 2023 2023)
+for year in $(seq 2015 2024)
 do
 
     for day in $(seq 1 25)
     do
         html=$(curl "https://adventofcode.com/$year/day/$day" -H "cookie: session=$cookie" 2> /dev/null)
         submitted=($(echo "$html" | grep -Po "(?<=Your puzzle answer was <code>).*?(?=<\/code>)"))
-        
-        fday=$(printf "%02d" $day)
-        code=$(cat "$year/rust/solutions/day$fday.rs")
-        noted=($(echo "$code" | grep -Po "(?<=ProblemResult::).*(?=,)" | \
-                cut -d'(' -f2 | cut -d')' -f1 | sed s/"\".to_string"// | sed s/"\""// ))
-        echo -n "Check $year / $day:  "
 
-    
+        fday=$(printf "%02d" $day)
+        if [ "$year" == "2024" ]; then
+            code=$(cat "$year/zig/solutions/day$fday.zig")
+            noted=($(echo "$code" | grep -Po "^\s+Result.*(?=,)" | \
+                    cut -d'=' -f2 | cut -d'}' -f1 | sed s/"\""//g ))
+        else
+            code=$(cat "$year/rust/solutions/day$fday.rs")
+            noted=($(echo "$code" | grep -Po "(?<=ProblemResult::).*(?=,)" | \
+                    cut -d'(' -f2 | cut -d')' -f1 | sed s/"\".to_string"// | sed s/"\""//g ))
+        fi
+        echo -n "Check $year / $fday:  "
+
         # echo "'${noted[@]}'"
         # continue
 
@@ -41,7 +46,7 @@ do
         echo "OK"
     done
 
-    echo 
+    echo
 done
 
 echo "Verification complete: $failed checks failed."
