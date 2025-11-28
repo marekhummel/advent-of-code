@@ -35,7 +35,7 @@ impl Solution14 {
         // Sort graph to find order in which to produce chemicals
         let dependencies: Graph<_> = graph
             .iter()
-            .map(|(trg_quant, ings)| (&trg_quant.1, ings.iter().map(|(ing_quant, _)| &ing_quant.1).collect()))
+            .map(|(trg_quant, ings)| (&trg_quant.1, ings.keys().map(|ing_quant| &ing_quant.1).collect()))
             .collect();
         let production_order = dependencies.topo_sorting().unwrap();
 

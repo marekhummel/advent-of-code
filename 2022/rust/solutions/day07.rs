@@ -4,6 +4,7 @@ use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
 
 #[derive(Debug)]
+#[allow(dead_code)] // technically filename is unused, but its kept for clarity
 enum Entry {
     File(String, u64),
     Directory(String),

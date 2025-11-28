@@ -96,6 +96,7 @@ impl Num {
 
     fn split(&mut self) -> bool {
         match self {
+            #[allow(clippy::manual_div_ceil)]
             Num::Regular(v) if *v >= 10 => {
                 *self = Num::Pair(Box::new(Num::Regular(*v / 2)), Box::new(Num::Regular((*v + 1) / 2)));
                 true

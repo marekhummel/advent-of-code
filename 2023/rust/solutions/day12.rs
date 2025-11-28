@@ -29,7 +29,7 @@ impl Solution12 {
             .into_iter()
             .map(|(s, g)| {
                 (
-                    Itertools::intersperse(iter::repeat(s.chars()).take(5), "?".chars())
+                    Itertools::intersperse(iter::repeat_n(s.chars(), 5), "?".chars())
                         .flatten()
                         .collect(),
                     g.iter().cycle().take(g.len() * 5).cloned().collect_vec(),

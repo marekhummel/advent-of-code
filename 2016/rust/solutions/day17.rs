@@ -38,12 +38,12 @@ impl Rooms {
 
         dirs.into_iter()
             .zip_eq(key.chars())
-            .filter(|(_, k)| "bcdef".contains(|c| c == *k))
+            .filter(|(_, k)| "bcdef".contains(*k))
             .map(|(d, _)| d)
             .collect()
     }
 
-    fn paths_to_vault(&self) -> PathsIterator {
+    fn paths_to_vault(&self) -> PathsIterator<'_> {
         PathsIterator {
             rooms: self,
             queue: VecDeque::from([(Index::new(0, 0), vec![])]),

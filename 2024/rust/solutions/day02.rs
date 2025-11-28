@@ -1,18 +1,8 @@
 use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 
 pub struct Solution02;
-impl Solution02 {
-    fn parse(input: ProblemInput) {
-        input
-            .lines()
-            .into_iter()
-            .map(|l| {
-                //
-            })
-            .collect()
-    }
-}
+impl Solution02 {}
 
 impl Solution for Solution02 {
     fn results(&self) -> [ProblemResult; 4] {
@@ -24,11 +14,11 @@ impl Solution for Solution02 {
         ]
     }
 
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    fn solve_version01(&self, _input: ProblemInput, _is_sample: bool) -> ProblemResult {
         ProblemResult::Unsolved
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    fn solve_version02(&self, _input: ProblemInput, _is_sample: bool) -> ProblemResult {
         ProblemResult::Unsolved
     }
 }

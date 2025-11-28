@@ -72,9 +72,8 @@ impl Solution14 {
                 .iter()
                 .zip_eq(rounds_per_section.iter())
                 .map(|(&sec_len, &rounds)| {
-                    iter::repeat('O')
-                        .take(rounds as usize)
-                        .chain(iter::repeat('.').take((sec_len - rounds) as usize))
+                    iter::repeat_n('O', rounds as usize)
+                        .chain(iter::repeat_n('.', (sec_len - rounds) as usize))
                         .collect_vec()
                 }),
             vec!['#'],

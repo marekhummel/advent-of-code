@@ -8,7 +8,7 @@ impl Solution16 {
     fn pattern(position: usize) -> impl Iterator<Item = i32> {
         Self::BASE_PATTERN
             .iter()
-            .flat_map(move |&x| std::iter::repeat(x).take(position))
+            .flat_map(move |&x| std::iter::repeat_n(x, position))
             .cycle()
             .skip(1)
     }

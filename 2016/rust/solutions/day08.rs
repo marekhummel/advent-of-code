@@ -17,7 +17,7 @@ impl Solution08 {
             .lines()
             .into_iter()
             .map(|l| {
-                return if l.starts_with("rect") {
+                if l.starts_with("rect") {
                     let size = l.strip_prefix("rect ").unwrap();
                     let (w, h) = size.split_once('x').unwrap();
                     Instruction::Rect(w.parse().unwrap(), h.parse().unwrap())
@@ -33,7 +33,7 @@ impl Solution08 {
                     Instruction::RotateRow(y.parse().unwrap(), l.parse().unwrap())
                 } else {
                     unreachable!()
-                };
+                }
             })
             .collect_vec()
     }

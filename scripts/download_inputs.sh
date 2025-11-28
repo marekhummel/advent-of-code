@@ -1,3 +1,4 @@
+#!/bin/bash
 
 cookie=$(cat scripts/aoc_cookie.txt)
 if [ $# -lt 2 ]; then days=$(seq 1 25); else days=$(seq $2 $2); fi

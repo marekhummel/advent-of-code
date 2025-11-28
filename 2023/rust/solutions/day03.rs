@@ -99,9 +99,7 @@ impl Solution03 {
         }
 
         match part_numbers.len() {
-            2 => {
-                return part_numbers.iter().product();
-            }
+            2 => part_numbers.iter().product(),
             _ => 0,
         }
     }

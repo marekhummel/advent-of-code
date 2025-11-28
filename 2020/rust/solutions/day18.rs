@@ -72,7 +72,7 @@ impl Solution18 {
                     // Drain all ops with higher precedence before adding current op
                     let last_op_idx = stack
                         .iter()
-                        .rposition(|t| !matches!(t, Token::Op(prev_op) if precedence[&curr_op] <= precedence[&prev_op]))
+                        .rposition(|t| !matches!(t, Token::Op(prev_op) if precedence[&curr_op] <= precedence[prev_op]))
                         .map(|pos| pos + 1)
                         .unwrap_or(0);
                     let drained = stack.drain(last_op_idx..);

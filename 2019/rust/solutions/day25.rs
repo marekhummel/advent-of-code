@@ -212,6 +212,7 @@ impl Solution for Solution25 {
         }
 
         // Try all item combinations
+        let regex = Regex::new(r"\d+").unwrap();
         let items = droid.collected_items.clone();
         for drop_items in items.iter().powerset() {
             // Drop
@@ -224,7 +225,6 @@ impl Solution for Solution25 {
             let (output, command_req) = droid.execute_until_command();
             if !(command_req) {
                 // Success!
-                let regex = Regex::new(r"\d+").unwrap();
                 let str_output = output.join("\n");
                 let passkey = regex.find(&str_output).unwrap();
                 return passkey.as_str().to_result();
