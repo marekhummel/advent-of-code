@@ -1,3 +1,5 @@
+# New year script for rust
+
 mkdir $1
 mkdir $1/inputs
 mkdir $1/rust

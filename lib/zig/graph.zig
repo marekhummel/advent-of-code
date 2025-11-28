@@ -149,6 +149,7 @@ pub fn PathFinding(comptime T: type) type {
 
             fn lessThan(context: *std.AutoHashMap(T.Node, u32), a: OpenQueueItem, b: OpenQueueItem) math.Order {
                 // Include g score in ordering if f score is equal, so that nodes that are closer to end are preferred
+                // This somewhat ensures LIFO behaviour if ties are broken
                 const f_score_order = math.order(a.f_score, b.f_score);
                 return f_score_order.differ() orelse math.order(context.get(a.node).?, context.get(b.node).?).invert();
             }
@@ -289,10 +290,12 @@ pub fn PathFinding(comptime T: type) type {
                     try open.add(.{ .f_score = child_f, .node = child.node });
 
                     // Since we have a better g value, update the history
-                    if (history.getPtr(child.node)) |old_prev| old_prev.deinit();
-                    var prevs = std.ArrayList(T.Node).init(allocator);
-                    try prevs.append(current.node);
-                    try history.put(child.node, prevs);
+                    var history_entry = try history.getOrPut(child.node);
+                    if (!history_entry.found_existing)
+                        history_entry.value_ptr.* = std.ArrayList(T.Node).init(allocator);
+
+                    history_entry.value_ptr.clearRetainingCapacity();
+                    try history_entry.value_ptr.append(current.node);
                 }
             }
 
