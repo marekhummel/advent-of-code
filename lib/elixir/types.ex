@@ -23,6 +23,8 @@ defmodule AocLib.Types do
         {:ok, content} ->
           lines =
             content
+            # remove leading/trailing whitespace / empty line
+            |> String.trim()
             |> String.split("\n")
             |> Enum.map(&String.trim_trailing(&1, "\r"))
 

@@ -10,24 +10,77 @@ defmodule Day01 do
   @impl true
   def results do
     [
-      :unsolved,
-      :unsolved,
-      :unsolved,
-      :unsolved
+      3,
+      1177,
+      6,
+      6768
     ]
   end
 
+  @dial_size 100
+
   @impl true
   def solve_part01(input, _is_sample) do
-    _lines = ProblemInput.lines(input)
+    instructions = parse_instructions(input)
 
-    :unsolved
+    positions =
+      Enum.scan(instructions, {50, 0, 0}, fn {dir, steps}, {current, zeros, _} ->
+        apply_rot(current, steps, dir)
+      end)
+
+    password =
+      positions
+      |> Enum.map(&elem(&1, 1))
+      |> Enum.sum()
+
+    password
   end
 
   @impl true
   def solve_part02(input, _is_sample) do
-    _lines = ProblemInput.lines(input)
+    instructions = parse_instructions(input)
 
-    :unsolved
+    positions =
+      Enum.scan(instructions, {50, 0, 0}, fn {dir, steps}, {current, _, _} ->
+        apply_rot(current, steps, dir)
+      end)
+
+    password =
+      positions
+      |> Enum.map(fn {_pos, on_zero, over_zero} -> on_zero + over_zero end)
+      |> Enum.sum()
+
+    password
+  end
+
+  @spec parse_instructions(ProblemInput.t()) :: [{String.t(), integer()}]
+  defp parse_instructions(input) do
+    ProblemInput.lines(input)
+    |> Enum.map(fn line ->
+      {dir, steps} = String.split_at(line, 1)
+      {dir, String.to_integer(steps)}
+    end)
+  end
+
+  @spec apply_rot(integer(), integer(), String.t()) :: {integer(), integer(), integer()}
+  defp apply_rot(current, steps, direction) do
+    dest =
+      case direction do
+        "L" -> current - steps
+        "R" -> current + steps
+      end
+
+    over_zero = abs(floor(dest / @dial_size))
+
+    dest = Integer.mod(dest, @dial_size)
+
+    over_zero =
+      if (direction == "L" and current == 0) or (direction == "R" and dest == 0) do
+        max(over_zero - 1, 0)
+      else
+        over_zero
+      end
+
+    {dest, if(dest == 0, do: 1, else: 0), over_zero}
   end
 end
