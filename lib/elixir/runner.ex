@@ -269,29 +269,35 @@ defmodule AocLib.Runner do
         "No solution implemented for day #{String.pad_leading(Integer.to_string(day), 2, "0")} in year #{runner.year}"
       )
     else
-      day_elapsed =
-        for part <- [1, 2],
-            use_sample <- [true, false],
-            reduce: 0.0 do
-          acc ->
+      expected_results = solution.results()
+
+      {day_elapsed, matches_expected} =
+        for part <- [1, 2], use_sample <- [true, false], reduce: {0.0, true} do
+          {time_acc, match} ->
             case get_result(runner, day, part, use_sample) do
               {:ok, {result, elapsed}} ->
                 sample_idx = if use_sample, do: 1, else: 0
+
+                # Check if result matches expected
+                expected_idx = (part - 1) * 2 + sample_idx
+                expected = Enum.at(expected_results, expected_idx)
+                new_match = match and result == expected
 
                 IO.puts(
                   "P#{part} #{Enum.at(@sample_str, sample_idx)} in #{:io_lib.format("~10.4f", [elapsed])}s:    #{ProblemResult.format(result)}"
                 )
 
-                acc + elapsed
+                {time_acc + elapsed, new_match}
 
               {:error, reason} ->
                 sample_idx = if use_sample, do: 1, else: 0
                 IO.puts("P#{part} #{Enum.at(@sample_str, sample_idx)}:  <Error: #{reason}>")
-                acc
+                {time_acc, match}
             end
         end
 
       IO.puts("\nTotal Runtime: #{:io_lib.format("~.4f", [day_elapsed])}s")
+      IO.puts("Note: Results #{if matches_expected, do: "", else: "don't "}match expected")
     end
   end
 
