@@ -43,7 +43,7 @@ impl<V: Clone + Eq + Hash> Graph<V> {
     pub fn sinks(&self) -> Vec<V> {
         self.vertices()
             .into_iter()
-            .filter(|v| self.adjacency.get(v).map_or(true, |adj| adj.is_empty()))
+            .filter(|v| self.adjacency.get(v).is_none_or(|adj| adj.is_empty()))
             .collect()
     }
 

@@ -24,7 +24,82 @@ defmodule AocLib.Runner do
   end
 
   @doc """
-  Runs the solutions based on command line arguments.
+  Parses command line arguments and returns configuration.
+  Returns {:ok, command, opts} or {:error, message} or :help
+  """
+  @spec parse_args([String.t()]) :: {:ok, String.t() | nil, map()} | {:error, String.t()} | :help
+  def parse_args(args) do
+    {opts, args, invalid} =
+      OptionParser.parse(args,
+        strict: [sample: :boolean, part: :integer, all: :boolean, help: :boolean],
+        aliases: [s: :sample, p: :part, a: :all, h: :help]
+      )
+
+    cond do
+      opts[:help] ->
+        :help
+
+      invalid != [] ->
+        {:error, "Invalid options: #{inspect(invalid)}"}
+
+      true ->
+        command = List.first(args)
+        validate_options(command, opts, args)
+    end
+  end
+
+  defp validate_options(command, opts, args) do
+    use_sample = Keyword.get(opts, :sample, false)
+    part = Keyword.get(opts, :part)
+    all = Keyword.get(opts, :all, false)
+
+    case command do
+      "main" ->
+        # main ignores --part, --sample, --all
+        {:ok, "main", %{all: true, part: 1, use_sample: false}}
+
+      "day" ->
+        day_num = Enum.at(args, 1)
+
+        case day_num do
+          nil ->
+            {:error, "Day number required after 'day' command"}
+
+          day_str ->
+            case Integer.parse(day_str) do
+              {day, ""} when day >= 1 and day <= 25 ->
+                cond do
+                  all ->
+                    # --all is given, part is ignored
+                    {:ok, "day#{String.pad_leading(Integer.to_string(day), 2, "0")}",
+                     %{all: true, part: 1, use_sample: use_sample}}
+
+                  part == nil ->
+                    {:error, "--part <1|2> is required unless --all is given"}
+
+                  part not in [1, 2] ->
+                    {:error, "--part must be 1 or 2, got: #{part}"}
+
+                  true ->
+                    {:ok, "day#{String.pad_leading(Integer.to_string(day), 2, "0")}",
+                     %{all: false, part: part, use_sample: use_sample}}
+                end
+
+              _ ->
+                {:error, "Invalid day number: #{day_str}"}
+            end
+        end
+
+      nil ->
+        {:error, "No command specified. Use 'main', 'day N', or 'test'"}
+
+      _ ->
+        {:error, "Unknown command: #{command}. Use 'main', 'day N', or 'test'"}
+    end
+  end
+
+  @doc """
+  Runs the solutions based on parsed configuration.
   """
   @spec run(t(), String.t() | nil, boolean(), 1 | 2, boolean()) :: :ok
   def run(runner, arg, full_day, part, use_sample) do

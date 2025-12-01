@@ -6,15 +6,20 @@ Additionally, there are implementations in python (2023), golang (2015-07, 2016-
 Note that mostly for rust and a bit for zig it made sense to implement a library for reusage of code and structures and what not. Nonetheless the important part of each day should still be in the respective daily file. Moreover, both rust and zigs daily files contain the solution values for that day, so that unit tests can check if some code broke a specific day.
 
 ### Run
-To run, check the main files per year in each languages' directory. There are general entry points for each year in Rust, for 2023 there is also one for Python, for 2024 there is one for zig, and for 2025 there is one for Elixir. Golang only has single single day solutions and needs to be called directly.
+To run solutions, use the main files in each language's directory. Pass `main` to run all days, or specify a day with options.
 
-Run them and pass either `dayXX` as an argument or `main` to run all of them.
-- Rust: `cargo run --release --bin mainYYYY -- dayXX`
-- Python: `python -u ./2023/python/main.py dayXX`
-- Zig: `(zig build -Doptimize=ReleaseFast 2024_main) && (./zig-out/bin/main2024.exe dayXX)`
-- Elixir: `elixir 2025/elixir/main.exs dayXX`
+**Commands:**
+- Rust: `cargo run --release --bin mainYYYY -- [main | day N --part <1|2> [--sample] [--all]]`
+- Python: `python 2023/python/main.py [main | day N --part <1|2> [--sample] [--all]]`
+- Zig: `zig build -Doptimize=ReleaseFast 2024_main && ./zig-out/bin/main2024.exe [main | day N --part <1|2> [--sample] [--all]]`
+- Elixir: `elixir 2025/elixir/main.exs [main | day N --part <1|2> [--sample] [--all]]`
 
-Within the main files there are three config flags which are relevant when running a single day. Use `VERSION` to select part 1 or 2 and `USE_SAMPLE` to choose between sample or real input. Set `ALL` to true to run through all 4 results of that day.
+**Options:**
+- `--part <1|2>`: Run specific part (required unless `--all`)
+- `--sample`: Use sample input instead of real input
+- `--all`: Run both parts (overrides `--part`)
+
+Golang solutions are single-day only and must be run directly.
 
 ### Scripts
 For development, there are two scripts to create rust, zig, or elixir template files for a new [day](./scripts/new_day.sh) (pass year, day and lang as args) or the directory structure for a new [year](./scripts/new_year.sh) (rust only).

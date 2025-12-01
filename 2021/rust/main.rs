@@ -28,11 +28,6 @@ use solutions::day22;
 use solutions::day23;
 use solutions::day24;
 use solutions::day25;
-use std::env;
-
-const ALL: bool = true;
-const VERSION: u8 = 1;
-const USE_SAMPLE: bool = true;
 
 fn create_runner() -> AocRunner {
     let solutions: Vec<Box<dyn Solution>> = vec![
@@ -68,9 +63,8 @@ fn create_runner() -> AocRunner {
 }
 
 fn main() {
-    let arg = env::args().nth(1);
     let runner = create_runner();
-    runner.run(arg, ALL, VERSION, USE_SAMPLE);
+    runner.parse_and_run();
 }
 
 #[cfg(test)]

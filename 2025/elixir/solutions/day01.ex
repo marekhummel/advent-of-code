@@ -24,7 +24,7 @@ defmodule Day01 do
     instructions = parse_instructions(input)
 
     positions =
-      Enum.scan(instructions, {50, 0, 0}, fn {dir, steps}, {current, zeros, _} ->
+      Enum.scan(instructions, {50, 0, 0}, fn {dir, steps}, {current, _, _} ->
         apply_rot(current, steps, dir)
       end)
 

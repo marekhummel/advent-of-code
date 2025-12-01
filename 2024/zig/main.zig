@@ -27,16 +27,12 @@ const day23 = @import("solutions/day23.zig");
 const day24 = @import("solutions/day24.zig");
 const day25 = @import("solutions/day25.zig");
 
-const ALL: bool = true;
-const PART: u8 = 1;
-const USE_SAMPLE: bool = true;
-
 // Should usually be yes, but disable to catch "missed opportunities" for early frees
 const USE_ARENA: bool = true;
 
 pub fn main() !void {
     var runner = createRunner();
-    try runner.run(ALL, PART, USE_SAMPLE);
+    try runner.parseAndRun();
 }
 
 fn createRunner() aoc_lib.runner.AocRunner {

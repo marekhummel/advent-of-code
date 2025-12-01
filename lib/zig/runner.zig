@@ -2,6 +2,12 @@ const std = @import("std");
 const solution = @import("solution.zig");
 const types = @import("types.zig");
 
+pub const RunConfig = struct {
+    all: bool,
+    part: u8,
+    use_sample: bool,
+};
+
 pub const AocRunner = struct {
     year: u16,
     solutions: [25]?solution.Solution,
@@ -16,6 +22,98 @@ pub const AocRunner = struct {
             .solutions = solutions,
             .arena_enabled = use_arena,
         };
+    }
+
+    pub fn parseAndRun(self: *AocRunner) !void {
+        var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+        self._allocator = gpa.allocator();
+        defer {
+            const deinit_status = gpa.deinit();
+            if (deinit_status == .leak) std.debug.print("LEAK", .{});
+        }
+
+        const args = try std.process.argsAlloc(self._allocator);
+        defer std.process.argsFree(self._allocator, args);
+
+        if (args.len < 2) {
+            std.debug.print("Usage: {s} [main | day N --part <1|2> [--sample] [--all]]\n", .{args[0]});
+            return;
+        }
+
+        const cmd = args[1];
+
+        if (std.mem.eql(u8, cmd, "main")) {
+            try self.runFullYear();
+            return;
+        }
+
+        if (std.mem.eql(u8, cmd, "day")) {
+            if (args.len < 3) {
+                std.debug.print("Error: Day number required after 'day' command\n", .{});
+                return;
+            }
+
+            const day = std.fmt.parseInt(u8, args[2], 10) catch {
+                std.debug.print("Error: Invalid day number: {s}\n", .{args[2]});
+                return;
+            };
+
+            if (day < 1 or day > 25) {
+                std.debug.print("Error: Day must be between 1 and 25, got: {d}\n", .{day});
+                return;
+            }
+
+            const config = try self.parseConfig(args[3..]);
+
+            if (config.all) {
+                try self.runDay(day);
+            } else {
+                try self.runSingle(day, config.part, config.use_sample);
+            }
+            return;
+        }
+
+        std.debug.print("Error: Unknown command: {s}. Use 'main' or 'day N'\n", .{cmd});
+    }
+
+    fn parseConfig(_: *AocRunner, args: [][]const u8) !RunConfig {
+        var config = RunConfig{
+            .all = false,
+            .part = 0,
+            .use_sample = false,
+        };
+
+        var i: usize = 0;
+        while (i < args.len) : (i += 1) {
+            const arg = args[i];
+
+            if (std.mem.eql(u8, arg, "--all") or std.mem.eql(u8, arg, "-a")) {
+                config.all = true;
+            } else if (std.mem.eql(u8, arg, "--sample") or std.mem.eql(u8, arg, "-s")) {
+                config.use_sample = true;
+            } else if (std.mem.eql(u8, arg, "--part") or std.mem.eql(u8, arg, "-p")) {
+                if (i + 1 >= args.len) {
+                    std.debug.print("Error: --part requires a value\n", .{});
+                    return error.InvalidArgs;
+                }
+                i += 1;
+                config.part = std.fmt.parseInt(u8, args[i], 10) catch {
+                    std.debug.print("Error: Invalid part number: {s}\n", .{args[i]});
+                    return error.InvalidArgs;
+                };
+                if (config.part != 1 and config.part != 2) {
+                    std.debug.print("Error: --part must be 1 or 2, got: {d}\n", .{config.part});
+                    return error.InvalidArgs;
+                }
+            }
+        }
+
+        if (!config.all and config.part == 0) {
+            std.debug.print("Error: --part <1|2> is required unless --all is given\n", .{});
+            return error.InvalidArgs;
+        }
+
+        return config;
     }
 
     pub fn run(self: *AocRunner, full_day: bool, part: u8, use_sample: bool) !void {
