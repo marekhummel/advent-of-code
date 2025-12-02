@@ -37,8 +37,8 @@ elif [ "$lang" = "elixir" ] ; then
     sed -i s:YYYY:$year: $year/elixir/solutions/day$day.ex
 
     # Add require_file line after the last existing require_file
-    last_require_line=$(grep -n "Code.require_file(\"solutions" $year/elixir/main.exs | tail -1 | cut -d: -f1)
-    sed -i "$(($last_require_line)) a\Code.require_file(\"solutions/day$day.ex\")" $year/elixir/main.exs
+    last_require_line=$(grep -n "Code.require_file(Path.join(\[script_dir, \"solutions" $year/elixir/main.exs | tail -1 | cut -d: -f1)
+    sed -i "$(($last_require_line)) a\Code.require_file(Path.join(\[script_dir, \"solutions\", \"day$day.ex\"\]))" $year/elixir/main.exs
 
     # Add module to solutions list (after the previous day or Day01)
     if [ $2 -eq 1 ]; then

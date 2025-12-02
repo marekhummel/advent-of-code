@@ -276,7 +276,7 @@ defmodule AocLib.Runner do
           {time_acc, match} ->
             case get_result(runner, day, part, use_sample) do
               {:ok, {result, elapsed}} ->
-                sample_idx = if use_sample, do: 1, else: 0
+                sample_idx = if use_sample, do: 0, else: 1
 
                 # Check if result matches expected
                 expected_idx = (part - 1) * 2 + sample_idx
