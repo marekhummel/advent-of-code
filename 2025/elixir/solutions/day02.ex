@@ -37,11 +37,12 @@ defmodule Day02 do
     |> Enum.sum()
   end
 
+  @spec parse_range(String.t()) :: [{non_neg_integer(), non_neg_integer(), non_neg_integer()}]
   defp parse_range(range_str) do
     # Parses a input range string into a list of ranges, split by length of digits
     # E.G.: "95-1234" becomes [{2, 95, 99}, {3, 100, 999}, {4, 1000, 1234}]
-    [left, right] = String.split(range_str, "-", parts: 2) |> Enum.map(&String.to_integer/1)
 
+    [left, right] = String.split(range_str, "-", parts: 2) |> Enum.map(&String.to_integer/1)
     left_digits = Util.count_digits(left)
     right_digits = Util.count_digits(right)
 
@@ -56,13 +57,18 @@ defmodule Day02 do
     end
   end
 
+  @spec find_invalid_ids({non_neg_integer(), non_neg_integer(), non_neg_integer()}, Range.t()) ::
+          [non_neg_integer()]
   defp find_invalid_ids({num_digits, from, to}, repeat_range) do
+    # Finds all invalid ids by trying repeating sequences that fit in the range
+
     repeat_range
     |> Enum.filter(fn r -> rem(num_digits, r) == 0 end)
     |> Enum.flat_map(fn r ->
       seq_length = div(num_digits, r)
-      seq_start = div(from, Util.power_of_10(num_digits - seq_length))
-      seq_end = div(to, Util.power_of_10(num_digits - seq_length))
+
+      [seq_start, seq_end] =
+        [from, to] |> Enum.map(&div(&1, Util.power_of_10(num_digits - seq_length)))
 
       seq_start..seq_end
       |> Enum.map(fn seq -> String.to_integer(String.duplicate(to_string(seq), r)) end)
