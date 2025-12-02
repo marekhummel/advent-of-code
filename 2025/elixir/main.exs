@@ -13,6 +13,7 @@ Code.require_file(Path.join([script_dir, "..", "..", "lib", "elixir", "aoc_lib.e
 
 # Import solution modules
 Code.require_file(Path.join([script_dir, "solutions", "day01.ex"]))
+Code.require_file(Path.join([script_dir, "solutions", "day02.ex"]))
 
 defmodule Main do
   @moduledoc """
@@ -51,6 +52,7 @@ defmodule Main do
   def create_runner do
     solutions = [
       Day01,
+      Day02,
       nil,
       nil,
       nil,
