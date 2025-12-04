@@ -15,6 +15,8 @@ Code.require_file(Path.join([script_dir, "..", "..", "lib", "elixir", "aoc_lib.e
 Code.require_file(Path.join([script_dir, "solutions", "day01.ex"]))
 Code.require_file(Path.join([script_dir, "solutions", "day02.ex"]))
 Code.require_file(Path.join([script_dir, "solutions", "day03.ex"]))
+Code.require_file(Path.join([script_dir, "solutions", "day04.ex"]))
+Code.require_file(Path.join([script_dir, "solutions", "day04.ex"]))
 
 defmodule Main do
   @moduledoc """
@@ -55,6 +57,8 @@ defmodule Main do
       Day01,
       Day02,
       Day03,
+      Day04,
+      Day04,
       nil,
       nil,
       nil,
