@@ -6,7 +6,6 @@ defmodule Day04 do
   @behaviour AocLib.Solution
 
   alias AocLib.Types.ProblemInput
-  alias AocLib.Util.Grid
 
   @impl true
   def results do
