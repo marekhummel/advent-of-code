@@ -32,7 +32,7 @@ defmodule Day08 do
         uf_acc -> UnionFind.union(uf_acc, a, b)
       end
 
-    # Find largest 3 circuits (sets gives root and member count)
+    # Find largest 3 circuits (sets() gives root and member count)
     {circuits, _} = UnionFind.sets(uf)
     circuits |> Map.values() |> Enum.sort(:desc) |> Enum.take(3) |> Enum.product()
   end
