@@ -1,14 +1,17 @@
-from solution import ProblemInput, Solution
+from lib.python import ProblemInput, ProblemResult, Solution
 
 
 class Solution24(Solution):
-    def __init__(self) -> None:
-        super().__init__(24)
+    @staticmethod
+    def results() -> list[ProblemResult]:
+        return [None, None, 47, 880547248556435]
 
-    def _solve_version01(self, data: ProblemInput) -> int:
-        return -1
+    @staticmethod
+    def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
+        return None
 
-    def _solve_version02(self, data: ProblemInput) -> int:
+    @staticmethod
+    def solve_part02(data: ProblemInput, is_sample: bool) -> ProblemResult:
         hailstones = parse(data)
 
         # Check rust version to understand terms
@@ -33,7 +36,7 @@ class Solution24(Solution):
         ]
 
         x = solve_cramer(a, b)
-        print(x)
+        # print(x)
         return sum(x[:3])
 
 

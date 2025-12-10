@@ -1,16 +1,20 @@
-from solution import ProblemInput, Solution
 from functools import cache
+
+from lib.python import ProblemInput, ProblemResult, Solution
 
 
 class Solution12(Solution):
-    def __init__(self) -> None:
-        super().__init__(12)
+    @staticmethod
+    def results() -> list[ProblemResult]:
+        return [21, 7716, 525152, 18716325559999]
 
-    def _solve_version01(self, data: ProblemInput) -> int:
+    @staticmethod
+    def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
         lines = parse(data)
         return sum(find_arrangements(*args, None) for args in lines)
 
-    def _solve_version02(self, data: ProblemInput) -> int:
+    @staticmethod
+    def solve_part02(data: ProblemInput, is_sample: bool) -> ProblemResult:
         lines = parse2(data)
         return sum(find_arrangements(*args, None) for args in lines)
 

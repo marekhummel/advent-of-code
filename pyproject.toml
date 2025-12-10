@@ -18,7 +18,8 @@ build-backend = "poetry.core.masonry.api"
 
 
 [tool.ruff]
-extend-exclude = ["test/"]
+extend-exclude = ["test/", "scripts/"]
+line-length = 99
 
 [tool.ruff.lint]
 extend-select = ["F", "E", "W", "I", "N", "LOG", "SIM", "UP"]
@@ -34,6 +35,10 @@ extend-ignore = [
 
 [tool.mypy]
 python_version = "3.12"
+# Note: Multiple year directories have conflicting 'python' module names.
+# Check each year separately: mypy lib 2023/python
+#                         or: mypy lib 2025/python
+# Use scripts/check_types.sh to check all years at once.
 
 [[tool.mypy.overrides]]
 module = []

@@ -1,18 +1,21 @@
-from solution import ProblemInput, Solution
+from lib.python import ProblemInput, ProblemResult, Solution
 
 Number = tuple[int, int, int, int]
 Symbol = tuple[str, int, int]
 
 
 class Solution03(Solution):
-    def __init__(self) -> None:
-        super().__init__(3)
+    @staticmethod
+    def results() -> list[ProblemResult]:
+        return [4361, 550064, 467835, 85010461]
 
-    def _solve_version01(self, data: ProblemInput) -> int:
+    @staticmethod
+    def solve_part01(data: ProblemInput, is_sample: bool) -> int:
         numbers, symbols = parse(data)
         return sum(n[0] for n in numbers if is_part(n, symbols))
 
-    def _solve_version02(self, data: ProblemInput) -> int:
+    @staticmethod
+    def solve_part02(data: ProblemInput, is_sample: bool) -> int:
         numbers, symbols = parse(data)
         return sum(gear_ratio(s, numbers) for s in symbols)
 
@@ -35,6 +38,9 @@ def parse(lines: list[str]) -> tuple[list[Number], list[Symbol]]:
 
                 if char != "." and char != "\n":
                     symbols.append((char, i, j))
+
+        if number != "":
+            numbers.append((int(number), i, number_start, len(line) - 1))
 
     return numbers, symbols
 
@@ -62,7 +68,7 @@ def gear_ratio(symbol: Symbol, numbers: list[Number]) -> int:
         if sym_row == num_row and (sym_col == num_col_start - 1 or sym_col == num_col_end + 1):
             part_numbers.append(num)
             continue
-        if (sym_row == num_row - 1 or sym_row == num_row + 1) and num_col_start - 1 <= sym_col <= num_col_end + 1:
+        if abs(sym_row - num_row) == 1 and num_col_start - 1 <= sym_col <= num_col_end + 1:
             part_numbers.append(num)
             continue
 

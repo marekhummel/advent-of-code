@@ -1,24 +1,37 @@
 from functools import reduce
 from itertools import zip_longest
-from solution import ProblemInput, Solution
 from typing import NamedTuple
 
+from lib.python import ProblemInput, ProblemResult, Solution
 
-MapEntry = NamedTuple("MapEntry", [("dst", int), ("src", int), ("len", int)])
+
+class MapEntry(NamedTuple):
+    dst: int
+    src: int
+    len: int
+
+
 Seed = int
 Map = list[MapEntry]
-SeedRange = NamedTuple("SeedRange", [("start", int), ("len", int)])
+
+
+class SeedRange(NamedTuple):
+    start: int
+    len: int
 
 
 class Solution05(Solution):
-    def __init__(self) -> None:
-        super().__init__(5)
+    @staticmethod
+    def results() -> list[ProblemResult]:
+        return [35, 379811651, 46, 27992443]
 
-    def _solve_version01(self, data: ProblemInput) -> int:
+    @staticmethod
+    def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
         seeds, maps = parse(data)
         return min(reduce(apply_map, maps, s) for s in seeds)
 
-    def _solve_version02(self, data: ProblemInput) -> int:
+    @staticmethod
+    def solve_part02(data: ProblemInput, is_sample: bool) -> ProblemResult:
         seeds, maps = parse2(data)
         return min(sr.start for s in seeds for sr in reduce(apply_map2, maps, [s]))
 
@@ -51,7 +64,11 @@ def parse2(lines: ProblemInput) -> tuple[list[SeedRange], list[Map]]:
 
 def apply_map(value: Seed, m: Map) -> Seed:
     return next(
-        (entry.dst + (value - entry.src) for entry in m if value in range(entry.src, entry.src + entry.len)),
+        (
+            entry.dst + (value - entry.src)
+            for entry in m
+            if value in range(entry.src, entry.src + entry.len)
+        ),
         value,
     )
 
@@ -73,7 +90,9 @@ def apply_map2(values: list[SeedRange], m: Map) -> list[SeedRange]:
                 # Two ranges, start fits in current map entry
                 mapped_len = (entry.src + entry.len) - value.start
                 mapped_values.append(SeedRange(entry.dst + (value.start - entry.src), mapped_len))
-                remaining_values.append(SeedRange(value.start + mapped_len, value.len - mapped_len))
+                remaining_values.append(
+                    SeedRange(value.start + mapped_len, value.len - mapped_len)
+                )
                 break
             elif tail_fits:
                 # Two ranges, end fits in current map entry

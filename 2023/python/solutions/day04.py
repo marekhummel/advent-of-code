@@ -1,14 +1,17 @@
-from solution import ProblemInput, Solution
+from lib.python import ProblemInput, ProblemResult, Solution
 
 
 class Solution04(Solution):
-    def __init__(self) -> None:
-        super().__init__(4)
+    @staticmethod
+    def results() -> list[ProblemResult]:
+        return [13, 26443, 30, 6284877]
 
-    def _solve_version01(self, data: ProblemInput) -> int:
+    @staticmethod
+    def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
         return sum(compute_value(winning, mine) for winning, mine in parse(data))
 
-    def _solve_version02(self, data: ProblemInput) -> int:
+    @staticmethod
+    def solve_part02(data: ProblemInput, is_sample: bool) -> ProblemResult:
         copies = [1] * len(data)
         for i, (winning, mine) in enumerate(parse(data)):
             value = count_hits(winning, mine)

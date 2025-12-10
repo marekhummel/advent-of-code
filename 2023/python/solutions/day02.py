@@ -1,17 +1,20 @@
 from functools import reduce
 from itertools import starmap
 
-from solution import ProblemInput, Solution
+from lib.python import ProblemInput, ProblemResult, Solution
 
 
 class Solution02(Solution):
-    def __init__(self) -> None:
-        super().__init__(2)
+    @staticmethod
+    def results() -> list[ProblemResult]:
+        return [8, 2476, 2286, 54911]
 
-    def _solve_version01(self, data: ProblemInput) -> int:
+    @staticmethod
+    def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
         return sum(g for g, reveals in parse(data) if valid(reveals, 12, 13, 14))
 
-    def _solve_version02(self, data: ProblemInput) -> int:
+    @staticmethod
+    def solve_part02(data: ProblemInput, is_sample: bool) -> ProblemResult:
         return sum(power(reveals) for _, reveals in parse(data))
 
 

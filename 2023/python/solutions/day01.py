@@ -1,14 +1,17 @@
-from solution import ProblemInput, Solution
+from lib.python import ProblemInput, ProblemResult, Solution
 
 
 class Solution01(Solution):
-    def __init__(self) -> None:
-        super().__init__(1)
+    @staticmethod
+    def results() -> list[ProblemResult]:
+        return [142, 55971, 281, 54719]
 
-    def _solve_version01(self, data: ProblemInput) -> int:
+    @staticmethod
+    def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
         return sum(value01(line) for line in data)
 
-    def _solve_version02(self, data: ProblemInput) -> int:
+    @staticmethod
+    def solve_part02(data: ProblemInput, is_sample: bool) -> ProblemResult:
         return sum(value02(line) for line in data)
 
 
@@ -18,10 +21,28 @@ def value01(s: str) -> int:
     return int(first + last)
 
 
-digits = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", *"0123456789"]
+digits = [
+    "zero",
+    "one",
+    "two",
+    "three",
+    "four",
+    "five",
+    "six",
+    "seven",
+    "eight",
+    "nine",
+    *"0123456789",
+]
 
 
 def value02(s: str) -> int:
-    first = min([(p, i % 10) for i, d in enumerate(digits) if (p := s.find(d)) >= 0], key=lambda tpl: tpl[0])[1]
-    last = max([(p, i % 10) for i, d in enumerate(digits) if (p := s.rfind(d)) >= 0], key=lambda tpl: tpl[0])[1]
+    first = min(
+        [(p, i % 10) for i, d in enumerate(digits) if (p := s.find(d)) >= 0],
+        key=lambda tpl: tpl[0],
+    )[1]
+    last = max(
+        [(p, i % 10) for i, d in enumerate(digits) if (p := s.rfind(d)) >= 0],
+        key=lambda tpl: tpl[0],
+    )[1]
     return first * 10 + last
