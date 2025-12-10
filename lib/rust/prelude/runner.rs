@@ -63,7 +63,7 @@ impl AocRunner {
             Commands::Day(args) => {
                 let day = args.day as usize;
 
-                if day < 1 || day > 25 {
+                if !(1..=25).contains(&day) {
                     eprintln!("Error: Day must be between 1 and 25, got: {}", day);
                     std::process::exit(1);
                 }
