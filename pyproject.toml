@@ -7,6 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
+pulp = "^3.3.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.8.1"
@@ -41,6 +42,6 @@ python_version = "3.12"
 # Use scripts/check_types.sh to check all years at once.
 
 [[tool.mypy.overrides]]
-module = []
+module = ["pulp"]
 ignore_errors = true
 ignore_missing_imports = true
