@@ -46,7 +46,7 @@ defmodule Day05 do
     exclusive_ranges |> Enum.map(&Range.size/1) |> Enum.sum()
   end
 
-  def parse_input(input) do
+  defp parse_input(input) do
     lines = ProblemInput.lines(input)
 
     {first_part, rest} = Enum.split_while(lines, &(&1 != ""))

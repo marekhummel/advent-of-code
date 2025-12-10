@@ -18,6 +18,13 @@ defmodule AocLib.Util do
   def power_of_10(exp), do: trunc(:math.pow(10, exp))
 
   @doc """
+  Converts a boolean to an integer (1 for true, 0 for false).
+  """
+  @spec bool_to_int(boolean()) :: 0 | 1
+  def bool_to_int(true), do: 1
+  def bool_to_int(false), do: 0
+
+  @doc """
   Transposes a grid (list of lists).
   """
   @spec grid_transpose([[any()]], any()) :: [[any()]]

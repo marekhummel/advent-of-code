@@ -6,6 +6,7 @@ defmodule Day01 do
   @behaviour AocLib.Solution
 
   alias AocLib.Types.ProblemInput
+  alias AocLib.Util
 
   @impl true
   def results do
@@ -81,6 +82,6 @@ defmodule Day01 do
         over_zero
       end
 
-    {dest, if(dest == 0, do: 1, else: 0), over_zero}
+    {dest, Util.bool_to_int(dest == 0), over_zero}
   end
 end

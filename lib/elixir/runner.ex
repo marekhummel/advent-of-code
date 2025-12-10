@@ -235,19 +235,15 @@ defmodule AocLib.Runner do
                   use_sample <- [true, false],
                   reduce: 0.0 do
                 acc ->
+                  input = Enum.at(@sample_str, if(use_sample, do: 0, else: 1))
+
                   case get_result(runner, day, part, use_sample) do
                     {:ok, {result, elapsed}} ->
-                      sample_idx = if use_sample, do: 1, else: 0
-
-                      IO.puts(
-                        "  P#{part} #{Enum.at(@sample_str, sample_idx)}:  #{ProblemResult.format(result)}"
-                      )
-
+                      IO.puts("  P#{part} #{input}:  #{ProblemResult.format(result)}")
                       acc + elapsed
 
                     {:error, _reason} ->
-                      sample_idx = if use_sample, do: 1, else: 0
-                      IO.puts("  P#{part} #{Enum.at(@sample_str, sample_idx)}:  <Error>")
+                      IO.puts("  P#{part} #{input}:  <Error>")
                       acc
                   end
               end
