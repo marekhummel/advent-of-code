@@ -41,12 +41,12 @@ def parse(lines: ProblemInput) -> tuple[list[Seed], list[Map]]:
     maps = []
     current_map: list[MapEntry] = []
     for line in lines[2:]:
-        if line.isspace():
+        if not line or line.isspace():
             maps.append(current_map)
             current_map = []
             continue
 
-        if line.endswith("map:\n"):
+        if line.rstrip().endswith("map:"):
             continue
 
         d, s, l = [int(n) for n in line.split()]

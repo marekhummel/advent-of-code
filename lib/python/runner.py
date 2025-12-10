@@ -3,6 +3,7 @@
 import argparse
 import os
 import sys
+import traceback
 from typing import Any
 
 from .solution import ProblemInput, ProblemResult, Solution
@@ -23,7 +24,7 @@ class Runner:
         self.solutions = solutions
 
     @staticmethod
-    def parse_args(args: list[str] | None = None) -> tuple[str | None, dict[str, Any]]:
+    def parse_args(args: list[str] | None = None) -> tuple[str | tuple[str, int], dict[str, Any]]:
         """
         Parses command line arguments and returns configuration.
 
@@ -72,19 +73,20 @@ class Runner:
                 print("Error: --part <1|2> is required unless --all is given")
                 sys.exit(1)
 
-            day_str = f"day{day:02d}"
             options = {
                 "all": parsed.all if parsed.all else False,
                 "part": parsed.part if parsed.part else 1,
                 "use_sample": parsed.sample if parsed.sample else False,
             }
-            return day_str, options
+            return ("day", day), options
 
         else:
             parser.print_help()
             sys.exit(1)
 
-    def run(self, command: str | None, full_day: bool, part: int, use_sample: bool) -> None:
+    def run(
+        self, command: str | tuple[str, int], full_day: bool, part: int, use_sample: bool
+    ) -> None:
         """
         Runs the solutions based on parsed configuration.
 
@@ -100,9 +102,9 @@ class Runner:
 
         if command == "main":
             self._run_full_year()
-        elif command.startswith("day"):
+        elif command[0] == "day":
             try:
-                day = int(command[3:])
+                day = int(command[1])
                 if full_day:
                     self._run_day(day)
                 else:
@@ -243,6 +245,8 @@ class Runner:
 
         for part in [1, 2]:
             for use_sample in [True, False]:
+                sample_str = "samp" if use_sample else "real"
+
                 try:
                     result, duration = self._get_result(day, part, use_sample)
                     day_elapsed += duration
@@ -252,11 +256,9 @@ class Runner:
                     expected = expected_results[expected_idx]
                     matches_expected = matches_expected and (result == expected)
 
-                    sample_str = "samp" if use_sample else "real"
                     formatted = self._format_result(result)
                     print(f"P{part} {sample_str} in {duration:10.4f}s:    {formatted}")
                 except Exception as e:
-                    sample_str = "samp" if use_sample else "real"
                     print(f"P{part} {sample_str}:  <Error: {str(e)}>")
 
         print(f"\nTotal Runtime: {day_elapsed:.4f}s")
@@ -271,5 +273,5 @@ class Runner:
 
             print(f"Day {day:02d} / part {part} / Data '{sample_str}' => {elapsed:.4f}s")
             print(self._format_result(result))
-        except Exception as e:
-            print(f"Error: {str(e)}")
+        except Exception:
+            traceback.print_exc()
