@@ -28,7 +28,7 @@ defmodule Day10 do
   end
 
   @impl true
-  def solve_part02(input, _is_sample) do
+  def solve_part02(_input, _is_sample) do
     # There is no ILP solver library for elixir, any BFS / DFS solutions were too slow
     # Check python for solution using PuLP
     :unsolved
