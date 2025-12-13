@@ -1,5 +1,7 @@
 # 2022
 
+Solved in Rust
+
 ### Overview
 ![Overview](2022_overview.png)
 

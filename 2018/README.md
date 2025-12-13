@@ -1,5 +1,7 @@
 # 2018
 
+Solved in Rust
+
 ### Overview
 ![Overview](2018_overview.png)
 

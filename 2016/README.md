@@ -1,5 +1,7 @@
 # 2016
 
+Solved in Rust, partially in golang (d10)
+
 ### Overview
 ![Overview](2016_overview.png)
 
