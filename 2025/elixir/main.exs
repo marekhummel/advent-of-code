@@ -24,6 +24,7 @@ Code.require_file(Path.join([script_dir, "solutions", "day08.ex"]))
 Code.require_file(Path.join([script_dir, "solutions", "day09.ex"]))
 Code.require_file(Path.join([script_dir, "solutions", "day10.ex"]))
 Code.require_file(Path.join([script_dir, "solutions", "day11.ex"]))
+Code.require_file(Path.join([script_dir, "solutions", "day12.ex"]))
 
 defmodule Main do
   @moduledoc """
@@ -72,6 +73,7 @@ defmodule Main do
       Day09,
       Day10,
       Day11,
+      Day12,
       nil,
       nil,
       nil,
