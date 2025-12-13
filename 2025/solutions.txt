@@ -1,0 +1,90 @@
+Day 01:
+  P1 real:  3
+  P1 samp:  1177
+  P2 real:  6
+  P2 samp:  6768
+  > Runtime: 0.0032s
+
+Day 02:
+  P1 real:  1227775554
+  P1 samp:  12586854255
+  P2 real:  4174379265
+  P2 samp:  17298174201
+  > Runtime: 0.0005s
+
+Day 03:
+  P1 real:  357
+  P1 samp:  17095
+  P2 real:  3121910778619
+  P2 samp:  168794698570517
+  > Runtime: 0.0152s
+
+Day 04:
+  P1 real:  13
+  P1 samp:  1349
+  P2 real:  43
+  P2 samp:  8277
+  > Runtime: 0.3033s
+
+Day 05:
+  P1 real:  3
+  P1 samp:  775
+  P2 real:  14
+  P2 samp:  350684792662845
+  > Runtime: 0.0260s
+
+Day 06:
+  P1 real:  4277556
+  P1 samp:  7644505810277
+  P2 real:  3263827
+  P2 samp:  12841228084455
+  > Runtime: 0.0063s
+
+Day 07:
+  P1 real:  21
+  P1 samp:  1598
+  P2 real:  40
+  P2 samp:  4509723641302
+  > Runtime: 0.0063s
+
+Day 08:
+  P1 real:  40
+  P1 samp:  131150
+  P2 real:  25272
+  P2 samp:  2497445
+  > Runtime: 0.5441s
+
+Day 09:
+  P1 real:  50
+  P1 samp:  4782896435
+  P2 real:  24
+  P2 samp:  1540060480
+  > Runtime: 0.0737s
+
+Day 10 (ELIXIR):
+  P1 real:  7
+  P1 samp:  422
+  P2 real:  <No Solution Implemented>
+  P2 samp:  <No Solution Implemented>
+  > Runtime: 0.0036s
+
+Day 10 (PYTHON):
+  P1 samp:  <No Solution>
+  P1 real:  <No Solution>
+  P2 samp:  33
+  P2 real:  16361
+  > Runtime: 0.2131s
+
+Day 11:
+  P1 real:  5
+  P1 samp:  511
+  P2 real:  2
+  P2 samp:  458618114529380
+  > Runtime: 0.0011s
+
+Day 12:
+  P1 real:  <No Solution Implemented>
+  P1 samp:  448
+  P2 real:  <No Part Two>
+  P2 samp:  <No Part Two>
+  > Runtime: 0.0015s

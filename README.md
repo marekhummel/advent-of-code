@@ -1,9 +1,10 @@
 # Advent Of Code
 Advent Of Code solutions.
 Contains solutions for all years from 2015 to 2025, most of them solved in Rust (2015 - 2023).
-Additionally, there are implementations in python (2023 partially, 2025-10), golang (2015-07, 2016-10, 2024-24), zig (2024) and elixir (2025).
+Each year has a main language (2015-2023 in Rust, 2024 in zig, 2025 in elixir).
+Additionally, there are single day implementations in python (2023 and 2025), golang (2015-07, 2016-10, 2024-24).
 
-Note that mostly for rust and a bit for zig it made sense to implement a library for reusage of code and structures and what not. Nonetheless the important part of each day should still be in the respective daily file. Moreover, both rust and zigs daily files contain the solution values for that day, so that unit tests can check if some code broke a specific day.
+Note that for rust, zig, python and elixir it made sense to implement a library for reusage of code and structures and what not. Nonetheless the important part of each day should still be in the respective daily file. Moreover, the daily files contain the solution values for that day, so that unit tests can check if some code broke a specific day.
 
 ### Run
 To run solutions, use the main files in each language's directory. Pass `main` to run all days, or specify a day with options.
