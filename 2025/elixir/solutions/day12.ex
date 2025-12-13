@@ -46,6 +46,10 @@ defmodule Day12 do
           end
       end
 
+    # This suffices, as the presents are almost a full 3x3 box each, so clever packing doesnt help us much,
+    # as long as the region is large enough to hold them all in lattice like 3x3 areas. Alternatively, one
+    # could implement a full packing algorithm like DLX (Dancing Links with Knuths Algorithm X) for any
+    # case thats classified as unsure. Since there are none (except in the sample case), why bother.
     if not is_sample and unsure == 0, do: valid, else: :unsolved
   end
 

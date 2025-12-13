@@ -1,6 +1,6 @@
 # 2025
 
-Solved in Elixir, partially in python (d10p2, d12)
+Solved in Elixir, partially in python (d10p2)
 
 ### Overview
 ![Overview](2025_overview.png)
