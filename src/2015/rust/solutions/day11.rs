@@ -74,15 +74,6 @@ impl Solution11 {
 }
 
 impl Solution for Solution11 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::String("abcdffaa".to_string()),
-            ProblemResult::String("hxbxxyzz".to_string()),
-            ProblemResult::String("abcdffbb".to_string()),
-            ProblemResult::String("hxcaabcc".to_string()),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let pwd = Self::parse(input);
         let new_pwd = Self::iterate_next(&pwd);

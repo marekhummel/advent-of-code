@@ -11,15 +11,6 @@ impl Solution01 {
 }
 
 impl Solution for Solution01 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(514579),
-            ProblemResult::U32(970816),
-            ProblemResult::U32(241861950),
-            ProblemResult::U32(96047280),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let entries = Self::parse(input);
 

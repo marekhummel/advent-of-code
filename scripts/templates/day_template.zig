@@ -4,15 +4,6 @@ const Allocator = std.mem.Allocator;
 const ProblemInput = aoc_lib.types.ProblemInput;
 const Result = aoc_lib.types.Result;
 
-pub fn results() [4]Result {
-    return .{
-        Result.Unsolved,
-        Result.Unsolved,
-        Result.Unsolved,
-        Result.Unsolved,
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = allocator;
     _ = input;

@@ -7,15 +7,6 @@ const Grid = aoc_lib.types.Grid;
 const Direction = aoc_lib.cartesian.Direction;
 const Index = aoc_lib.cartesian.Index;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .USize = 10092 },
-        Result{ .USize = 1479679 },
-        Result{ .USize = 9021 },
-        Result{ .USize = 1509780 },
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     var warehouse, var robot, const moves = try parseInput(input, false, allocator);

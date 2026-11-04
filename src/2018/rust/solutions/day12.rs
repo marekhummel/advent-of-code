@@ -47,15 +47,6 @@ impl Solution12 {
 }
 
 impl Solution for Solution12 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I64(325),
-            ProblemResult::I64(1816),
-            ProblemResult::I64(999999999374),
-            ProblemResult::I64(399999999957),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (initial_state, rules) = Self::parse(input);
 

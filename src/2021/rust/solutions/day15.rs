@@ -41,15 +41,6 @@ impl Solution15 {
 }
 
 impl Solution for Solution15 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I64(40),
-            ProblemResult::I64(696),
-            ProblemResult::I64(315),
-            ProblemResult::I64(2952),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let cave_grid = input.grid().map_elements(|c| *c as u8 - b'0');
         Self::find_lowest_risk(&cave_grid).to_result()

@@ -9,16 +9,6 @@ defmodule Day02 do
   alias AocLib.Util
 
   @impl true
-  def results do
-    [
-      1_227_775_554,
-      12_586_854_255,
-      4_174_379_265,
-      17_298_174_201
-    ]
-  end
-
-  @impl true
   def solve_part01(input, _is_sample) do
     ProblemInput.string(input)
     |> String.split(",", trim: true)

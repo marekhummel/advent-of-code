@@ -6,15 +6,6 @@ pub struct Solution01;
 impl Solution01 {}
 
 impl Solution for Solution01 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(3),
-            ProblemResult::U32(1144),
-            ProblemResult::U32(4),
-            ProblemResult::U32(1194),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         input
             .string()

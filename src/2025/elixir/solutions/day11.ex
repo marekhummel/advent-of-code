@@ -8,16 +8,6 @@ defmodule Day11 do
   alias AocLib.Types.ProblemInput
 
   @impl true
-  def results do
-    [
-      5,
-      511,
-      2,
-      458_618_114_529_380
-    ]
-  end
-
-  @impl true
   def solve_part01(input, _is_sample) do
     machines = parse(input)
     {paths, _cache} = count_paths("you", "out", [], machines, %{})

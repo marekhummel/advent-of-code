@@ -40,15 +40,6 @@ impl Solution08 {
 }
 
 impl Solution for Solution08 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(6),
-            ProblemResult::USize(116),
-            ProblemResult::String("UPOJFLBCEZ".to_string()),
-            ProblemResult::String("UPOJFLBCEZ".to_string()),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let instructions = Self::parse(input);
         let mut screen = if is_sample {

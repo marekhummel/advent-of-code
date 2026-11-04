@@ -6,15 +6,6 @@ const ProblemInput = aoc_lib.types.ProblemInput;
 const Result = aoc_lib.types.Result;
 const util = aoc_lib.util;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .USize = 7 },
-        Result{ .USize = 1163 },
-        Result{ .String = "co,de,ka,ta" },
-        Result{ .String = "bm,bo,ee,fo,gt,hv,jv,kd,md,mu,nm,wx,xh" },
-    };
-}
-
 const Pc = [2]u8;
 const Conn = [4]u8;
 

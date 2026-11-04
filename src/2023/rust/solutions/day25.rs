@@ -51,15 +51,6 @@ impl Solution25 {
 }
 
 impl Solution for Solution25 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(54),
-            ProblemResult::USize(547080),
-            ProblemResult::NoPartTwo,
-            ProblemResult::NoPartTwo,
-        ]
-    }
-
     // Takes about 13 secs / 3 secs (with and without release)
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut connections = Self::parse(input);

@@ -165,15 +165,6 @@ pub struct Solution25;
 impl Solution25 {}
 
 impl Solution for Solution25 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::NoSample,
-            ProblemResult::String("134227456".to_string()),
-            ProblemResult::NoPartTwo,
-            ProblemResult::NoPartTwo,
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
             return ProblemResult::NoSample;

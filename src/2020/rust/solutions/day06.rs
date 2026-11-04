@@ -6,15 +6,6 @@ pub struct Solution06;
 impl Solution06 {}
 
 impl Solution for Solution06 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(11),
-            ProblemResult::USize(6530),
-            ProblemResult::USize(6),
-            ProblemResult::USize(3323),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         input
             .lines()

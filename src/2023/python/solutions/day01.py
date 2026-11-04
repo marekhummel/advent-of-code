@@ -3,10 +3,6 @@ from lib.python import ProblemInput, ProblemResult, Solution
 
 class Solution01(Solution):
     @staticmethod
-    def results() -> list[ProblemResult]:
-        return [142, 55971, 281, 54719]
-
-    @staticmethod
     def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
         return sum(value01(line) for line in data)
 

@@ -10,15 +10,6 @@ const Size = aoc_lib.cartesian.Size;
 const PathFinding = aoc_lib.graph.PathFinding;
 const freeNested = aoc_lib.util.freeNested;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .UInt32 = 22 },
-        Result{ .UInt32 = 416 },
-        Result{ .String = "6,1" },
-        Result{ .String = "50,23" },
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     const size: Size = if (!is_sample) Size{ .width = 71, .height = 71 } else Size{ .width = 7, .height = 7 };
     const sim_length: usize = if (!is_sample) 1024 else 12;

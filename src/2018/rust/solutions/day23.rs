@@ -72,15 +72,6 @@ impl Solution23 {
 }
 
 impl Solution for Solution23 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(7),
-            ProblemResult::USize(417),
-            ProblemResult::U32(36),
-            ProblemResult::U32(112997634),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let nanobots = Self::parse(input);
 

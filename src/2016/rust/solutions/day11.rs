@@ -125,15 +125,6 @@ impl Solution11 {
 }
 
 impl Solution for Solution11 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(11),
-            ProblemResult::U32(33),
-            ProblemResult::NoSample,
-            ProblemResult::U32(57),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let floors = Self::parse(input);
 

@@ -7,15 +7,6 @@ pub struct Solution07;
 impl Solution07 {}
 
 impl Solution for Solution07 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I128(65210),
-            ProblemResult::I128(13848),
-            ProblemResult::I128(139629729),
-            ProblemResult::I128(12932154),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut thruster_signal = i128::MIN;
         for phase_settings in (0..5).permutations(5) {

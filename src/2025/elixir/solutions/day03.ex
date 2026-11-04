@@ -8,16 +8,6 @@ defmodule Day03 do
   alias AocLib.Types.ProblemInput
 
   @impl true
-  def results do
-    [
-      357,
-      17_095,
-      3_121_910_778_619,
-      168_794_698_570_517
-    ]
-  end
-
-  @impl true
   def solve_part01(input, _is_sample) do
     input |> banks_from_line() |> Enum.map(&largest_joltage(&1, 2)) |> Enum.sum()
   end

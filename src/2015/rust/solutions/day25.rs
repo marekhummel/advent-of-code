@@ -15,15 +15,6 @@ impl Solution25 {
 }
 
 impl Solution for Solution25 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U64(6899651),
-            ProblemResult::U64(8997277),
-            ProblemResult::NoPartTwo,
-            ProblemResult::NoPartTwo,
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (trow, tcol) = Self::parse(input);
         let (mut row, mut col) = (1, 1);

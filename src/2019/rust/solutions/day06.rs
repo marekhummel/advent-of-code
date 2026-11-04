@@ -25,15 +25,6 @@ impl Solution06 {
 }
 
 impl Solution for Solution06 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(42),
-            ProblemResult::U32(344238),
-            ProblemResult::I64(4),
-            ProblemResult::I64(436),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let system = Self::parse(input);
         Self::orbits("COM", &system, 0).to_result()

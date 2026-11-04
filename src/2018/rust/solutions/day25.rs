@@ -31,15 +31,6 @@ impl Solution25 {
 }
 
 impl Solution for Solution25 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(2),
-            ProblemResult::USize(367),
-            ProblemResult::NoPartTwo,
-            ProblemResult::NoPartTwo,
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let points = Self::parse(input);
 

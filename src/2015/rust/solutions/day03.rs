@@ -26,15 +26,6 @@ impl Solution03 {
 }
 
 impl Solution for Solution03 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(2),
-            ProblemResult::USize(2592),
-            ProblemResult::USize(11),
-            ProblemResult::USize(2360),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let directions = Self::parse(input);
         let start = Position::zero();

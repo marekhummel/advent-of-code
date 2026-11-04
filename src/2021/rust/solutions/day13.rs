@@ -46,15 +46,6 @@ impl Solution13 {
 }
 
 impl Solution for Solution13 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(17),
-            ProblemResult::USize(664),
-            ProblemResult::NoSample,
-            ProblemResult::String("EFJKZLBL".to_string()),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (dots, folds) = Self::parse(input);
         let folded = Self::fold(folds[0], dots);

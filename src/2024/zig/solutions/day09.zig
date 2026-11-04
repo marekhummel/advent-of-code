@@ -4,15 +4,6 @@ const Allocator = std.mem.Allocator;
 const ProblemInput = aoc_lib.types.ProblemInput;
 const Result = aoc_lib.types.Result;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .USize = 1928 },
-        Result{ .USize = 6262891638328 },
-        Result{ .USize = 2858 },
-        Result{ .USize = 6287317016845 },
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 

@@ -19,15 +19,6 @@ impl Solution12 {
 }
 
 impl Solution for Solution12 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(6),
-            ProblemResult::USize(378),
-            ProblemResult::USize(2),
-            ProblemResult::USize(204),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let pipes = Self::parse(input);
         let components = pipes.components();

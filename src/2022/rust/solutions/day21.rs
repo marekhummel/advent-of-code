@@ -125,15 +125,6 @@ impl Solution21 {
 }
 
 impl Solution for Solution21 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I64(152),
-            ProblemResult::I64(121868120894282),
-            ProblemResult::I64(301),
-            ProblemResult::I64(3582317956029),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let monkeys: VecDeque<_> = Self::parse(input).into_iter().collect();
         let root = Self::get_root(monkeys, false);

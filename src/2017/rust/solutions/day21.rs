@@ -62,15 +62,6 @@ impl Solution21 {
 }
 
 impl Solution for Solution21 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(12),
-            ProblemResult::USize(188),
-            ProblemResult::USize(12),
-            ProblemResult::USize(2758764),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let rules = Self::parse(input);
         let iterations = if is_sample { 2 } else { 5 };

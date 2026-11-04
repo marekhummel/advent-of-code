@@ -4,15 +4,6 @@ const Allocator = std.mem.Allocator;
 const ProblemInput = aoc_lib.types.ProblemInput;
 const Result = aoc_lib.types.Result;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .UInt64 = 3749 },
-        Result{ .UInt64 = 1430271835320 },
-        Result{ .UInt64 = 11387 },
-        Result{ .UInt64 = 456565678667482 },
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     return Result{ .UInt64 = try calibrate(input, false, allocator) };

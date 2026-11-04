@@ -83,15 +83,6 @@ impl Solution24 {
 }
 
 impl Solution for Solution24 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I64(18),
-            ProblemResult::I64(255),
-            ProblemResult::USize(54),
-            ProblemResult::USize(809),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (valley, start, goal) = Self::parse(input);
 

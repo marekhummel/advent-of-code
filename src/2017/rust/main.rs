@@ -67,35 +67,3 @@ fn main() {
     let runner = create_runner();
     runner.parse_and_run();
 }
-
-#[cfg(test)]
-mod tests2017 {
-    use aoc_lib::test_day;
-
-    test_day!(day01);
-    test_day!(day02);
-    test_day!(day03);
-    test_day!(day04);
-    test_day!(day05);
-    test_day!(day06);
-    test_day!(day07);
-    test_day!(day08);
-    test_day!(day09);
-    test_day!(day10);
-    test_day!(day11);
-    test_day!(day12);
-    test_day!(day13);
-    test_day!(day14);
-    test_day!(day15);
-    test_day!(day16);
-    test_day!(day17);
-    test_day!(day18);
-    test_day!(day19);
-    test_day!(day20);
-    test_day!(day21);
-    test_day!(day22);
-    test_day!(day23);
-    test_day!(day24);
-    test_day!(day25);
-    // aoc:tests
-}

@@ -105,15 +105,6 @@ impl Solution16 {
 }
 
 impl Solution for Solution16 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(1651),
-            ProblemResult::U32(1617),
-            ProblemResult::U32(1707),
-            ProblemResult::U32(2171),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (flow_map, tunnels, valve_aa) = Self::parse(input);
         let better_tunnels = Self::update_tunnel_network(tunnels, &flow_map, valve_aa);

@@ -27,15 +27,6 @@ impl Solution08 {
 }
 
 impl Solution for Solution08 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I32(6),
-            ProblemResult::I32(18827),
-            ProblemResult::U64(6),
-            ProblemResult::U64(20220305520997),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (instruction, network) = self.parse(input);
 

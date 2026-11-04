@@ -98,15 +98,6 @@ impl Solution19 {
 }
 
 impl Solution for Solution19 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U16(33),
-            ProblemResult::U16(1081),
-            ProblemResult::U16(3472),
-            ProblemResult::U16(2415),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let blueprints = Self::parse(input);
         let most_geodes = blueprints.iter().map(|bp| Self::emulate(bp, 24));

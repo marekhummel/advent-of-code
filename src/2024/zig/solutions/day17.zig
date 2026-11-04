@@ -4,15 +4,6 @@ const Allocator = std.mem.Allocator;
 const ProblemInput = aoc_lib.types.ProblemInput;
 const Result = aoc_lib.types.Result;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .String = "4,6,3,5,6,3,5,2,1,0" },
-        Result{ .String = "7,4,2,0,5,0,5,3,7" },
-        Result.NoSample,
-        Result{ .UInt64 = 202991746427434 },
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 

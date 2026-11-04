@@ -5,15 +5,6 @@ const ProblemInput = aoc_lib.types.ProblemInput;
 const Result = aoc_lib.types.Result;
 const startsWith = aoc_lib.util.startsWith;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .USize = 6 },
-        Result{ .USize = 206 },
-        Result{ .USize = 16 },
-        Result{ .USize = 622121814629343 },
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 

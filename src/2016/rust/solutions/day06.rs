@@ -6,15 +6,6 @@ pub struct Solution06;
 impl Solution06 {}
 
 impl Solution for Solution06 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::String("easter".to_string()),
-            ProblemResult::String("mshjnduc".to_string()),
-            ProblemResult::String("advent".to_string()),
-            ProblemResult::String("apfeeebz".to_string()),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         input
             .lines()

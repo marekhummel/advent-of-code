@@ -5,15 +5,6 @@ const ProblemInput = aoc_lib.types.ProblemInput;
 const Result = aoc_lib.types.Result;
 const contains = aoc_lib.util.contains;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .UInt32 = 143 },
-        Result{ .UInt32 = 6034 },
-        Result{ .UInt32 = 123 },
-        Result{ .UInt32 = 6305 },
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 

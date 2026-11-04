@@ -109,15 +109,6 @@ impl Solution17 {
 }
 
 impl Solution for Solution17 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(112),
-            ProblemResult::USize(215),
-            ProblemResult::USize(848),
-            ProblemResult::USize(1728),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let grid = input.grid();
         let (state, min_pos, max_pos) = Self::initial_state::<3>(grid);

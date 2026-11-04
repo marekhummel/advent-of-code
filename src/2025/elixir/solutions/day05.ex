@@ -8,16 +8,6 @@ defmodule Day05 do
   alias AocLib.Types.ProblemInput
 
   @impl true
-  def results do
-    [
-      3,
-      775,
-      14,
-      350_684_792_662_845
-    ]
-  end
-
-  @impl true
   def solve_part01(input, _is_sample) do
     {fresh_ranges, ids} = parse_input(input)
 

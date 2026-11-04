@@ -79,15 +79,6 @@ impl Solution12 {
 }
 
 impl Solution for Solution12 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I32(179),
-            ProblemResult::I32(7758),
-            ProblemResult::U64(2772),
-            ProblemResult::U64(354540398381256),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let moons = Self::parse(input);
         let steps = if is_sample { 10 } else { 1000 };

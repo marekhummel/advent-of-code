@@ -17,7 +17,7 @@ def insert(text: str, marker: str, entry: str) -> str:
     return text.replace(line, f"{indent}{entry}\n{line}", 1)
 
 
-def create_day(root: Path, year: int, day: int, lang: str) -> None:
+def create_day(root: Path, lang: str, year: int, day: int) -> None:
     directory = root / "src" / str(year) / lang
     name = f"day{day:02}"
     destination = (
@@ -43,7 +43,6 @@ def create_day(root: Path, year: int, day: int, lang: str) -> None:
         "rust": [
             ("main.rs", "// aoc:imports", f"use solutions::{name};"),
             ("main.rs", "// aoc:solutions", f"Box::new({name}::Solution{day:02} {{}}),"),
-            ("main.rs", "// aoc:tests", f"test_day!({name});"),
             ("solutions/mod.rs", "// aoc:modules", f"pub mod {name};"),
         ],
         "python": [
@@ -66,7 +65,7 @@ def create_day(root: Path, year: int, day: int, lang: str) -> None:
     }
     template = root / "scripts/templates" / f"day_template.{LANGUAGES[lang]}"
     content = template.read_text().replace("XX", f"{day:02}").replace("YYYY", str(year))
-    changes = {}
+    changes: dict[Path, str] = {}
     for filename, marker, entry in registrations[lang]:
         path = directory / filename
         text = changes[path] if path in changes else path.read_text()
@@ -78,14 +77,14 @@ def create_day(root: Path, year: int, day: int, lang: str) -> None:
         output.write(content)
     for path, text in changes.items():
         path.write_text(text)
-    print(f"Created and registered {year}/{lang} day {day:02}")
+    print(f"Created and registered {lang}/{year} day {day:02}")
 
 
 if __name__ == "__main__":
     import sys
 
     try:
-        year, day, lang = sys.argv[1:]
-        create_day(Path(__file__).resolve().parents[1], int(year), int(day), lang)
+        lang, year, day = sys.argv[1:]
+        create_day(Path(__file__).resolve().parents[1], lang, int(year), int(day))
     except (ValueError, OSError) as error:
         sys.exit(f"Error: {error}")

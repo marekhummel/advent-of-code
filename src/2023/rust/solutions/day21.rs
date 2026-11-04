@@ -46,15 +46,6 @@ impl Solution21 {
 }
 
 impl Solution for Solution21 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(16),
-            ProblemResult::USize(3574),
-            ProblemResult::NoSample,
-            ProblemResult::I128(600090522932119),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let (grid, start) = Self::parse(input);
         let steps = if is_sample { 6 } else { 64 };

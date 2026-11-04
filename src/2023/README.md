@@ -7,6 +7,3 @@ Solved in Rust, partially in python (d01-d06, d12, d24)
 
 ### Final Star
 ![Final Star](../../progress/2023/conclusion.png)
-
-### Solutions
-[Solution File](../../progress/2023/solutions.txt)

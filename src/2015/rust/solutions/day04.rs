@@ -25,15 +25,6 @@ impl Solution04 {
 }
 
 impl Solution for Solution04 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(1048970),
-            ProblemResult::USize(254575),
-            ProblemResult::USize(5714438),
-            ProblemResult::USize(1038736),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let key = input.string();
         Self::find_hash(&key, "00000").to_result()

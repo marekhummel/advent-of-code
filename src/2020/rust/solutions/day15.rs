@@ -26,15 +26,6 @@ impl Solution15 {
 }
 
 impl Solution for Solution15 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(436),
-            ProblemResult::U32(1015),
-            ProblemResult::U32(175594),
-            ProblemResult::U32(201),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let starting_nums = input.string().split(',').parsed().collect_vec();
         Self::play(&starting_nums, 2020).to_result()

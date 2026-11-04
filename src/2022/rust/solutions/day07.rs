@@ -57,15 +57,6 @@ impl Solution07 {
 }
 
 impl Solution for Solution07 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U64(95437),
-            ProblemResult::U64(1844187),
-            ProblemResult::U64(24933642),
-            ProblemResult::U64(4978279),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let tree = Self::parse(input);
         let dir_sizes = tree.keys().map(|dir| Self::dir_size(dir.clone(), &tree));

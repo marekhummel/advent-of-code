@@ -5,15 +5,6 @@ const ProblemInput = aoc_lib.types.ProblemInput;
 const Result = aoc_lib.types.Result;
 const startsWith = aoc_lib.util.startsWith;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .Int32 = 161 },
-        Result{ .Int32 = 183669043 },
-        Result{ .Int32 = 48 },
-        Result{ .Int32 = 59097164 },
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     _ = allocator;

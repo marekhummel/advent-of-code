@@ -46,15 +46,6 @@ impl Solution12 {
 }
 
 impl Solution for Solution12 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(19),
-            ProblemResult::U32(4970),
-            ProblemResult::U32(103),
-            ProblemResult::U32(137948),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let cavenet = Self::parse(input);
         let paths = Self::count_paths(&cavenet, 0);

@@ -31,15 +31,6 @@ impl Solution06 {
 }
 
 impl Solution for Solution06 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(41),
-            ProblemResult::USize(4752),
-            ProblemResult::USize(6),
-            ProblemResult::USize(1719),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let map = input.grid();
         let guard = map.enumerate().find(|(_, &c)| c == '^').unwrap().0;

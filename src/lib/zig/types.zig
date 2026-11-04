@@ -53,31 +53,6 @@ pub const Result = union(enum) {
     }
 };
 
-pub const TimedResult = struct {
-    result: Result,
-    duration: f64,
-
-    pub fn create(result: Result, start_time_ns: i128, end_time_ns: i128) TimedResult {
-        return .{ .result = result, .duration = @as(f64, @floatFromInt(end_time_ns - start_time_ns)) / 1e9 };
-    }
-
-    /// In case the result is of type string, we need to duplicate the heap memory before its freed
-    pub fn clone(self: *const @This(), allocator: std.mem.Allocator) !TimedResult {
-        const result_copy = switch (self.result) {
-            .String => |str_val| Result{ .String = try allocator.dupe(u8, str_val) },
-            else => self.result,
-        };
-        return .{ .result = result_copy, .duration = self.duration };
-    }
-
-    pub fn deinit(self: *const @This(), allocator: std.mem.Allocator) void {
-        switch (self.result) {
-            .String => |str_val| allocator.free(str_val),
-            else => {},
-        }
-    }
-};
-
 pub const ProblemInput = struct {
     lines: [][]u8,
     _string: ?[]u8 = null,
@@ -311,20 +286,4 @@ pub fn Grid(comptime CT: type) type {
             return GridIterator{ .size = self.size, .ref = self.cells };
         }
     };
-}
-
-pub const SolvingError = error{
-    InvalidDay,
-    InvalidPart,
-    MissingSolution,
-    SolvingFailed,
-};
-
-pub fn getErrorDesc(err: SolvingError) []const u8 {
-    switch (err) {
-        SolvingError.InvalidDay => return "<Day Invalid>",
-        SolvingError.InvalidPart => return "<Part Invalid>",
-        SolvingError.MissingSolution => return "<No Solution Implemented>",
-        SolvingError.SolvingFailed => return "<Solution raised error>",
-    }
 }

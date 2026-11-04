@@ -19,15 +19,6 @@ impl Solution08 {
 }
 
 impl Solution for Solution08 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I64(5),
-            ProblemResult::I64(1753),
-            ProblemResult::I64(8),
-            ProblemResult::I64(733),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let boot_code = input.lines();
         let mut acc = 0;

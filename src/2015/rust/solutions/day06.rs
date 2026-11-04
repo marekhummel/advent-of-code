@@ -76,15 +76,6 @@ impl Solution06 {
 }
 
 impl Solution for Solution06 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U128(998996),
-            ProblemResult::U128(400410),
-            ProblemResult::U128(1001996),
-            ProblemResult::U128(15343601),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let instructions = Self::parse(input);
         let (ii, jj) = Self::get_relevant_indices(&instructions);

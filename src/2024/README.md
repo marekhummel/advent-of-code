@@ -7,6 +7,3 @@ Solved in Zig, partially in Rust (d06) and golang (d24)
 
 ### Final Star
 ![Final Star](../../progress/2024/conclusion.png)
-
-### Solutions
-[Solution File](../../progress/2024/solutions.txt)

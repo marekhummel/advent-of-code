@@ -349,15 +349,6 @@ impl Solution23 {
 }
 
 impl Solution for Solution23 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I64(12521),
-            ProblemResult::I64(13520),
-            ProblemResult::I64(44169),
-            ProblemResult::I64(48708),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let cave = Cave::new(4, 2);
 

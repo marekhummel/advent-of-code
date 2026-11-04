@@ -25,15 +25,6 @@ impl Solution10 {
 }
 
 impl Solution for Solution10 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I32(13140),
-            ProblemResult::I32(14620),
-            ProblemResult::NoSample,
-            ProblemResult::String("BJFRHRFU".to_string()),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut instructions = Self::parse(input);
         instructions.insert(0, None); // Insert noop to get x reg during not after

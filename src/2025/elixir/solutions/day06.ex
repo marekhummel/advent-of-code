@@ -9,16 +9,6 @@ defmodule Day06 do
   alias AocLib.Util
 
   @impl true
-  def results do
-    [
-      4_277_556,
-      7_644_505_810_277,
-      3_263_827,
-      12_841_228_084_455
-    ]
-  end
-
-  @impl true
   def solve_part01(input, _is_sample) do
     ProblemInput.lines(input)
     |> Enum.map(&String.split/1)

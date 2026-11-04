@@ -7,6 +7,3 @@ Solved in Rust
 
 ### Final Star
 ![Final Star](../../progress/2017/conclusion.png)
-
-### Solutions
-[Solution File](../../progress/2017/solutions.txt)

@@ -81,15 +81,6 @@ impl Solution13 {
 }
 
 impl Solution for Solution13 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(405),
-            ProblemResult::USize(43614),
-            ProblemResult::USize(400),
-            ProblemResult::USize(36771),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         self.parse(input)
             .into_iter()

@@ -15,15 +15,6 @@ impl Solution02 {
 }
 
 impl Solution for Solution02 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(1985),
-            ProblemResult::USize(35749),
-            ProblemResult::String("5DB3".to_string()),
-            ProblemResult::String("9365C".to_string()),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let pad_size = Size::square(3);
         let mut pos = Index::new(1, 1);

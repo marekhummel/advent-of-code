@@ -22,15 +22,6 @@ impl Solution04 {
 }
 
 impl Solution for Solution04 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(2),
-            ProblemResult::USize(190),
-            ProblemResult::USize(2),
-            ProblemResult::USize(121),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let required = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]; // "cid"
         let passports = Self::parse(input);

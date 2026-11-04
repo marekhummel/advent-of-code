@@ -85,15 +85,6 @@ impl Solution12 {
 }
 
 impl Solution for Solution12 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(21),
-            ProblemResult::USize(7716),
-            ProblemResult::USize(525152),
-            ProblemResult::USize(18716325559999),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut c = Cache::new();
         self.parse(input)

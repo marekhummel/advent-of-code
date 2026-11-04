@@ -6,15 +6,6 @@ pub struct Solution18;
 impl Solution18 {}
 
 impl Solution for Solution18 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I64(4),
-            ProblemResult::I64(2951),
-            ProblemResult::I32(3),
-            ProblemResult::I32(7366),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut prog = Program::parse(&input, true);
 

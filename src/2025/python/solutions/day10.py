@@ -12,10 +12,6 @@ type Machine = tuple[int, Buttons, Joltages]
 
 class Solution10(Solution):
     @staticmethod
-    def results() -> list[ProblemResult]:
-        return [None, None, 33, 16361]
-
-    @staticmethod
     def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
         return None
 

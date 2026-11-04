@@ -113,15 +113,6 @@ impl Solution23 {
 }
 
 impl Solution for Solution23 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(94),
-            ProblemResult::USize(2202),
-            ProblemResult::USize(154),
-            ProblemResult::USize(6226),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (map, start, end) = Self::parse(input);
         let trail_graph = Self::create_trail_graph(&map, true);

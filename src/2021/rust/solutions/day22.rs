@@ -104,15 +104,6 @@ impl Solution22 {
 }
 
 impl Solution for Solution22 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I64(590784),
-            ProblemResult::I64(576028),
-            ProblemResult::I64(2758514936282235),
-            ProblemResult::I64(1387966280636636),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let instructions = Self::parse(input);
 

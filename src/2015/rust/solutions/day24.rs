@@ -38,15 +38,6 @@ impl Solution24 {
 }
 
 impl Solution for Solution24 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U128(99),
-            ProblemResult::U128(10439961859),
-            ProblemResult::U128(44),
-            ProblemResult::U128(72050269),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let presents = Self::parse(input);
         let weight_per_group = presents.iter().sum::<Present>() / 3;

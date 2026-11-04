@@ -87,15 +87,6 @@ impl Solution21 {
 }
 
 impl Solution for Solution21 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(739785),
-            ProblemResult::U32(888735),
-            ProblemResult::U64(444356092776315),
-            ProblemResult::U64(647608359455719),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (pos1, pos2) = Self::parse(input);
         let mut active = Player::new(pos1);

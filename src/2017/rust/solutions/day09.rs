@@ -5,15 +5,6 @@ pub struct Solution09;
 impl Solution09 {}
 
 impl Solution for Solution09 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I32(9),
-            ProblemResult::I32(14190),
-            ProblemResult::I32(8),
-            ProblemResult::I32(7053),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let stream = input.string();
 

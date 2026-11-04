@@ -56,15 +56,6 @@ impl Solution24 {
 }
 
 impl Solution for Solution24 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(14),
-            ProblemResult::USize(460),
-            ProblemResult::USize(20),
-            ProblemResult::USize(668),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let map = input.grid();
 

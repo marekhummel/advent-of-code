@@ -77,15 +77,6 @@ impl Solution22 {
 }
 
 impl Solution for Solution22 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(306),
-            ProblemResult::U32(34255),
-            ProblemResult::U32(291),
-            ProblemResult::U32(33369),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (player1, player2) = Self::parse(input);
         let score = Self::combat(player1, player2);

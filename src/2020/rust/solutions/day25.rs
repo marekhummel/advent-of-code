@@ -30,15 +30,6 @@ impl Iterator for TransformIterator {
 }
 
 impl Solution for Solution25 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U64(14897079),
-            ProblemResult::U64(7936032),
-            ProblemResult::NoPartTwo,
-            ProblemResult::NoPartTwo,
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (pub_door, pub_card) = input.lines().into_iter().parsed::<u64>().collect_tuple().unwrap();
         let loop_size_card = TransformIterator::new(7).take_while(|v| *v != pub_card).count();

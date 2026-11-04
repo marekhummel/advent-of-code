@@ -130,15 +130,6 @@ impl Solution17 {
 }
 
 impl Solution for Solution17 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(57),
-            ProblemResult::USize(30737),
-            ProblemResult::USize(29),
-            ProblemResult::USize(24699),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let clay = Self::parse(input);
         let (mut ground, (min_x, min_y)) = Self::create_ground_grid(clay);

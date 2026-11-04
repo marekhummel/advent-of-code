@@ -69,15 +69,6 @@ impl Solution24 {
 }
 
 impl Solution for Solution24 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::NoSample,
-            ProblemResult::U64(95299897999897),
-            ProblemResult::NoSample,
-            ProblemResult::U64(31111121382151),
-        ]
-    }
-
     #[allow(clippy::assign_op_pattern)]
     fn solve_version01(&self, _input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {

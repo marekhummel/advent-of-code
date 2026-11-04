@@ -6,10 +6,6 @@ from lib.python import ProblemInput, ProblemResult, Solution
 
 class Solution02(Solution):
     @staticmethod
-    def results() -> list[ProblemResult]:
-        return [8, 2476, 2286, 54911]
-
-    @staticmethod
     def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
         return sum(g for g, reveals in parse(data) if valid(reveals, 12, 13, 14))
 

@@ -8,15 +8,6 @@ pub struct Solution25;
 impl Solution25 {}
 
 impl Solution for Solution25 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::String("2=-1=0".to_string()),
-            ProblemResult::String("2=--=0000-1-0-=1=0=2".to_string()),
-            ProblemResult::NoPartTwo,
-            ProblemResult::NoPartTwo,
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let lookup: HashMap<char, i8> = "=-012".chars().zip_eq(-2..=2).collect();
         let snafus = input.lines().into_iter();

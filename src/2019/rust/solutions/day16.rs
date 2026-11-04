@@ -29,15 +29,6 @@ impl Solution16 {
 }
 
 impl Solution for Solution16 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::String("24176176".to_string()),
-            ProblemResult::String("45834272".to_string()),
-            ProblemResult::String("84462026".to_string()),
-            ProblemResult::String("37615297".to_string()),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let signal = input.string().bytes().map(|b| b - b'0').collect_vec();
         let decoded = (0..100).fold(signal, |phase_signal, _| Self::fft(phase_signal));

@@ -112,15 +112,6 @@ impl Solution20 {
 }
 
 impl Solution for Solution20 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(11687500),
-            ProblemResult::USize(703315117),
-            ProblemResult::NoSample,
-            ProblemResult::U64(230402300925361),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         const BUTTON_PRESSES: usize = 1000;
         let mut modules = Self::parse(input);

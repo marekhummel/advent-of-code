@@ -6,15 +6,6 @@ pub struct Solution05;
 impl Solution05 {}
 
 impl Solution for Solution05 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::NoSample,
-            ProblemResult::I128(15259545),
-            ProblemResult::I128(1001),
-            ProblemResult::I128(7616021),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
             return ProblemResult::NoSample;

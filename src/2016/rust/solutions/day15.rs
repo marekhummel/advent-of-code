@@ -38,15 +38,6 @@ impl Solution15 {
 }
 
 impl Solution for Solution15 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(5),
-            ProblemResult::U32(121834),
-            ProblemResult::U32(85),
-            ProblemResult::U32(3208099),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let discs = Self::parse(input);
         Self::find_time_naive(&discs).to_result()

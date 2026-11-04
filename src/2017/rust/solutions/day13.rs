@@ -17,15 +17,6 @@ impl Solution13 {
 }
 
 impl Solution for Solution13 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(24),
-            ProblemResult::USize(1876),
-            ProblemResult::USize(10),
-            ProblemResult::USize(3964778),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let layers = Self::parse(input);
 

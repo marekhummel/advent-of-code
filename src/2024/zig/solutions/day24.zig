@@ -7,15 +7,6 @@ const Graph = aoc_lib.graph.Graph;
 const contains = aoc_lib.util.contains;
 const join = aoc_lib.util.join;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .UInt64 = 2024 },
-        Result{ .UInt64 = 46362252142374 },
-        Result.NoSample,
-        Result{ .String = "cbd,gmh,jmq,qrh,rqf,z06,z13,z38" },
-    };
-}
-
 const Op = enum { XOR, AND, OR };
 const Instruction = struct { op: Op, arg1: []const u8, arg2: []const u8, target: []const u8 };
 

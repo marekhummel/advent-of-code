@@ -8,15 +8,6 @@ const Index = aoc_lib.cartesian.Index;
 const Direction = aoc_lib.cartesian.Direction;
 const Size = aoc_lib.cartesian.Size;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .USize = 5 },
-        Result{ .USize = 1502 },
-        Result{ .USize = 285 },
-        Result{ .USize = 1028136 },
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     const min_saved: u32 = if (!is_sample) 100 else 20;
     var course = try input.grid();

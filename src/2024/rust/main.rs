@@ -29,16 +29,3 @@ fn main() {
     let runner = create_runner();
     runner.parse_and_run();
 }
-
-#[cfg(test)]
-mod tests2024 {
-    use aoc_lib::test_day;
-
-    test_day!(day01);
-    test_day!(day02);
-    test_day!(day03);
-    test_day!(day04);
-    test_day!(day05);
-    test_day!(day06);
-    // aoc:tests
-}

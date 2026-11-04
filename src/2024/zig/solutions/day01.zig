@@ -4,15 +4,6 @@ const Allocator = std.mem.Allocator;
 const ProblemInput = aoc_lib.types.ProblemInput;
 const Result = aoc_lib.types.Result;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .UInt32 = 11 },
-        Result{ .UInt32 = 3714264 },
-        Result{ .UInt32 = 31 },
-        Result{ .UInt32 = 18805872 },
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 

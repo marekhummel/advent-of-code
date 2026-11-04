@@ -6,16 +6,12 @@ Symbol = tuple[str, int, int]
 
 class Solution03(Solution):
     @staticmethod
-    def results() -> list[ProblemResult]:
-        return [4361, 550064, 467835, 85010461]
-
-    @staticmethod
-    def solve_part01(data: ProblemInput, is_sample: bool) -> int:
+    def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
         numbers, symbols = parse(data)
         return sum(n[0] for n in numbers if is_part(n, symbols))
 
     @staticmethod
-    def solve_part02(data: ProblemInput, is_sample: bool) -> int:
+    def solve_part02(data: ProblemInput, is_sample: bool) -> ProblemResult:
         numbers, symbols = parse(data)
         return sum(gear_ratio(s, numbers) for s in symbols)
 

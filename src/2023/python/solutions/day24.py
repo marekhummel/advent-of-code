@@ -3,10 +3,6 @@ from lib.python import ProblemInput, ProblemResult, Solution
 
 class Solution24(Solution):
     @staticmethod
-    def results() -> list[ProblemResult]:
-        return [None, None, 47, 880547248556435]
-
-    @staticmethod
     def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
         return None
 

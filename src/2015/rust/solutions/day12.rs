@@ -22,15 +22,6 @@ impl Solution12 {
 }
 
 impl Solution for Solution12 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I32(6),
-            ProblemResult::I32(111754),
-            ProblemResult::I32(4),
-            ProblemResult::I32(65402),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let dump = input.string();
         let json = serde_json::from_str(&dump).unwrap();

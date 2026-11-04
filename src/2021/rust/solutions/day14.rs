@@ -67,15 +67,6 @@ impl Solution14 {
 }
 
 impl Solution for Solution14 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U64(1588),
-            ProblemResult::U64(3906),
-            ProblemResult::U64(2188189693529),
-            ProblemResult::U64(4441317262452),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let ((template, start, end), rules) = Self::parse(input);
         let final_polymer = (0..10).fold(template, |polymer, _| Self::step(polymer, &rules));

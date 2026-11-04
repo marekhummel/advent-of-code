@@ -90,15 +90,6 @@ impl Solution14 {
 }
 
 impl Solution for Solution14 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(136),
-            ProblemResult::USize(109345),
-            ProblemResult::USize(64),
-            ProblemResult::USize(112452),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let grid = self.parse(input);
         let tilted = Self::tilt(&grid, true, false); // North

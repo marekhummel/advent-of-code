@@ -96,15 +96,6 @@ impl Solution18 {
 }
 
 impl Solution for Solution18 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U64(13632),
-            ProblemResult::U64(800602729153),
-            ProblemResult::U64(23340),
-            ProblemResult::U64(92173009047076),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let precedences = HashMap::from([(Operator::Add, 0), (Operator::Multiply, 0)]);
         let results = input.lines().into_iter().map(|expr| Self::eval(&expr, &precedences));

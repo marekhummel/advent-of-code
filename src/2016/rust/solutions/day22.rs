@@ -67,15 +67,6 @@ impl Solution22 {
 }
 
 impl Solution for Solution22 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(7),
-            ProblemResult::USize(901),
-            ProblemResult::USize(7),
-            ProblemResult::USize(238),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let nodes = Self::parse(input);
         nodes

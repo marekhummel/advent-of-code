@@ -37,15 +37,6 @@ impl Solution23 {
 }
 
 impl Solution for Solution23 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::String("67384529".to_string()),
-            ProblemResult::String("52864379".to_string()),
-            ProblemResult::USize(149245887792),
-            ProblemResult::USize(11591415792),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut circle = input.string().chars().parsed().collect();
         (0..100).for_each(|_| Self::crab_move(&mut circle));

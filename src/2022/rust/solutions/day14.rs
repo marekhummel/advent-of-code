@@ -72,15 +72,6 @@ impl Solution14 {
 }
 
 impl Solution for Solution14 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(24),
-            ProblemResult::U32(873),
-            ProblemResult::U32(93),
-            ProblemResult::U32(24813),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut cave = Self::parse(input);
         let sand = (0u32..).find(|_| Self::produce_sand(&mut cave, true)).unwrap();

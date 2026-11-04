@@ -7,15 +7,6 @@ pub struct Solution01;
 impl Solution01 {}
 
 impl Solution for Solution01 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(7),
-            ProblemResult::USize(1390),
-            ProblemResult::USize(5),
-            ProblemResult::USize(1457),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let depths = input.lines().into_iter().parsed::<u16>();
         let increasing = depths.tuple_windows().filter(|(a, b)| a < b).count();

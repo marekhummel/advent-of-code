@@ -53,15 +53,6 @@ impl Solution11 {
 }
 
 impl Solution for Solution11 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(374),
-            ProblemResult::USize(9684228),
-            ProblemResult::USize(82000210),
-            ProblemResult::USize(483844716556),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (galaxies, size) = self.parse(input);
         let expanded_galaxies = self.expand_galaxies(size, galaxies, 2);

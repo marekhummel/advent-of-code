@@ -8,15 +8,6 @@ pub struct Solution14;
 impl Solution14 {}
 
 impl Solution for Solution14 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U64(165),
-            ProblemResult::U64(8566770985168),
-            ProblemResult::U64(208),
-            ProblemResult::U64(4832039794082),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut memory = HashMap::new();
         let mut mask = Vec::new();

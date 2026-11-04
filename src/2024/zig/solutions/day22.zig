@@ -4,15 +4,6 @@ const Allocator = std.mem.Allocator;
 const ProblemInput = aoc_lib.types.ProblemInput;
 const Result = aoc_lib.types.Result;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .UInt64 = 37327623 },
-        Result{ .UInt64 = 14119253575 },
-        Result{ .UInt64 = 23 },
-        Result{ .UInt64 = 1600 },
-    };
-}
-
 const NUM_PRICE_CHANGES = 19 * 19 * 19 * 19;
 
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
