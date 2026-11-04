@@ -18,7 +18,7 @@ def insert(text: str, marker: str, entry: str) -> str:
 
 
 def create_day(root: Path, year: int, day: int, lang: str) -> None:
-    directory = root / str(year) / lang
+    directory = root / "src" / str(year) / lang
     name = f"day{day:02}"
     destination = (
         directory / name / "main.go"
@@ -47,7 +47,7 @@ def create_day(root: Path, year: int, day: int, lang: str) -> None:
             ("solutions/mod.rs", "// aoc:modules", f"pub mod {name};"),
         ],
         "python": [
-            ("main.py", "# aoc:imports", f"from .solutions.{name} import Solution{day:02}"),
+            ("main.py", "# aoc:imports", f"from solutions.{name} import Solution{day:02}"),
             ("main.py", "# aoc:solutions", f"{day}: Solution{day:02},"),
         ],
         "zig": [

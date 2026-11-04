@@ -16,9 +16,9 @@ session=$(<scripts/aoc_cookie.txt)
 # Quotes or newlines would change the meaning of the curl config below.
 [[ $session =~ ^[a-zA-Z0-9_-]+$ ]] || { echo 'Invalid session credential' >&2; exit 1; }
 
-mkdir -p "$year/inputs"
+mkdir -p "inputs/$year"
 for (( current=${day:-1}; current<=${day:-last}; current++ )); do
-    printf -v destination '%s/inputs/input%02d.txt' "$year" "$current"
+    printf -v destination 'inputs/%s/input%02d.txt' "$year" "$current"
     if [[ -e $destination || -L $destination ]]; then
         [[ -z $day ]] || { echo "Refusing to overwrite $destination" >&2; exit 1; }
         echo "exists: $destination"
