@@ -26,6 +26,7 @@ const day22 = @import("solutions/day22.zig");
 const day23 = @import("solutions/day23.zig");
 const day24 = @import("solutions/day24.zig");
 const day25 = @import("solutions/day25.zig");
+// aoc:imports
 
 // Should usually be yes, but disable to catch "missed opportunities" for early frees
 const USE_ARENA: bool = true;
@@ -62,6 +63,7 @@ fn createRunner() aoc_lib.runner.AocRunner {
         aoc_lib.solution.makeSolution(day23),
         aoc_lib.solution.makeSolution(day24),
         aoc_lib.solution.makeSolution(day25),
+        // aoc:solutions
     };
     return aoc_lib.runner.AocRunner.init(2024, &solutions, USE_ARENA);
 }

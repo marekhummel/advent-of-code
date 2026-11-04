@@ -1,18 +1,7 @@
 use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 
 pub struct SolutionXX;
-impl SolutionXX {
-    fn parse(input: ProblemInput) {
-        input
-            .lines()
-            .into_iter()
-            .map(|l| {
-                //
-            })
-            .collect()
-    }
-}
 
 impl Solution for SolutionXX {
     fn results(&self) -> [ProblemResult; 4] {
