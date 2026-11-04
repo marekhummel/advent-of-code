@@ -30,9 +30,9 @@ const CacheKey = struct { stone: u64, blinks: usize };
 
 fn blinkAll(stone_str: []u8, blinks: usize, allocator: Allocator) !usize {
     // Parse input to slice
-    var stones = std.ArrayList(u64).init(allocator);
-    var stone_it = std.mem.tokenize(u8, stone_str, " ");
-    while (stone_it.next()) |stone| try stones.append(try std.fmt.parseInt(u64, stone, 10));
+    var stones: std.ArrayList(u64) = .empty;
+    var stone_it = std.mem.tokenizeAny(u8, stone_str, " ");
+    while (stone_it.next()) |stone| try stones.append(allocator, try std.fmt.parseInt(u64, stone, 10));
 
     // Handle each stone seperately as they dont interact with each other, use cache
     var sum: usize = 0;
@@ -46,7 +46,7 @@ fn blinkAll(stone_str: []u8, blinks: usize, allocator: Allocator) !usize {
 
 fn blinkStone(stone: u64, blinks: usize, cache: *std.AutoHashMap(CacheKey, usize)) !usize {
     // Cached
-    const key = .{ .stone = stone, .blinks = blinks };
+    const key: CacheKey = .{ .stone = stone, .blinks = blinks };
     if (cache.get(key)) |num_new_stones| return num_new_stones;
 
     // -- Compute result

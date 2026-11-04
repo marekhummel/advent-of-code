@@ -57,7 +57,7 @@ const Robots = struct {
         };
     }
 
-    fn findComplexity(self: *Self, codes: []ButtonSequence, arrowpad_robots: usize) !u64 {
+    fn findComplexity(self: *Self, codes: []const []const u8, arrowpad_robots: usize) !u64 {
         var complexity: u64 = 0;
         for (codes) |code| {
             const code_len = try self.controlAllRobots(code, 0, arrowpad_robots + 1);
@@ -90,15 +90,15 @@ const Robots = struct {
         // Could cache here as well, but evidently not needed
         const keypad = if (use_numpad) self.numpad else self.arrowpad;
         var pos = keypad.get('A').?;
-        var all_presses = std.ArrayList(ButtonSequence).init(self._allocator);
+        var all_presses: std.ArrayList(ButtonSequence) = .empty;
         for (buttons) |button| {
             const next_pos = keypad.get(button).?;
             const presses = try self.findPath(button, pos, use_numpad);
-            try all_presses.append(presses);
+            try all_presses.append(self._allocator, presses);
             pos = next_pos;
         }
 
-        const slice = try all_presses.toOwnedSlice();
+        const slice = try all_presses.toOwnedSlice(self._allocator);
         return slice;
     }
 
@@ -107,11 +107,11 @@ const Robots = struct {
         const target_pos = keypad.get(target).?;
 
         // Default order, because we distance from the A first and then return back
-        var path = std.ArrayList(u8).init(self._allocator);
-        for (0..pos.c -| target_pos.c) |_| try path.append('<');
-        for (0..target_pos.r -| pos.r) |_| try path.append('v');
-        for (0..pos.r -| target_pos.r) |_| try path.append('^');
-        for (0..target_pos.c -| pos.c) |_| try path.append('>');
+        var path: std.ArrayList(u8) = .empty;
+        for (0..pos.c -| target_pos.c) |_| try path.append(self._allocator, '<');
+        for (0..target_pos.r -| pos.r) |_| try path.append(self._allocator, 'v');
+        for (0..pos.r -| target_pos.r) |_| try path.append(self._allocator, '^');
+        for (0..target_pos.c -| pos.c) |_| try path.append(self._allocator, '>');
 
         // There is a set movement order, but due to one missing corner some edge cases, where we go exactly opposite
         const crossing_empty_num = (pos.r == 3 and target_pos.c == 0) or (target_pos.r == 3 and pos.c == 0);
@@ -120,7 +120,7 @@ const Robots = struct {
             std.mem.reverse(u8, path.items);
 
         // Finish with A button
-        try path.append('A');
-        return try path.toOwnedSlice();
+        try path.append(self._allocator, 'A');
+        return try path.toOwnedSlice(self._allocator);
     }
 };

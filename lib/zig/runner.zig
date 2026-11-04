@@ -13,9 +13,10 @@ pub const AocRunner = struct {
     solutions: [25]?solution.Solution,
     arena_enabled: bool,
     _allocator: std.mem.Allocator = undefined,
+    io: std.Io = undefined,
 
     pub fn init(year: u16, impl_solutions: []const ?solution.Solution, use_arena: bool) AocRunner {
-        var solutions: [25]?solution.Solution = .{null} ** 25;
+        var solutions: [25]?solution.Solution = @splat(null);
         std.mem.copyForwards(?solution.Solution, &solutions, impl_solutions);
         return .{
             .year = year,
@@ -24,16 +25,16 @@ pub const AocRunner = struct {
         };
     }
 
-    pub fn parseAndRun(self: *AocRunner) !void {
-        var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    pub fn parseAndRun(self: *AocRunner, process: std.process.Init) !void {
+        self.io = process.io;
+        var gpa = std.heap.DebugAllocator(.{}){};
         self._allocator = gpa.allocator();
         defer {
             const deinit_status = gpa.deinit();
             if (deinit_status == .leak) std.debug.print("LEAK", .{});
         }
 
-        const args = try std.process.argsAlloc(self._allocator);
-        defer std.process.argsFree(self._allocator, args);
+        const args = try process.minimal.args.toSlice(process.arena.allocator());
 
         if (args.len < 2) {
             std.debug.print("Usage: {s} [main | day N --part <1|2> [--sample] [--all]]\n", .{args[0]});
@@ -76,7 +77,7 @@ pub const AocRunner = struct {
         std.debug.print("Error: Unknown command: {s}. Use 'main' or 'day N'\n", .{cmd});
     }
 
-    fn parseConfig(_: *AocRunner, args: [][]const u8) !RunConfig {
+    fn parseConfig(_: *AocRunner, args: []const [:0]const u8) !RunConfig {
         var config = RunConfig{
             .all = false,
             .part = 0,
@@ -116,16 +117,16 @@ pub const AocRunner = struct {
         return config;
     }
 
-    pub fn run(self: *AocRunner, full_day: bool, part: u8, use_sample: bool) !void {
-        var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    pub fn run(self: *AocRunner, process: std.process.Init, full_day: bool, part: u8, use_sample: bool) !void {
+        self.io = process.io;
+        var gpa = std.heap.DebugAllocator(.{}){};
         self._allocator = gpa.allocator();
         defer {
             const deinit_status = gpa.deinit();
             if (deinit_status == .leak) std.debug.print("LEAK", .{});
         }
 
-        const args = try std.process.argsAlloc(self._allocator);
-        defer std.process.argsFree(self._allocator, args);
+        const args = try process.minimal.args.toSlice(process.arena.allocator());
         if (args.len != 2) {
             std.debug.print("Usage: {s} <day>\n", .{args[0]});
             return;
@@ -163,7 +164,7 @@ pub const AocRunner = struct {
                         if (std.testing.expect(timed_result.result.eql(expected))) |_| {
                             std.debug.print("PASSED\n", .{});
                         } else |_| {
-                            std.debug.print("FAILED: Got {0s}, expected {1s}\n", .{ timed_result.result, expected });
+                            std.debug.print("FAILED: Got {0f}, expected {1f}\n", .{ timed_result.result, expected });
                             success = false;
                         }
                     } else |err| switch (err) {
@@ -198,7 +199,7 @@ pub const AocRunner = struct {
                     };
                     defer timed_result.deinit(self._allocator);
                     day_elapsed += timed_result.duration;
-                    std.debug.print("  P{0d} {1s}:  {2s}\n", .{
+                    std.debug.print("  P{0d} {1s}:  {2f}\n", .{
                         part,
                         if (use_sample) "samp" else "real",
                         timed_result.result,
@@ -226,7 +227,7 @@ pub const AocRunner = struct {
                     expected_match = false;
                 }
 
-                std.debug.print("P{0d} {1s} in {2d:.4}s:    {3s}\n", .{
+                std.debug.print("P{0d} {1s} in {2d:.4}s:    {3f}\n", .{
                     part,
                     if (use_sample) "samp" else "real",
                     timed_result.duration,
@@ -241,7 +242,7 @@ pub const AocRunner = struct {
     fn runSingle(self: *const AocRunner, day: u8, part: u8, use_sample: bool) !void {
         const timed_result = try self.getResult(day, part, use_sample);
         defer timed_result.deinit(self._allocator);
-        std.debug.print("Day {0d:0>2} / part {1d} / Data '{2s}' => {3d}s\n{4s}\n", .{
+        std.debug.print("Day {0d:0>2} / part {1d} / Data '{2s}' => {3d}s\n{4f}\n", .{
             day,
             part,
             if (use_sample) "samp" else "real",
@@ -274,10 +275,10 @@ pub const AocRunner = struct {
             defer arena.deinit();
 
             // In case result contains heap allocated memory, clone with gpa before freeing
-            var original_result = try s.?.solve(&input.?, part, use_sample, solution_allocator);
+            var original_result = try s.?.solve(self.io, &input.?, part, use_sample, solution_allocator);
             return original_result.clone(self._allocator) catch types.SolvingError.SolvingFailed;
         } else {
-            return s.?.solve(&input.?, part, use_sample, self._allocator);
+            return s.?.solve(self.io, &input.?, part, use_sample, self._allocator);
         }
     }
 
@@ -286,11 +287,11 @@ pub const AocRunner = struct {
         const filename = std.fmt.allocPrint(self._allocator, "{0d}/inputs/{1s}{2d:0>2}.txt", .{ self.year, base_filename, day }) catch return null;
         defer self._allocator.free(filename);
 
-        const input = types.ProblemInput.read(self._allocator, filename) catch |err| switch (err) {
-            std.fs.File.OpenError.FileNotFound => {
+        const input = types.ProblemInput.read(self.io, self._allocator, filename) catch |err| switch (err) {
+            error.FileNotFound => {
                 const filename_vers = std.fmt.allocPrint(self._allocator, "{0d}/inputs/{1s}{2d:0>2}_{3d}.txt", .{ self.year, base_filename, day, part }) catch unreachable;
                 defer self._allocator.free(filename_vers);
-                return types.ProblemInput.read(self._allocator, filename_vers) catch return null;
+                return types.ProblemInput.read(self.io, self._allocator, filename_vers) catch return null;
             },
             else => return null,
         };

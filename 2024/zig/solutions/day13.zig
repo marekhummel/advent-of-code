@@ -26,23 +26,28 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
 
 fn computeTokens(input: *ProblemInput, error_correction: i64, allocator: Allocator) !i64 {
     var delta_rgx = try regex.Regex.compile(allocator, "Button [AB]: X\\+(\\d+), Y\\+(\\d+)");
+    defer delta_rgx.deinit();
     var prize_rgx = try regex.Regex.compile(allocator, "Prize: X=(\\d+), Y=(\\d+)");
+    defer prize_rgx.deinit();
 
     var tokens: i64 = 0;
     var machine_it = std.mem.window([]u8, input.lines, 3, 4);
     while (machine_it.next()) |wndw| {
         // Parse input
-        var captures_a = (try delta_rgx.captures(wndw[0])).?;
-        const dxa: i64 = try std.fmt.parseInt(i64, captures_a.sliceAt(1).?, 10);
-        const dya: i64 = try std.fmt.parseInt(i64, captures_a.sliceAt(2).?, 10);
+        var captures_a = (try delta_rgx.find(wndw[0])).?;
+        defer captures_a.deinit(allocator);
+        const dxa: i64 = try std.fmt.parseInt(i64, captures_a.captures[0], 10);
+        const dya: i64 = try std.fmt.parseInt(i64, captures_a.captures[1], 10);
 
-        var captures_b = (try delta_rgx.captures(wndw[1])).?;
-        const dxb: i64 = try std.fmt.parseInt(i64, captures_b.sliceAt(1).?, 10);
-        const dyb: i64 = try std.fmt.parseInt(i64, captures_b.sliceAt(2).?, 10);
+        var captures_b = (try delta_rgx.find(wndw[1])).?;
+        defer captures_b.deinit(allocator);
+        const dxb: i64 = try std.fmt.parseInt(i64, captures_b.captures[0], 10);
+        const dyb: i64 = try std.fmt.parseInt(i64, captures_b.captures[1], 10);
 
-        var captures_prize = (try prize_rgx.captures(wndw[2])).?;
-        const px: i64 = try std.fmt.parseInt(i64, captures_prize.sliceAt(1).?, 10) + error_correction;
-        const py: i64 = try std.fmt.parseInt(i64, captures_prize.sliceAt(2).?, 10) + error_correction;
+        var captures_prize = (try prize_rgx.find(wndw[2])).?;
+        defer captures_prize.deinit(allocator);
+        const px: i64 = try std.fmt.parseInt(i64, captures_prize.captures[0], 10) + error_correction;
+        const py: i64 = try std.fmt.parseInt(i64, captures_prize.captures[1], 10) + error_correction;
 
         // Compute moves (solve 2x2 lin. eq.)
         // [px] = [a] * [dxa  dxb]

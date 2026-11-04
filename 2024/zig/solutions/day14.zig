@@ -51,9 +51,9 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     var second: usize = 1;
     time: while (true) : (second += 1) {
         // If there are no stacked robots we find the tree (stupid conditional, but works)
-        var uniquePositions = set.Set(Position).init(allocator);
+        var uniquePositions = set.Set(Position).empty;
         for (robots.items) |rbt| {
-            if (!try uniquePositions.add(rbt.at(second, size)))
+            if (!try uniquePositions.add(allocator, rbt.at(second, size)))
                 continue :time;
         }
 
@@ -68,11 +68,13 @@ const Robot = struct {
 
     fn parse(line: []u8, allocator: Allocator) !Robot {
         var rgx = try regex.Regex.compile(allocator, "p=(\\d+),(\\d+) v=(-?\\d+),(-?\\d+)");
-        var captures = (try rgx.captures(line)).?;
-        const px: i64 = try std.fmt.parseInt(i64, captures.sliceAt(1).?, 10);
-        const py: i64 = try std.fmt.parseInt(i64, captures.sliceAt(2).?, 10);
-        const vx: i64 = try std.fmt.parseInt(i64, captures.sliceAt(3).?, 10);
-        const vy: i64 = try std.fmt.parseInt(i64, captures.sliceAt(4).?, 10);
+        defer rgx.deinit();
+        var captures = (try rgx.find(line)).?;
+        defer captures.deinit(allocator);
+        const px: i64 = try std.fmt.parseInt(i64, captures.captures[0], 10);
+        const py: i64 = try std.fmt.parseInt(i64, captures.captures[1], 10);
+        const vx: i64 = try std.fmt.parseInt(i64, captures.captures[2], 10);
+        const vy: i64 = try std.fmt.parseInt(i64, captures.captures[3], 10);
 
         return Robot{ .pos = Position{ .x = px, .y = py }, .vel = PosDelta{ .dx = vx, .dy = vy } };
     }

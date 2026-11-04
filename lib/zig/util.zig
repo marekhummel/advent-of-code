@@ -21,17 +21,17 @@ pub fn freeNested(comptime T: type, nested: [][]T, allocator: std.mem.Allocator)
 }
 
 pub fn setToSlice(comptime T: type, in: *set.Set(T), allocator: std.mem.Allocator) ![]T {
-    var out = std.ArrayList(T).init(allocator);
+    var out: std.ArrayList(T) = .empty;
     var in_it = in.iterator();
-    while (in_it.next()) |elem| try out.append(elem.*);
-    return try out.toOwnedSlice();
+    while (in_it.next()) |elem| try out.append(allocator, elem.*);
+    return try out.toOwnedSlice(allocator);
 }
 
 pub fn join(comptime T: type, items: [][]const T, sep: []const T, allocator: std.mem.Allocator) ![]T {
-    var joined = std.ArrayList(T).init(allocator);
+    var joined: std.ArrayList(T) = .empty;
     for (items) |item| {
-        try joined.appendSlice(item);
-        try joined.appendSlice(sep);
+        try joined.appendSlice(allocator, item);
+        try joined.appendSlice(allocator, sep);
     }
     _ = joined.pop();
     return joined.items;

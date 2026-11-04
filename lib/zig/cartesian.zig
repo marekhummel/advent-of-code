@@ -59,10 +59,8 @@ pub const Index = struct {
         return dr + dc;
     }
 
-    pub fn format(self: Self, comptime fmt: []const u8, options: std.fmt.FormatOptions, writer: anytype) !void {
-        _ = fmt;
-        _ = options;
-        return std.fmt.format(writer, "[{d}, {d}]", .{ self.r, self.c });
+    pub fn format(self: Self, writer: *std.Io.Writer) std.Io.Writer.Error!void {
+        return writer.print("[{d}, {d}]", .{ self.r, self.c });
     }
 };
 
@@ -166,9 +164,7 @@ pub const Direction = enum(u4) {
         };
     }
 
-    pub fn format(self: Self, comptime fmt: []const u8, options: std.fmt.FormatOptions, writer: anytype) !void {
-        _ = fmt;
-        _ = options;
-        return std.fmt.format(writer, "{s}", .{@tagName(self)});
+    pub fn format(self: Self, writer: *std.Io.Writer) std.Io.Writer.Error!void {
+        return writer.print("{s}", .{@tagName(self)});
     }
 };

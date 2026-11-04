@@ -64,10 +64,10 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     _, var instructions, _ = try parse(input, allocator);
 
     // Check all bits of z, skipping 0, 1 and 45, cause they are computed differently
-    var suspicious = std.ArrayList([]const u8).init(allocator);
+    var suspicious: std.ArrayList([]const u8) = .empty;
     for (2..45) |n| {
         if (try validateBit(n, &instructions, allocator)) |sus| {
-            try suspicious.append(sus);
+            try suspicious.append(allocator, sus);
         }
     }
 

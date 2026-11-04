@@ -24,10 +24,10 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     var free_spans = try std.ArrayList(Block).initCapacity(allocator, disk_map.len);
 
     for (blocks.files) |file| for (0..file.length) |offset|
-        try files.append(Block{ .id = file.id.?, .position = file.position + offset, .length = 1 });
+        try files.append(allocator, Block{ .id = file.id.?, .position = file.position + offset, .length = 1 });
 
     for (blocks.free_spans) |free| for (0..free.length) |offset|
-        try free_spans.append(Block{ .id = null, .position = free.position + offset, .length = 1 });
+        try free_spans.append(allocator, Block{ .id = null, .position = free.position + offset, .length = 1 });
 
     // File compacting process
     cleanupDisk(files.items, free_spans.items, false);
@@ -52,8 +52,8 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
 const Block = struct { id: ?usize, position: usize, length: usize };
 
 fn createBlocks(disk_map: []u8, allocator: Allocator) !struct { files: []Block, free_spans: []Block } {
-    var files = std.ArrayList(Block).init(allocator);
-    var free_spans = std.ArrayList(Block).init(allocator);
+    var files: std.ArrayList(Block) = .empty;
+    var free_spans: std.ArrayList(Block) = .empty;
 
     var index: usize = 0;
     for (disk_map, 0..) |d, i| {
@@ -61,14 +61,14 @@ fn createBlocks(disk_map: []u8, allocator: Allocator) !struct { files: []Block, 
         const is_file = (i & 1 == 0);
         if (is_file) {
             std.debug.assert(len > 0); // 0-length files would break the algorithm
-            try files.append(Block{ .id = i / 2, .position = index, .length = len });
+            try files.append(allocator, Block{ .id = i / 2, .position = index, .length = len });
         } else {
-            if (len > 0) try free_spans.append(Block{ .id = null, .position = index, .length = len });
+            if (len > 0) try free_spans.append(allocator, Block{ .id = null, .position = index, .length = len });
         }
         index += len;
     }
 
-    return .{ .files = try files.toOwnedSlice(), .free_spans = try free_spans.toOwnedSlice() };
+    return .{ .files = try files.toOwnedSlice(allocator), .free_spans = try free_spans.toOwnedSlice(allocator) };
 }
 
 /// Moves files on disk. If always_search_all is true, we reset the "free_span" counter to 0

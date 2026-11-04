@@ -16,11 +16,11 @@ pub fn results() [4]Result {
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
-    var left_list = std.ArrayList(i32).init(allocator);
-    var right_list = std.ArrayList(i32).init(allocator);
-    defer left_list.deinit();
-    defer right_list.deinit();
-    try getLists(i32, input, &left_list, &right_list);
+    var left_list: std.ArrayList(i32) = .empty;
+    var right_list: std.ArrayList(i32) = .empty;
+    defer left_list.deinit(allocator);
+    defer right_list.deinit(allocator);
+    try getLists(i32, input, &left_list, &right_list, allocator);
 
     var total: u32 = 0;
     for (left_list.items, right_list.items) |left, right| {
@@ -33,9 +33,9 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
-    var left_list = std.ArrayList(u32).init(allocator);
-    var right_list = std.ArrayList(u32).init(allocator);
-    try getLists(u32, input, &left_list, &right_list);
+    var left_list: std.ArrayList(u32) = .empty;
+    var right_list: std.ArrayList(u32) = .empty;
+    try getLists(u32, input, &left_list, &right_list, allocator);
 
     var counter = std.AutoHashMap(u32, u32).init(allocator);
 
@@ -54,10 +54,10 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     return Result{ .UInt32 = sim_score };
 }
 
-fn getLists(comptime T: type, input: *ProblemInput, left_list: *std.ArrayList(T), right_list: *std.ArrayList(T)) !void {
+fn getLists(comptime T: type, input: *ProblemInput, left_list: *std.ArrayList(T), right_list: *std.ArrayList(T), allocator: Allocator) !void {
     for (input.lines) |line| {
         var left = true;
-        var it = std.mem.split(u8, line, " ");
+        var it = std.mem.splitSequence(u8, line, " ");
         while (it.next()) |x| {
             if (x.len == 0) {
                 continue;
@@ -65,10 +65,10 @@ fn getLists(comptime T: type, input: *ProblemInput, left_list: *std.ArrayList(T)
 
             const num = try std.fmt.parseInt(T, x, 10);
             if (left) {
-                try left_list.append(num);
+                try left_list.append(allocator, num);
                 left = false;
             } else {
-                try right_list.append(num);
+                try right_list.append(allocator, num);
             }
         }
     }

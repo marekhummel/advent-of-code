@@ -31,9 +31,9 @@ const day25 = @import("solutions/day25.zig");
 // Should usually be yes, but disable to catch "missed opportunities" for early frees
 const USE_ARENA: bool = true;
 
-pub fn main() !void {
+pub fn main(init: std.process.Init) !void {
     var runner = createRunner();
-    try runner.parseAndRun();
+    try runner.parseAndRun(init);
 }
 
 fn createRunner() aoc_lib.runner.AocRunner {
@@ -71,5 +71,6 @@ fn createRunner() aoc_lib.runner.AocRunner {
 test "implementations match solutions" {
     var runner = createRunner();
     runner._allocator = std.testing.allocator;
+    runner.io = std.testing.io;
     try std.testing.expect(runner.verifySolutions());
 }

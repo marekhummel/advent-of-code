@@ -45,8 +45,8 @@ fn countTrails(topo_map: Grid(u8), only_count_ends: bool, allocator: Allocator) 
         // Reduce to unique ends if part 1
         const trail_ends = trail_cache.get(elem.idx).?;
         if (only_count_ends) {
-            var uniqueTrailEnds = set.Set(Index).init(allocator);
-            num_trails += try uniqueTrailEnds.appendSlice(trail_ends.items);
+            var uniqueTrailEnds = set.Set(Index).empty;
+            num_trails += try uniqueTrailEnds.appendSlice(allocator, trail_ends.items);
         } else {
             num_trails += trail_ends.items.len;
         }
@@ -56,14 +56,14 @@ fn countTrails(topo_map: Grid(u8), only_count_ends: bool, allocator: Allocator) 
 }
 
 fn findTrailEndsFromHere(idx: Index, topo_map: *const Grid(u8), trail_cache: *TrailCache, allocator: Allocator) !void {
-    var trail_ends = std.ArrayList(Index).init(allocator);
+    var trail_ends: std.ArrayList(Index) = .empty;
     defer trail_cache.putAssumeCapacity(idx, trail_ends);
 
     const curr_height = topo_map.get(idx);
 
     // At height 9 this is the end.
     if (curr_height == '9') {
-        _ = try trail_ends.append(idx);
+        _ = try trail_ends.append(allocator, idx);
         return;
     }
 
@@ -72,7 +72,7 @@ fn findTrailEndsFromHere(idx: Index, topo_map: *const Grid(u8), trail_cache: *Tr
         if (nb != null and topo_map.get(nb.?) -| curr_height == 1) {
             const entry = trail_cache.getOrPutAssumeCapacity(nb.?);
             if (!entry.found_existing) try findTrailEndsFromHere(nb.?, topo_map, trail_cache, allocator);
-            try trail_ends.appendSlice(entry.value_ptr.items); // Ptr valid since no reallocations
+            try trail_ends.appendSlice(allocator, entry.value_ptr.items); // Ptr valid since no reallocations
         }
     }
 }

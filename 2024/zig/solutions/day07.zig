@@ -42,16 +42,16 @@ fn calibrate(input: *ProblemInput, allow_concat: bool, allocator: std.mem.Alloca
 
 /// Parses line to equation struct
 fn parseEquationStr(line: []u8, allocator: std.mem.Allocator) !Equation {
-    var values = std.ArrayList(u64).init(allocator);
+    var values: std.ArrayList(u64) = .empty;
 
     var num_strs = std.mem.tokenizeAny(u8, line, ": ");
     while (num_strs.next()) |num_str| {
         const num = try std.fmt.parseInt(u64, num_str, 10);
-        try values.append(num);
+        try values.append(allocator, num);
     }
     const rhs = values.orderedRemove(0);
 
-    return .{ .rhs = rhs, .values = try values.toOwnedSlice() };
+    return .{ .rhs = rhs, .values = try values.toOwnedSlice(allocator) };
 }
 
 /// Evaluate an equation, true if combination of operators found
@@ -60,7 +60,7 @@ fn parseEquationStr(line: []u8, allocator: std.mem.Allocator) !Equation {
 fn evalEquation(equation: Equation, allow_concat: bool, acc: u64) bool {
     if (equation.values.len == 0) return equation.rhs == acc;
 
-    const next_equation = .{ .rhs = equation.rhs, .values = equation.values[1..] };
+    const next_equation: Equation = .{ .rhs = equation.rhs, .values = equation.values[1..] };
     return (evalEquation(next_equation, allow_concat, acc + equation.values[0]) or
         evalEquation(next_equation, allow_concat, acc * equation.values[0]) or
         (allow_concat and evalEquation(next_equation, allow_concat, acc * std.math.pow(u64, 10, std.math.log10(equation.values[0]) + 1) + equation.values[0])));

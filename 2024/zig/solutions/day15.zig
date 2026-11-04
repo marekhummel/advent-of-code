@@ -62,14 +62,14 @@ fn parseInput(input: *ProblemInput, extend: bool, allocator: Allocator) !struct 
     }
 
     // Create move list
-    var moves = std.ArrayList(Direction).init(allocator);
+    var moves: std.ArrayList(Direction) = .empty;
     for (input.lines[blank_line + 1 ..]) |move_line| {
         for (move_line) |mv| {
-            try moves.append(try Direction.fromChar(mv));
+            try moves.append(allocator, try Direction.fromChar(mv));
         }
     }
 
-    return .{ warehouse, robot, try moves.toOwnedSlice() };
+    return .{ warehouse, robot, try moves.toOwnedSlice(allocator) };
 }
 
 fn rearrange_warehouse(warehouse: *Grid(u8), robot: *Index, moves: []Direction) usize {

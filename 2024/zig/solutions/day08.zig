@@ -24,10 +24,10 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     const antenna_map = try input.grid();
     const antenna_lookup = try createAntennaLookup(&antenna_map, allocator);
 
-    var antinodes = set.Set(Index).init(allocator);
+    var antinodes = set.Set(Index).empty;
     var antenna_it = AntennaIterator.init(antenna_lookup);
     while (antenna_it.next()) |elem| {
-        _ = try addAntinode(elem.antenna, elem.delta, 2, &antinodes, &antenna_map);
+        _ = try addAntinode(elem.antenna, elem.delta, 2, &antinodes, &antenna_map, allocator);
     }
 
     return Result{ .UInt32 = antinodes.cardinality() };
@@ -39,11 +39,11 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     const antenna_map = try input.grid();
     const antenna_lookup = try createAntennaLookup(&antenna_map, allocator);
 
-    var antinodes = set.Set(Index).init(allocator);
+    var antinodes = set.Set(Index).empty;
     var antenna_it = AntennaIterator.init(antenna_lookup);
     while (antenna_it.next()) |elem| {
         var n: i64 = 0;
-        while (try addAntinode(elem.antenna, elem.delta, n, &antinodes, &antenna_map)) : (n += 1) {}
+        while (try addAntinode(elem.antenna, elem.delta, n, &antinodes, &antenna_map, allocator)) : (n += 1) {}
     }
 
     return Result{ .UInt32 = antinodes.cardinality() };
@@ -99,18 +99,18 @@ fn createAntennaLookup(antenna_map: *const Grid(u8), allocator: Allocator) !Ante
         if (elem.value == '.') continue;
 
         const entry = try antenna_lookup.getOrPut(elem.value);
-        if (!entry.found_existing) entry.value_ptr.* = std.ArrayList(Index).init(allocator);
-        try entry.value_ptr.*.append(elem.idx);
+        if (!entry.found_existing) entry.value_ptr.* = std.ArrayList(Index).empty;
+        try entry.value_ptr.*.append(allocator, elem.idx);
     }
 
     return antenna_lookup;
 }
 
 /// Given base = antenna1: 0 -> antenna1, 1 -> antenna2,
-fn addAntinode(base: Position, d: PosDelta, n: i64, antinodes: *set.Set(Index), antenna_map: *const Grid(u8)) !bool {
+fn addAntinode(base: Position, d: PosDelta, n: i64, antinodes: *set.Set(Index), antenna_map: *const Grid(u8), allocator: Allocator) !bool {
     const antinode = base.offset(n * d.dx, n * d.dy);
     if (antinode.asIndex(antenna_map.size)) |idx| {
-        _ = try antinodes.add(idx);
+        _ = try antinodes.add(allocator, idx);
         return true;
     }
     return false;
