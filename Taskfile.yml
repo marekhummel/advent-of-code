@@ -26,10 +26,9 @@ tasks:
     desc: Run a year or day (LANG, YEAR, optional DAY, PART, SAMPLE)
     cmds:
       - >-
-        {{if eq .LANG "golang"}}go run ./src/{{.YEAR}}/golang/day{{printf "%02d" (atoi .DAY)}}{{else}}
         task --silent build LANG={{.LANG | shellQuote}} YEAR={{.YEAR | shellQuote}} >&2 &&
         bash scripts/run.sh "{{.LANG}}" "{{.YEAR}}" "{{.DAY}}" "{{.PART}}"
-        {{if eq (.SAMPLE | default "false") "true"}}--sample{{end}}{{end}}
+        {{if eq (.SAMPLE | default "false") "true"}}--sample{{end}}
   verify:
     desc: Verify one part (LANG, YEAR, DAY, PART, optional SAMPLE)
     cmds:
@@ -85,7 +84,7 @@ tasks:
 
   # Go
   build:golang:
-    cmds: ['go build -o build/golang/bin/{{.YEAR}}/ ./src/{{.YEAR}}/golang/...']
+    cmds: ['go build -o build/golang/bin/main{{.YEAR}} ./src/{{.YEAR}}/golang']
   check:golang:
     vars:
       PACKAGES: '{{if .YEAR}}./src/{{.YEAR}}/golang/... ./src/lib/golang/...{{else}}./...{{end}}'

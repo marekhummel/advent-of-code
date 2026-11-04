@@ -256,9 +256,8 @@ task new:day LANG=python YEAR=2025 DAY=11
 task input YEAR=2025 DAY=3                # omit DAY for all missing days
 ```
 
-Languages: `rust`, `python`, `golang`, `zig`, `elixir`. For Rust, Python, Zig
-and Elixir, Task builds before calling `scripts/run.sh`. Omit `DAY` to try days
-1-25; omit `PART` for both parts. Real input is the default; use `SAMPLE=true`
+Languages: `rust`, `python`, `golang`, `zig`, `elixir`. Task builds before calling
+`scripts/run.sh`. Omit `DAY` to try days 1-25; omit `PART` for both parts. Real input is the default; use `SAMPLE=true`
 for samples. Answers go directly to stdout, and errors go to stderr. Batch runs
 continue after failures and exit nonzero if any case fails.
 
@@ -311,9 +310,7 @@ Empty positional arguments allow a part-only filter, e.g.
 bytecode cache paths; direct Python runs need `PYTHONPATH=src` and may set
 `PYTHONPYCACHEPREFIX=build/python/pycache` to keep bytecode under `build/`.
 
-Go requires `DAY` and retains each program's fixed part/input settings; it does
-not use the shared runner yet. `check` formats files and accepts an optional
-`YEAR`.
+`check` formats files and accepts an optional `YEAR`.
 
 Downloads read the session token from ignored `scripts/aoc_cookie.txt`. Put the
 token alone in that file, or run `task cookie` after logging in through Firefox.
@@ -343,13 +340,16 @@ flags/environment variables. VS Code uses `.vscode/settings.json` for editing de
 Create `inputs/YEAR/` and `src/YEAR/LANGUAGE/` manually, using an existing year's
 entry point as a reference. Set its runner's year and keep the `aoc:*` registration
 markers so `task new:day` can insert imports and solutions from `scripts/templates/`.
-Rust, Zig and Elixir days must be added in order without gaps.
+All languages register days by number, so days can be added in any order
+without placeholder files or padding entries.
+In Elixir maps, place `# aoc:solutions` before the first entry so inserted
+entries retain a following element after formatting.
 
 | Language | Entry point and references to add |
 | --- | --- |
-| Rust | `main.rs`, `solutions/mod.rs`; add a `[[bin]]` in root `Cargo.toml`: `name = "mainYEAR"`, `path = "src/YEAR/rust/main.rs"` |
+| Rust | `main.rs` with a day-number `HashMap`, `solutions/mod.rs`; add a `[[bin]]` in root `Cargo.toml`: `name = "mainYEAR"`, `path = "src/YEAR/rust/main.rs"` |
 | Python | `main.py`, `__init__.py`, `solutions/__init__.py`; no root registration |
-| Go | `dayDD/main.go` packages under the existing root module; no yearly entry point |
+| Go | `main.go` with a `lib.Run(YEAR, map[int]lib.Solution{...})` registry; day packages in `solutions/dayDD/`; no root registration |
 | Zig | `main.zig`; add `add_binary(b, "YEAR");` in root `build.zig` |
 | Elixir | `main.exs` loading shared modules and days; no root registration |
 

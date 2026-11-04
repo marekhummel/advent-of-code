@@ -1,4 +1,4 @@
-package main
+package day24
 
 import (
 	lib "aoc/src/lib/golang"

@@ -1,37 +1,20 @@
-package main
+package day24
 
 import (
 	lib "aoc/src/lib/golang"
-	"bufio"
 	"fmt"
-	"os"
 	"sort"
 	"strings"
 	"sync"
 )
 
-func parseInput(realInput bool) []Instruction {
-	var filename string
-	if realInput {
-		filename = "input"
-	} else {
-		filename = "sample"
-	}
-	// file, _ := os.Open("./inputs/2024/sample24.txt")
-	file, _ := os.Open(fmt.Sprintf("./inputs/2024/%s24.txt", filename))
-	defer file.Close()
-
-	instructions := []Instruction{}
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
-		if len(line) == 0 {
-			continue
+func parseInput(input []string) []Instruction {
+	instructions := make([]Instruction, 0, len(input))
+	for _, line := range input {
+		if len(line) > 0 {
+			instructions = append(instructions, parseLine(line))
 		}
-		inst := parseLine(line)
-		instructions = append(instructions, inst)
 	}
-
 	return instructions
 }
 
@@ -63,12 +46,12 @@ func compute(instructions []Instruction, broker *lib.Broker[Val]) {
 	}
 }
 
-func main_part1(realInput bool) uint64 {
+func Part1(input []string, _ bool) (any, error) {
 	broker := lib.NewBroker[Val]()
 	go broker.Start()
 	defer broker.Stop()
 
-	instructions := parseInput(realInput)
+	instructions := parseInput(input)
 
 	// Subscribe to z channels and compute them
 	zChans := make(map[string]chan Val)
@@ -92,12 +75,9 @@ func main_part1(realInput bool) uint64 {
 		decimal = (decimal << 1) + uint64(result)
 	}
 
-	return decimal
+	return decimal, nil
 }
 
-func main() {
-	fmt.Println("Running Part 1...")
-	fmt.Printf(" -> Sample: %d\n", main_part1(false))
-	fmt.Printf(" -> Real:   %d\n\n", main_part1(true))
-	fmt.Println("Running Part 2 not solved here.")
+func Part2(_ []string, _ bool) (any, error) {
+	return nil, fmt.Errorf("part 2 is not implemented")
 }

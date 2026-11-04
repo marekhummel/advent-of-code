@@ -1,4 +1,4 @@
-"""Copy a day template and insert registrations before explicit comment markers."""
+"""Copy a day template and insert registrations after explicit comment markers."""
 
 from pathlib import Path
 
@@ -14,14 +14,14 @@ def insert(text: str, marker: str, entry: str) -> str:
         raise ValueError(f"Already registered: {entry}")
     line = matches[0]
     indent = line[: line.index(marker)]
-    return text.replace(line, f"{indent}{entry}\n{line}", 1)
+    return text.replace(line, f"{line.rstrip()}\n{indent}{entry}\n", 1)
 
 
 def create_day(root: Path, lang: str, year: int, day: int) -> None:
     directory = root / "src" / str(year) / lang
     name = f"day{day:02}"
     destination = (
-        directory / name / "main.go"
+        directory / "solutions" / name / "solution.go"
         if lang == "golang"
         else directory / "solutions" / f"{name}.{LANGUAGES[lang]}"
     )
@@ -29,20 +29,14 @@ def create_day(root: Path, lang: str, year: int, day: int) -> None:
         raise ValueError("Create the year's language directory first; see README")
     if destination.exists() or destination.is_symlink():
         raise ValueError(f"Refusing to overwrite day {day:02}")
-    if lang in {"rust", "zig", "elixir"}:
-        days = sorted(
-            int(path.stem[3:])
-            for path in (directory / "solutions").glob(f"day[0-9][0-9].{LANGUAGES[lang]}")
-        )
-        if days != list(range(1, day)):
-            raise ValueError(
-                f"{lang} uses positional registration; add days in order without gaps"
-            )
-
     registrations = {
         "rust": [
             ("main.rs", "// aoc:imports", f"use solutions::{name};"),
-            ("main.rs", "// aoc:solutions", f"Box::new({name}::Solution{day:02} {{}}),"),
+            (
+                "main.rs",
+                "// aoc:solutions",
+                f"({day}, Box::new({name}::Solution{day:02} {{}})),",
+            ),
             ("solutions/mod.rs", "// aoc:modules", f"pub mod {name};"),
         ],
         "python": [
@@ -51,7 +45,11 @@ def create_day(root: Path, lang: str, year: int, day: int) -> None:
         ],
         "zig": [
             ("main.zig", "// aoc:imports", f'const {name} = @import("solutions/{name}.zig");'),
-            ("main.zig", "// aoc:solutions", f"aoc_lib.solution.makeSolution({name}),"),
+            (
+                "main.zig",
+                "// aoc:solutions",
+                f".{{ {day}, aoc_lib.solution.makeSolution({name}) }},",
+            ),
         ],
         "elixir": [
             (
@@ -59,9 +57,16 @@ def create_day(root: Path, lang: str, year: int, day: int) -> None:
                 "# aoc:imports",
                 f'Code.require_file(Path.join([__DIR__, "solutions", "{name}.ex"]))',
             ),
-            ("main.exs", "# aoc:solutions", f"Day{day:02},"),
+            ("main.exs", "# aoc:solutions", f"{day} => Day{day:02},"),
         ],
-        "golang": [],
+        "golang": [
+            ("main.go", "// aoc:imports", f'"aoc/src/{year}/golang/solutions/{name}"'),
+            (
+                "main.go",
+                "// aoc:solutions",
+                f"{day}: {{Part1: {name}.Part1, Part2: {name}.Part2}},",
+            ),
+        ],
     }
     template = root / "scripts/templates" / f"day_template.{LANGUAGES[lang]}"
     content = template.read_text().replace("XX", f"{day:02}").replace("YYYY", str(year))

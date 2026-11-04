@@ -9,13 +9,14 @@ defmodule AocLib.Runner do
 
   @type t :: %__MODULE__{
           year: non_neg_integer(),
-          solutions: [module() | nil]
+          solutions: %{pos_integer() => module()}
         }
 
   @doc """
-  Creates a new runner for a given year with a list of solution modules.
+  Creates a new runner for a given year with a map of day numbers to solution
+  modules. Registration order does not matter, and days may be omitted.
   """
-  @spec new(non_neg_integer(), [module() | nil]) :: t()
+  @spec new(non_neg_integer(), %{pos_integer() => module()}) :: t()
   def new(year, solutions), do: %__MODULE__{year: year, solutions: solutions}
 
   @doc """
@@ -46,7 +47,7 @@ defmodule AocLib.Runner do
   end
 
   defp run(runner, day, part, sample) do
-    solution = Enum.at(runner.solutions, day - 1)
+    solution = Map.get(runner.solutions, day)
     if solution == nil, do: raise("No solution for #{runner.year} day #{day}")
     prefix = if sample, do: "sample", else: "input"
     stem = "inputs/#{runner.year}/#{prefix}#{String.pad_leading(to_string(day), 2, "0")}"

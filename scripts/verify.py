@@ -111,7 +111,7 @@ def remote_answer(year: int, day: int, part: int) -> str | None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("lang", choices=("rust", "python", "zig", "elixir"))
+    parser.add_argument("lang", choices=("rust", "python", "golang", "zig", "elixir"))
     parser.add_argument("year", type=int)
     parser.add_argument("day", type=int, choices=range(1, 26))
     parser.add_argument("part", type=int, choices=(1, 2))

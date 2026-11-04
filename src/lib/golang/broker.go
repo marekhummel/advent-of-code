@@ -23,8 +23,9 @@ func NewBroker[V any]() *Broker[V] {
 		subs:      make(map[string]map[chan V]struct{}),
 		stopCh:    make(chan struct{}),
 		publishCh: make(chan PublishMessage[V], 1),
-		subCh:     make(chan SubMessage[V], 1),
-		unsubCh:   make(chan chan V, 1),
+		// Registration must not be overtaken by a subsequent publication.
+		subCh:   make(chan SubMessage[V]),
+		unsubCh: make(chan chan V, 1),
 	}
 }
 

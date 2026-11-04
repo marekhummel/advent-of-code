@@ -1,4 +1,4 @@
-package main
+package day10
 
 import (
 	lib "aoc/src/lib/golang"
@@ -13,7 +13,7 @@ type Instruction struct {
 	targets []string
 }
 
-func (inst Instruction) Compute(broker *lib.Broker[uint16], wg *sync.WaitGroup) {
+func (inst Instruction) Compute(broker *lib.Broker[uint16], wg *sync.WaitGroup, chips [2]uint16) {
 	// Receive value for args, might block until args are ready
 	values := inst.getChips(broker, wg)
 	sort.Slice(values, func(i, j int) bool { return values[i] < values[j] })
@@ -22,7 +22,7 @@ func (inst Instruction) Compute(broker *lib.Broker[uint16], wg *sync.WaitGroup) 
 		broker.Publish(inst.targets[i], values[i])
 	}
 
-	if len(values) == 2 && values[0] == 17 && values[1] == 61 {
+	if len(values) == 2 && values[0] == chips[0] && values[1] == chips[1] {
 		bot, _ := strconv.ParseUint(strings.TrimPrefix(inst.source, "bot"), 10, 16)
 		broker.Publish("result1", uint16(bot))
 	}
