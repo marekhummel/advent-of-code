@@ -4,15 +4,6 @@ const Allocator = std.mem.Allocator;
 const ProblemInput = aoc_lib.types.ProblemInput;
 const Result = aoc_lib.types.Result;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .USize = 55312 },
-        Result{ .USize = 233875 },
-        Result.NoSample,
-        Result{ .USize = 277444936413293 },
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     const num_stones = try blinkAll(try input.string(), 25, allocator);

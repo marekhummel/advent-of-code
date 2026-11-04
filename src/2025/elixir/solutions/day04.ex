@@ -8,16 +8,6 @@ defmodule Day04 do
   alias AocLib.Types.ProblemInput
 
   @impl true
-  def results do
-    [
-      13,
-      1349,
-      43,
-      8277
-    ]
-  end
-
-  @impl true
   def solve_part01(input, _is_sample) do
     input |> paper_rolls_map() |> work_forklifts() |> elem(0)
   end

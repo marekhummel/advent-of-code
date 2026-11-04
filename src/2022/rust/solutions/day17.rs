@@ -72,15 +72,6 @@ impl Solution17 {
 }
 
 impl Solution for Solution17 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I128(3068),
-            ProblemResult::I128(3181),
-            ProblemResult::I128(1514285714288),
-            ProblemResult::I128(1570434782634),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let jets = Self::parse(input);
         let top = Self::drop_all_rocks(2022, &jets);

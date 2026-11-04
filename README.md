@@ -1,8 +1,8 @@
 # Advent Of Code
 
 Solutions live in `src/YEAR/LANGUAGE/`, shared code in `src/lib/LANGUAGE/`,
-and inputs in `inputs/YEAR/`. Yearly READMEs stay in `src/YEAR/`; answer files
-and screenshots live in `progress/YEAR/`, with the overall image at
+and inputs and sample expectations in `inputs/YEAR/`. Yearly READMEs stay in
+`src/YEAR/`; screenshots live in `progress/YEAR/`, with the overall image at
 `progress/total.png`. Run commands from the repository root.
 
 ## Install Tools
@@ -201,15 +201,16 @@ release archive, then update PATH. The project targets Zig 0.17.1.
 Update the set dependency's pinned URL/hash in `build.zig.zon` with
 `zig fetch --pkg-dir build/zig/packages --save=ziglangSet ARCHIVE_URL`.
 For regex updates, remove its hash in `build.zig.zon`, build to fetch the current
-`main` archive, and record the hash reported by Zig. Build and run the existing
-native tests after either dependency changes:
+`main` archive, and record the hash reported by Zig. Build and verify answers
+after either dependency changes:
 
 ```sh
-task build YEAR=2024 LANG=zig
-zig build --pkg-dir build/zig/packages --cache-dir build/zig/cache 2024_test
+task build LANG=zig YEAR=2024
+task verify LANG=zig YEAR=2024 DAY=1 PART=1
 ```
 
-The native year test requires downloaded real inputs as well as samples.
+Real-input verification requires the matching downloaded input and your session
+cookie; sample verification uses only the local sample files.
 
 ### Elixir And Erlang
 
@@ -228,16 +229,16 @@ git diff -- Cargo.toml Cargo.lock pyproject.toml poetry.lock go.mod build.zig.zo
 Helper scripts use `python3` without Poetry; override it with `PYTHON` if needed.
 Python solutions require Python 3.15 in Poetry's project environment. The Python
 build selects `python3.15` and installs dependencies if that environment is missing
-or uses a different interpreter. Runs use `poetry run python3.15`. `doctor` checks
-both the helper interpreter and, for Python, the project environment. Ruff and mypy
-continue to run globally from PATH.
+or uses a different interpreter. Runs use the selected environment's Python
+executable. `doctor` checks both the helper interpreter and, for Python, the
+project environment. Ruff and mypy continue to run globally from PATH.
 
 Task sets `PYTHONPATH` to `src/`, and VS Code uses the same import root. Python
 entry points run as files, so shared imports use `from lib.python import ...`
 and day imports use `from solutions.day01 import Solution01`. For a direct run:
 
 ```sh
-PYTHONPATH=src poetry run python3.15 src/2023/python/main.py day 1 --part 1 --sample
+PYTHONPATH=src poetry run python3.15 src/2023/python/main.py 1 1 --sample
 ```
 
 ```sh
@@ -245,19 +246,74 @@ task doctor                              # all tools and the Python 3.15 project
 task doctor LANG=rust                    # common tools and Rust
 task --list
 task list
-task build YEAR=2024 LANG=zig
-task run YEAR=2025 LANG=elixir
-task run YEAR=2023 LANG=python DAY=1 PART=1 SAMPLE=true
+task build LANG=zig YEAR=2024
+task run LANG=elixir YEAR=2025
+task run LANG=python YEAR=2023 DAY=1 PART=1 SAMPLE=true
+task verify LANG=zig YEAR=2024 DAY=1 PART=1 # compare with your accepted answer
 task check LANG=python                   # formats, lints and checks types
 task check LANG=golang YEAR=2015          # formats, vets and tests
-task new:day YEAR=2025 DAY=11 LANG=python
+task new:day LANG=python YEAR=2025 DAY=11
 task input YEAR=2025 DAY=3                # omit DAY for all missing days
 ```
 
-Languages: `rust`, `python`, `golang`, `zig`, `elixir`. Without `DAY`, runners
-execute the year; with `DAY` but no `PART`, they run both parts and input types.
-Go requires `DAY` and uses each program's fixed part/input settings. `check`
-formats files and accepts an optional `YEAR`.
+Languages: `rust`, `python`, `golang`, `zig`, `elixir`. For Rust, Python, Zig
+and Elixir, Task builds before calling `scripts/run.sh`. Omit `DAY` to try days
+1-25; omit `PART` for both parts. Real input is the default; use `SAMPLE=true`
+for samples. Answers go directly to stdout, and errors go to stderr. Batch runs
+continue after failures and exit nonzero if any case fails.
+
+Verification runs exactly one day/part and compares its stdout with an expected
+answer:
+
+```sh
+task verify LANG=python YEAR=2023 DAY=1 PART=1 SAMPLE=true
+task verify LANG=rust YEAR=2022 DAY=1 PART=1
+```
+
+Samples use `inputs/YEAR/sample_solutions.json`, keyed by two-digit day and part.
+Answers are strings; `null` marks an unavailable case and omitted entries are
+unknown. Maintain this file alongside the sample inputs:
+
+```json
+{
+  "01": {"1": "11", "2": "31"}
+}
+```
+
+Real-input verification fetches your previously accepted answers from the puzzle
+page using `scripts/aoc_cookie.txt`. Accepted answers are cached by session under
+`build/answers/`; deleting that directory causes them to be fetched again.
+Unsolved parts are not cached. No answers are submitted to the website.
+
+The verifier reports `PASS`, `MISMATCH` or `UNKNOWN` (no expected/accepted answer).
+Mismatches, unknown answers, runner failures and authentication/network errors
+produce a nonzero exit. Comparison preserves answer whitespace except for the
+single newline appended by the runner. Multiline sample answers use JSON `\n`
+escapes.
+
+Language entry points accept `DAY PART [--sample]`, print one answer followed by
+one newline and report errors on stderr. Exit codes are `0` for success, `1`
+for execution/verification failures and `2` for invalid arguments; crashes may
+use other nonzero codes.
+
+Scripts use `LANG YEAR DAY PART` order where applicable; downloads need only
+`YEAR DAY`. Direct calls expect an existing build:
+
+```sh
+task build LANG=zig YEAR=2024
+bash scripts/run.sh zig 2024                         # full year, real input
+bash scripts/run.sh zig 2024 2 --sample              # both parts of sample day 2
+python3 scripts/verify.py zig 2024 2 1 --sample       # verify one case
+```
+
+Empty positional arguments allow a part-only filter, e.g.
+`bash scripts/run.sh zig 2024 "" 1 --sample`. Task sets the Python import and
+bytecode cache paths; direct Python runs need `PYTHONPATH=src` and may set
+`PYTHONPYCACHEPREFIX=build/python/pycache` to keep bytecode under `build/`.
+
+Go requires `DAY` and retains each program's fixed part/input settings; it does
+not use the shared runner yet. `check` formats files and accepts an optional
+`YEAR`.
 
 Downloads read the session token from ignored `scripts/aoc_cookie.txt`. Put the
 token alone in that file, or run `task cookie` after logging in through Firefox.
@@ -268,7 +324,7 @@ The importer supports native and Flatpak Firefox profiles. Inputs are named
 
 | Owner | Root configuration | Generated/local output |
 | --- | --- | --- |
-| Common | `Taskfile.yml`, `.gitignore`, `.vscode/settings.json` | `.git/`, editor state |
+| Common | `Taskfile.yml`, `.gitignore`, `.vscode/settings.json` | `.git/`, editor state, accepted-answer cache under `build/answers/` |
 | Rust | `Cargo.toml`, `Cargo.lock`, `.cargo/config.toml`, `.rustfmt.toml` | `build/rust/` |
 | Python | `pyproject.toml`, `poetry.lock`, `poetry.toml` | `build/python/`: environments, Ruff/mypy caches and bytecode |
 | Go | `go.mod` | `build/golang/`: binaries and compilation cache; temporary builds use system temp |
@@ -297,6 +353,6 @@ Rust, Zig and Elixir days must be added in order without gaps.
 | Zig | `main.zig`; add `add_binary(b, "YEAR");` in root `build.zig` |
 | Elixir | `main.exs` loading shared modules and days; no root registration |
 
-Put the year's README in `src/YEAR/README.md`. Link its screenshots and answer
-file with `../../progress/YEAR/overview.png`, `conclusion.png` and `solutions.txt`
-under the same `../../progress/YEAR/` prefix.
+Put the year's README in `src/YEAR/README.md`. Link screenshots with
+`../../progress/YEAR/overview.png` and `../../progress/YEAR/conclusion.png`.
+Create `inputs/YEAR/sample_solutions.json` for sample expectations.

@@ -6,10 +6,6 @@ from lib.python import ProblemInput, ProblemResult, Solution
 
 class Solution06(Solution):
     @staticmethod
-    def results() -> list[ProblemResult]:
-        return [288, 293046, 71503, 35150181]
-
-    @staticmethod
     def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
         race_winners = [solve_race(r) for r in parse(data)]
         return reduce(lambda acc, x: acc * x, race_winners, 1)

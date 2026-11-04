@@ -106,15 +106,6 @@ impl Solution03 {
 }
 
 impl Solution for Solution03 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(4361),
-            ProblemResult::U32(550064),
-            ProblemResult::U32(467835),
-            ProblemResult::U32(85010461),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (numbers, symbols) = self.parse(input);
         numbers

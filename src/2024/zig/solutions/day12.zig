@@ -8,15 +8,6 @@ const Grid = aoc_lib.types.Grid;
 const Index = aoc_lib.cartesian.Index;
 const Direction = aoc_lib.cartesian.Direction;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .UInt64 = 1930 },
-        Result{ .UInt64 = 1456082 },
-        Result{ .UInt64 = 1206 },
-        Result{ .UInt64 = 872382 },
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     var garden = try input.grid();

@@ -13,15 +13,6 @@ impl Solution01 {
 }
 
 impl Solution for Solution01 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(24000),
-            ProblemResult::U32(69883),
-            ProblemResult::U32(45000),
-            ProblemResult::U32(207576),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let elves = Self::parse(input).next().unwrap();
         elves.to_result()

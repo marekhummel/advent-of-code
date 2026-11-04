@@ -14,15 +14,6 @@ impl Solution07 {
 }
 
 impl Solution for Solution07 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(37),
-            ProblemResult::U32(356179),
-            ProblemResult::U32(168),
-            ProblemResult::U32(99788435),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let depths = input.string().split(',').parsed::<u32>().collect_vec();
         let min_fuel_spent = Self::min_fuel_spent(&depths, |td, d| td.abs_diff(d));

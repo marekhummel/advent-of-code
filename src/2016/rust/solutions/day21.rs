@@ -124,15 +124,6 @@ impl Solution21 {
 }
 
 impl Solution for Solution21 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::String("decab".to_string()),
-            ProblemResult::String("agcebfdh".to_string()),
-            ProblemResult::String("abcde".to_string()),
-            ProblemResult::String("afhdbegc".to_string()),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let instructions = Self::parse(input);
         let password = if is_sample { "abcde" } else { "abcdefgh" };

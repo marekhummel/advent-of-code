@@ -26,15 +26,6 @@ impl Solution12 {
 }
 
 impl Solution for Solution12 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I64(31),
-            ProblemResult::I64(484),
-            ProblemResult::USize(29),
-            ProblemResult::USize(478),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let grid = input.grid();
         let mut graph = Self::create_graph(&grid);

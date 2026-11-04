@@ -8,16 +8,6 @@ defmodule Day01 do
   alias AocLib.Types.ProblemInput
   alias AocLib.Util
 
-  @impl true
-  def results do
-    [
-      3,
-      1177,
-      6,
-      6768
-    ]
-  end
-
   @dial_size 100
 
   @impl true

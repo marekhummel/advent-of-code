@@ -67,15 +67,6 @@ impl Solution23 {
 }
 
 impl Solution for Solution23 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(2),
-            ProblemResult::U32(170),
-            ProblemResult::U32(7),
-            ProblemResult::U32(247),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let program = Self::parse(input);
         let mut registers = HashMap::from([(String::from("a"), 0u32), (String::from("b"), 0u32)]);

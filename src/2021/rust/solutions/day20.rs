@@ -55,15 +55,6 @@ impl Solution20 {
 }
 
 impl Solution for Solution20 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(35),
-            ProblemResult::USize(5419),
-            ProblemResult::USize(3351),
-            ProblemResult::USize(17325),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (enhancement_key, image) = Self::parse(input);
         let enhanced_image = Self::enhance_image(image, &enhancement_key, 2);

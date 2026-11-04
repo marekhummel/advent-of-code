@@ -5,15 +5,6 @@ pub struct Solution01;
 impl Solution01 {}
 
 impl Solution for Solution01 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I16(3),
-            ProblemResult::I16(280),
-            ProblemResult::USize(1),
-            ProblemResult::USize(1797),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         input
             .string()

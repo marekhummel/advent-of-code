@@ -48,15 +48,6 @@ impl Solution18 {
 }
 
 impl Solution for Solution18 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U16(64),
-            ProblemResult::U16(4418),
-            ProblemResult::U16(58),
-            ProblemResult::U16(2486),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let droplets = Self::parse(input);
         let no_air: HashSet<_> = droplets.iter().cloned().collect();

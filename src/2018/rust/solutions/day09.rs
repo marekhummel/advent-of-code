@@ -34,15 +34,6 @@ impl Solution09 {
 }
 
 impl Solution for Solution09 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(54718),
-            ProblemResult::USize(422748),
-            ProblemResult::USize(507583214),
-            ProblemResult::USize(3412522480),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (num_players, last_marble) = Self::parse(input);
 

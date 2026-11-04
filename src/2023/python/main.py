@@ -24,5 +24,4 @@ if __name__ == "__main__":
     }
 
     runner = Runner(2023, solutions=solutions)
-    command, options = Runner.parse_args()
-    runner.run(command, options["all"], options["part"], options["use_sample"])
+    runner.parse_and_run()

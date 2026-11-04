@@ -50,15 +50,6 @@ impl Solution07 {
 }
 
 impl Solution for Solution07 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(4),
-            ProblemResult::USize(272),
-            ProblemResult::U32(32),
-            ProblemResult::U32(172246),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let rules = Self::parse(input);
 

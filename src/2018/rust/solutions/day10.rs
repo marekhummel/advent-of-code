@@ -70,15 +70,6 @@ impl Solution10 {
 }
 
 impl Solution for Solution10 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::String("HI".to_string()),
-            ProblemResult::String("CPJRNKCF".to_string()),
-            ProblemResult::USize(3),
-            ProblemResult::USize(10345),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let lights = Self::parse(input);
 

@@ -56,15 +56,6 @@ impl Solution11 {
 }
 
 impl Solution for Solution11 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::NoSample,
-            ProblemResult::USize(2339),
-            ProblemResult::NoSample,
-            ProblemResult::String("PGUEPLPR".to_string()),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
             return ProblemResult::NoSample;

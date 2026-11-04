@@ -78,15 +78,6 @@ impl Solution16 {
 }
 
 impl Solution for Solution16 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U64(31),
-            ProblemResult::U64(996),
-            ProblemResult::U64(1),
-            ProblemResult::U64(96257984154),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut bits = Self::parse_hex_string(&input.string());
         let (version_sum, _) = Self::eval(&mut bits);

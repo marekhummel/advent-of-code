@@ -9,15 +9,6 @@ pub struct Solution01;
 impl Solution01 {}
 
 impl Solution for Solution01 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I32(3),
-            ProblemResult::I32(513),
-            ProblemResult::I32(2),
-            ProblemResult::I32(287),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         input.lines().into_iter().parsed::<i32>().sum::<i32>().to_result()
     }

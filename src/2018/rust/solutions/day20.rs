@@ -69,15 +69,6 @@ impl Solution20 {
 }
 
 impl Solution for Solution20 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(23),
-            ProblemResult::U32(3725),
-            ProblemResult::USize(0),
-            ProblemResult::USize(8541),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let input_str = input.string();
         let mut regex = input_str.trim_start_matches('^').trim_end_matches('$').chars();

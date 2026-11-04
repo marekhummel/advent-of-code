@@ -47,15 +47,6 @@ pub struct Solution03;
 impl Solution03 {}
 
 impl Solution for Solution03 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U128(31),
-            ProblemResult::U128(552),
-            ProblemResult::U64(1968),
-            ProblemResult::U64(330785),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let n = input.string().parse::<usize>().unwrap();
 

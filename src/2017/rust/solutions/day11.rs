@@ -11,15 +11,6 @@ impl Solution11 {
 }
 
 impl Solution for Solution11 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U128(3),
-            ProblemResult::U128(808),
-            ProblemResult::U128(3),
-            ProblemResult::U128(1556),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let path = Self::parse(input);
 

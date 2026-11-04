@@ -3,8 +3,6 @@ version: '3'
 vars:
   PYTHON: '{{.PYTHON | default "python3"}}'
   LANG: ''
-  # Each runner reuses this expression after command-line variables are applied.
-  OPTIONS: &run_options '{{if .DAY}}day {{.DAY}} {{if .PART}}--part {{.PART}}{{else}}--all{{end}} {{if eq (.SAMPLE | default "false") "true"}}--sample{{end}}{{else}}main{{end}}'
 
 env:
   PYTHONPATH: '{{.ROOT_DIR}}/src'
@@ -22,24 +20,36 @@ tasks:
   default:
     cmds: [task --list]
   build:
-    desc: Build a year (YEAR, LANG)
+    desc: Build a year (LANG, YEAR)
     cmds: [{task: 'build:{{.LANG}}'}]
   run:
-    desc: Run a year or day (YEAR, LANG, optional DAY, PART, SAMPLE)
-    cmds: [{task: 'run:{{.LANG}}'}]
+    desc: Run a year or day (LANG, YEAR, optional DAY, PART, SAMPLE)
+    cmds:
+      - >-
+        {{if eq .LANG "golang"}}go run ./src/{{.YEAR}}/golang/day{{printf "%02d" (atoi .DAY)}}{{else}}
+        task --silent build LANG={{.LANG | shellQuote}} YEAR={{.YEAR | shellQuote}} >&2 &&
+        bash scripts/run.sh "{{.LANG}}" "{{.YEAR}}" "{{.DAY}}" "{{.PART}}"
+        {{if eq (.SAMPLE | default "false") "true"}}--sample{{end}}{{end}}
+  verify:
+    desc: Verify one part (LANG, YEAR, DAY, PART, optional SAMPLE)
+    cmds:
+      - >-
+        task --silent build LANG={{.LANG | shellQuote}} YEAR={{.YEAR | shellQuote}} >&2 &&
+        {{.PYTHON}} scripts/verify.py "{{.LANG}}" "{{.YEAR}}" "{{.DAY}}" "{{.PART}}"
+        {{if eq (.SAMPLE | default "false") "true"}}--sample{{end}}
   check:
     desc: Format and check a language (LANG, optional YEAR)
     cmds: [{task: 'check:{{.LANG}}'}]
   list:
-    desc: List year/language directories (optional YEAR and LANG)
+    desc: List year/language directories (optional LANG and YEAR)
     cmds:
       - 'find src/{{.YEAR | default "[0-9]*"}} -mindepth 1 -maxdepth 1 -type d {{if .LANG}}-name {{.LANG | shellQuote}}{{end}} | sort'
   doctor:
     desc: Check required local binaries (optional LANG)
     cmds: ['bash scripts/doctor.sh {{.LANG | shellQuote}} {{.PYTHON | shellQuote}}']
   new:day:
-    desc: Create and register a day from its template (YEAR, DAY, LANG)
-    cmds: ['{{.PYTHON}} scripts/new_day.py {{.YEAR}} {{.DAY}} {{.LANG}}']
+    desc: Create and register a day from its template (LANG, YEAR, DAY)
+    cmds: ['{{.PYTHON}} scripts/new_day.py {{.LANG}} {{.YEAR}} {{.DAY}}']
   input:
     desc: Download inputs explicitly (YEAR, optional DAY)
     cmds: ['bash scripts/download_inputs.sh {{.YEAR}} "{{.DAY}}"']
@@ -49,10 +59,6 @@ tasks:
   # Rust
   build:rust:
     cmds: ['cargo build --locked --release --bin main{{.YEAR}}']
-  run:rust:
-    vars:
-      OPTIONS: *run_options
-    cmds: ['cargo run --locked --release --bin main{{.YEAR}} -- {{.OPTIONS}}']
   check:rust:
     cmds:
       - rustfmt --edition 2021 src/{{.YEAR | default "[0-9]*"}}/rust/main.rs src/lib/rust/aoc_lib.rs
@@ -67,11 +73,6 @@ tasks:
     cmds:
       - poetry env use python3.15
       - poetry install
-  run:python:
-    deps: [build:python]
-    vars:
-      OPTIONS: *run_options
-    cmds: ['poetry run python3.15 src/{{.YEAR}}/python/main.py {{.OPTIONS}}']
   check:python:
     vars:
       DIRS:
@@ -85,8 +86,6 @@ tasks:
   # Go
   build:golang:
     cmds: ['go build -o build/golang/bin/{{.YEAR}}/ ./src/{{.YEAR}}/golang/...']
-  run:golang:
-    cmds: ['go run ./src/{{.YEAR}}/golang/day{{printf "%02d" (atoi .DAY)}}']
   check:golang:
     vars:
       PACKAGES: '{{if .YEAR}}./src/{{.YEAR}}/golang/... ./src/lib/golang/...{{else}}./...{{end}}'
@@ -99,20 +98,11 @@ tasks:
   build:zig:
     cmds:
       - 'zig build --pkg-dir build/zig/packages --cache-dir build/zig/cache --prefix build/zig/out -Doptimize=fast {{.YEAR}}_main'
-  run:zig:
-    deps: [build:zig]
-    vars:
-      OPTIONS: *run_options
-    cmds: ['./build/zig/out/bin/main{{.YEAR}} {{.OPTIONS}}']
   check:zig:
     cmds: ['zig fmt src/{{.YEAR | default "[0-9]*"}}/zig src/lib/zig build.zig']
 
   # Elixir
   build:elixir:
     cmds: ['echo "Elixir runs as a script; no build needed."']
-  run:elixir:
-    vars:
-      OPTIONS: *run_options
-    cmds: ['elixir src/{{.YEAR}}/elixir/main.exs {{.OPTIONS}}']
   check:elixir:
     cmds: ['mix format "src/{{.YEAR | default "[0-9]*"}}/elixir/**/*.{ex,exs}" "src/lib/elixir/**/*.{ex,exs}"']

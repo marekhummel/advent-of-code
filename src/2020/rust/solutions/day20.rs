@@ -183,15 +183,6 @@ impl Solution20 {
 }
 
 impl Solution for Solution20 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U64(20899048083289),
-            ProblemResult::U64(7492183537913),
-            ProblemResult::USize(273),
-            ProblemResult::USize(2323),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut tiles = Self::parse(input).into_iter().map(|(tile, _)| tile).collect_vec();
         let width = tiles.len().sqrt();

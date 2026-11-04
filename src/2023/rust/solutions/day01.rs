@@ -38,15 +38,6 @@ impl Solution01 {
 }
 
 impl Solution for Solution01 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(142),
-            ProblemResult::U32(55971),
-            ProblemResult::U32(281),
-            ProblemResult::U32(54719),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         input.lines().iter().map(|s| self.value01(s)).sum::<u32>().to_result()
     }

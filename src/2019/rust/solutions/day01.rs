@@ -8,15 +8,6 @@ pub struct Solution01;
 impl Solution01 {}
 
 impl Solution for Solution01 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I32(34241),
-            ProblemResult::I32(3423511),
-            ProblemResult::I32(50346),
-            ProblemResult::I32(5132379),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         input
             .lines()

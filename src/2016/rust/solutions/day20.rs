@@ -42,15 +42,6 @@ impl Solution20 {
 }
 
 impl Solution for Solution20 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(3),
-            ProblemResult::U32(17348574),
-            ProblemResult::U32(4294967288),
-            ProblemResult::U32(104),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let ranges = Self::parse(input);
         let whitelist = Self::allowed_ips(ranges, u32::MAX);

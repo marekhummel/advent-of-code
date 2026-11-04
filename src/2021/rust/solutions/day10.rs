@@ -50,15 +50,6 @@ impl Solution10 {
 }
 
 impl Solution for Solution10 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U64(26397),
-            ProblemResult::U64(319329),
-            ProblemResult::U64(288957),
-            ProblemResult::U64(3515583998),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         Self::fix_subsystem(&input.lines()).0.to_result()
     }

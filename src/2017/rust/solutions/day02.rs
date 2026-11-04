@@ -15,15 +15,6 @@ impl Solution02 {
 }
 
 impl Solution for Solution02 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(18),
-            ProblemResult::U32(44670),
-            ProblemResult::U32(9),
-            ProblemResult::U32(285),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let spreadsheet = Self::parse(input);
 

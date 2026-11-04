@@ -43,15 +43,6 @@ impl Solution08 {
 }
 
 impl Solution for Solution08 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(138),
-            ProblemResult::U32(49180),
-            ProblemResult::U32(66),
-            ProblemResult::U32(20611),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let licence = Self::parse(input);
         let root = Node::from_licence(&mut licence.into_iter());

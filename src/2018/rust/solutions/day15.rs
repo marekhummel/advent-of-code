@@ -154,15 +154,6 @@ impl Solution15 {
 }
 
 impl Solution for Solution15 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(39514),
-            ProblemResult::U32(239010),
-            ProblemResult::U32(31284),
-            ProblemResult::U32(62468),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (caves, entities) = Self::parse(input);
 

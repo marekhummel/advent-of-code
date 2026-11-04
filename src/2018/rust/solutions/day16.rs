@@ -79,15 +79,6 @@ impl Solution16 {
 }
 
 impl Solution for Solution16 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I32(1),
-            ProblemResult::I32(570),
-            ProblemResult::NoSample,
-            ProblemResult::USize(503),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (samples, _) = Self::parse(input);
 

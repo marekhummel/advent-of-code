@@ -5,15 +5,6 @@ const ProblemInput = aoc_lib.types.ProblemInput;
 const Result = aoc_lib.types.Result;
 const Index = aoc_lib.cartesian.Index;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .UInt64 = 126384 },
-        Result{ .UInt64 = 205160 },
-        Result.NoSample,
-        Result{ .UInt64 = 252473394928452 },
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 

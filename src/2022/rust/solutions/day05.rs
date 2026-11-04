@@ -39,15 +39,6 @@ impl Solution05 {
 }
 
 impl Solution for Solution05 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::String("CMZ".to_string()),
-            ProblemResult::String("TGWSMRBPN".to_string()),
-            ProblemResult::String("MCD".to_string()),
-            ProblemResult::String("TZLTLWRNF".to_string()),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (mut stacks, moves) = Self::parse(input);
 

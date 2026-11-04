@@ -68,15 +68,6 @@ impl Solution21 {
 }
 
 impl Solution for Solution21 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(5),
-            ProblemResult::USize(2078),
-            ProblemResult::String("mxmxvkd,sqjhc,fvjkl".to_string()),
-            ProblemResult::String("lmcqt,kcddk,npxrdnd,cfb,ldkt,fqpt,jtfmtpd,tsch".to_string()),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let foods = Self::parse(input);
         let potentials = Self::find_potential_allergenic_ingredients(&foods);

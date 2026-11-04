@@ -79,15 +79,6 @@ impl Solution19 {
 }
 
 impl Solution for Solution19 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(7),
-            ProblemResult::USize(576),
-            ProblemResult::USize(5),
-            ProblemResult::USize(207),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (molecule, rules) = Self::parse(input);
 

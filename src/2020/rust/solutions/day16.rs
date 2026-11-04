@@ -53,15 +53,6 @@ impl Solution16 {
 }
 
 impl Solution for Solution16 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U64(71),
-            ProblemResult::U64(23925),
-            ProblemResult::NoSample,
-            ProblemResult::U64(964373157673),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (rules, _, nearby_tickets) = Self::parse(input);
 

@@ -35,15 +35,6 @@ impl Solution15 {
 }
 
 impl Solution for Solution15 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(588),
-            ProblemResult::USize(569),
-            ProblemResult::USize(309),
-            ProblemResult::USize(298),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (ga, gb) = Self::parse(input);
 

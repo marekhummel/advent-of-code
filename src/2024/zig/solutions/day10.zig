@@ -7,15 +7,6 @@ const Result = aoc_lib.types.Result;
 const Grid = aoc_lib.types.Grid;
 const Index = aoc_lib.cartesian.Index;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .USize = 36 },
-        Result{ .USize = 512 },
-        Result{ .USize = 81 },
-        Result{ .USize = 1045 },
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     return Result{ .USize = try countTrails(try input.grid(), true, allocator) };

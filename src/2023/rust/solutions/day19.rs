@@ -182,15 +182,6 @@ impl Solution19 {
 }
 
 impl Solution for Solution19 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(19114),
-            ProblemResult::U32(280909),
-            ProblemResult::U128(167409079868000),
-            ProblemResult::U128(116138474394508),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (parts, workflows) = Self::parse(input);
         let exec_workflows: HashMap<_, _> = workflows

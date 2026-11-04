@@ -22,10 +22,6 @@ class SeedRange(NamedTuple):
 
 class Solution05(Solution):
     @staticmethod
-    def results() -> list[ProblemResult]:
-        return [35, 379811651, 46, 27992443]
-
-    @staticmethod
     def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
         seeds, maps = parse(data)
         return min(reduce(apply_map, maps, s) for s in seeds)

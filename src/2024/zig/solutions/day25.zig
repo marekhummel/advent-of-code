@@ -5,15 +5,6 @@ const ProblemInput = aoc_lib.types.ProblemInput;
 const Result = aoc_lib.types.Result;
 const Grid = aoc_lib.types.Grid;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .USize = 3 },
-        Result{ .USize = 3360 },
-        Result.NoPartTwo,
-        Result.NoPartTwo,
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 

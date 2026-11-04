@@ -15,15 +15,6 @@ impl Solution19 {
 }
 
 impl Solution for Solution19 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(6),
-            ProblemResult::USize(968),
-            ProblemResult::NoSample,
-            ProblemResult::U32(10557936),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (program, pc_link) = Self::parse(input);
 

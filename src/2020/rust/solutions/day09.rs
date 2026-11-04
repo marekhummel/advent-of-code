@@ -26,15 +26,6 @@ impl Solution09 {
 }
 
 impl Solution for Solution09 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(127),
-            ProblemResult::U32(26134589),
-            ProblemResult::U32(62),
-            ProblemResult::U32(3535124),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let preamble_len = if is_sample { 5 } else { 25 };
 

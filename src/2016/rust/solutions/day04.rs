@@ -42,15 +42,6 @@ impl Solution04 {
 }
 
 impl Solution for Solution04 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(1514),
-            ProblemResult::U32(245102),
-            ProblemResult::NoSample,
-            ProblemResult::U32(324),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let rooms = Self::parse(input);
 

@@ -28,15 +28,6 @@ impl Solution04 {
 }
 
 impl Solution for Solution04 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(2),
-            ProblemResult::USize(538),
-            ProblemResult::USize(4),
-            ProblemResult::USize(792),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let pairs = Self::parse(input);
         pairs.into_iter().filter(Self::fully_contain).count().to_result()

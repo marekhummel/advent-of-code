@@ -17,15 +17,6 @@ impl Solution03 {
 }
 
 impl Solution for Solution03 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(198),
-            ProblemResult::U32(3885894),
-            ProblemResult::U32(230),
-            ProblemResult::U32(4375225),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let digits = input.grid().transpose();
         let majorities = digits

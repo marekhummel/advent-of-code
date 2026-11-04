@@ -9,15 +9,6 @@ const Position = aoc_lib.cartesian.Position;
 const PosDelta = aoc_lib.cartesian.PosDelta;
 const Size = aoc_lib.cartesian.Size;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .USize = 12 },
-        Result{ .USize = 222901875 },
-        Result.NoSample,
-        Result{ .USize = 6243 },
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     const size = if (!is_sample) Size{ .width = 101, .height = 103 } else Size{ .width = 11, .height = 7 };
 

@@ -9,15 +9,6 @@ const Position = aoc_lib.cartesian.Position;
 const PosDelta = aoc_lib.cartesian.PosDelta;
 const set = @import("ziglangSet");
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .UInt32 = 14 },
-        Result{ .UInt32 = 396 },
-        Result{ .UInt32 = 34 },
-        Result{ .UInt32 = 1200 },
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 

@@ -101,15 +101,6 @@ impl Solution13 {
 }
 
 impl Solution for Solution13 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(13),
-            ProblemResult::USize(5580),
-            ProblemResult::USize(140),
-            ProblemResult::USize(26200),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let packet_pairs = Self::parse(input).into_iter().tuples();
 

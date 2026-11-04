@@ -55,15 +55,6 @@ impl Solution15 {
 }
 
 impl Solution for Solution15 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I32(62842880),
-            ProblemResult::I32(21367368),
-            ProblemResult::I32(57600000),
-            ProblemResult::I32(1766400),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let ingredients = Self::parse(input);
         Self::score(&ingredients, (0, 0, 0, 0, 0), 100, false).to_result()

@@ -48,15 +48,6 @@ impl Solution10 {
 }
 
 impl Solution for Solution10 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(210),
-            ProblemResult::USize(303),
-            ProblemResult::USize(802),
-            ProblemResult::USize(408),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let map = input.grid().map_elements(|c| *c == '#');
         let asteroids = map.enumerate().filter(|(_, a)| **a).map(|(idx, _)| idx).collect_vec();

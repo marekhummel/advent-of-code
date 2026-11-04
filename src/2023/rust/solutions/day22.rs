@@ -142,15 +142,6 @@ impl Solution22 {
 }
 
 impl Solution for Solution22 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(5),
-            ProblemResult::USize(524),
-            ProblemResult::U32(7),
-            ProblemResult::U32(77070),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut bricks = Self::parse(input);
         Self::let_bricks_fall(&mut bricks);

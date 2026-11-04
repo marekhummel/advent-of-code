@@ -113,15 +113,6 @@ impl Solution10 {
 }
 
 impl Solution for Solution10 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(8),
-            ProblemResult::USize(7145),
-            ProblemResult::U64(10),
-            ProblemResult::U64(445),
-        ]
-    }
-
     #[allow(clippy::manual_div_ceil)]
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         // Add one to account for odd-length paths

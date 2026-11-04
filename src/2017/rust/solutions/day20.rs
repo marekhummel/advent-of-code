@@ -49,15 +49,6 @@ impl Solution20 {
 }
 
 impl Solution for Solution20 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(0),
-            ProblemResult::USize(161),
-            ProblemResult::USize(1),
-            ProblemResult::USize(438),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let particles = Self::parse(input);
 

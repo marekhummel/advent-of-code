@@ -11,16 +11,6 @@ defmodule Day08 do
   alias AocLib.Util.UnionFind
 
   @impl true
-  def results do
-    [
-      40,
-      131_150,
-      25272,
-      2_497_445
-    ]
-  end
-
-  @impl true
   def solve_part01(input, is_sample) do
     num_lights = if(is_sample, do: 10, else: 1000)
 

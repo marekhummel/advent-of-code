@@ -18,15 +18,6 @@ impl Solution09 {
 }
 
 impl Solution for Solution09 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(15),
-            ProblemResult::U32(491),
-            ProblemResult::USize(1134),
-            ProblemResult::USize(1075536),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let height_map = input.grid().map_elements(|c| *c as u8 - b'0');
 

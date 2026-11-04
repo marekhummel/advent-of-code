@@ -7,15 +7,6 @@ const Grid = aoc_lib.types.Grid;
 const Index = aoc_lib.cartesian.Index;
 const Direction = aoc_lib.cartesian.Direction;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .USize = 41 },
-        Result{ .USize = 4752 },
-        Result{ .USize = 6 },
-        Result{ .USize = 1719 },
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 

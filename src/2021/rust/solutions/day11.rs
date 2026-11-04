@@ -33,15 +33,6 @@ impl Solution11 {
 }
 
 impl Solution for Solution11 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(1656),
-            ProblemResult::USize(1601),
-            ProblemResult::I32(195),
-            ProblemResult::I32(368),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut octopi = input.grid().map_elements(|c| *c as u8 - b'0');
         let total_flashes = (0..100).fold(0, |flashes, _| flashes + Self::step(&mut octopi));

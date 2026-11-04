@@ -80,15 +80,6 @@ impl<'a> Iterator for PathsIterator<'a> {
 }
 
 impl Solution for Solution17 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::String("DRURDRUDDLLDLUURRDULRLDUUDDDRR".to_string()),
-            ProblemResult::String("DRDRULRDRD".to_string()),
-            ProblemResult::USize(830),
-            ProblemResult::USize(384),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let rooms = Rooms {
             passcode: input.string(),

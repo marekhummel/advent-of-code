@@ -8,16 +8,6 @@ defmodule DayXX do
   alias AocLib.Types.ProblemInput
 
   @impl true
-  def results do
-    [
-      :unsolved,
-      :unsolved,
-      :unsolved,
-      :unsolved
-    ]
-  end
-
-  @impl true
   def solve_part01(input, _is_sample) do
     _lines = ProblemInput.lines(input)
 

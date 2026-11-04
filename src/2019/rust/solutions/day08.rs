@@ -17,15 +17,6 @@ impl Solution08 {
 }
 
 impl Solution for Solution08 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(1),
-            ProblemResult::USize(1340),
-            ProblemResult::String("/".to_string()),
-            ProblemResult::String("LEJKC".to_string()),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let (w, h) = if is_sample { (3, 2) } else { (25, 6) };
         let layers = Self::parse(input, w, h);

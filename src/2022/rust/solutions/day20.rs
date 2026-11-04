@@ -65,15 +65,6 @@ impl Solution20 {
 }
 
 impl Solution for Solution20 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::ISize(3),
-            ProblemResult::ISize(8372),
-            ProblemResult::ISize(1623178306),
-            ProblemResult::ISize(7865110481723),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let numbers = Self::parse(input);
         let mut arrangement = Self::initial_arrangement(&numbers);

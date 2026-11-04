@@ -64,15 +64,6 @@ impl Solution16 {
 }
 
 impl Solution for Solution16 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(46),
-            ProblemResult::USize(7517),
-            ProblemResult::USize(51),
-            ProblemResult::USize(7741),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let grid = input.grid();
         let beam_start = Beam {

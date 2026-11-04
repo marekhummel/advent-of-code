@@ -4,15 +4,6 @@ pub struct Solution17;
 impl Solution17 {}
 
 impl Solution for Solution17 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(638),
-            ProblemResult::USize(355),
-            ProblemResult::USize(1222153),
-            ProblemResult::USize(6154117),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let steps: usize = input.string().parse().unwrap();
         let mut buffer = vec![0];

@@ -62,15 +62,6 @@ impl Solution23 {
 }
 
 impl Solution for Solution23 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I128(110),
-            ProblemResult::I128(4109),
-            ProblemResult::U16(20),
-            ProblemResult::U16(1055),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut elves = Self::parse(input);
         let mut rules = Self::proposal_rules();

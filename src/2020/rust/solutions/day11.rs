@@ -70,15 +70,6 @@ impl Solution11 {
 }
 
 impl Solution for Solution11 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(37),
-            ProblemResult::USize(2273),
-            ProblemResult::USize(26),
-            ProblemResult::USize(2064),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let seating_area = input.grid();
 

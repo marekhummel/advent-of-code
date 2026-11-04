@@ -3,10 +3,6 @@ from lib.python import ProblemInput, ProblemResult, Solution
 
 class Solution04(Solution):
     @staticmethod
-    def results() -> list[ProblemResult]:
-        return [13, 26443, 30, 6284877]
-
-    @staticmethod
     def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
         return sum(compute_value(winning, mine) for winning, mine in parse(data))
 

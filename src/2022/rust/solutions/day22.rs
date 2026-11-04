@@ -54,15 +54,6 @@ impl Solution22 {
 }
 
 impl Solution for Solution22 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(6032),
-            ProblemResult::USize(80392),
-            ProblemResult::USize(5031),
-            ProblemResult::USize(19534),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (map, path) = Self::parse(input);
 

@@ -49,15 +49,6 @@ impl Solution04 {
 }
 
 impl Solution for Solution04 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(4512),
-            ProblemResult::U32(22680),
-            ProblemResult::U32(1924),
-            ProblemResult::U32(16168),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (numbers, mut boards) = Self::parse(input);
 

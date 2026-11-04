@@ -55,15 +55,6 @@ impl Solution24 {
 }
 
 impl Solution for Solution24 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(10),
-            ProblemResult::USize(312),
-            ProblemResult::USize(2208),
-            ProblemResult::USize(3733),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let paths = Self::parse(input);
         let blacks = Self::flip_tiles(&paths);

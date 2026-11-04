@@ -33,15 +33,6 @@ impl Solution09 {
 }
 
 impl Solution for Solution09 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I64(605),
-            ProblemResult::I64(117),
-            ProblemResult::I64(982),
-            ProblemResult::I64(909),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let graph = Self::parse(input);
         Self::route_lenghts(&graph).min().unwrap().to_result()

@@ -8,16 +8,6 @@ defmodule Day07 do
   alias AocLib.Types.ProblemInput
 
   @impl true
-  def results do
-    [
-      21,
-      1598,
-      40,
-      4_509_723_641_302
-    ]
-  end
-
-  @impl true
   def solve_part01(input, _is_sample) do
     manifold = ProblemInput.grid(input)
 

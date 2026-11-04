@@ -70,15 +70,6 @@ impl Solution09 {
 }
 
 impl Solution for Solution09 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(88),
-            ProblemResult::USize(6314),
-            ProblemResult::USize(36),
-            ProblemResult::USize(2504),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let motions = Self::parse(input);
         let tail_visited = Self::move_rope(&motions, 2);

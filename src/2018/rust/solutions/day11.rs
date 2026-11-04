@@ -43,15 +43,6 @@ impl Solution11 {
 }
 
 impl Solution for Solution11 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::String("33,45".to_string()),
-            ProblemResult::String("20,68".to_string()),
-            ProblemResult::String("90,269,16".to_string()),
-            ProblemResult::String("231,273,16".to_string()),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let serial_number: u32 = input.string().parse().unwrap();
         let sat = Self::summed_area_table(serial_number);

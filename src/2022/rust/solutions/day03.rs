@@ -16,15 +16,6 @@ impl Solution03 {
 }
 
 impl Solution for Solution03 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(157),
-            ProblemResult::U32(8243),
-            ProblemResult::U32(70),
-            ProblemResult::U32(2631),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let rucksacks = input.lines().into_iter().map(|l| {
             let mut first = l.chars().collect_vec();

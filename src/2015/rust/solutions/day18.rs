@@ -31,15 +31,6 @@ impl Solution18 {
 }
 
 impl Solution for Solution18 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(4),
-            ProblemResult::USize(768),
-            ProblemResult::USize(17),
-            ProblemResult::USize(781),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let initial_grid = Self::parse(input);
         let steps = if is_sample { 4 } else { 100 };

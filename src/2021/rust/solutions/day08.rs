@@ -21,15 +21,6 @@ impl Solution08 {
 }
 
 impl Solution for Solution08 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(26),
-            ProblemResult::USize(470),
-            ProblemResult::USize(61229),
-            ProblemResult::USize(989396),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let entries = Self::parse(input);
 

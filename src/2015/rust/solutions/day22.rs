@@ -237,15 +237,6 @@ impl Solution22 {
 }
 
 impl Solution for Solution22 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(641),
-            ProblemResult::U32(1824),
-            ProblemResult::U32(588),
-            ProblemResult::U32(1937),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let player = if is_sample { (10, 0, 250) } else { (50, 0, 500) };
         let boss = Self::parse(input);

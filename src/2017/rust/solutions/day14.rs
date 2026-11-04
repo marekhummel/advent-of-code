@@ -10,15 +10,6 @@ pub struct Solution14;
 impl Solution14 {}
 
 impl Solution for Solution14 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(8108),
-            ProblemResult::U32(8148),
-            ProblemResult::USize(1242),
-            ProblemResult::USize(1180),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let key = input.string();
 

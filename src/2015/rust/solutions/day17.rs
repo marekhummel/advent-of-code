@@ -32,15 +32,6 @@ impl Solution17 {
 }
 
 impl Solution for Solution17 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(4),
-            ProblemResult::U32(1304),
-            ProblemResult::U32(3),
-            ProblemResult::U32(18),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let eggnog = if is_sample { 25 } else { 150 };
         let containers = Self::parse(input);

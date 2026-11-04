@@ -188,15 +188,6 @@ impl Solution24 {
 }
 
 impl Solution for Solution24 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(5216),
-            ProblemResult::U32(26937),
-            ProblemResult::U32(51),
-            ProblemResult::U32(4893),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let divisions = Self::parse(input);
         let (_, remaining) = Self::fight(divisions).unwrap();

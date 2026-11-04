@@ -71,15 +71,6 @@ impl Solution14 {
 }
 
 impl Solution for Solution14 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U64(180697),
-            ProblemResult::U64(337075),
-            ProblemResult::U64(5586022),
-            ProblemResult::U64(5194174),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let graph = Self::parse(input);
         Self::compute_required_ore(&graph, 1).to_result()

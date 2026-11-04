@@ -14,15 +14,6 @@ impl Solution03 {
 }
 
 impl Solution for Solution03 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(7),
-            ProblemResult::USize(187),
-            ProblemResult::USize(336),
-            ProblemResult::USize(4723283400),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let area = input.grid();
         Self::trees(&area, 3, 1).to_result()

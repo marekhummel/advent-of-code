@@ -10,16 +10,6 @@ defmodule Day10 do
   alias AocLib.Util
 
   @impl true
-  def results do
-    [
-      7,
-      422,
-      :unsolved,
-      :unsolved
-    ]
-  end
-
-  @impl true
   def solve_part01(input, _is_sample) do
     # Note: All buttons and patterns are unsigned ints, as we either have to press a button never or once
     # In the pattern we use left as the LSB, to make button presses easier

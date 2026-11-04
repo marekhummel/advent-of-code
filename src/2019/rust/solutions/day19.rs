@@ -15,15 +15,6 @@ impl Solution19 {
 }
 
 impl Solution for Solution19 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::NoSample,
-            ProblemResult::USize(211),
-            ProblemResult::NoSample,
-            ProblemResult::I128(8071006),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         if is_sample {
             return ProblemResult::NoSample;

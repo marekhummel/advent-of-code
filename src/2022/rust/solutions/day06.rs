@@ -18,15 +18,6 @@ impl Solution06 {
 }
 
 impl Solution for Solution06 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(7),
-            ProblemResult::USize(1238),
-            ProblemResult::USize(19),
-            ProblemResult::USize(3037),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         Self::find_marker(input.string(), 4).to_result()
     }

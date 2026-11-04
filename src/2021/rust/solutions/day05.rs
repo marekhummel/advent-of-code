@@ -59,15 +59,6 @@ impl Solution05 {
 }
 
 impl Solution for Solution05 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(5),
-            ProblemResult::USize(5197),
-            ProblemResult::USize(12),
-            ProblemResult::USize(18605),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let vents = Self::parse(input);
         let dangerous = Self::count_dangerous(&vents, false);

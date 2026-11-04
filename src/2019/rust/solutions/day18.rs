@@ -178,15 +178,6 @@ impl Solution18 {
 }
 
 impl Solution for Solution18 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(81),
-            ProblemResult::U32(4868),
-            ProblemResult::U32(72),
-            ProblemResult::U32(1984),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let map = input.grid().map_elements(Tile::from_char);
         let graph = Self::create_graph(&map);

@@ -6,15 +6,6 @@ pub struct Solution08;
 impl Solution08 {}
 
 impl Solution for Solution08 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(12),
-            ProblemResult::USize(1342),
-            ProblemResult::USize(19),
-            ProblemResult::USize(2074),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let hexa_rgx = Regex::new(r"\\x[0-9a-fA-F]{2}").unwrap();
 

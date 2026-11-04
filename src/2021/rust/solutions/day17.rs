@@ -69,15 +69,6 @@ impl Solution17 {
 }
 
 impl Solution for Solution17 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::I32(45),
-            ProblemResult::I32(2775),
-            ProblemResult::USize(112),
-            ProblemResult::USize(1566),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (area_x, area_y) = Self::parse(input);
 

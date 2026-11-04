@@ -6,15 +6,6 @@ pub struct Solution08;
 impl Solution08 {}
 
 impl Solution for Solution08 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(21),
-            ProblemResult::U32(1672),
-            ProblemResult::U32(8),
-            ProblemResult::U32(327180),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let forest = input.grid().map_elements(|c| *c as u8 - b'0');
 

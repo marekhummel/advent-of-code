@@ -8,16 +8,6 @@ defmodule Day12 do
   alias AocLib.Types.ProblemInput
 
   @impl true
-  def results do
-    [
-      :unsolved,
-      448,
-      :no_part_two,
-      :no_part_two
-    ]
-  end
-
-  @impl true
   def solve_part01(input, is_sample) do
     {shape_sizes, region_requirements} = input |> ProblemInput.lines() |> parse()
 

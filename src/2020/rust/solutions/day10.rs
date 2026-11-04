@@ -29,15 +29,6 @@ impl Solution10 {
 }
 
 impl Solution for Solution10 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(220),
-            ProblemResult::USize(2450),
-            ProblemResult::U64(19208),
-            ProblemResult::U64(32396521357312),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut adapters = input.lines().into_iter().parsed::<u16>().sorted().collect_vec();
         adapters.insert(0, 0);

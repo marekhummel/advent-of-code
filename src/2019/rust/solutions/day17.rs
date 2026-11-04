@@ -154,15 +154,6 @@ impl Solution17 {
 }
 
 impl Solution for Solution17 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(76),
-            ProblemResult::USize(5056),
-            ProblemResult::NoSample,
-            ProblemResult::I128(942367),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         // Create grid
         let grid = if is_sample {

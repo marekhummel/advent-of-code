@@ -111,15 +111,6 @@ pub struct Solution18;
 impl Solution18 {}
 
 impl Solution for Solution18 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(4140),
-            ProblemResult::U32(3981),
-            ProblemResult::U32(3993),
-            ProblemResult::U32(4687),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let nums = input
             .lines()

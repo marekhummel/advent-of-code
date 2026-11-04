@@ -5,15 +5,6 @@ const Allocator = std.mem.Allocator;
 const ProblemInput = aoc_lib.types.ProblemInput;
 const Result = aoc_lib.types.Result;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .Int64 = 480 },
-        Result{ .Int64 = 32026 },
-        Result.NoSample,
-        Result{ .Int64 = 89013607072065 },
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     return Result{ .Int64 = try computeTokens(input, 0, allocator) };

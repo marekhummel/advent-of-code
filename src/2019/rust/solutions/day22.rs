@@ -56,15 +56,6 @@ impl Solution22 {
 }
 
 impl Solution for Solution22 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(7),
-            ProblemResult::USize(8379),
-            ProblemResult::I128(9),
-            ProblemResult::I128(96959315590030),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
         let (deck_size, card) = if is_sample { (10, 0) } else { (10007, 2019) };
         let shuffles = Self::parse(input);

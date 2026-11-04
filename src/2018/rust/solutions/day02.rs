@@ -8,15 +8,6 @@ pub struct Solution02;
 impl Solution02 {}
 
 impl Solution for Solution02 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U32(12),
-            ProblemResult::U32(7410),
-            ProblemResult::String("fgij".to_string()),
-            ProblemResult::String("cnjxoritzhvbosyewrmqhgkul".to_string()),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let (mut twos, mut threes) = (0u32, 0u32);
 

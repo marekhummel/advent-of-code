@@ -7,15 +7,6 @@ pub struct Solution06;
 impl Solution06 {}
 
 impl Solution for Solution06 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(5934),
-            ProblemResult::USize(359344),
-            ProblemResult::U64(26984457539),
-            ProblemResult::U64(1629570219571),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         // Simple simulation (could use part two with DAYS = 80 as well)
         let lantern_fish = input.string().split(',').parsed::<u8>().collect_vec();

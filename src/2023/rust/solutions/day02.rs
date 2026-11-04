@@ -40,15 +40,6 @@ impl Solution02 {
 }
 
 impl Solution for Solution02 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U16(8),
-            ProblemResult::U16(2476),
-            ProblemResult::I32(2286),
-            ProblemResult::I32(54911),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         self.parse(input)
             .iter()

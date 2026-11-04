@@ -18,15 +18,6 @@ impl Solution14 {
 }
 
 impl Solution for Solution14 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::U64(5941429882),
-            ProblemResult::U64(5371393113),
-            ProblemResult::USize(2018),
-            ProblemResult::USize(20286858),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let counter: usize = input.string().parse().unwrap();
 

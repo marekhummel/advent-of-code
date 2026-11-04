@@ -5,10 +5,6 @@ from lib.python import ProblemInput, ProblemResult, Solution
 
 class Solution12(Solution):
     @staticmethod
-    def results() -> list[ProblemResult]:
-        return [21, 7716, 525152, 18716325559999]
-
-    @staticmethod
     def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
         lines = parse(data)
         return sum(find_arrangements(*args, None) for args in lines)

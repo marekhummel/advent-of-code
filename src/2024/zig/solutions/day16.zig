@@ -9,15 +9,6 @@ const PathFinding = aoc_lib.graph.PathFinding;
 const Index = aoc_lib.cartesian.Index;
 const Direction = aoc_lib.cartesian.Direction;
 
-pub fn results() [4]Result {
-    return .{
-        Result{ .UInt32 = 7036 },
-        Result{ .UInt32 = 143580 },
-        Result{ .USize = 45 },
-        Result{ .USize = 645 },
-    };
-}
-
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 

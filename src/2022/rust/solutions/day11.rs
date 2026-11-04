@@ -84,15 +84,6 @@ impl Solution11 {
 }
 
 impl Solution for Solution11 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(10605),
-            ProblemResult::USize(110888),
-            ProblemResult::USize(2713310158),
-            ProblemResult::USize(25590400731),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let monkeys = Self::parse(input);
 

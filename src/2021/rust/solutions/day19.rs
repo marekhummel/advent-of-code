@@ -83,15 +83,6 @@ impl Solution19 {
 }
 
 impl Solution for Solution19 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(79),
-            ProblemResult::USize(372),
-            ProblemResult::I32(3621),
-            ProblemResult::I32(12241),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let scanner_beacons = Self::parse(input);
         let (_, beacons) = Self::find_absolute_locations(scanner_beacons);

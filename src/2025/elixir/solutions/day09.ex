@@ -9,16 +9,6 @@ defmodule Day09 do
   alias AocLib.Util
 
   @impl true
-  def results do
-    [
-      50,
-      4_782_896_435,
-      24,
-      1_540_060_480
-    ]
-  end
-
-  @impl true
   def solve_part01(input, _is_sample) do
     input |> red_tiles() |> Util.combinations(2) |> Enum.map(&area/1) |> Enum.max()
   end

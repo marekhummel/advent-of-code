@@ -40,15 +40,6 @@ impl Solution19 {
 }
 
 impl Solution for Solution19 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::String("ABCDEF".to_string()),
-            ProblemResult::String("MKXOIHZNBL".to_string()),
-            ProblemResult::U32(38),
-            ProblemResult::U32(17872),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let pipes = input.grid();
         let (letters, _) = Self::follow_pipes(&pipes);

@@ -184,15 +184,6 @@ impl Solution20 {
 }
 
 impl Solution for Solution20 {
-    fn results(&self) -> [ProblemResult; 4] {
-        [
-            ProblemResult::USize(58),
-            ProblemResult::USize(464),
-            ProblemResult::USize(396),
-            ProblemResult::USize(5802),
-        ]
-    }
-
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let grid = Self::parse(input);
         Self::find_exit(&grid, false).to_result()
