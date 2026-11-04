@@ -1,0 +1,59 @@
+{
+    "name": "Advent of Code",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": "."
+    },
+    "workspaceMount": "source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind",
+    "workspaceFolder": "${localWorkspaceFolder}",
+    "mounts": [
+        "source=${localEnv:HOME}/.codex,target=${localEnv:HOME}/.codex,type=bind",
+        "source=${localEnv:HOME}/.ssh/id_ed25519.pub,target=${localEnv:HOME}/.ssh/id_ed25519.pub,type=bind,readonly"
+    ],
+    "remoteUser": "ubuntu",
+    "updateRemoteUserUID": true,
+    "runArgs": [
+        "--security-opt=label=disable",
+        "--security-opt=seccomp=unconfined"
+    ],
+    "remoteEnv": {
+        "CODEX_HOME": "${localEnv:HOME}/.codex"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "openai.chatgpt@26.1007.21434",
+                "task.vscode-task",
+                "rust-lang.rust-analyzer",
+                "ms-python.python",
+                "charliermarsh.ruff",
+                "ms-python.mypy-type-checker",
+                "golang.go",
+                "ziglang.vscode-zig",
+                "jakebecker.elixir-ls"
+            ],
+            "settings": {
+                "files.encoding": "utf8",
+                "files.eol": "\n",
+                "files.insertFinalNewline": true,
+                "editor.detectIndentation": false,
+                "editor.insertSpaces": true,
+                "editor.tabSize": 4,
+                "[yaml]": {
+                    "editor.tabSize": 2
+                },
+                "[elixir]": {
+                    "editor.tabSize": 2
+                },
+                "[go]": {
+                    "editor.insertSpaces": false
+                },
+                "python.analysis.extraPaths": [
+                    "${workspaceFolder}/src"
+                ],
+                "python.defaultInterpreterPath": "/usr/bin/python3.15",
+                "zig.path": "/usr/local/zig/zig"
+            }
+        }
+    }
+}

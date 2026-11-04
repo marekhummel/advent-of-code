@@ -43,9 +43,6 @@ tasks:
     desc: List year/language directories (optional LANG and YEAR)
     cmds:
       - 'find src/{{.YEAR | default "[0-9]*"}} -mindepth 1 -maxdepth 1 -type d {{if .LANG}}-name {{.LANG | shellQuote}}{{end}} | sort'
-  doctor:
-    desc: Check required local binaries (optional LANG)
-    cmds: ['bash scripts/doctor.sh {{.LANG | shellQuote}} {{.PYTHON | shellQuote}}']
   new:day:
     desc: Create and register a day from its template (LANG, YEAR, DAY)
     cmds: ['{{.PYTHON}} scripts/new_day.py {{.LANG}} {{.YEAR}} {{.DAY}}']
@@ -65,13 +62,7 @@ tasks:
 
   # Python
   build:python:
-    status:
-      - |
-        interpreter=$(poetry env info --executable) &&
-          "$interpreter" -c 'import sys; sys.exit(sys.version_info[:2] != (3, 15) or sys.prefix == sys.base_prefix)'
-    cmds:
-      - poetry env use python3.15
-      - poetry install
+    cmds: ['sudo python3.15 -m pip install --break-system-packages -r requirements.txt']
   check:python:
     vars:
       DIRS:

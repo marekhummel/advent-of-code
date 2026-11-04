@@ -51,7 +51,7 @@ def joltage_config(machine: Machine) -> int:
     prob = pulp.LpProblem(f"AOC2025_DAY10_{ident}", pulp.LpMinimize)
 
     # Decision variables: x[i] = number of times button i is pressed
-    x = [pulp.LpVariable(f"x{i}", lowBound=0, cat="Integer") for i in range(len(buttons))]
+    x = [prob.add_variable(f"x{i}", lowBound=0, cat="Integer") for i in range(len(buttons))]
 
     # Objective: minimize sum of x
     prob += pulp.lpSum(x)
@@ -63,8 +63,8 @@ def joltage_config(machine: Machine) -> int:
         prob += pulp.lpSum(ones) == trg_joltage
 
     # Solve
-    prob.solve(pulp.PULP_CBC_CMD(msg=False))
-    assert pulp.LpStatus[prob.status] == "Optimal"
+    stats = prob.solve(pulp.COIN_CMD(msg=False))
+    assert stats.status_str == "Optimal"
 
     # Return the sum of button presses (== objective value)
     obj_value = pulp.value(prob.objective)

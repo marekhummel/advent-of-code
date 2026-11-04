@@ -1,24 +1,3 @@
-[tool.poetry]
-name = "advent-of-code"
-version = "0.1.0"
-description = ""
-authors = ["Marek Hummel <marek.hummel3@gmail.com>"]
-readme = "README.md"
-package-mode = false
-
-[tool.poetry.dependencies]
-python = ">=3.15,<3.16"
-pulp = "^4.2.0"
-
-[tool.poetry.group.dev.dependencies]
-ruff = "^0.17.3"
-mypy = "^2.4.1"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-
 [tool.ruff]
 cache-dir = "build/python/ruff"
 extend-exclude = ["test/", "scripts/", "build/"]

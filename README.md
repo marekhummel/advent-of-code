@@ -5,245 +5,87 @@ and inputs and sample expectations in `inputs/YEAR/`. Yearly READMEs stay in
 `src/YEAR/`; screenshots live in `progress/YEAR/`, with the overall image at
 `progress/total.png`. Run commands from the repository root.
 
-## Install Tools
+## Install
 
-These instructions target current stable tools, independently of the project's
-version settings. Python, its tools, Elixir and Erlang use apt/dnf, which provide
-the latest packaged versions for your distribution and can lag behind upstream.
-Choose your distribution's command, then install only the languages you need. Nothing here requires mise or uv.
+Keep VS Code, the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+and Docker on the host. Open this repository in VS Code and select
+**Dev Containers: Reopen in Container**. The image build installs the toolchains;
+language build tasks install project dependencies when needed.
 
-Downloads below target Linux x86-64. For another architecture, select its archive
-on the linked download page. Downloaded archives use ignored `build/tools/`;
-installed toolchains live under `~/.local/opt/` (Rust uses `~/.cargo/` and
-`~/.rustup/`). For PATH setup below, run only the Bash or Zsh commands matching
-your shell. They persist the setting and reload it for the current shell.
+The [Dockerfile](.devcontainer/Dockerfile) starts with minimal Ubuntu 26.04,
+applies system updates and installs globally, in this order:
 
-### Common
+| Group | Installed tools |
+| --- | --- |
+| Common | Bash, Git, curl, certificates, archive tools, C compiler/linker, sudo, Task |
+| Rust | Latest stable rustup toolchain, Cargo, rustfmt and Clippy |
+| Go | Go 1.27.3, including gofmt, vet and test |
+| Zig | Zig 0.17.1, including its formatter |
+| Elixir | Ubuntu-packaged Elixir, Erlang/OTP and Mix |
+| Python | Python 3.15 from the deadsnakes PPA, pip, Ruff and mypy |
 
-Bash, curl, certificates, archive utilities and Python for helper scripts:
+Python solution dependencies are listed in `requirements.txt`; `pyproject.toml`
+configures Ruff and mypy, whose versions are set in the Dockerfile.
+The `pulp[cbc]` extra supplies the CBC solver used by `COIN_CMD`.
+The Python build task installs the listed packages globally using pip; packages
+already at the required version are reused. The container provides isolation,
+so neither Poetry nor a Python virtual environment is needed.
+Python solutions use `python3.15`; helper scripts
+use Ubuntu's `python3`. Toolchains are installed globally, while the editor and
+terminals run as the unprivileged `ubuntu` user. Dev Containers matches its UID
+to your host account. The container disables SELinux labelling so the workspace
+bind mount is accessible on Fedora.
 
-```sh
-# Debian/Ubuntu
-sudo apt update
-sudo apt install -y bash curl ca-certificates tar xz-utils unzip python3
-# Fedora
-sudo dnf install -y bash curl ca-certificates tar xz unzip python3
-```
+VS Code's encoding, line endings, indentation and language-specific editor
+settings live in `.devcontainer/devcontainer.json`. Its Python settings select
+Python 3.15 and add `src/` to the editor's import search path.
 
-Install the latest [Task](https://taskfile.dev/docs/installation) from its official repository:
+To use your personal VS Code profile, run **Profiles: Switch Profile** while
+connected to the container. VS Code remembers the profile for that workspace;
+container settings apply on top of the profile's settings. Select any additional
+remote extensions through **Install Local Extensions in Dev Container** in the
+Extensions view. Profile selection is local to VS Code.
 
-```sh
-# Debian/Ubuntu
-curl -1sLf https://dl.cloudsmith.io/public/task/task/setup.deb.sh | sudo -E bash
-sudo apt install -y task
-# Fedora
-curl -1sLf https://dl.cloudsmith.io/public/task/task/setup.rpm.sh | sudo -E bash
-sudo dnf install -y task
-```
-
-### Rust
-
-Install a C compiler/linker through the system package manager, then use [rustup](https://rust-lang.org/tools/install/) for the latest stable Rust, Cargo, rustfmt and Clippy.
-
-```sh
-# Debian/Ubuntu
-sudo apt install -y build-essential
-# Fedora
-sudo dnf install -y gcc
-
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain stable
-. "$HOME/.cargo/env"
-rustup component add rustfmt clippy
-```
-
-
-
-### Python
-
-Install Python 3.15 and the globally available Poetry, Ruff and mypy commands
-through your system package manager:
-
-```sh
-# Debian/Ubuntu (when available in your release's repositories)
-sudo apt install -y python3.15 python3.15-venv python3-poetry ruff mypy
-# Fedora
-sudo dnf install -y python3.15 python3-poetry ruff python3-mypy
-```
-
-[Python 3.15 on Fedora](https://packages.fedoraproject.org/pkgs/python3.15/python3.15/)
-provides the `python3.15` executable. Package availability and patch versions
-depend on your distribution's repositories. On supported Ubuntu releases missing
-Python 3.15, use the [deadsnakes PPA](https://launchpad.net/~deadsnakes/+archive/ubuntu/ppa);
-it is not a Debian repository.
-
-### Go (`LANG=golang`)
-
-Install **1.27.3**, the latest stable [Go](https://go.dev/dl/) release. gofmt, vet and test are included.
-
-```sh
-mkdir -p build/tools "$HOME/.local/opt/go-1.27.3"
-curl -fL https://go.dev/dl/go1.27.3.linux-amd64.tar.gz -o build/tools/go.tar.gz
-tar -xzf build/tools/go.tar.gz -C "$HOME/.local/opt/go-1.27.3" --strip-components=1
-
-rcfile=~/.bashrc # ~/.zshrc
-echo 'export PATH="$HOME/.local/opt/go-1.27.3/bin:$PATH"' >> $rcfile
-source $rcfile
-```
-
-
-### Zig
-
-Install **0.17.1**, the latest stable [Zig](https://ziglang.org/download/) release, including its formatter:
-
-```sh
-mkdir -p build/tools "$HOME/.local/opt"
-curl -fL https://ziglang.org/download/0.17.1/zig-x86_64-linux-0.17.1.tar.xz -o build/tools/zig.tar.xz
-tar -xJf build/tools/zig.tar.xz -C "$HOME/.local/opt"
-
-rcfile=~/.bashrc # ~/.zshrc
-echo 'export PATH="$HOME/.local/opt/zig-x86_64-linux-0.17.1:$PATH"' >> $rcfile
-source $rcfile
-```
-
-
-### Elixir And Erlang
-
-Install the latest Elixir and Erlang/OTP available in your distribution's normal
-repositories, following [Elixir's package installation options](https://elixir-lang.org/install/):
-
-```sh
-# Debian/Ubuntu
-sudo add-apt-repository ppa:rabbitmq/rabbitmq-erlang
-sudo apt update
-sudo apt install -y elixir erlang
-# Fedora
-sudo dnf install -y elixir erlang elixir-doc erlang-doc
-```
-
-
-### Project Packages
-
-Rust tasks download locked dependencies automatically. For Python, select the
-interpreter and install the locked dependencies (including PuLP):
-
-```sh
-poetry env use python3.15
-poetry install
-```
-
-This synchronises the environment without upgrading the lockfile. Zig builds
-download the set and regex dependencies into `build/zig/packages/` when missing.
-Their archive URLs and content hashes are recorded in `build.zig.zon`.
+The image build context is `.devcontainer/`. Source code, inputs and the session
+cookie are available through the mounted checkout. Firefox profiles are not
+mounted: paste the session token into `scripts/aoc_cookie.txt`, or run
+`python3 scripts/read_cookie.py` on the host.
 
 ## Update
 
-Run from the repository root. Package upgrades below update manifest constraints
-and lockfiles, including new major releases that may require source changes.
+Edit tool versions in `.devcontainer/Dockerfile`, then select
+**Dev Containers: Rebuild Container Without Cache**. This also refreshes Ubuntu
+packages and the stable Rust toolchain.
 
-### Common
+For Python packages, edit `requirements.txt` and run `task build LANG=python`.
+Runs and verification also execute this build step automatically.
 
-Update system packages, including Python, Poetry, Ruff, mypy, Elixir, Erlang and Task:
-
-```sh
-# Debian/Ubuntu
-sudo apt update
-sudo apt upgrade
-# Fedora
-sudo dnf upgrade --refresh
-```
-
-### Rust
-
-Update the compiler and components, then project requirements and locked packages.
-`cargo-edit` provides the `cargo upgrade` command:
+Project dependencies remain separate: Cargo builds fetch `Cargo.lock`
+automatically, and Zig builds fetch the URL/hash dependencies in `build.zig.zon`.
+Update them explicitly when needed:
 
 ```sh
-rustup update stable
-cargo install cargo-edit --locked       # one-time helper installation
-cargo upgrade --incompatible allow      # update Cargo.toml, including major versions
-cargo update                           # update Cargo.lock
-```
-
-### Python
-
-System tools are updated by apt/dnf above. Update the project's Python interpreter
-selection, dependency requirements and lockfile separately:
-
-```sh
-poetry env use python3.15
-poetry add pulp@latest
-poetry add --group dev ruff@latest mypy@latest
-poetry update
-```
-
-These Ruff/mypy packages belong to the project environment; checks currently use
-the globally installed commands. `poetry update` alone respects existing version
-constraints; `@latest` replaces them.
-
-### Go
-
-Update the manually installed compiler using the Go installation instructions
-with the newest release archive, then update PATH. Record the active compiler
-version in `go.mod`:
-
-```sh
-go version
-go mod edit -go="$(go env GOVERSION | sed 's/^go//')"
-go mod tidy
-```
-
-There are currently no external Go packages.
-
-### Zig
-
-Update the compiler using the Zig installation instructions with the newest
-release archive, then update PATH. The project targets Zig 0.17.1.
-Update the set dependency's pinned URL/hash in `build.zig.zon` with
-`zig fetch --pkg-dir build/zig/packages --save=ziglangSet ARCHIVE_URL`.
-For regex updates, remove its hash in `build.zig.zon`, build to fetch the current
-`main` archive, and record the hash reported by Zig. Build and verify answers
-after either dependency changes:
-
-```sh
+cargo update
+# Update Zig dependency URLs/hashes in build.zig.zon, then:
 task build LANG=zig YEAR=2024
-task verify LANG=zig YEAR=2024 DAY=1 PART=1
 ```
 
-Real-input verification requires the matching downloaded input and your session
-cookie; sample verification uses only the local sample files.
-
-### Elixir And Erlang
-
-The apt/dnf update above updates Elixir, Erlang and Mix. These scripts have no
-external packages or `mix.lock` to update.
-
-After updating, check executable availability and review dependency changes:
-
-```sh
-task doctor
-git diff -- Cargo.toml Cargo.lock pyproject.toml poetry.lock go.mod build.zig.zon
-```
+Go and Elixir currently have no external packages. Updating compiler versions can
+require source changes; keep `go.mod`, `build.zig.zon` and Python's version in
+`pyproject.toml` consistent with the selected toolchains.
 
 ## Usage
 
-Helper scripts use `python3` without Poetry; override it with `PYTHON` if needed.
-Python solutions require Python 3.15 in Poetry's project environment. The Python
-build selects `python3.15` and installs dependencies if that environment is missing
-or uses a different interpreter. Runs use the selected environment's Python
-executable. `doctor` checks both the helper interpreter and, for Python, the
-project environment. Ruff and mypy continue to run globally from PATH.
-
-Task sets `PYTHONPATH` to `src/`, and VS Code uses the same import root. Python
-entry points run as files, so shared imports use `from lib.python import ...`
-and day imports use `from solutions.day01 import Solution01`. For a direct run:
+Run commands in the container from the repository root. Task sets `PYTHONPATH`
+to `src/`, and VS Code uses the same import root. Python entry points run as
+files, so shared imports use `from lib.python import ...` and day imports use
+`from solutions.day01 import Solution01`. For a direct run:
 
 ```sh
-PYTHONPATH=src poetry run python3.15 src/2023/python/main.py 1 1 --sample
+PYTHONPATH=src python3.15 src/2023/python/main.py 1 1 --sample
 ```
 
 ```sh
-task doctor                              # all tools and the Python 3.15 project environment
-task doctor LANG=rust                    # common tools and Rust
 task --list
 task list
 task build LANG=zig YEAR=2024
@@ -321,19 +163,17 @@ The importer supports native and Flatpak Firefox profiles. Inputs are named
 
 | Owner | Root configuration | Generated/local output |
 | --- | --- | --- |
-| Common | `Taskfile.yml`, `.gitignore`, `.vscode/settings.json` | `.git/`, editor state, accepted-answer cache under `build/answers/` |
+| Common | `.devcontainer/`, `Taskfile.yml`, `.gitignore` | `.git/`, editor state, accepted-answer cache under `build/answers/` |
 | Rust | `Cargo.toml`, `Cargo.lock`, `.cargo/config.toml`, `.rustfmt.toml` | `build/rust/` |
-| Python | `pyproject.toml`, `poetry.lock`, `poetry.toml` | `build/python/`: environments, Ruff/mypy caches and bytecode |
+| Python | `requirements.txt`, `pyproject.toml` | `build/python/`: Ruff/mypy caches and bytecode |
 | Go | `go.mod` | `build/golang/`: binaries and compilation cache; temporary builds use system temp |
 | Zig | `build.zig`, `build.zig.zon` | `build/zig/`: binaries and compiler caches |
 | Elixir | None (scripts) | Mix paths reserved under `build/elixir/` |
 
-`build/` is ignored. System prerequisites and Task use apt/dnf; toolchains follow
-the locations above.
-Cargo and Poetry also maintain dependency/download caches in your home directory.
-Task keeps Zig package and compiler caches under `build/zig/` and configures build
-paths; direct native commands may need the same
-flags/environment variables. VS Code uses `.vscode/settings.json` for editing defaults.
+`build/` is ignored. Cargo also maintains a dependency cache in the container
+user's home directory. Task keeps Zig packages and compiler caches under
+`build/zig/`; direct native commands may need the same flags/environment
+variables. VS Code's editing defaults are configured in `.devcontainer/devcontainer.json`.
 
 ## Adding Years
 
