@@ -1,27 +1,16 @@
-package main
+package day10
 
 import (
 	lib "aoc/src/lib/golang"
-	"bufio"
-	"fmt"
-	"os"
 	"strings"
 	"sync"
 )
 
-func parseInput() []Instruction {
-	// Change condition for result1 in instruction.go as well, when switching to sample
-	// file, _ := os.Open("./inputs/2016/sample10.txt")
-	file, _ := os.Open("./inputs/2016/input10.txt")
-	defer file.Close()
-
-	instructions := []Instruction{}
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		inst := parseLine(scanner.Text())
-		instructions = append(instructions, inst)
+func parseInput(input []string) []Instruction {
+	instructions := make([]Instruction, 0, len(input))
+	for _, line := range input {
+		instructions = append(instructions, parseLine(line))
 	}
-
 	return instructions
 }
 
@@ -38,30 +27,36 @@ func parseLine(inst_str string) Instruction {
 	panic("Weird instruction")
 }
 
-func compute(instructions []Instruction, broker *lib.Broker[uint16]) {
+func compute(instructions []Instruction, broker *lib.Broker[uint16], chips [2]uint16) {
 	wg := new(sync.WaitGroup)
 	wg.Add(len(instructions))
 	for _, inst := range instructions {
-		go inst.Compute(broker, wg)
+		go inst.Compute(broker, wg, chips)
 	}
 }
 
-func main() {
+func Part1(input []string, sample bool) (any, error) {
 	broker := lib.NewBroker[uint16]()
 	go broker.Start()
+	defer broker.Stop()
 
-	instructions := parseInput()
+	chips := [2]uint16{17, 61}
+	if sample {
+		chips = [2]uint16{2, 5}
+	}
+	result := broker.Subscribe("result1")
+	compute(parseInput(input), broker, chips)
+	return <-result, nil
+}
 
-	result1 := broker.Subscribe("result1")
+func Part2(input []string, _ bool) (any, error) {
+	broker := lib.NewBroker[uint16]()
+	go broker.Start()
+	defer broker.Stop()
+
 	output0 := broker.Subscribe("output0")
 	output1 := broker.Subscribe("output1")
 	output2 := broker.Subscribe("output2")
-
-	compute(instructions, broker)
-
-	fmt.Printf("Bot with (17, 61):  %d\n", <-result1)
-	result2 := (<-output0) * (<-output1) * (<-output2)
-	fmt.Printf("Output product:     %d\n", result2)
-
-	broker.Stop()
+	compute(parseInput(input), broker, [2]uint16{17, 61})
+	return uint64(<-output0) * uint64(<-output1) * uint64(<-output2), nil
 }

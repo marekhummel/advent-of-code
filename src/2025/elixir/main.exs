@@ -16,7 +16,6 @@ Code.require_file(Path.join([script_dir, "solutions", "day01.ex"]))
 Code.require_file(Path.join([script_dir, "solutions", "day02.ex"]))
 Code.require_file(Path.join([script_dir, "solutions", "day03.ex"]))
 Code.require_file(Path.join([script_dir, "solutions", "day04.ex"]))
-Code.require_file(Path.join([script_dir, "solutions", "day04.ex"]))
 Code.require_file(Path.join([script_dir, "solutions", "day05.ex"]))
 Code.require_file(Path.join([script_dir, "solutions", "day06.ex"]))
 Code.require_file(Path.join([script_dir, "solutions", "day07.ex"]))
@@ -37,45 +36,21 @@ defmodule Main do
   end
 
   def create_runner do
-    solutions = [
-      Day01,
-      Day02,
-      Day03,
-      Day04,
-      Day05,
-      Day06,
-      Day07,
-      Day08,
-      Day09,
-      Day10,
-      Day11,
-      Day12,
+    solutions = %{
       # aoc:solutions
-      nil,
-      nil,
-      nil,
-      nil,
-      nil,
-      nil,
-      nil,
-      nil,
-      nil,
-      nil,
-      nil,
-      nil,
-      nil,
-      nil,
-      nil,
-      nil,
-      nil,
-      nil,
-      nil,
-      nil,
-      nil,
-      nil,
-      nil,
-      nil
-    ]
+      1 => Day01,
+      2 => Day02,
+      3 => Day03,
+      4 => Day04,
+      5 => Day05,
+      6 => Day06,
+      7 => Day07,
+      8 => Day08,
+      9 => Day09,
+      10 => Day10,
+      11 => Day11,
+      12 => Day12
+    }
 
     AocLib.Runner.new(2025, solutions)
   end

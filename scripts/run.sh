@@ -31,6 +31,7 @@ part=${positionals[1]:-}
 case "$language" in
     rust) runner=("$PWD/build/rust/release/main$year") ;;
     python) runner=("$(poetry env info --executable)" "src/$year/python/main.py") ;;
+    golang) runner=("$PWD/build/golang/bin/main$year") ;;
     zig) runner=("$PWD/build/zig/out/bin/main$year") ;;
     elixir) runner=(elixir "src/$year/elixir/main.exs") ;;
     *) echo "Unsupported language: $language" >&2; exit 2 ;;

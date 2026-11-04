@@ -29,38 +29,38 @@ const day25 = @import("solutions/day25.zig");
 // aoc:imports
 
 pub fn main(init: std.process.Init) !void {
-    var runner = createRunner();
+    var runner = try createRunner(init.arena.allocator());
+    defer runner.solutions.deinit();
     try runner.parseAndRun(init);
 }
 
-fn createRunner() aoc_lib.runner.AocRunner {
-    const solutions = [_]?aoc_lib.solution.Solution{
-        aoc_lib.solution.makeSolution(day01),
-        aoc_lib.solution.makeSolution(day02),
-        aoc_lib.solution.makeSolution(day03),
-        aoc_lib.solution.makeSolution(day04),
-        aoc_lib.solution.makeSolution(day05),
-        aoc_lib.solution.makeSolution(day06),
-        aoc_lib.solution.makeSolution(day07),
-        aoc_lib.solution.makeSolution(day08),
-        aoc_lib.solution.makeSolution(day09),
-        aoc_lib.solution.makeSolution(day10),
-        aoc_lib.solution.makeSolution(day11),
-        aoc_lib.solution.makeSolution(day12),
-        aoc_lib.solution.makeSolution(day13),
-        aoc_lib.solution.makeSolution(day14),
-        aoc_lib.solution.makeSolution(day15),
-        aoc_lib.solution.makeSolution(day16),
-        aoc_lib.solution.makeSolution(day17),
-        aoc_lib.solution.makeSolution(day18),
-        aoc_lib.solution.makeSolution(day19),
-        aoc_lib.solution.makeSolution(day20),
-        aoc_lib.solution.makeSolution(day21),
-        aoc_lib.solution.makeSolution(day22),
-        aoc_lib.solution.makeSolution(day23),
-        aoc_lib.solution.makeSolution(day24),
-        aoc_lib.solution.makeSolution(day25),
+fn createRunner(allocator: std.mem.Allocator) !aoc_lib.runner.AocRunner {
+    return aoc_lib.runner.AocRunner.init(allocator, 2024, &.{
+        .{ 1, aoc_lib.solution.makeSolution(day01) },
+        .{ 2, aoc_lib.solution.makeSolution(day02) },
+        .{ 3, aoc_lib.solution.makeSolution(day03) },
+        .{ 4, aoc_lib.solution.makeSolution(day04) },
+        .{ 5, aoc_lib.solution.makeSolution(day05) },
+        .{ 6, aoc_lib.solution.makeSolution(day06) },
+        .{ 7, aoc_lib.solution.makeSolution(day07) },
+        .{ 8, aoc_lib.solution.makeSolution(day08) },
+        .{ 9, aoc_lib.solution.makeSolution(day09) },
+        .{ 10, aoc_lib.solution.makeSolution(day10) },
+        .{ 11, aoc_lib.solution.makeSolution(day11) },
+        .{ 12, aoc_lib.solution.makeSolution(day12) },
+        .{ 13, aoc_lib.solution.makeSolution(day13) },
+        .{ 14, aoc_lib.solution.makeSolution(day14) },
+        .{ 15, aoc_lib.solution.makeSolution(day15) },
+        .{ 16, aoc_lib.solution.makeSolution(day16) },
+        .{ 17, aoc_lib.solution.makeSolution(day17) },
+        .{ 18, aoc_lib.solution.makeSolution(day18) },
+        .{ 19, aoc_lib.solution.makeSolution(day19) },
+        .{ 20, aoc_lib.solution.makeSolution(day20) },
+        .{ 21, aoc_lib.solution.makeSolution(day21) },
+        .{ 22, aoc_lib.solution.makeSolution(day22) },
+        .{ 23, aoc_lib.solution.makeSolution(day23) },
+        .{ 24, aoc_lib.solution.makeSolution(day24) },
+        .{ 25, aoc_lib.solution.makeSolution(day25) },
         // aoc:solutions
-    };
-    return aoc_lib.runner.AocRunner.init(2024, &solutions);
+    });
 }

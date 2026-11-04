@@ -1,9 +1,4 @@
-- Update all tool requirements
-- Rust 2024 empty day 1-5 -> fix positional registration, update new day
-- Unify output per language
-- Restructure (src folder (years + lib), input folder, progress folder)
-- Golang different solution structure
+- DEVCONTAINER
 - Progress in README
 - Verify all languages
-- Update testing (move solutions to files?)
 - Add 2026 CPP

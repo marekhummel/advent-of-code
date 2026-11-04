@@ -4,11 +4,15 @@ const types = @import("types.zig");
 
 pub const AocRunner = struct {
     year: u16,
-    solutions: [25]?solution.Solution,
+    solutions: std.AutoHashMap(u8, solution.Solution),
 
-    pub fn init(year: u16, implementations: []const ?solution.Solution) AocRunner {
-        var solutions: [25]?solution.Solution = @splat(null);
-        std.mem.copyForwards(?solution.Solution, &solutions, implementations);
+    /// Build the registry from day/solution pairs; registration order does not matter.
+    pub fn init(allocator: std.mem.Allocator, year: u16, implementations: []const struct { u8, solution.Solution }) !AocRunner {
+        var solutions = std.AutoHashMap(u8, solution.Solution).init(allocator);
+        errdefer solutions.deinit();
+        for (implementations) |entry| {
+            try solutions.put(entry[0], entry[1]);
+        }
         return .{ .year = year, .solutions = solutions };
     }
 
@@ -21,7 +25,7 @@ pub const AocRunner = struct {
         if (day < 1 or day > 25 or part < 1 or part > 2) usage();
         const sample = args.len == 4;
         if (sample and !std.mem.eql(u8, args[3], "--sample")) usage();
-        const implementation = self.solutions[day - 1] orelse return error.MissingSolution;
+        const implementation = self.solutions.get(day) orelse return error.MissingSolution;
         const prefix = if (sample) "sample" else "input";
         const filename = try std.fmt.allocPrint(allocator, "inputs/{d}/{s}{d:0>2}.txt", .{ self.year, prefix, day });
         var input = types.ProblemInput.read(process.io, allocator, filename) catch |err| switch (err) {

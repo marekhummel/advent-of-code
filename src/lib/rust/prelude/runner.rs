@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::{collections::HashMap, path::Path};
 
 use clap::Parser;
 
@@ -9,7 +9,7 @@ use crate::prelude::{
 
 pub struct AocRunner {
     pub year: u16,
-    pub solutions: Vec<Box<dyn Solution>>,
+    pub solutions: HashMap<u8, Box<dyn Solution>>,
 }
 
 #[derive(Parser)]
@@ -41,7 +41,7 @@ impl AocRunner {
     fn run(&self, day: u8, part: u8, sample: bool) -> Result<ProblemResult, String> {
         let solution = self
             .solutions
-            .get(usize::from(day - 1))
+            .get(&day)
             .ok_or_else(|| format!("No solution for {} day {day:02}", self.year))?;
         let prefix = if sample { "sample" } else { "input" };
         let mut filename = format!("inputs/{}/{prefix}{day:02}.txt", self.year);
