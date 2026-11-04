@@ -283,12 +283,12 @@ pub const AocRunner = struct {
 
     fn getInput(self: *const AocRunner, day: u8, part: u8, use_sample: bool) ?types.ProblemInput {
         const base_filename = if (use_sample) "sample" else "input";
-        const filename = std.fmt.allocPrint(self._allocator, "{0d}\\inputs\\{1s}{2d:0>2}.txt", .{ self.year, base_filename, day }) catch return null;
+        const filename = std.fmt.allocPrint(self._allocator, "{0d}/inputs/{1s}{2d:0>2}.txt", .{ self.year, base_filename, day }) catch return null;
         defer self._allocator.free(filename);
 
         const input = types.ProblemInput.read(self._allocator, filename) catch |err| switch (err) {
             std.fs.File.OpenError.FileNotFound => {
-                const filename_vers = std.fmt.allocPrint(self._allocator, "{0d}\\inputs\\{1s}{2d:0>2}_{3d}.txt", .{ self.year, base_filename, day, part }) catch unreachable;
+                const filename_vers = std.fmt.allocPrint(self._allocator, "{0d}/inputs/{1s}{2d:0>2}_{3d}.txt", .{ self.year, base_filename, day, part }) catch unreachable;
                 defer self._allocator.free(filename_vers);
                 return types.ProblemInput.read(self._allocator, filename_vers) catch return null;
             },

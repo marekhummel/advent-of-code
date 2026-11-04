@@ -8,6 +8,7 @@ from .solutions.day05 import Solution05
 from .solutions.day06 import Solution06
 from .solutions.day12 import Solution12
 from .solutions.day24 import Solution24
+# aoc:imports
 
 if __name__ == "__main__":
     solutions = {
@@ -19,6 +20,7 @@ if __name__ == "__main__":
         6: Solution06,
         12: Solution12,
         24: Solution24,
+        # aoc:solutions
     }
 
     runner = Runner(2023, solutions=solutions)

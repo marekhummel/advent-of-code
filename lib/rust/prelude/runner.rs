@@ -195,7 +195,7 @@ impl AocRunner {
 
     fn get_input(&self, day: u8, version: u8, use_sample: bool) -> Option<ProblemInput> {
         let base_filename = if use_sample { "sample" } else { "input" };
-        let mut fullname = format!("{0}\\inputs\\{base_filename}{day:02}.txt", self.year);
+        let mut fullname = format!("{0}/inputs/{base_filename}{day:02}.txt", self.year);
         if !Path::new(&fullname).exists() {
             fullname = fullname.replace(".txt", format!("_{version}.txt").as_str());
         }

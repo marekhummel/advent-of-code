@@ -28,6 +28,7 @@ use solutions::day22;
 use solutions::day23;
 use solutions::day24;
 use solutions::day25;
+// aoc:imports
 
 fn create_runner() -> AocRunner {
     let solutions: Vec<Box<dyn Solution>> = vec![
@@ -56,7 +57,7 @@ fn create_runner() -> AocRunner {
         Box::new(day23::Solution23 {}),
         Box::new(day24::Solution24 {}),
         Box::new(day25::Solution25 {}),
-        //
+        // aoc:solutions
     ];
 
     AocRunner { year: 2021, solutions }
@@ -96,5 +97,5 @@ mod tests2021 {
     test_day!(day23);
     test_day!(day24);
     test_day!(day25);
-    //
+    // aoc:tests
 }

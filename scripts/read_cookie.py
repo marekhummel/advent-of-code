@@ -1,54 +1,53 @@
+"""Copy the Advent of Code session cookie from a Firefox profile."""
+
 import sqlite3
-from glob import glob
-from os.path import expanduser
-import json
+import sys
+from contextlib import closing
+from pathlib import Path
 
-# EDGE_COOKIE_FILE = "~/Appdata/Local/Microsoft/Edge/User Data/Default/Network/Cookies"
-EDGE_COOKIE_FILE = "~/Downloads/Cookies"
-FIREFOX_COOKIE_FILE = "~/Appdata/Roaming/Mozilla/Firefox/Profiles/*/cookies.sqlite"
+FIREFOX_COOKIE_FILES = (
+    ".mozilla/firefox/*/cookies.sqlite",
+    ".config/mozilla/firefox/*/cookies.sqlite",
+    ".var/app/org.mozilla.firefox/.mozilla/firefox/*/cookies.sqlite",
+    ".var/app/org.mozilla.firefox/config/mozilla/firefox/*/cookies.sqlite",
+    "AppData/Roaming/Mozilla/Firefox/Profiles/*/cookies.sqlite",
+)
+COOKIE_FILE = Path(__file__).with_name("aoc_cookie.txt")
 
-def read_edge():
-    # --- TBD ---
 
-    # Connect to the cookies database
-    cookie_file = glob(expanduser(EDGE_COOKIE_FILE))[0]
-    conn = sqlite3.connect(cookie_file)
-    conn.text_factory = lambda b: b.decode(errors = 'ignore')
-    cursor = conn.cursor()
+def read_firefox() -> int:
+    cookie_files = [
+        path for pattern in FIREFOX_COOKIE_FILES for path in sorted(Path.home().glob(pattern))
+    ]
+    if not cookie_files:
+        print(
+            "No Firefox cookie database found. Open Firefox and log in to Advent of Code.",
+            file=sys.stderr,
+        )
+        return 1
 
-    cursor.execute("PRAGMA table_info(cookies);")
-    cookie_table = cursor.fetchall()
-    # print([t[1] for t in cookie_table])
+    for cookie_file in cookie_files:
+        with closing(sqlite3.connect(f"{cookie_file.as_uri()}?mode=ro", uri=True)) as connection:
+            cookie = connection.execute(
+                "SELECT value FROM moz_cookies "
+                "WHERE host IN ('adventofcode.com', '.adventofcode.com') "
+                "AND name = 'session' AND value != '' "
+                "ORDER BY lastAccessed DESC LIMIT 1"
+            ).fetchone()
+        if cookie:
+            COOKIE_FILE.write_text(cookie[0] + "\n")
+            print("Cookie updated")
+            return 0
 
-    # Query the cookies table
-    cursor.execute("SELECT * FROM cookies WHERE host_key LIKE '%adventofcode%'")
-    cookie_tuples = cursor.fetchall()
-    cookies = [{key[1]: value for value, key in  zip(c, cookie_table)} for c in cookie_tuples]
+    print(
+        "No Advent of Code session cookie found. Log in to adventofcode.com in Firefox.",
+        file=sys.stderr,
+    )
+    return 1
 
-    for c in cookies:
-        print(f"'{c["name"]}': '{c["value"]}' | '{c["encrypted_value"]}'")
-
-    # # Close the database connection
-    conn.close()
-
-def read_firefox():
-    cookie_file = glob(expanduser(FIREFOX_COOKIE_FILE))[0]
-    conn = sqlite3.connect(cookie_file)
-    conn.text_factory = lambda b: b.decode(errors = 'ignore')
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT name, value FROM moz_cookies WHERE host LIKE '%adventofcode.com'")
-    cookie_table = cursor.fetchall()
-
-    if cookie_table:
-        cookie_name, cookie_value = cookie_table[0]
-        if cookie_name == "session":
-            with open("./scripts/aoc_cookie.txt", mode="w") as f:
-                f.write(cookie_value + "\n")
-                print("Cookie updated")
-                return
-
-    print("Cookie update failed")
 
 if __name__ == "__main__":
-    read_firefox()
+    try:
+        sys.exit(read_firefox())
+    except (sqlite3.Error, OSError) as error:
+        sys.exit(f"Could not import the Firefox cookie: {error}")

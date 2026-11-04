@@ -1,0 +1,114 @@
+version: '3'
+
+vars:
+  PYTHON: '{{.PYTHON | default "python3"}}'
+  LANG: ''
+  # Each runner reuses this expression after command-line variables are applied.
+  OPTIONS: &run_options '{{if .DAY}}day {{.DAY}} {{if .PART}}--part {{.PART}}{{else}}--all{{end}} {{if eq (.SAMPLE | default "false") "true"}}--sample{{end}}{{else}}main{{end}}'
+
+env:
+  PYTHONPYCACHEPREFIX: '{{.ROOT_DIR}}/build/python/pycache'
+  GOCACHE: '{{.ROOT_DIR}}/build/golang/cache'
+  GOTOOLCHAIN: local
+  GOPROXY: 'off'
+  MIX_BUILD_PATH: '{{.ROOT_DIR}}/build/elixir/build'
+  MIX_DEPS_PATH: '{{.ROOT_DIR}}/build/elixir/deps'
+  ZIG_LOCAL_CACHE_DIR: '{{.ROOT_DIR}}/build/zig/cache'
+
+tasks:
+  # Common
+  default:
+    cmds: [task --list]
+  build:
+    desc: Build a year (YEAR, LANG)
+    cmds: [{task: 'build:{{.LANG}}'}]
+  run:
+    desc: Run a year or day (YEAR, LANG, optional DAY, PART, SAMPLE)
+    cmds: [{task: 'run:{{.LANG}}'}]
+  check:
+    desc: Format and check a language (LANG, optional YEAR)
+    cmds: [{task: 'check:{{.LANG}}'}]
+  list:
+    desc: List year/language directories (optional YEAR and LANG)
+    cmds:
+      - 'find {{.YEAR | default "[0-9]*"}} -mindepth 1 -maxdepth 1 -type d {{if .LANG}}-name {{.LANG | shellQuote}}{{else}}! -name inputs{{end}} | sort'
+  doctor:
+    desc: Check required local binaries (optional LANG)
+    cmds: ['bash scripts/doctor.sh {{.LANG | shellQuote}} {{.PYTHON | shellQuote}}']
+  new:day:
+    desc: Create and register a day from its template (YEAR, DAY, LANG)
+    cmds: ['{{.PYTHON}} scripts/new_day.py {{.YEAR}} {{.DAY}} {{.LANG}}']
+  input:
+    desc: Download inputs explicitly (YEAR, optional DAY)
+    cmds: ['bash scripts/download_inputs.sh {{.YEAR}} "{{.DAY}}"']
+  cookie:
+    desc: Import a Firefox session into the ignored local credential file
+    cmds: ['{{.PYTHON}} scripts/read_cookie.py']
+  # Rust
+  build:rust:
+    cmds: ['cargo build --offline --release --bin main{{.YEAR}}']
+  run:rust:
+    vars:
+      OPTIONS: *run_options
+    cmds: ['cargo run --offline --release --bin main{{.YEAR}} -- {{.OPTIONS}}']
+  check:rust:
+    cmds:
+      - rustfmt --edition 2021 {{.YEAR | default "[0-9]*"}}/rust/main.rs lib/rust/aoc_lib.rs
+      - cargo clippy --offline {{if .YEAR}}--bin main{{.YEAR}}{{else}}--all-targets{{end}} -- -D warnings
+
+  # Python
+  build:python:
+    status: ['poetry env info --path']
+    cmds: ['poetry install']
+  run:python:
+    deps: [build:python]
+    vars:
+      OPTIONS: *run_options
+    cmds: ['poetry run python -m {{.YEAR}}.python.main {{.OPTIONS}}']
+  check:python:
+    vars:
+      DIRS:
+        sh: 'printf "%s " {{if .YEAR}}{{.YEAR | shellQuote}}{{else}}[0-9]*{{end}}/python'
+    cmds:
+      - ruff format {{.YEAR | default "[0-9]*"}}/python lib/python scripts/*.py scripts/templates/*.py
+      - ruff check {{.YEAR | default "[0-9]*"}}/python lib/python scripts/*.py scripts/templates/*.py
+      - for: {var: DIRS}
+        cmd: 'mypy lib/python {{.ITEM}}'
+
+  # Go
+  build:golang:
+    cmds: ['go build -o build/golang/bin/{{.YEAR}}/ ./{{.YEAR}}/golang/...']
+  run:golang:
+    cmds: ['go run ./{{.YEAR}}/golang/day{{printf "%02d" (atoi .DAY)}}']
+  check:golang:
+    vars:
+      PACKAGES: '{{if .YEAR}}./{{.YEAR}}/golang/... ./lib/golang/...{{else}}./...{{end}}'
+    cmds:
+      - gofmt -w {{.YEAR | default "[0-9]*"}}/golang lib/golang
+      - go vet {{.PACKAGES}}
+      - go test {{.PACKAGES}}
+
+  # Zig
+  build:zig:
+    vars:
+      PACKAGES:
+        sh: 'zig env | {{.PYTHON}} -c ''import json, sys; print(json.load(sys.stdin)["global_cache_dir"] + "/p")'''
+    cmds:
+      - 'zig build --system {{.PACKAGES | shellQuote}} --global-cache-dir build/zig/global --prefix build/zig/out -Doptimize=ReleaseFast {{.YEAR}}_main'
+  run:zig:
+    deps: [build:zig]
+    vars:
+      OPTIONS: *run_options
+    cmds: ['./build/zig/out/bin/main{{.YEAR}} {{.OPTIONS}}']
+  check:zig:
+    cmds: ['zig fmt {{.YEAR | default "[0-9]*"}}/zig lib/zig build.zig']
+
+  # Elixir
+  build:elixir:
+    cmds: ['echo "Elixir runs as a script; no build needed."']
+  run:elixir:
+    vars:
+      OPTIONS: *run_options
+    cmds: ['elixir {{.YEAR}}/elixir/main.exs {{.OPTIONS}}']
+  check:elixir:
+    cmds: ['mix format "{{.YEAR | default "[0-9]*"}}/elixir/**/*.{ex,exs}" "lib/elixir/**/*.{ex,exs}"']

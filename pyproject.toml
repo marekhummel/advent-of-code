@@ -4,6 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Marek Hummel <marek.hummel3@gmail.com>"]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -19,7 +20,8 @@ build-backend = "poetry.core.masonry.api"
 
 
 [tool.ruff]
-extend-exclude = ["test/", "scripts/"]
+cache-dir = "build/python/ruff"
+extend-exclude = ["test/", "scripts/", "build/"]
 line-length = 99
 
 [tool.ruff.lint]
@@ -35,11 +37,12 @@ extend-ignore = [
 "__init__.py" = ["F401", "F403"] # Allow unused and star imports in init files
 
 [tool.mypy]
+cache_dir = "build/python/mypy"
 python_version = "3.12"
 # Note: Multiple year directories have conflicting 'python' module names.
 # Check each year separately: mypy lib 2023/python
 #                         or: mypy lib 2025/python
-# Use scripts/check_types.sh to check all years at once.
+# Use task types to check all years at once.
 
 [[tool.mypy.overrides]]
 module = ["pulp"]
