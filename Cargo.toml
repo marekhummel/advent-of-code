@@ -5,47 +5,47 @@ edition = "2021"
 
 [[bin]]
 name = "main2024"
-path = "2024/rust/main.rs"
+path = "src/2024/rust/main.rs"
 
 [[bin]]
 name = "main2023"
-path = "2023/rust/main.rs"
+path = "src/2023/rust/main.rs"
 
 [[bin]]
 name = "main2022"
-path = "2022/rust/main.rs"
+path = "src/2022/rust/main.rs"
 
 [[bin]]
 name = "main2021"
-path = "2021/rust/main.rs"
+path = "src/2021/rust/main.rs"
 
 [[bin]]
 name = "main2020"
-path = "2020/rust/main.rs"
+path = "src/2020/rust/main.rs"
 
 [[bin]]
 name = "main2019"
-path = "2019/rust/main.rs"
+path = "src/2019/rust/main.rs"
 
 [[bin]]
 name = "main2018"
-path = "2018/rust/main.rs"
+path = "src/2018/rust/main.rs"
 
 [[bin]]
 name = "main2017"
-path = "2017/rust/main.rs"
+path = "src/2017/rust/main.rs"
 
 [[bin]]
 name = "main2016"
-path = "2016/rust/main.rs"
+path = "src/2016/rust/main.rs"
 
 [[bin]]
 name = "main2015"
-path = "2015/rust/main.rs"
+path = "src/2015/rust/main.rs"
 
 [lib]
 name = "aoc_lib"
-path = "lib/rust/aoc_lib.rs"
+path = "src/lib/rust/aoc_lib.rs"
 
 [lints.clippy]
 needless_range_loop = { level = "allow", priority = 0 }

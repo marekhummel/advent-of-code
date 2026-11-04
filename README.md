@@ -1,7 +1,9 @@
 # Advent Of Code
 
-Solutions in `YEAR/LANGUAGE/`, shared code in `lib/LANGUAGE/`, inputs in
-`YEAR/inputs/`. Run commands from the repository root.
+Solutions live in `src/YEAR/LANGUAGE/`, shared code in `src/lib/LANGUAGE/`,
+and inputs in `inputs/YEAR/`. Yearly READMEs stay in `src/YEAR/`; answer files
+and screenshots live in `progress/YEAR/`, with the overall image at
+`progress/total.png`. Run commands from the repository root.
 
 ## Install Tools
 
@@ -230,6 +232,14 @@ or uses a different interpreter. Runs use `poetry run python3.15`. `doctor` chec
 both the helper interpreter and, for Python, the project environment. Ruff and mypy
 continue to run globally from PATH.
 
+Task sets `PYTHONPATH` to `src/`, and VS Code uses the same import root. Python
+entry points run as files, so shared imports use `from lib.python import ...`
+and day imports use `from solutions.day01 import Solution01`. For a direct run:
+
+```sh
+PYTHONPATH=src poetry run python3.15 src/2023/python/main.py day 1 --part 1 --sample
+```
+
 ```sh
 task doctor                              # all tools and the Python 3.15 project environment
 task doctor LANG=rust                    # common tools and Rust
@@ -274,15 +284,19 @@ flags/environment variables. VS Code uses `.vscode/settings.json` for editing de
 
 ## Adding Years
 
-Create `YEAR/inputs/` and `YEAR/LANGUAGE/` manually, using an existing year's
+Create `inputs/YEAR/` and `src/YEAR/LANGUAGE/` manually, using an existing year's
 entry point as a reference. Set its runner's year and keep the `aoc:*` registration
 markers so `task new:day` can insert imports and solutions from `scripts/templates/`.
 Rust, Zig and Elixir days must be added in order without gaps.
 
 | Language | Entry point and references to add |
 | --- | --- |
-| Rust | `main.rs`, `solutions/mod.rs`; add a `[[bin]]` in root `Cargo.toml`: `name = "mainYEAR"`, `path = "YEAR/rust/main.rs"` |
-| Python | `main.py`, `python/__init__.py`, `solutions/__init__.py`; no root registration |
+| Rust | `main.rs`, `solutions/mod.rs`; add a `[[bin]]` in root `Cargo.toml`: `name = "mainYEAR"`, `path = "src/YEAR/rust/main.rs"` |
+| Python | `main.py`, `__init__.py`, `solutions/__init__.py`; no root registration |
 | Go | `dayDD/main.go` packages under the existing root module; no yearly entry point |
 | Zig | `main.zig`; add `add_binary(b, "YEAR");` in root `build.zig` |
 | Elixir | `main.exs` loading shared modules and days; no root registration |
+
+Put the year's README in `src/YEAR/README.md`. Link its screenshots and answer
+file with `../../progress/YEAR/overview.png`, `conclusion.png` and `solutions.txt`
+under the same `../../progress/YEAR/` prefix.
