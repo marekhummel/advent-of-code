@@ -83,17 +83,17 @@ fn parse(input: *ProblemInput, allocator: std.mem.Allocator) !struct { aoc_lib.g
         try rules.addEdge(from, to, false);
     }
 
-    var updates = std.ArrayList([]u16).init(allocator);
+    var updates: std.ArrayList([]u16) = .empty;
     for (input.lines[sep + 1 ..]) |update| {
         var tokens = std.mem.tokenizeScalar(u8, update, ',');
-        var pages = std.ArrayList(u16).init(allocator);
+        var pages: std.ArrayList(u16) = .empty;
         while (tokens.next()) |page| {
-            try pages.append(try std.fmt.parseInt(u16, page, 10));
+            try pages.append(allocator, try std.fmt.parseInt(u16, page, 10));
         }
-        try updates.append(try pages.toOwnedSlice());
+        try updates.append(allocator, try pages.toOwnedSlice(allocator));
     }
 
-    return .{ rules, try updates.toOwnedSlice() };
+    return .{ rules, try updates.toOwnedSlice(allocator) };
 }
 
 fn isOrdered(update: []u16, rules: *aoc_lib.graph.Graph(u16)) bool {

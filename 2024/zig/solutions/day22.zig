@@ -33,11 +33,11 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     _ = is_sample;
 
     // Build lookup tables (maps each combination of price change sequences to the banana sell value)
-    var secret_sequences = std.ArrayList([NUM_PRICE_CHANGES]u8).init(allocator);
+    var secret_sequences: std.ArrayList([NUM_PRICE_CHANGES]u8) = .empty;
     for (input.lines) |line| {
         const secret = try std.fmt.parseInt(u64, line, 10);
         const sequence_value = sequenceValues(secret);
-        try secret_sequences.append(sequence_value);
+        try secret_sequences.append(allocator, sequence_value);
     }
 
     // Find best sequence to max bananas. Note that price change sequence is encoded as an index
@@ -55,7 +55,7 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
 }
 
 fn sequenceValues(start_secret: u64) [NUM_PRICE_CHANGES]u8 {
-    var sequence_values = [_]u8{0} ** NUM_PRICE_CHANGES;
+    var sequence_values: [NUM_PRICE_CHANGES]u8 = @splat(0);
     var encoded_deltas: [4]usize = undefined;
 
     var secret = start_secret;

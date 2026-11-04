@@ -35,7 +35,7 @@ const Fence = struct {
 
     fn lessThan(context: void, lhs: Fence, rhs: Fence) bool {
         _ = context;
-        if (lhs.dir != rhs.dir) return @intFromEnum(lhs.dir) < @intFromEnum(rhs.dir);
+        if (lhs.dir != rhs.dir) return @backingInt(lhs.dir) < @backingInt(rhs.dir);
         return switch (lhs.dir) {
             Direction.North, Direction.South => if (lhs.idx.r != rhs.idx.r) lhs.idx.r < rhs.idx.r else lhs.idx.c < rhs.idx.c,
             Direction.East, Direction.West => if (lhs.idx.c != rhs.idx.c) lhs.idx.c < rhs.idx.c else lhs.idx.r < rhs.idx.r,
@@ -80,9 +80,9 @@ const Region = struct {
         return self.area * self.countSides();
     }
 
-    fn extend(self: *Region, other: Region) !void {
+    fn extend(self: *Region, other: Region, allocator: Allocator) !void {
         self.area += other.area;
-        try self.fences.appendSlice(other.fences.items);
+        try self.fences.appendSlice(allocator, other.fences.items);
     }
 };
 
@@ -96,7 +96,7 @@ fn computePrice(garden: *Grid(u8), priceFn: fn (Region) u64, allocator: Allocato
         // Plots are marked once they've been accounted for
         if (garden.get(elem.idx) == COUNTED) continue;
 
-        var visited = set.Set(Index).init(allocator);
+        var visited = set.Set(Index).empty;
         const region = try findRegion(garden, elem.idx, &visited, allocator);
         total_price += priceFn(region);
     }
@@ -108,18 +108,18 @@ fn computePrice(garden: *Grid(u8), priceFn: fn (Region) u64, allocator: Allocato
 fn findRegion(garden: *Grid(u8), index: Index, visited: *set.Set(Index), allocator: Allocator) !Region {
     const plant = garden.get(index);
     garden.set(index, COUNTED);
-    _ = try visited.add(index);
+    _ = try visited.add(allocator, index);
 
-    var region = Region{ .area = 1, .fences = std.ArrayList(Fence).init(allocator) };
+    var region = Region{ .area = 1, .fences = std.ArrayList(Fence).empty };
     for (index.vonNeumann(garden.size, true)) |nb| {
         // Don't revisit same plots of region
         if (nb.idx != null and visited.contains(nb.idx.?)) continue;
 
         // If neighbor is same plant, continue, otherwise place fence
         if (nb.idx != null and garden.get(nb.idx.?) == plant) {
-            try region.extend(try findRegion(garden, nb.idx.?, visited, allocator));
+            try region.extend(try findRegion(garden, nb.idx.?, visited, allocator), allocator);
         } else {
-            try region.fences.append(.{ .idx = index, .dir = nb.dir });
+            try region.fences.append(allocator, .{ .idx = index, .dir = nb.dir });
         }
     }
 

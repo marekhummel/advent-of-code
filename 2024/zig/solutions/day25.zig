@@ -17,20 +17,20 @@ pub fn results() [4]Result {
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
-    var locks = std.ArrayList([]u8).init(allocator);
-    var keys = std.ArrayList([]u8).init(allocator);
+    var locks: std.ArrayList([]u8) = .empty;
+    var keys: std.ArrayList([]u8) = .empty;
     var i: usize = 0;
     while (true) {
         // Collect full grid
-        var current = std.ArrayList([]u8).init(allocator);
+        var current: std.ArrayList([]u8) = .empty;
         while (true) {
             if (i >= input.lines.len or input.lines[i].len == 0) break;
-            try current.append(input.lines[i]);
+            try current.append(allocator, input.lines[i]);
             i += 1;
         }
 
         // Parse
-        var grid = Grid(u8).init(try current.toOwnedSlice());
+        var grid = Grid(u8).init(try current.toOwnedSlice(allocator));
         defer grid.deinit(allocator);
 
         var pins = try allocator.alloc(u8, grid.size.width);
@@ -41,7 +41,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
                 const height = std.mem.lastIndexOf(u8, col, "#").?;
                 pins[c] = @intCast(height);
             }
-            try locks.append(pins);
+            try locks.append(allocator, pins);
         } else {
             // Key
             for (0..grid.size.width) |c| {
@@ -49,7 +49,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
                 const height = std.mem.indexOf(u8, col, "#").?;
                 pins[c] = @intCast(grid.size.height - height - 1);
             }
-            try keys.append(pins);
+            try keys.append(allocator, pins);
         }
 
         // Next iteration

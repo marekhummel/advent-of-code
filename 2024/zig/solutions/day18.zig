@@ -83,16 +83,16 @@ const MemorySpace = struct {
     pub const Node = Index;
 
     pub fn next(self: *const Self, node: Node, allocator: std.mem.Allocator) ![]Child {
-        var next_list = std.ArrayList(Child).init(allocator);
+        var next_list: std.ArrayList(Child) = .empty;
 
         for (Direction.compass()) |dir| {
             const move = node.scout(dir, self.map.size);
             if (move != null and self.map.get(move.?)) {
-                try next_list.append(.{ .node = move.?, .weight = 1 });
+                try next_list.append(allocator, .{ .node = move.?, .weight = 1 });
             }
         }
 
-        return next_list.toOwnedSlice();
+        return next_list.toOwnedSlice(allocator);
     }
 
     pub fn heuristic(self: *const Self, node: Node) u32 {

@@ -36,8 +36,8 @@ fn countCheats(course: *Grid(u8), cheat_length: [2]usize, min_saved_time: usize,
     const end = course.find('E').?;
 
     // Build racetrack
-    var racetrack_list = std.ArrayList(Index).init(allocator);
-    try racetrack_list.append(start);
+    var racetrack_list: std.ArrayList(Index) = .empty;
+    try racetrack_list.append(allocator, start);
 
     var node = start;
     while (!std.meta.eql(node, end)) {
@@ -46,13 +46,13 @@ fn countCheats(course: *Grid(u8), cheat_length: [2]usize, min_saved_time: usize,
                 if (course.get(move) != '#') {
                     course.set(node, '#');
                     node = move;
-                    try racetrack_list.append(node);
+                    try racetrack_list.append(allocator, node);
                     break;
                 }
             }
         }
     }
-    const racetrack = try racetrack_list.toOwnedSlice();
+    const racetrack = try racetrack_list.toOwnedSlice(allocator);
 
     // Find all cheats, exploiting that there is only one racetrack, so no need for elaborate pathfinding
     // Just take two points on the track, link them, and check how much time it saves

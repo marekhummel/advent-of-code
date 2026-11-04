@@ -7,12 +7,12 @@ readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.12"
-pulp = "^3.3.0"
+python = ">=3.15,<3.16"
+pulp = "^4.2.0"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.8.1"
-mypy = "^1.13.0"
+ruff = "^0.17.3"
+mypy = "^2.4.1"
 
 [build-system]
 requires = ["poetry-core"]
@@ -38,11 +38,11 @@ extend-ignore = [
 
 [tool.mypy]
 cache_dir = "build/python/mypy"
-python_version = "3.12"
+python_version = "3.15"
 # Note: Multiple year directories have conflicting 'python' module names.
 # Check each year separately: mypy lib 2023/python
 #                         or: mypy lib 2025/python
-# Use task types to check all years at once.
+# Use task check LANG=python to check all years at once.
 
 [[tool.mypy.overrides]]
 module = ["pulp"]

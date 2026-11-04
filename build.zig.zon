@@ -1,15 +1,16 @@
 .{
-    .name = "advent-of-code",
+    .name = .advent_of_code,
+    .fingerprint = 0x45f1999bde8bcfb8,
     .version = "1.0.0",
-    .minimum_zig_version = "0.13.0",
+    .minimum_zig_version = "0.17.1",
     .dependencies = .{
         .ziglangSet = .{
-            .url = "https://github.com/deckarep/ziglang-set/archive/845a2be.tar.gz",
-            .hash = "1220e30d1494cccc9f6c327ed7eb41b3b20b1b3e2cc900f2dce0e901193e30fc6442",
+            .url = "https://github.com/deckarep/ziglang-set/archive/38180556c78faa35fc0f2a8869289a230768911c.tar.gz",
+            .hash = "ziglangSet-0.1.0-VUjv0j0bAQCYvGUF3ysXdtbWIL0tboAuicSbbUeHQUHU",
         },
         .zigRegex = .{
-            .url = "https://github.com/tiehuis/zig-regex/archive/7bc0fd7.tar.gz",
-            .hash = "1220b497739b6fd60f627da85862cbd0cec01f3d6b7ddaa923057a7999ecfa138704",
+            .url = "https://github.com/zig-utils/zig-regex/archive/main.tar.gz",
+            .hash = "zig_regex-0.2.1-omky0RWyGgAzNOkfsXmYm-kBSWG2aoELeC0IwiirA1cz",
         },
     },
     .paths = .{""},

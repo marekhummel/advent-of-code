@@ -51,9 +51,9 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     var network = try createNetwork(input, allocator);
 
     // Find biggest clique
-    var r = set.Set(Pc).init(allocator);
-    var p = try network.pcs.clone();
-    var x = set.Set(Pc).init(allocator);
+    var r = set.Set(Pc).empty;
+    var p = try network.pcs.clone(allocator);
+    var x = set.Set(Pc).empty;
     const biggest = (try findBiggestClique(&r, &p, &x, &network.conns, allocator)).?;
 
     // Sort elements by name
@@ -74,21 +74,21 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
 }
 
 fn createNetwork(input: *ProblemInput, allocator: Allocator) !struct { pcs: set.Set(Pc), conns: std.AutoHashMap(Pc, set.Set(Pc)) } {
-    var pc_set = set.Set(Pc).init(allocator);
+    var pc_set = set.Set(Pc).empty;
     var conns = std.AutoHashMap(Pc, set.Set(Pc)).init(allocator);
     for (input.lines) |line| {
         const pc1 = Pc{ line[0], line[1] };
         const pc2 = Pc{ line[3], line[4] };
-        _ = try pc_set.add(pc1);
-        _ = try pc_set.add(pc2);
+        _ = try pc_set.add(allocator, pc1);
+        _ = try pc_set.add(allocator, pc2);
 
         var entry1 = try conns.getOrPut(pc1);
-        if (!entry1.found_existing) entry1.value_ptr.* = set.Set(Pc).init(allocator);
-        _ = try entry1.value_ptr.add(pc2);
+        if (!entry1.found_existing) entry1.value_ptr.* = set.Set(Pc).empty;
+        _ = try entry1.value_ptr.add(allocator, pc2);
 
         var entry2 = try conns.getOrPut(pc2);
-        if (!entry2.found_existing) entry2.value_ptr.* = set.Set(Pc).init(allocator);
-        _ = try entry2.value_ptr.add(pc1);
+        if (!entry2.found_existing) entry2.value_ptr.* = set.Set(Pc).empty;
+        _ = try entry2.value_ptr.add(allocator, pc1);
     }
 
     return .{ .pcs = pc_set, .conns = conns };
@@ -97,28 +97,28 @@ fn createNetwork(input: *ProblemInput, allocator: Allocator) !struct { pcs: set.
 /// Bron kerbosch algorithm with pivoting
 fn findBiggestClique(r: *set.Set(Pc), p: *set.Set(Pc), x: *set.Set(Pc), conns: *std.AutoHashMap(Pc, set.Set(Pc)), allocator: Allocator) !?[]Pc {
     if (p.cardinality() == 0 and x.cardinality() == 0) {
-        defer r.deinit();
-        defer p.deinit();
-        defer x.deinit();
+        defer r.deinit(allocator);
+        defer p.deinit(allocator);
+        defer x.deinit(allocator);
         return try util.setToSlice(Pc, r, allocator);
     }
 
     var biggest_clique: ?[]Pc = null;
-    var pivots = try p.unionOf(x.*);
+    var pivots = try p.unionOf(allocator, x.*);
     const u = pivots.pop().?;
 
-    const neighbours_u = conns.get(u) orelse set.Set(Pc).init(allocator);
-    var vs = try p.differenceOf(neighbours_u);
+    const neighbours_u = conns.get(u) orelse set.Set(Pc).empty;
+    var vs = try p.differenceOf(allocator, neighbours_u);
 
     while (vs.pop()) |v| {
-        var new_r = try r.clone();
-        _ = try new_r.add(v);
+        var new_r = try r.clone(allocator);
+        _ = try new_r.add(allocator, v);
 
-        const neighbours_v = conns.get(v) orelse set.Set(Pc).init(allocator);
-        var new_p = try p.clone();
-        try new_p.intersectionUpdate(neighbours_v);
-        var new_x = try x.clone();
-        try new_x.intersectionUpdate(neighbours_v);
+        const neighbours_v = conns.get(v) orelse set.Set(Pc).empty;
+        var new_p = try p.clone(allocator);
+        try new_p.intersectionUpdate(allocator, neighbours_v);
+        var new_x = try x.clone(allocator);
+        try new_x.intersectionUpdate(allocator, neighbours_v);
 
         if (try findBiggestClique(&new_r, &new_p, &new_x, conns, allocator)) |clique| {
             if (biggest_clique == null or clique.len > biggest_clique.?.len) {
@@ -127,7 +127,7 @@ fn findBiggestClique(r: *set.Set(Pc), p: *set.Set(Pc), x: *set.Set(Pc), conns: *
         }
 
         _ = p.remove(v);
-        _ = try x.add(v);
+        _ = try x.add(allocator, v);
     }
 
     return biggest_clique;

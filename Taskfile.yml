@@ -14,6 +14,7 @@ env:
   MIX_BUILD_PATH: '{{.ROOT_DIR}}/build/elixir/build'
   MIX_DEPS_PATH: '{{.ROOT_DIR}}/build/elixir/deps'
   ZIG_LOCAL_CACHE_DIR: '{{.ROOT_DIR}}/build/zig/cache'
+  ZIG_GLOBAL_CACHE_DIR: '{{.ROOT_DIR}}/build/zig/global'
 
 tasks:
   # Common
@@ -46,25 +47,30 @@ tasks:
     cmds: ['{{.PYTHON}} scripts/read_cookie.py']
   # Rust
   build:rust:
-    cmds: ['cargo build --offline --release --bin main{{.YEAR}}']
+    cmds: ['cargo build --locked --release --bin main{{.YEAR}}']
   run:rust:
     vars:
       OPTIONS: *run_options
-    cmds: ['cargo run --offline --release --bin main{{.YEAR}} -- {{.OPTIONS}}']
+    cmds: ['cargo run --locked --release --bin main{{.YEAR}} -- {{.OPTIONS}}']
   check:rust:
     cmds:
       - rustfmt --edition 2021 {{.YEAR | default "[0-9]*"}}/rust/main.rs lib/rust/aoc_lib.rs
-      - cargo clippy --offline {{if .YEAR}}--bin main{{.YEAR}}{{else}}--all-targets{{end}} -- -D warnings
+      - cargo clippy --locked {{if .YEAR}}--bin main{{.YEAR}}{{else}}--all-targets{{end}} -- -D warnings
 
   # Python
   build:python:
-    status: ['poetry env info --path']
-    cmds: ['poetry install']
+    status:
+      - |
+        interpreter=$(poetry env info --executable) &&
+          "$interpreter" -c 'import sys; sys.exit(sys.version_info[:2] != (3, 15) or sys.prefix == sys.base_prefix)'
+    cmds:
+      - poetry env use python3.15
+      - poetry install
   run:python:
     deps: [build:python]
     vars:
       OPTIONS: *run_options
-    cmds: ['poetry run python -m {{.YEAR}}.python.main {{.OPTIONS}}']
+    cmds: ['poetry run python3.15 -m {{.YEAR}}.python.main {{.OPTIONS}}']
   check:python:
     vars:
       DIRS:
@@ -90,11 +96,8 @@ tasks:
 
   # Zig
   build:zig:
-    vars:
-      PACKAGES:
-        sh: 'zig env | {{.PYTHON}} -c ''import json, sys; print(json.load(sys.stdin)["global_cache_dir"] + "/p")'''
     cmds:
-      - 'zig build --system {{.PACKAGES | shellQuote}} --global-cache-dir build/zig/global --prefix build/zig/out -Doptimize=ReleaseFast {{.YEAR}}_main'
+      - 'zig build --pkg-dir build/zig/packages --cache-dir build/zig/cache --prefix build/zig/out -Doptimize=fast {{.YEAR}}_main'
   run:zig:
     deps: [build:zig]
     vars:

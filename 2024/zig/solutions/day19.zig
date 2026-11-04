@@ -33,18 +33,18 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
 }
 
 fn findAllDesignCombs(input: *ProblemInput, allocator: Allocator) ![]usize {
-    var towels = std.ArrayList([]const u8).init(allocator);
+    var towels: std.ArrayList([]const u8) = .empty;
     var towel_it = std.mem.tokenizeSequence(u8, input.lines[0], ", ");
-    while (towel_it.next()) |towel| try towels.append(towel);
+    while (towel_it.next()) |towel| try towels.append(allocator, towel);
 
-    var design_combinations = std.ArrayList(usize).init(allocator);
+    var design_combinations: std.ArrayList(usize) = .empty;
     var cache = std.StringHashMap(usize).init(allocator);
     defer cache.deinit();
     for (input.lines[2..]) |design| {
-        try design_combinations.append(try createDesign(design, towels.items, &cache));
+        try design_combinations.append(allocator, try createDesign(design, towels.items, &cache));
     }
 
-    return try design_combinations.toOwnedSlice();
+    return try design_combinations.toOwnedSlice(allocator);
 }
 
 fn createDesign(design: []u8, towels: [][]const u8, cache: *std.StringHashMap(usize)) !usize {

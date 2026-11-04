@@ -50,21 +50,21 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
 }
 
 fn getReports(allocator: std.mem.Allocator, input: *ProblemInput) ![][]i16 {
-    var matrix = std.ArrayList([]i16).init(allocator);
+    var matrix: std.ArrayList([]i16) = .empty;
 
     for (input.lines) |line| {
-        var row = std.ArrayList(i16).init(allocator);
+        var row: std.ArrayList(i16) = .empty;
 
-        var tokenizer = std.mem.tokenize(u8, line, " ");
+        var tokenizer = std.mem.tokenizeAny(u8, line, " ");
         while (tokenizer.next()) |tok| {
             const num = try std.fmt.parseInt(i16, tok, 10);
-            try row.append(num);
+            try row.append(allocator, num);
         }
 
-        try matrix.append(try row.toOwnedSlice());
+        try matrix.append(allocator, try row.toOwnedSlice(allocator));
     }
 
-    return matrix.toOwnedSlice();
+    return matrix.toOwnedSlice(allocator);
 }
 
 fn checkSafety(report: []i16, skip: ?usize) bool {

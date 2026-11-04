@@ -4,18 +4,19 @@ const types = @import("types.zig");
 pub const Solution = struct {
     pub fn solve(
         self: *const Solution,
+        io: std.Io,
         data: *types.ProblemInput,
         part: u8,
         is_sample: bool,
         allocator: std.mem.Allocator,
     ) !types.TimedResult {
-        const start_time = std.time.nanoTimestamp();
+        const start_time = std.Io.Clock.awake.now(io).nanoseconds;
         const result = try switch (part) {
             1 => self.solvePart01(data, is_sample, allocator) catch types.SolvingError.SolvingFailed,
             2 => self.solvePart02(data, is_sample, allocator) catch types.SolvingError.SolvingFailed,
             else => types.SolvingError.InvalidPart,
         };
-        const end_time = std.time.nanoTimestamp();
+        const end_time = std.Io.Clock.awake.now(io).nanoseconds;
 
         return types.TimedResult.create(result, start_time, end_time);
     }

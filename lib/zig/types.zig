@@ -21,26 +21,24 @@ pub const Result = union(enum) {
     UInt128: u128,
     String: []const u8,
 
-    pub fn format(self: Result, comptime fmt: []const u8, options: std.fmt.FormatOptions, writer: anytype) !void {
-        _ = fmt;
-        _ = options;
+    pub fn format(self: Result, writer: *std.Io.Writer) std.Io.Writer.Error!void {
         return try switch (self) {
-            .NoInput => std.fmt.format(writer, "<No Input Available>", .{}),
-            .NoSample => std.fmt.format(writer, "<No Sample Defined>", .{}),
-            .Unsolved => std.fmt.format(writer, "<No Solution Implemented>", .{}),
-            .NoPartTwo => std.fmt.format(writer, "<No Part Two>", .{}),
-            .USize => std.fmt.format(writer, "{}", .{self.USize}),
-            .Int8 => std.fmt.format(writer, "{}", .{self.Int8}),
-            .Int16 => std.fmt.format(writer, "{}", .{self.Int16}),
-            .Int32 => std.fmt.format(writer, "{}", .{self.Int32}),
-            .Int64 => std.fmt.format(writer, "{}", .{self.Int64}),
-            .Int128 => std.fmt.format(writer, "{}", .{self.Int128}),
-            .UInt8 => std.fmt.format(writer, "{}", .{self.UInt8}),
-            .UInt16 => std.fmt.format(writer, "{}", .{self.UInt16}),
-            .UInt32 => std.fmt.format(writer, "{}", .{self.UInt32}),
-            .UInt64 => std.fmt.format(writer, "{}", .{self.UInt64}),
-            .UInt128 => std.fmt.format(writer, "{}", .{self.UInt128}),
-            .String => std.fmt.format(writer, "{s}", .{self.String}),
+            .NoInput => writer.print("<No Input Available>", .{}),
+            .NoSample => writer.print("<No Sample Defined>", .{}),
+            .Unsolved => writer.print("<No Solution Implemented>", .{}),
+            .NoPartTwo => writer.print("<No Part Two>", .{}),
+            .USize => writer.print("{}", .{self.USize}),
+            .Int8 => writer.print("{}", .{self.Int8}),
+            .Int16 => writer.print("{}", .{self.Int16}),
+            .Int32 => writer.print("{}", .{self.Int32}),
+            .Int64 => writer.print("{}", .{self.Int64}),
+            .Int128 => writer.print("{}", .{self.Int128}),
+            .UInt8 => writer.print("{}", .{self.UInt8}),
+            .UInt16 => writer.print("{}", .{self.UInt16}),
+            .UInt32 => writer.print("{}", .{self.UInt32}),
+            .UInt64 => writer.print("{}", .{self.UInt64}),
+            .UInt128 => writer.print("{}", .{self.UInt128}),
+            .String => writer.print("{s}", .{self.String}),
         };
     }
 
@@ -86,33 +84,24 @@ pub const ProblemInput = struct {
     _grid: ?Grid(u8) = null,
     _allocator: std.mem.Allocator = undefined,
 
-    pub fn read(allocator: std.mem.Allocator, filename: []const u8) !ProblemInput {
-        var lines = std.ArrayList([]u8).init(allocator);
-        errdefer lines.deinit();
-
-        const file = try std.fs.cwd().openFile(filename, .{});
-        defer file.close();
-
-        var buf_reader = std.io.bufferedReader(file.reader());
-        const reader = buf_reader.reader();
-
-        var line = std.ArrayList(u8).init(allocator);
-        defer line.deinit();
-
-        while (reader.streamUntilDelimiter(line.writer(), '\n', null)) {
-            defer line.clearRetainingCapacity();
-            if (line.items.len > 0 and line.getLast() == '\r') _ = line.popOrNull();
-            try lines.append(try line.toOwnedSlice());
-        } else |err| switch (err) {
-            error.EndOfStream => {
-                if (line.items.len > 0) {
-                    try lines.append(try line.toOwnedSlice());
-                }
-            },
-            else => return err,
+    pub fn read(io: std.Io, allocator: std.mem.Allocator, filename: []const u8) !ProblemInput {
+        const contents = try std.Io.Dir.cwd().readFileAlloc(io, filename, allocator, .unlimited);
+        defer allocator.free(contents);
+        var lines: std.ArrayList([]u8) = .empty;
+        errdefer {
+            for (lines.items) |line| allocator.free(line);
+            lines.deinit(allocator);
         }
-
-        return ProblemInput{ .lines = try lines.toOwnedSlice(), ._allocator = allocator };
+        var remaining = contents;
+        while (remaining.len > 0) {
+            const end = std.mem.indexOfScalar(u8, remaining, '\n') orelse remaining.len;
+            const line = std.mem.trimEnd(u8, remaining[0..end], "\r");
+            const owned = try allocator.dupe(u8, line);
+            errdefer allocator.free(owned);
+            try lines.append(allocator, owned);
+            remaining = remaining[@min(end + 1, remaining.len)..];
+        }
+        return .{ .lines = try lines.toOwnedSlice(allocator), ._allocator = allocator };
     }
 
     pub fn string(self: *ProblemInput) ![]u8 {
@@ -225,33 +214,33 @@ pub fn Grid(comptime CT: type) type {
         pub fn diagMajor(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
             if (index >= self.size.diags()) return error.IndexOutOfBound;
 
-            var list = std.ArrayList(CT).init(allocator);
+            var list: std.ArrayList(CT) = .empty;
             var r = self.size.height -| 1 -| index; // saturating sub -| (0 -| 1 = 0)
             var c = index + 1 -| self.size.height; // saturating sub -|
 
             while (r < self.size.height and c < self.size.width) {
-                try list.append(self.cells[r][c]);
+                try list.append(allocator, self.cells[r][c]);
                 r += 1;
                 c += 1;
             }
 
-            return list.toOwnedSlice();
+            return list.toOwnedSlice(allocator);
         }
 
         pub fn diagMinor(self: Self, index: usize, allocator: std.mem.Allocator) ![]CT {
             if (index >= self.size.diags()) return error.IndexOutOfBound;
 
-            var list = std.ArrayList(CT).init(allocator);
+            var list: std.ArrayList(CT) = .empty;
             var r = @min(index, self.size.height - 1);
             var c = index + 1 -| self.size.height; // saturating sub -|
 
             while (r < self.size.height and c < self.size.width) {
-                try list.append(self.cells[r][c]);
+                try list.append(allocator, self.cells[r][c]);
                 r -%= 1;
                 c += 1;
             }
 
-            return list.toOwnedSlice();
+            return list.toOwnedSlice(allocator);
         }
 
         pub fn find(self: *const Self, needle: CT) ?Index {

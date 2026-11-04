@@ -52,13 +52,13 @@ const Computer = struct {
         }
 
         var program_it = std.mem.tokenizeScalar(u8, input[4][9..], ',');
-        var program = std.ArrayList(u3).init(allocator);
-        while (program_it.next()) |item| try program.append(try std.fmt.parseInt(u3, item, 10));
+        var program: std.ArrayList(u3) = .empty;
+        while (program_it.next()) |item| try program.append(allocator, try std.fmt.parseInt(u3, item, 10));
 
         return .{
-            .program = try program.toOwnedSlice(),
+            .program = try program.toOwnedSlice(allocator),
             .registers = registers,
-            .output = std.ArrayList(u3).init(allocator),
+            .output = std.ArrayList(u3).empty,
             ._allocator = allocator,
         };
     }
@@ -86,7 +86,7 @@ const Computer = struct {
                     jumped = true;
                 },
                 4 => self.registers[1] ^= self.registers[2],
-                5 => try self.output.append(@truncate(combo_operand % 8)),
+                5 => try self.output.append(self._allocator, @truncate(combo_operand % 8)),
                 6 => self.registers[1] = self.registers[0] >> @truncate(combo_operand),
                 7 => self.registers[2] = self.registers[0] >> @truncate(combo_operand),
             }

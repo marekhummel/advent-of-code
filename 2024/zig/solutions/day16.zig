@@ -30,10 +30,10 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
 
     const astar_result = try runAstar(try input.grid(), true, allocator);
 
-    var visited_tiles = set.Set(Index).init(allocator);
+    var visited_tiles = set.Set(Index).empty;
     for (try astar_result.paths(allocator)) |result| {
         for (result) |node| {
-            _ = try visited_tiles.add(node.idx);
+            _ = try visited_tiles.add(allocator, node.idx);
         }
     }
 
@@ -60,18 +60,18 @@ const Maze = struct {
     pub const Node = struct { idx: Index, dir: Direction };
 
     pub fn next(self: *const Self, node: Node, allocator: std.mem.Allocator) ![]Child {
-        var next_list = std.ArrayList(Child).init(allocator);
+        var next_list: std.ArrayList(Child) = .empty;
 
         // Add turns
-        try next_list.append(.{ .node = .{ .idx = node.idx, .dir = node.dir.left() }, .weight = 1000 });
-        try next_list.append(.{ .node = .{ .idx = node.idx, .dir = node.dir.right() }, .weight = 1000 });
+        try next_list.append(allocator, .{ .node = .{ .idx = node.idx, .dir = node.dir.left() }, .weight = 1000 });
+        try next_list.append(allocator, .{ .node = .{ .idx = node.idx, .dir = node.dir.right() }, .weight = 1000 });
 
         // Add move if no wall
         const move = node.idx.scout(node.dir, self.map.size);
         if (move != null and self.map.get(move.?) != '#')
-            try next_list.append(.{ .node = .{ .idx = move.?, .dir = node.dir }, .weight = 1 });
+            try next_list.append(allocator, .{ .node = .{ .idx = move.?, .dir = node.dir }, .weight = 1 });
 
-        return next_list.toOwnedSlice();
+        return next_list.toOwnedSlice(allocator);
     }
 
     pub fn heuristic(self: *const Self, node: Node) u32 {
