@@ -39,11 +39,11 @@ impl Solution21 {
         let mut new_canvas = vec![vec![' '; blocks * nsize]; blocks * nsize];
         for bj in 0..blocks {
             for bi in 0..blocks {
-                let block = iproduct!((bj * size..(bj + 1) * size), (bi * size..(bi + 1) * size));
+                let block = iproduct!(bj * size..(bj + 1) * size, bi * size..(bi + 1) * size);
                 let pattern = block.map(|(j, i)| canvas[j][i]).collect::<String>();
 
                 let enhancement = rules[&pattern].chars();
-                let new_block = iproduct!((bj * nsize..(bj + 1) * nsize), (bi * nsize..(bi + 1) * nsize));
+                let new_block = iproduct!(bj * nsize..(bj + 1) * nsize, bi * nsize..(bi + 1) * nsize);
                 for (c, (j, i)) in enhancement.zip_eq(new_block) {
                     new_canvas[j][i] = c;
                 }

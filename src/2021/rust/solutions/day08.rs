@@ -44,7 +44,7 @@ impl Solution for Solution08 {
             // E.g. deduce the mapping of 'a' by comparing the signals for 1 and 7 and so forth.
             for permutaion in "abcdefg".chars().permutations(7) {
                 // Create mapping
-                let mapping: HashMap<_, _> = "abcdefg".chars().zip_eq(permutaion.into_iter()).collect();
+                let mapping: HashMap<_, _> = "abcdefg".chars().zip_eq(permutaion).collect();
 
                 // Check if each recorded signal pattern leads to a valid digit
                 let mut valid = true;

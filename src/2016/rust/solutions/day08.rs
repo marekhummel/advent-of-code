@@ -78,6 +78,9 @@ impl Solution for Solution08 {
 
     fn solve_version02(&self, _input: ProblemInput, _is_sample: bool) -> ProblemResult {
         // Run part 1 and print final screen.
+        if _is_sample {
+            return ProblemResult::NoSample;
+        }
         String::from("UPOJFLBCEZ").to_result()
     }
 }

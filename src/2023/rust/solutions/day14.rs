@@ -17,7 +17,7 @@ impl Solution14 {
     fn eval_load(grid: &CharGrid) -> usize {
         grid.enumerate()
             .filter(|(_, c)| **c == 'O')
-            .map(|(idx, _)| (grid.size.height - idx.j))
+            .map(|(idx, _)| grid.size.height - idx.j)
             .sum()
     }
 

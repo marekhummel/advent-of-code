@@ -97,7 +97,7 @@ impl Solution20 {
             for (sender, receiver, pulse) in pulses.into_iter() {
                 if let Some(recv_mod) = modules.get_mut(&receiver) {
                     let responses = recv_mod.receive_pulse(&sender, pulse);
-                    new_pulses.extend(responses.into_iter());
+                    new_pulses.extend(responses);
                 }
             }
             pulses = new_pulses;

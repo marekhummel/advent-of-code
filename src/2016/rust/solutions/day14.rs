@@ -17,7 +17,7 @@ impl Solution14 {
             // Collect characters and their counts
             let char_groups = digest
                 .chars()
-                .group_by(|&c| c)
+                .chunk_by(|&c| c)
                 .into_iter()
                 .map(|(c, grp)| (c, grp.count()))
                 .collect_vec();

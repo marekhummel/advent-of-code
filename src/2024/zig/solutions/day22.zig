@@ -25,6 +25,7 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
 
     // Build lookup tables (maps each combination of price change sequences to the banana sell value)
     var secret_sequences: std.ArrayList([NUM_PRICE_CHANGES]u8) = .empty;
+    defer secret_sequences.deinit(allocator);
     for (input.lines) |line| {
         const secret = try std.fmt.parseInt(u64, line, 10);
         const sequence_value = sequenceValues(secret);
@@ -36,7 +37,7 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     var best_bananas: u64 = 0;
     for (0..NUM_PRICE_CHANGES) |encoded| {
         var total_bananas: u64 = 0;
-        for (secret_sequences.items) |sequence_value| {
+        for (secret_sequences.items) |*sequence_value| {
             total_bananas += sequence_value[encoded];
         }
         best_bananas = @max(best_bananas, total_bananas);

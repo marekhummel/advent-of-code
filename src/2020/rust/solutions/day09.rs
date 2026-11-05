@@ -11,7 +11,7 @@ impl Solution09 {
         let mut window = VecDeque::new();
         for num in nums {
             if window.len() == preamble_len {
-                if !window.iter().tuple_combinations().any(|(&a, &b)| a + b == *num) {
+                if !window.iter().array_combinations().any(|[&a, &b]| a + b == *num) {
                     return *num;
                 }
 

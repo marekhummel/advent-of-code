@@ -76,7 +76,7 @@ impl Solution for Solution19 {
         // Compute divsum
         let n = registers[5] as u32;
         let root = (n as f64).sqrt() as u32;
-        let divsum: u32 = (1..=root).filter(|f| n % f == 0).map(|f| f + n / f).sum();
+        let divsum: u32 = (1..=root).filter(|f| n.is_multiple_of(*f)).map(|f| f + n / f).sum();
         divsum.to_result()
     }
 }

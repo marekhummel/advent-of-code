@@ -31,7 +31,7 @@ impl Solution for Solution02 {
             .map(|boxid| boxid.char_indices().collect::<HashSet<_>>())
             .collect_vec();
 
-        for (a, b) in boxes.into_iter().tuple_combinations() {
+        for [a, b] in boxes.into_iter().array_combinations() {
             if a.symmetric_difference(&b).count() == 2 {
                 return a
                     .intersection(&b)

@@ -1,8 +1,6 @@
 import re
 from concurrent.futures import ThreadPoolExecutor
 
-import pulp
-
 from lib.python import ProblemInput, ProblemResult, Solution
 
 type Joltages = list[int]
@@ -45,6 +43,7 @@ def parse(data: ProblemInput) -> list[Machine]:
 
 def joltage_config(machine: Machine) -> int:
     """Solve via ILP. Find mininum of sum(x) subject to A*x = j"""
+    import pulp  # Import here to avoid unnecessary start up times
 
     # Setup
     ident, buttons, joltages = machine

@@ -147,7 +147,7 @@ impl Solution17 {
         // Intersperse ascii commands with commata and add new line
         Itertools::intersperse(func.into_iter().map(|c| c.to_ascii()), vec![b','])
             .flatten()
-            .chain([b'\n'])
+            .chain(*b"\n")
             .map_into()
             .collect()
     }

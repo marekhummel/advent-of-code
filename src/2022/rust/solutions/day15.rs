@@ -60,7 +60,7 @@ impl Solution for Solution15 {
 
             // Merge intervals
             let mut merged = HashSet::new();
-            for (i, j) in (0..blocked.len()).tuple_combinations() {
+            for [i, j] in (0..blocked.len()).array_combinations() {
                 if merged.contains(&i) || merged.contains(&j) {
                     continue;
                 }

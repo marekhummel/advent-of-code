@@ -4,6 +4,9 @@
 - zig build slow
 - lint and checks
 
+- elixir ls fails
+- rust analyser fails
+
 - Verify script
 - Progress in README
 - Add 2026 CPP

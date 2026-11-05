@@ -25,7 +25,7 @@ impl Turing {
         for block in &blocks[1..] {
             let state = block[0].chars().nth_back(1).unwrap() as u8 - b'A';
 
-            for transition in block[1..].chunks_exact(4) {
+            for transition in block[1..].as_chunks::<4>().0 {
                 let curr_value = transition[0].chars().nth_back(1).unwrap() == '1';
                 let new_value = transition[1].chars().nth_back(1).unwrap() == '1';
                 let left = transition[2].split_whitespace().last().unwrap() == "left.";

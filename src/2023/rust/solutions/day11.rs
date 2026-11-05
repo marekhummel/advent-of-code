@@ -22,8 +22,8 @@ impl Solution11 {
     fn min_distances(&self, exp_galaxies: &[Index]) -> usize {
         exp_galaxies
             .iter()
-            .tuple_combinations()
-            .map(|(f, s)| self.distance(f, s))
+            .array_combinations()
+            .map(|[f, s]| self.distance(f, s))
             .sum()
     }
 

@@ -52,7 +52,7 @@ impl Solution11 {
             .iter()
             .tuple_windows()
             .map(|(c, nc)| *nc as i8 - *c as i8)
-            .group_by(|delta| *delta)
+            .chunk_by(|delta| *delta)
             .into_iter()
             .any(|(d, grp)| d == 1 && grp.count() >= 2);
 

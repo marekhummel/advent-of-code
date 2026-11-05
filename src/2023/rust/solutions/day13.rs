@@ -42,12 +42,12 @@ impl Solution13 {
             .rows
             .iter()
             .enumerate()
-            .tuple_combinations()
-            .filter(|((i, _), (j, _))| (i + j) & 1 == 1) // mirrors can only be between rows
-            .map(|((i, r), (j, s))| ((i + j) / 2, i, j, Self::count_diff(r, s))) // find mirror position and amount of smudges needed for equality
+            .array_combinations()
+            .filter(|[(i, _), (j, _)]| (i + j) & 1 == 1) // mirrors can only be between rows
+            .map(|[(i, r), (j, s)]| ((i + j) / 2, i, j, Self::count_diff(r, s))) // find mirror position and amount of smudges needed for equality
             .filter(|(_, _, _, d)| *d <= total_smudges) // filter out pairs that need more than one smudge
             .sorted_by_key(|(m, ..)| *m) // sort for grouping
-            .group_by(|(m, ..)| *m) // group by mirror position
+            .chunk_by(|(m, ..)| *m) // group by mirror position
             .into_iter()
             .map(|(key, group)| (key, group.map(|(_, i, j, d)| (i, j, d == 1)).collect_vec()))
             .collect_vec();

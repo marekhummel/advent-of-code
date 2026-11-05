@@ -2,7 +2,6 @@ package day24
 
 import (
 	lib "aoc/src/lib/golang"
-	"fmt"
 	"sort"
 	"strings"
 	"sync"
@@ -79,5 +78,5 @@ func Part1(input []string, _ bool) (any, error) {
 }
 
 func Part2(_ []string, _ bool) (any, error) {
-	return nil, fmt.Errorf("part 2 is not implemented")
+	return lib.Unsolved, nil
 }
