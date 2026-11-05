@@ -1,6 +1,7 @@
 /.vscode/
 /build/
 __pycache__/
+.task/
 
 scripts/aoc_cookie.txt
 /inputs/*/input*.txt

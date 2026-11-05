@@ -51,6 +51,7 @@ defmodule AocLib.Runner do
   defp run(runner, day, part, sample) do
     solution = Map.get(runner.solutions, day)
     solve = if part == 1, do: :solve_part01, else: :solve_part02
+    if solution != nil, do: Code.ensure_loaded!(solution)
 
     cond do
       solution == nil ->

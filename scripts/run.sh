@@ -34,13 +34,14 @@ case "$language" in
     python) runner=(python3.15 "src/$year/python/main.py") ;;
     golang) runner=("$PWD/build/golang/bin/main$year") ;;
     zig) runner=("$PWD/build/zig/out/bin/main$year") ;;
-    elixir) runner=(elixir "src/$year/elixir/main.exs") ;;
+    elixir) runner=(elixir -pa "build/elixir/$year" -e 'Main.main(System.argv())' --) ;;
     *) echo "Unsupported language: $language" >&2; exit 2 ;;
 esac
 
 # Validate runner exists
 case "$language" in
-    python|elixir) main_file=${runner[1]} ;;
+    python) main_file=${runner[1]} ;;
+    elixir) main_file="build/elixir/$year/Elixir.Main.beam" ;;
     *) main_file=${runner[0]} ;;
 esac
 if [[ ! -f $main_file ]]; then

@@ -106,6 +106,9 @@ sample input followed by real input for each day/part. Answers go directly to
 stdout, and labels and errors go to stderr. Batch runs
 continue after failures and exit nonzero if any case fails.
 Ctrl+C stops the batch and the active runner, including its child processes.
+Elixir builds compile the shared library, the year's solutions and `main.ex`
+into `build/elixir/YEAR/`. Unchanged builds are skipped. Runs load the compiled
+modules, while each case still starts its own Erlang VM.
 Labels include elapsed wall time, including process startup, with five decimal
 places: `D01 P1 SAMP (  0.12345 secs): result`.
 
@@ -187,7 +190,7 @@ Inputs are named
 | Python | `requirements.txt`, `pyproject.toml` | `build/python/`: Ruff/mypy caches and bytecode |
 | Go | `go.mod` | `build/golang/`: binaries and compilation cache; temporary builds use system temp |
 | Zig | `build.zig`, `build.zig.zon` | `build/zig/`: binaries and compiler caches |
-| Elixir | None (scripts) | Mix paths reserved under `build/elixir/` |
+| Elixir | None | Compiled BEAM modules under `build/elixir/YEAR/`; Mix paths under `build/elixir/` |
 
 `build/` is ignored. Cargo also maintains a dependency cache in the container
 user's home directory. Task keeps Zig packages and compiler caches under
@@ -198,7 +201,7 @@ variables. VS Code's editing defaults are configured in `.devcontainer/devcontai
 
 Create `inputs/YEAR/` and `src/YEAR/LANGUAGE/` manually, using an existing year's
 entry point as a reference. Set its runner's year and keep the `aoc:*` registration
-markers so `task new:day` can insert imports and solutions from `scripts/templates/`.
+markers so `task newday` can insert imports and solutions from `scripts/templates/`.
 All languages register days by number, so days can be added in any order
 without placeholder files or padding entries.
 In Elixir maps, place `# aoc:solutions` before the first entry so inserted
@@ -210,7 +213,7 @@ entries retain a following element after formatting.
 | Python | `main.py`, `__init__.py`, `solutions/__init__.py`; no root registration |
 | Go | `main.go` with a `lib.Run(YEAR, map[int]lib.Solution{...})` registry; day packages in `solutions/dayDD/`; no root registration |
 | Zig | `main.zig`; add `add_binary(b, "YEAR");` in root `build.zig` |
-| Elixir | `main.exs` loading shared modules and days; no root registration |
+| Elixir | `main.ex` with a `Main.main/1` entry point and day-number map; shared modules and days are compiled by the build task; no root registration |
 
 Put the year's README in `src/YEAR/README.md`. Link screenshots with
 `../../progress/YEAR/overview.png` and `../../progress/YEAR/conclusion.png`.

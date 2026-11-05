@@ -100,6 +100,19 @@ tasks:
 
   # Elixir
   build:elixir:
-    cmds: []
+    label: 'build:elixir:{{.YEAR}}'
+    method: timestamp
+    sources:
+      - src/lib/elixir/**/*.ex
+      - src/{{.YEAR}}/elixir/**/*.ex
+      - Taskfile.yml
+    generates:
+      - build/elixir/{{.YEAR}}/Elixir.Main.beam
+      - build/elixir/{{.YEAR}}/.compiled
+    cmds:
+      - mkdir -p "build/elixir/{{.YEAR}}"
+      - rm -f "build/elixir/{{.YEAR}}"/*.beam "build/elixir/{{.YEAR}}/.compiled"
+      - elixirc -o "build/elixir/{{.YEAR}}" src/lib/elixir/*.ex src/{{.YEAR}}/elixir/solutions/*.ex src/{{.YEAR}}/elixir/main.ex
+      - touch "build/elixir/{{.YEAR}}/.compiled"
   check:elixir:
     cmds: ['mix format "src/{{.YEAR | default "[0-9]*"}}/elixir/**/*.{ex,exs}" "src/lib/elixir/**/*.{ex,exs}"']
