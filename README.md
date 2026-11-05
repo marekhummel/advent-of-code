@@ -174,6 +174,43 @@ bytecode cache paths; direct Python runs need `PYTHONPATH=src` and may set
 
 `check` formats files and accepts an optional `YEAR`.
 
+Native builds default to `OPTIMIZE=fast`. The option works with `build`, `run`
+and `verify`, with or without `DAY`:
+
+| Language | `fast` (default) | `debug` |
+| --- | --- | --- |
+| Zig | Optimised for speed | Unoptimised, with runtime safety checks |
+| Rust | Cargo release profile | Cargo dev profile, binary under `build/rust/debug/` |
+| Go | Normal optimised build | Optimisations and inlining disabled |
+
+Debug builds can reduce compilation time but run slower. Zig additionally
+supports `safe` and `small`; these use the normal optimised build for Rust and
+Go. Python and Elixir ignore `OPTIMIZE`.
+
+```sh
+task build LANG=zig YEAR=2024 OPTIMIZE=debug
+task run LANG=zig YEAR=2024 DAY=1 OPTIMIZE=debug
+task run LANG=rust YEAR=2023 OPTIMIZE=debug
+task build LANG=golang YEAR=2024 OPTIMIZE=debug
+```
+
+For direct script calls, select a Rust debug binary with `--optimize debug`:
+`bash scripts/run.sh rust 2023 1 1 real --optimize debug`. The same flag is
+available in `scripts/verify.py`.
+
+For Zig, `DAY` also filters compilation: only that day's solution functions are
+included. `run` and `verify` pass the day to the build automatically.
+
+```sh
+task build LANG=zig YEAR=2024 DAY=22 # main2024-day22
+task run LANG=zig YEAR=2024 DAY=22 PART=2 MODE=real
+task build LANG=zig YEAR=2024        # main2024, all registered days
+```
+
+Day-specific binaries live alongside the full-year binary under
+`build/zig/out/bin/`. Direct `run.sh` calls prefer the matching day binary when
+present and otherwise use the full-year binary.
+
 Downloads read the session token from ignored `scripts/aoc_cookie.txt`. Put the
 token alone in that file, or run `task cookie` on the host after logging in
 through Firefox and closing it completely. Firefox profiles are not mounted in
@@ -212,7 +249,7 @@ entries retain a following element after formatting.
 | Rust | `main.rs` with a day-number `HashMap`, `solutions/mod.rs`; add a `[[bin]]` in root `Cargo.toml`: `name = "mainYEAR"`, `path = "src/YEAR/rust/main.rs"` |
 | Python | `main.py`, `__init__.py`, `solutions/__init__.py`; no root registration |
 | Go | `main.go` with a `lib.Run(YEAR, map[int]lib.Solution{...})` registry; day packages in `solutions/dayDD/`; no root registration |
-| Zig | `main.zig`; add `add_binary(b, "YEAR");` in root `build.zig` |
+| Zig | `main.zig` with day/module pairs filtered at compile time using `build_options.day`; add `add_binary(b, "YEAR");` in root `build.zig` |
 | Elixir | `main.ex` with a `Main.main/1` entry point and day-number map; shared modules and days are compiled by the build task; no root registration |
 
 Put the year's README in `src/YEAR/README.md`. Link screenshots with

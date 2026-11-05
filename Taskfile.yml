@@ -2,6 +2,7 @@ version: '3'
 
 vars:
   PYTHON: '{{.PYTHON | default "python3"}}'
+  OPTIMIZE: '{{.OPTIMIZE | default "fast"}}'
   LANG: ''
 
 env:
@@ -27,16 +28,20 @@ tasks:
     desc: Run a year or day (LANG, YEAR, optional DAY, PART, MODE=real/sample/both; default both)
     cmds:
       - >-
-        task --silent build LANG={{.LANG | shellQuote}} YEAR={{.YEAR | shellQuote}} >&2 &&
+        task --silent build LANG={{.LANG | shellQuote}} YEAR={{.YEAR | shellQuote}}
+        DAY={{.DAY | default "" | shellQuote}}
+        OPTIMIZE={{.OPTIMIZE | shellQuote}} >&2 &&
         bash scripts/run.sh "{{.LANG}}" "{{.YEAR}}" "{{.DAY}}" "{{.PART}}"
-        "{{.MODE | default "both"}}"
+        "{{.MODE | default "both"}}" --optimize {{.OPTIMIZE | shellQuote}}
   verify:
     desc: Verify one part (LANG, YEAR, DAY, PART, optional MODE=real/sample/both; default both)
     cmds:
       - >-
-        task --silent build LANG={{.LANG | shellQuote}} YEAR={{.YEAR | shellQuote}} >&2 &&
+        task --silent build LANG={{.LANG | shellQuote}} YEAR={{.YEAR | shellQuote}}
+        DAY={{.DAY | default "" | shellQuote}}
+        OPTIMIZE={{.OPTIMIZE | shellQuote}} >&2 &&
         {{.PYTHON}} scripts/verify.py "{{.LANG}}" "{{.YEAR}}" "{{.DAY}}" "{{.PART}}"
-        "{{.MODE | default "both"}}"
+        "{{.MODE | default "both"}}" --optimize {{.OPTIMIZE | shellQuote}}
   check:
     desc: Format and check a language (LANG, optional YEAR)
     cmds: [{task: 'check:{{.LANG}}'}]
@@ -61,7 +66,7 @@ tasks:
 
   # Rust
   build:rust:
-    cmds: ['cargo build --locked --release --bin main{{.YEAR}}']
+    cmds: ['cargo build --locked {{if ne .OPTIMIZE "debug"}}--release {{end}}--bin main{{.YEAR}}']
   check:rust:
     cmds:
       - rustfmt --edition 2021 src/{{.YEAR | default "[0-9]*"}}/rust/main.rs src/lib/rust/aoc_lib.rs
@@ -82,7 +87,7 @@ tasks:
 
   # Go
   build:golang:
-    cmds: ['go build -o build/golang/bin/main{{.YEAR}} ./src/{{.YEAR}}/golang']
+    cmds: ['go build {{if eq .OPTIMIZE "debug"}}-gcflags="all=-N -l" {{end}}-o build/golang/bin/main{{.YEAR}} ./src/{{.YEAR}}/golang']
   check:golang:
     vars:
       PACKAGES: '{{if .YEAR}}./src/{{.YEAR}}/golang/... ./src/lib/golang/...{{else}}./...{{end}}'
@@ -94,7 +99,7 @@ tasks:
   # Zig
   build:zig:
     cmds:
-      - 'zig build --pkg-dir build/zig/packages --cache-dir build/zig/cache --prefix build/zig/out -Doptimize=fast {{.YEAR}}_main'
+      - 'zig build --pkg-dir build/zig/packages --cache-dir build/zig/cache --prefix build/zig/out -Doptimize={{.OPTIMIZE | shellQuote}} {{if .DAY}}-Dday={{.DAY | shellQuote}} {{end}}{{.YEAR}}_main'
   check:zig:
     cmds: ['zig fmt src/{{.YEAR | default "[0-9]*"}}/zig src/lib/zig build.zig']
 

@@ -48,7 +48,7 @@ def create_day(root: Path, lang: str, year: int, day: int) -> None:
             (
                 "main.zig",
                 "// aoc:solutions",
-                f".{{ {day}, aoc_lib.solution.makeSolution({name}) }},",
+                f".{{ {day}, {name} }},",
             ),
         ],
         "elixir": [
