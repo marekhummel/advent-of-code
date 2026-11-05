@@ -67,7 +67,7 @@ impl Solution12 {
 
     fn step(moons: &[RefCell<Moon>]) {
         // Velocity (gravity)
-        for (m1, m2) in moons.iter().tuple_combinations() {
+        for [m1, m2] in moons.iter().array_combinations() {
             m1.borrow_mut().apply_gravity(&mut m2.borrow_mut());
         }
 

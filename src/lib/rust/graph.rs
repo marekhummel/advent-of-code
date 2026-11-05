@@ -57,7 +57,7 @@ impl<V: Clone + Eq + Hash> Graph<V> {
 
     pub fn remove_vertex(&mut self, vertex: &V) {
         self.adjacency.remove(vertex);
-        for (_, adj) in self.adjacency.iter_mut() {
+        for adj in self.adjacency.values_mut() {
             adj.remove(vertex);
         }
     }
@@ -124,8 +124,8 @@ impl<V: Clone + Eq + Hash> Graph<V> {
         }
 
         (0..n)
-            .tuple_combinations()
-            .flat_map(|(ui, vi)| {
+            .array_combinations()
+            .flat_map(|[ui, vi]| {
                 [
                     ((vertices[ui].clone(), vertices[vi].clone()), dist[ui][vi] as i32),
                     ((vertices[vi].clone(), vertices[ui].clone()), dist[vi][ui] as i32),

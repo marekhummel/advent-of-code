@@ -10,7 +10,7 @@ impl Solution20 {
 
         let root_n = (n as f32).sqrt() as u64;
         let sum: u64 = (1..=root_n)
-            .filter(|d| n % d == 0)
+            .filter(|d| n.is_multiple_of(*d))
             .flat_map(|d| if d * d == n { vec![d] } else { vec![d, n / d] })
             .filter(|div| !lazy || div * 50 >= n)
             .sum();

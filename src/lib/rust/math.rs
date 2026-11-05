@@ -84,7 +84,7 @@ pub fn is_prime(n: u128) -> bool {
     }
 
     let root = (n as f64).sqrt() as u128;
-    (3..=root).step_by(2).all(|f| n % f != 0)
+    (3..=root).step_by(2).all(|f| !n.is_multiple_of(f))
 }
 
 pub fn mod_inverse<T: Copy + Integer + Signed>(n: T, modulus: T) -> Option<T> {

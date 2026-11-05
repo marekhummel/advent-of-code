@@ -76,8 +76,8 @@ impl Solution for Solution24 {
 
         hailstones
             .iter()
-            .tuple_combinations()
-            .filter(|(a, b)| {
+            .array_combinations()
+            .filter(|[a, b]| {
                 if let LineRelation::Intersection { x, y, s, t } = Self::intersecting(a, b) {
                     return s >= 0.0 && t >= 0.0 && range.contains(&x) && range.contains(&y);
                 }

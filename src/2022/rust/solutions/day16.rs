@@ -46,7 +46,7 @@ impl Solution16 {
         let shortest_paths = tunnels.floyd_warshall();
         let valves = tunnels.vertices();
         let mut better_tunnels = Graph::empty();
-        for (a, b) in valves.into_iter().tuple_combinations() {
+        for [a, b] in valves.into_iter().array_combinations() {
             // Only add edge if both ends are not jammed or either valve is the start.
             if (flow_map[&a] != 0 && (flow_map[&b] != 0 || b == start_valve))
                 || (flow_map[&b] != 0 && (flow_map[&a] != 0 || a == start_valve))
@@ -118,9 +118,9 @@ impl Solution for Solution16 {
         let better_tunnels = Self::update_tunnel_network(tunnels, &flow_map, valve_aa);
         let max_flows = Self::compute_best_flows(&better_tunnels, &flow_map, valve_aa, 26);
 
-        let pair_paths = max_flows.iter().tuple_combinations();
-        let non_overlapping = pair_paths.filter(|&((valves1, _), (valves2, _))| valves1 & valves2 == 0);
-        let optimal = non_overlapping.map(|((_, flow1), (_, flow2))| flow1 + flow2).max();
+        let pair_paths = max_flows.iter().array_combinations();
+        let non_overlapping = pair_paths.filter(|&[(valves1, _), (valves2, _)]| valves1 & valves2 == 0);
+        let optimal = non_overlapping.map(|[(_, flow1), (_, flow2)]| flow1 + flow2).max();
         optimal.unwrap().to_result()
     }
 }

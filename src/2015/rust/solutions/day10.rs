@@ -7,7 +7,7 @@ impl Solution10 {
     fn look_and_say(value: &str) -> String {
         value
             .chars()
-            .group_by(|c| *c)
+            .chunk_by(|c| *c)
             .into_iter()
             .map(|(v, g)| format!("{}{v}", g.count()))
             .join("")

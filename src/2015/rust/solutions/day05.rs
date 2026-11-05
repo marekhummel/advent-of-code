@@ -18,13 +18,13 @@ impl Solution05 {
             .into_iter()
             .enumerate()
             .sorted_by_key(|(_, tpl)| *tpl)
-            .group_by(|(_, tpl)| *tpl);
+            .chunk_by(|(_, tpl)| *tpl);
         let double_pair = grouped_pairs
             .into_iter()
             .map(|(_, group)| group.map(|(i, _)| i).collect_vec())
             .filter(|group| group.len() > 1)
-            .flat_map(|group| group.into_iter().tuple_combinations())
-            .any(|(first, second)| second - first > 1);
+            .flat_map(|group| group.into_iter().array_combinations())
+            .any(|[first, second]| second - first > 1);
 
         let double_spaced_letter = string.chars().zip(string.chars().skip(2)).any(|(f, s)| f == s);
 

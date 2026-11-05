@@ -57,4 +57,4 @@ def find_arrangements(line: str, groups: tuple[int, ...], last_char: str | None)
                 f"#{line[1:]}", groups, last_char
             )
 
-    raise Exception
+    raise ValueError(f"Unexpected character {line[0]} in line {line}")

@@ -18,6 +18,7 @@ impl Solution for Solution13 {
         let mut screen = HashMap::new();
         let mut game = Program::init(&input.string());
 
+        #[allow(clippy::while_let_loop)]
         loop {
             let Some(x) = game.execute_until_output() else {
                 break;

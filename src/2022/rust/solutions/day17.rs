@@ -60,7 +60,7 @@ impl Solution17 {
                     pos = pos.advance_by(Direction::South, 1);
                 } else {
                     // Rock rests
-                    chamber.extend(rock.iter().map(|&b| (pos + b)));
+                    chamber.extend(rock.iter().map(|&b| pos + b));
                     top = top.min(rock.iter().map(|&b| (pos + b).y).min().unwrap());
                     break;
                 }

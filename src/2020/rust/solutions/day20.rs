@@ -85,7 +85,7 @@ impl Solution20 {
                 // Check if tile fits
                 if !image.is_empty() {
                     // Check left border
-                    if image.len() % width != 0 {
+                    if !image.len().is_multiple_of(width) {
                         let left_tile = image.last().unwrap();
                         if edges.left != left_tile.1.right {
                             continue;

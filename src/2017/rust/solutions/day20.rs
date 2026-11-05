@@ -72,7 +72,7 @@ impl Solution for Solution20 {
 
             let collision_pos: HashSet<_> = particles
                 .iter()
-                .group_by(|p| p.pos)
+                .chunk_by(|p| p.pos)
                 .into_iter()
                 .map(|(pos, grp)| (pos, grp.count()))
                 .filter(|(_, grp)| *grp > 1)

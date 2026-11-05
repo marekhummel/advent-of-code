@@ -35,7 +35,8 @@ defmodule Day11 do
   defp count_paths(target, target, _stops, _graph, cache), do: {0, cache}
 
   defp count_paths(machine, _target, stops, _graph, cache)
-       when is_map_key(cache, {machine, stops}), do: {Map.get(cache, {machine, stops}), cache}
+       when is_map_key(cache, {machine, stops}),
+       do: {Map.get(cache, {machine, stops}), cache}
 
   defp count_paths(machine, target, stops, graph, cache) do
     updated_stops = List.delete(stops, machine)

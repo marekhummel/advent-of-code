@@ -18,7 +18,7 @@ impl Solution for Solution04 {
         for pwd_num in low..=high {
             let pwd = pwd_num.to_string();
             let non_decreasing = pwd.bytes().tuple_windows().all(|(d1, d2)| d1 <= d2);
-            let double = pwd.bytes().group_by(|d| *d).into_iter().any(|(_, g)| g.count() > 1);
+            let double = pwd.bytes().chunk_by(|d| *d).into_iter().any(|(_, g)| g.count() > 1);
 
             if non_decreasing && double {
                 total += 1;
@@ -39,7 +39,7 @@ impl Solution for Solution04 {
         for pwd_num in low..=high {
             let pwd = pwd_num.to_string();
             let non_decreasing = pwd.bytes().tuple_windows().all(|(d1, d2)| d1 <= d2);
-            let double = pwd.bytes().group_by(|d| *d).into_iter().any(|(_, g)| g.count() == 2);
+            let double = pwd.bytes().chunk_by(|d| *d).into_iter().any(|(_, g)| g.count() == 2);
 
             if non_decreasing && double {
                 total += 1;

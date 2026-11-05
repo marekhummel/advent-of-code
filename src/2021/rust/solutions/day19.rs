@@ -33,7 +33,7 @@ impl Solution19 {
             for (vx, vy, vz) in iproduct!([-1, 1], [-1, 1], [-1, 1]) {
                 let vals = vec![vx, vy, vz];
                 let mut matrix = Matrix::new(vec![vec![0; 3]; 3]);
-                for (j, i, val) in izip!((0..3), &xyz, vals) {
+                for (j, i, val) in izip!(0..3, &xyz, vals) {
                     matrix.values[j][*i] = val;
                 }
                 if matrix.det::<i32>() > 0 {
@@ -93,8 +93,8 @@ impl Solution for Solution19 {
         let scanner_beacons = Self::parse(input);
         let (scanners, _) = Self::find_absolute_locations(scanner_beacons);
 
-        let scanner_pairs = scanners.into_iter().tuple_combinations();
-        let max_dist = scanner_pairs.map(|(a, b)| (a - b).length()).max().unwrap();
+        let scanner_pairs = scanners.into_iter().array_combinations();
+        let max_dist = scanner_pairs.map(|[a, b]| (a - b).length()).max().unwrap();
         max_dist.to_result()
     }
 }

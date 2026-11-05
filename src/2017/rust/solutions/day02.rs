@@ -38,8 +38,8 @@ impl Solution for Solution02 {
             .map(|row| {
                 let (a, b) = row
                     .into_iter()
-                    .tuple_combinations()
-                    .map(|(a, b)| (a.max(b), a.min(b)))
+                    .array_combinations()
+                    .map(|[a, b]| (a.max(b), a.min(b)))
                     .find(|(a, b)| a % b == 0)
                     .unwrap();
                 a / b
