@@ -2,6 +2,10 @@
 
 from typing import NewType
 
+# Valid results for cases that do not have an answer.
+NO_SAMPLE = "<No Sample Defined>"
+NO_PART_TWO = "<No Part Two>"
+
 # Type aliases
 ProblemInput = NewType("ProblemInput", list[str])
 ProblemResult = int | float | str | None

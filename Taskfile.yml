@@ -16,26 +16,27 @@ env:
   ZIG_GLOBAL_CACHE_DIR: '{{.ROOT_DIR}}/build/zig/global'
 
 tasks:
-  # Common
   default:
     cmds: [task --list]
+
+  # Common
   build:
     desc: Build a year (LANG, YEAR)
     cmds: [{task: 'build:{{.LANG}}'}]
   run:
-    desc: Run a year or day (LANG, YEAR, optional DAY, PART, SAMPLE)
+    desc: Run a year or day (LANG, YEAR, optional DAY, PART, MODE=real/sample/both; default both)
     cmds:
       - >-
         task --silent build LANG={{.LANG | shellQuote}} YEAR={{.YEAR | shellQuote}} >&2 &&
         bash scripts/run.sh "{{.LANG}}" "{{.YEAR}}" "{{.DAY}}" "{{.PART}}"
-        {{if eq (.SAMPLE | default "false") "true"}}--sample{{end}}
+        "{{.MODE | default "both"}}"
   verify:
-    desc: Verify one part (LANG, YEAR, DAY, PART, optional SAMPLE)
+    desc: Verify one part (LANG, YEAR, DAY, PART, optional MODE=real/sample/both; default both)
     cmds:
       - >-
         task --silent build LANG={{.LANG | shellQuote}} YEAR={{.YEAR | shellQuote}} >&2 &&
         {{.PYTHON}} scripts/verify.py "{{.LANG}}" "{{.YEAR}}" "{{.DAY}}" "{{.PART}}"
-        {{if eq (.SAMPLE | default "false") "true"}}--sample{{end}}
+        "{{.MODE | default "both"}}"
   check:
     desc: Format and check a language (LANG, optional YEAR)
     cmds: [{task: 'check:{{.LANG}}'}]
@@ -43,15 +44,21 @@ tasks:
     desc: List year/language directories (optional LANG and YEAR)
     cmds:
       - 'find src/{{.YEAR | default "[0-9]*"}} -mindepth 1 -maxdepth 1 -type d {{if .LANG}}-name {{.LANG | shellQuote}}{{end}} | sort'
-  new:day:
+
+  # Prep
+  newday:
     desc: Create and register a day from its template (LANG, YEAR, DAY)
     cmds: ['{{.PYTHON}} scripts/new_day.py {{.LANG}} {{.YEAR}} {{.DAY}}']
   input:
     desc: Download inputs explicitly (YEAR, optional DAY)
     cmds: ['bash scripts/download_inputs.sh {{.YEAR}} "{{.DAY}}"']
   cookie:
-    desc: Import a Firefox session into the ignored local credential file
+    desc: Import a Firefox session (run on the host with Firefox closed)
     cmds: ['{{.PYTHON}} scripts/read_cookie.py']
+
+
+  # ---
+
   # Rust
   build:rust:
     cmds: ['cargo build --locked --release --bin main{{.YEAR}}']
@@ -62,7 +69,7 @@ tasks:
 
   # Python
   build:python:
-    cmds: ['sudo python3.15 -m pip install --break-system-packages -r requirements.txt']
+    cmds: ['sudo python3.15 -m pip install --quiet --break-system-packages --root-user-action ignore -r requirements.txt']
   check:python:
     vars:
       DIRS:
@@ -93,6 +100,6 @@ tasks:
 
   # Elixir
   build:elixir:
-    cmds: ['echo "Elixir runs as a script; no build needed."']
+    cmds: []
   check:elixir:
     cmds: ['mix format "src/{{.YEAR | default "[0-9]*"}}/elixir/**/*.{ex,exs}" "src/lib/elixir/**/*.{ex,exs}"']

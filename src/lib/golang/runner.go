@@ -7,18 +7,26 @@ import (
 	"strings"
 )
 
+// Valid results for cases that do not have an answer. Return these with a nil error.
+const (
+	NoSample  = "<No Sample Defined>"
+	NoPartTwo = "<No Part Two>"
+	Unsolved  = "<No Solution Implemented>"
+)
+
 // Solution contains the two parts of a day. Each returns an answer or an error.
 type Solution struct {
 	Part1 func(input []string, sample bool) (any, error)
 	Part2 func(input []string, sample bool) (any, error)
 }
 
-// Run parses DAY PART [--sample], loads input and prints one answer to stdout.
+// Run parses DAY PART MODE (real or sample), loads input and prints one answer to stdout.
 // Invalid arguments exit with code 2; execution errors are printed to stderr
-// and exit with code 1. Batch execution and verification belong to the scripts.
+// and exit with code 1. Missing days and parts are informational and exit successfully.
+// Batch execution and verification belong to the scripts.
 func Run(year int, solutions map[int]Solution) {
 	args := os.Args[1:]
-	if len(args) < 2 || len(args) > 3 || (len(args) == 3 && args[2] != "--sample") {
+	if len(args) != 3 || (args[2] != "real" && args[2] != "sample") {
 		usage()
 	}
 	day, dayError := strconv.Atoi(args[0])
@@ -28,16 +36,18 @@ func Run(year int, solutions map[int]Solution) {
 	}
 	solution, ok := solutions[day]
 	if !ok {
-		fail(fmt.Errorf("no solution for %d day %02d", year, day))
+		fmt.Println("No solution implemented for this day")
+		return
 	}
 	solve := solution.Part1
 	if part == 2 {
 		solve = solution.Part2
 	}
 	if solve == nil {
-		fail(fmt.Errorf("part %d is not implemented", part))
+		fmt.Println("No solution implemented for this part")
+		return
 	}
-	sample := len(args) == 3
+	sample := args[2] == "sample"
 	prefix := "input"
 	if sample {
 		prefix = "sample"
@@ -66,7 +76,7 @@ func Run(year int, solutions map[int]Solution) {
 }
 
 func usage() {
-	fmt.Fprintln(os.Stderr, "Usage: mainYEAR DAY PART [--sample]")
+	fmt.Fprintln(os.Stderr, "Usage: mainYEAR DAY PART MODE (real|sample)")
 	os.Exit(2)
 }
 

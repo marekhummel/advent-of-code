@@ -50,4 +50,12 @@ if __name__ == "__main__":
     try:
         sys.exit(read_firefox())
     except (sqlite3.Error, OSError) as error:
+        if getattr(error, "sqlite_errorcode", None) in (
+            sqlite3.SQLITE_BUSY,
+            sqlite3.SQLITE_LOCKED,
+        ):
+            sys.exit(
+                "Firefox's cookie database is locked. "
+                "Close Firefox completely and run task cookie on the host again."
+            )
         sys.exit(f"Could not import the Firefox cookie: {error}")

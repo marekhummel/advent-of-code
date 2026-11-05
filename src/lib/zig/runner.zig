@@ -19,12 +19,12 @@ pub const AocRunner = struct {
     pub fn parseAndRun(self: *const AocRunner, process: std.process.Init) !void {
         const allocator = process.arena.allocator();
         const args = try process.minimal.args.toSlice(allocator);
-        if (args.len != 3 and args.len != 4) usage();
+        if (args.len != 4) usage();
         const day = std.fmt.parseInt(u8, args[1], 10) catch usage();
         const part = std.fmt.parseInt(u8, args[2], 10) catch usage();
         if (day < 1 or day > 25 or part < 1 or part > 2) usage();
-        const sample = args.len == 4;
-        if (sample and !std.mem.eql(u8, args[3], "--sample")) usage();
+        const sample = std.mem.eql(u8, args[3], "sample");
+        if (!sample and !std.mem.eql(u8, args[3], "real")) usage();
         const implementation = self.solutions.get(day) orelse return error.MissingSolution;
         const prefix = if (sample) "sample" else "input";
         const filename = try std.fmt.allocPrint(allocator, "inputs/{d}/{s}{d:0>2}.txt", .{ self.year, prefix, day });
@@ -39,9 +39,7 @@ pub const AocRunner = struct {
         const result = try solve(&input, sample, allocator);
         switch (result) {
             .NoInput => return error.NoInput,
-            .NoSample => return error.NoSample,
             .Unsolved => return error.Unsolved,
-            .NoPartTwo => return error.NoPartTwo,
             else => {},
         }
         var buffer: [4096]u8 = undefined;
@@ -51,7 +49,7 @@ pub const AocRunner = struct {
     }
 
     fn usage() noreturn {
-        std.debug.print("Usage: mainYEAR DAY PART [--sample]\n", .{});
+        std.debug.print("Usage: mainYEAR DAY PART MODE (real|sample)\n", .{});
         std.process.exit(2);
     }
 };

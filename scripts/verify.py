@@ -109,31 +109,19 @@ def remote_answer(year: int, day: int, part: int) -> str | None:
     return accepted.get(str(part))
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("lang", choices=("rust", "python", "golang", "zig", "elixir"))
-    parser.add_argument("year", type=int)
-    parser.add_argument("day", type=int, choices=range(1, 26))
-    parser.add_argument("part", type=int, choices=(1, 2))
-    parser.add_argument("--sample", action="store_true")
-    args = parser.parse_args()
-    os.chdir(Path(__file__).resolve().parents[1])
-    command = ["bash", "scripts/run.sh", args.lang, str(args.year), str(args.day), str(args.part)]
-    if args.sample:
-        command.append("--sample")
+def verify_case(lang: str, year: int, day: int, part: int, mode: str) -> int:
+    command = ["bash", "scripts/run.sh", lang, str(year), str(day), str(part), mode]
     result = subprocess.run(command, stdout=subprocess.PIPE, check=False)
     if result.returncode:
         return 1
     actual = result.stdout.decode("utf-8").removesuffix("\n")
     expected = (
-        sample_answer(args.year, args.day, args.part)
-        if args.sample
-        else remote_answer(args.year, args.day, args.part)
+        sample_answer(year, day, part) if mode == "sample" else remote_answer(year, day, part)
     )
-    label = f"{args.lang}/{args.year} day {args.day:02} part {args.part}"
+    label = f"{lang}/{year} day {day:02} part {part} {mode}"
     if expected is None:
         print(
-            f"UNKNOWN: {label} has no {'sample' if args.sample else 'accepted'} answer",
+            f"UNKNOWN: {label} has no {'sample' if mode == 'sample' else 'accepted'} answer",
             file=sys.stderr,
         )
         return 1
@@ -142,6 +130,23 @@ def main() -> int:
         return 1
     print(f"PASS: {label}")
     return 0
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("lang", choices=("rust", "python", "golang", "zig", "elixir"))
+    parser.add_argument("year", type=int)
+    parser.add_argument("day", type=int, choices=range(1, 26))
+    parser.add_argument("part", type=int, choices=(1, 2))
+    parser.add_argument("mode", nargs="?", choices=("real", "sample", "both"), default="both")
+    args = parser.parse_args()
+    os.chdir(Path(__file__).resolve().parents[1])
+    modes = ("sample", "real") if args.mode == "both" else (args.mode,)
+    failed = 0
+    for mode in modes:
+        if verify_case(args.lang, args.year, args.day, args.part, mode):
+            failed = 1
+    return failed
 
 
 if __name__ == "__main__":

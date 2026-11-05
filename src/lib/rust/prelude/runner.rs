@@ -21,15 +21,15 @@ struct Cli {
     /// Part number (1 or 2)
     #[arg(value_parser = clap::value_parser!(u8).range(1..=2))]
     part: u8,
-    /// Use sample input instead of real input.
-    #[arg(long)]
-    sample: bool,
+    /// Input mode (real or sample).
+    #[arg(value_parser = ["real", "sample"])]
+    mode: String,
 }
 
 impl AocRunner {
     pub fn parse_and_run(&self) {
         let args = Cli::parse();
-        match self.run(args.day, args.part, args.sample) {
+        match self.run(args.day, args.part, args.mode == "sample") {
             Ok(result) => println!("{result}"),
             Err(error) => {
                 eprintln!("Error: {error}");
@@ -42,7 +42,7 @@ impl AocRunner {
         let solution = self
             .solutions
             .get(&day)
-            .ok_or_else(|| format!("No solution for {} day {day:02}", self.year))?;
+            .ok_or_else(|| "No solution implemented for this day".to_string())?;
         let prefix = if sample { "sample" } else { "input" };
         let mut filename = format!("inputs/{}/{prefix}{day:02}.txt", self.year);
         if !Path::new(&filename).exists() {
@@ -55,9 +55,7 @@ impl AocRunner {
             _ => unreachable!(),
         };
         match result {
-            ProblemResult::NoInput | ProblemResult::NoSample | ProblemResult::Unsolved | ProblemResult::NoPartTwo => {
-                Err(result.to_string())
-            }
+            ProblemResult::NoInput | ProblemResult::Unsolved => Err(result.to_string()),
             _ => Ok(result),
         }
     }
