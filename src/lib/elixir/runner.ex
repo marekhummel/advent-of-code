@@ -3,7 +3,7 @@ defmodule AocLib.Runner do
   Runner for executing a single Advent of Code solution and printing its answer.
   """
 
-  alias AocLib.Types.ProblemInput
+  alias AocLib.Types.{ProblemInput, ProblemResult}
 
   defstruct [:year, :solutions]
 
@@ -20,17 +20,19 @@ defmodule AocLib.Runner do
   def new(year, solutions), do: %__MODULE__{year: year, solutions: solutions}
 
   @doc """
-  Parses DAY, PART and an optional --sample flag, then runs the selected case.
+  Parses DAY, PART and MODE (real or sample), then runs the selected case.
   Prints the answer to stdout. Invalid arguments exit with code 2; execution
-  errors are raised and reported on stderr.
+  errors are raised and reported on stderr. Missing days, missing parts and
+  results :unsolved, :no_sample and :no_part_two are informational and exit
+  successfully.
   """
   @spec parse_and_run(t(), [String.t()]) :: :ok
   def parse_and_run(runner, args) do
     case args do
-      [day, part | options] when part in ["1", "2"] and options in [[], ["--sample"]] ->
+      [day, part, mode] when part in ["1", "2"] and mode in ["real", "sample"] ->
         case Integer.parse(day) do
           {day, ""} when day in 1..25 ->
-            run(runner, day, String.to_integer(part), options == ["--sample"])
+            run(runner, day, String.to_integer(part), mode == "sample")
 
           _ ->
             usage()
@@ -42,13 +44,27 @@ defmodule AocLib.Runner do
   end
 
   defp usage do
-    IO.puts(:stderr, "Usage: main.exs DAY PART [--sample]")
+    IO.puts(:stderr, "Usage: main.exs DAY PART MODE (real|sample)")
     System.halt(2)
   end
 
   defp run(runner, day, part, sample) do
     solution = Map.get(runner.solutions, day)
-    if solution == nil, do: raise("No solution for #{runner.year} day #{day}")
+    solve = if part == 1, do: :solve_part01, else: :solve_part02
+
+    cond do
+      solution == nil ->
+        IO.puts("No solution implemented for this day")
+
+      not function_exported?(solution, solve, 2) ->
+        IO.puts("No solution implemented for this part")
+
+      true ->
+        run_solution(runner, day, part, sample, solution, solve)
+    end
+  end
+
+  defp run_solution(runner, day, part, sample, solution, solve) do
     prefix = if sample, do: "sample", else: "input"
     stem = "inputs/#{runner.year}/#{prefix}#{String.pad_leading(to_string(day), 2, "0")}"
     filename = if File.exists?(stem <> ".txt"), do: stem <> ".txt", else: "#{stem}_#{part}.txt"
@@ -60,12 +76,14 @@ defmodule AocLib.Runner do
       end
 
     result =
-      case part do
-        1 -> solution.solve_part01(input, sample)
-        2 -> solution.solve_part02(input, sample)
+      case apply(solution, solve, [input, sample]) do
+        nil -> :unsolved
+        result -> result
       end
 
-    if is_atom(result), do: raise("Solution unavailable: #{result}")
-    IO.puts(result)
+    if is_atom(result) and result not in [:unsolved, :no_sample, :no_part_two],
+      do: raise("Solution unavailable: #{result}")
+
+    IO.puts(ProblemResult.format(result))
   end
 end

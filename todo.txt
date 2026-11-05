@@ -1,4 +1,9 @@
-- DEVCONTAINER
-- Progress in README
 - Verify all languages
+- Zig day 22
+- elixir slow
+- zig build slow
+- lint and checks
+
+- Verify script
+- Progress in README
 - Add 2026 CPP

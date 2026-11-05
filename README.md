@@ -82,7 +82,7 @@ files, so shared imports use `from lib.python import ...` and day imports use
 `from solutions.day01 import Solution01`. For a direct run:
 
 ```sh
-PYTHONPATH=src python3.15 src/2023/python/main.py 1 1 --sample
+PYTHONPATH=src python3.15 src/2023/python/main.py 1 1 sample
 ```
 
 ```sh
@@ -90,25 +90,31 @@ task --list
 task list
 task build LANG=zig YEAR=2024
 task run LANG=elixir YEAR=2025
-task run LANG=python YEAR=2023 DAY=1 PART=1 SAMPLE=true
-task verify LANG=zig YEAR=2024 DAY=1 PART=1 # compare with your accepted answer
+task run LANG=python YEAR=2023 DAY=1 PART=1 MODE=sample
+task verify LANG=zig YEAR=2024 DAY=1 PART=1 MODE=real # compare with your accepted answer
 task check LANG=python                   # formats, lints and checks types
 task check LANG=golang YEAR=2015          # formats, vets and tests
-task new:day LANG=python YEAR=2025 DAY=11
+task newday LANG=python YEAR=2025 DAY=11
 task input YEAR=2025 DAY=3                # omit DAY for all missing days
 ```
 
 Languages: `rust`, `python`, `golang`, `zig`, `elixir`. Task builds before calling
-`scripts/run.sh`. Omit `DAY` to try days 1-25; omit `PART` for both parts. Real input is the default; use `SAMPLE=true`
-for samples. Answers go directly to stdout, and errors go to stderr. Batch runs
+`scripts/run.sh`. Omit `DAY` to try days 1-25 for 2015-2024 or days 1-12 from
+2025 onwards; omit `PART` for both parts.
+`MODE` accepts `real`, `sample` or `both` and defaults to `both`. Both mode runs
+sample input followed by real input for each day/part. Answers go directly to
+stdout, and labels and errors go to stderr. Batch runs
 continue after failures and exit nonzero if any case fails.
+Ctrl+C stops the batch and the active runner, including its child processes.
+Labels include elapsed wall time, including process startup, with five decimal
+places: `D01 P1 SAMP (  0.12345 secs): result`.
 
-Verification runs exactly one day/part and compares its stdout with an expected
-answer:
+Verification runs one day/part with `MODE=real`, `MODE=sample` or the default
+`MODE=both`, comparing each answer separately:
 
 ```sh
-task verify LANG=python YEAR=2023 DAY=1 PART=1 SAMPLE=true
-task verify LANG=rust YEAR=2022 DAY=1 PART=1
+task verify LANG=python YEAR=2023 DAY=1 PART=1 MODE=sample
+task verify LANG=rust YEAR=2022 DAY=1 PART=1 MODE=real
 ```
 
 Samples use `inputs/YEAR/sample_solutions.json`, keyed by two-digit day and part.
@@ -132,31 +138,44 @@ produce a nonzero exit. Comparison preserves answer whitespace except for the
 single newline appended by the runner. Multiline sample answers use JSON `\n`
 escapes.
 
-Language entry points accept `DAY PART [--sample]`, print one answer followed by
-one newline and report errors on stderr. Exit codes are `0` for success, `1`
+Language entry points accept `DAY PART MODE`, where `MODE` is `real` or `sample`.
+They print one answer followed by one newline and report errors on stderr.
+The shell script expands `both` into separate calls. Exit codes are `0` for success, `1`
 for execution/verification failures and `2` for invalid arguments; crashes may
 use other nonzero codes.
 
-Scripts use `LANG YEAR DAY PART` order where applicable; downloads need only
+Returned `NoSample` and `NoPartTwo` results print `<No Sample Defined>` and
+`<No Part Two>` and exit successfully. Missing input and unsolved cases remain
+errors. Python exposes `NO_SAMPLE` and `NO_PART_TWO` from `lib.python`; Go exposes
+`lib.NoSample` and `lib.NoPartTwo` (return them with a `nil` error). Elixir uses
+`:no_sample` and `:no_part_two`.
+Go also treats missing days, missing part functions and returned `lib.Unsolved`
+values as informational results with exit code `0`.
+Elixir likewise treats missing days, missing parts and `:unsolved` results as
+informational results with exit code `0`.
+
+Scripts use `LANG YEAR DAY PART MODE` order where applicable; downloads need only
 `YEAR DAY`. Direct calls expect an existing build:
 
 ```sh
 task build LANG=zig YEAR=2024
-bash scripts/run.sh zig 2024                         # full year, real input
-bash scripts/run.sh zig 2024 2 --sample              # both parts of sample day 2
-python3 scripts/verify.py zig 2024 2 1 --sample       # verify one case
+bash scripts/run.sh zig 2024                         # full year, sample and real input
+bash scripts/run.sh zig 2024 2 sample                # both parts of sample day 2
+python3 scripts/verify.py zig 2024 2 1 sample          # verify one case
 ```
 
 Empty positional arguments allow a part-only filter, e.g.
-`bash scripts/run.sh zig 2024 "" 1 --sample`. Task sets the Python import and
+`bash scripts/run.sh zig 2024 "" 1 sample`. Task sets the Python import and
 bytecode cache paths; direct Python runs need `PYTHONPATH=src` and may set
 `PYTHONPYCACHEPREFIX=build/python/pycache` to keep bytecode under `build/`.
 
 `check` formats files and accepts an optional `YEAR`.
 
 Downloads read the session token from ignored `scripts/aoc_cookie.txt`. Put the
-token alone in that file, or run `task cookie` after logging in through Firefox.
-The importer supports native and Flatpak Firefox profiles. Inputs are named
+token alone in that file, or run `task cookie` on the host after logging in
+through Firefox and closing it completely. Firefox profiles are not mounted in
+the devcontainer. The importer supports native and Flatpak Firefox profiles.
+Inputs are named
 `inputDD.txt` and `sampleDD.txt`, with `_1.txt` / `_2.txt` part-specific fallbacks.
 
 ## Files And Local Output
