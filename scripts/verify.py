@@ -109,8 +109,18 @@ def remote_answer(year: int, day: int, part: int) -> str | None:
     return accepted.get(str(part))
 
 
-def verify_case(lang: str, year: int, day: int, part: int, mode: str) -> int:
-    command = ["bash", "scripts/run.sh", lang, str(year), str(day), str(part), mode]
+def verify_case(lang: str, year: int, day: int, part: int, mode: str, optimize: str) -> int:
+    command = [
+        "bash",
+        "scripts/run.sh",
+        lang,
+        str(year),
+        str(day),
+        str(part),
+        mode,
+        "--optimize",
+        optimize,
+    ]
     result = subprocess.run(command, stdout=subprocess.PIPE, check=False)
     if result.returncode:
         return 1
@@ -139,12 +149,13 @@ def main() -> int:
     parser.add_argument("day", type=int, choices=range(1, 26))
     parser.add_argument("part", type=int, choices=(1, 2))
     parser.add_argument("mode", nargs="?", choices=("real", "sample", "both"), default="both")
+    parser.add_argument("--optimize", default="fast", choices=("debug", "fast", "safe", "small"))
     args = parser.parse_args()
     os.chdir(Path(__file__).resolve().parents[1])
     modes = ("sample", "real") if args.mode == "both" else (args.mode,)
     failed = 0
     for mode in modes:
-        if verify_case(args.lang, args.year, args.day, args.part, mode):
+        if verify_case(args.lang, args.year, args.day, args.part, mode, args.optimize):
             failed = 1
     return failed
 

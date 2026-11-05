@@ -5,7 +5,7 @@ cd "$(dirname "$0")/.."
 
 # Parse args
 if (( $# < 2 )); then
-    echo 'Usage: run.sh LANG YEAR [DAY [PART]] [real|sample|both] (default: both)' >&2
+    echo 'Usage: run.sh LANG YEAR [DAY [PART]] [real|sample|both] [--optimize debug|fast|safe|small]' >&2
     exit 2
 fi
 language=$1
@@ -13,9 +13,11 @@ year=$2
 shift 2
 positionals=()
 mode=both
+optimize=fast
 while (( $# )); do
     case "$1" in
         real|sample|both) mode=$1 ;;
+        --optimize) optimize=${2:?Expected a value after --optimize}; shift ;;
         --*) echo "Unknown option: $1" >&2; exit 2 ;;
         *) positionals+=("$1") ;;
     esac
@@ -30,10 +32,20 @@ part=${positionals[1]:-}
 
 # Define runner
 case "$language" in
-    rust) runner=("$PWD/build/rust/release/main$year") ;;
+    rust)
+        profile=release
+        [[ $optimize != debug ]] || profile=debug
+        runner=("$PWD/build/rust/$profile/main$year")
+        ;;
     python) runner=(python3.15 "src/$year/python/main.py") ;;
     golang) runner=("$PWD/build/golang/bin/main$year") ;;
-    zig) runner=("$PWD/build/zig/out/bin/main$year") ;;
+    zig)
+        runner=("$PWD/build/zig/out/bin/main$year")
+        if [[ -n $day ]]; then
+            day_runner="${runner[0]}-day$(printf '%02d' "$((10#$day))")"
+            [[ ! -f $day_runner ]] || runner=("$day_runner")
+        fi
+        ;;
     elixir) runner=(elixir -pa "build/elixir/$year" -e 'Main.main(System.argv())' --) ;;
     *) echo "Unsupported language: $language" >&2; exit 2 ;;
 esac

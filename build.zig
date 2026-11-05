@@ -8,7 +8,10 @@ pub fn build(b: *std.Build) void {
 fn add_binary(b: *std.Build, comptime year: []const u8) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
-    const name = "main" ++ year;
+    const day = b.option(u8, "day", "Compile only this day; omit for the full year");
+    const name = if (day) |selected| b.fmt("main{s}-day{d:0>2}", .{ year, selected }) else "main" ++ year;
+    const options = b.addOptions();
+    options.addOption(?u8, "day", day);
 
     // External Dependencies
     const ziglangSet = b.dependency("ziglangSet", .{ .target = target, .optimize = optimize });
@@ -30,6 +33,7 @@ fn add_binary(b: *std.Build, comptime year: []const u8) void {
     exe.root_module.addImport("aoc_lib", aoc_lib_mod);
     exe.root_module.addImport("ziglangSet", ziglangSet.module("ziglangSet"));
     exe.root_module.addImport("zigRegex", zigRegex.module("regex"));
+    exe.root_module.addOptions("build_options", options);
 
     // Compile step
     const install_artifact = b.addInstallArtifact(exe, .{});
@@ -47,6 +51,7 @@ fn add_binary(b: *std.Build, comptime year: []const u8) void {
     unit_tests.root_module.addImport("aoc_lib", aoc_lib_mod);
     unit_tests.root_module.addImport("ziglangSet", ziglangSet.module("ziglangSet"));
     unit_tests.root_module.addImport("zigRegex", zigRegex.module("regex"));
+    unit_tests.root_module.addOptions("build_options", options);
 
     const unittest_artifact = b.addRunArtifact(unit_tests);
     const test_step = b.step(year ++ "_test", "Run unit tests for " ++ year);
