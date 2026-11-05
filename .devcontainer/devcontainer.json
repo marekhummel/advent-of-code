@@ -52,7 +52,18 @@
                     "${workspaceFolder}/src"
                 ],
                 "python.defaultInterpreterPath": "/usr/bin/python3.15",
-                "zig.path": "/usr/local/zig/zig"
+                "mypy-type-checker.cwd": "${workspaceFolder}",
+                "mypy-type-checker.importStrategy": "fromEnvironment",
+                "mypy-type-checker.reportingScope": "file",
+                "zig.path": "/usr/local/zig/zig",
+                "elixirLS.mixEnv": "dev",
+                "go.alternateTools": {
+                    "gopls": "/usr/local/bin/gopls",
+                    "golangci-lint-v2": "/usr/local/bin/golangci-lint"
+                },
+                "go.lintTool": "golangci-lint-v2",
+                "go.toolsManagement.autoUpdate": false,
+                "go.toolsManagement.checkForUpdates": "local"
             }
         }
     }

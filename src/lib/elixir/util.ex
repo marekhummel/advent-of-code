@@ -51,7 +51,7 @@ defmodule AocLib.Util do
   @doc """
   Generates all combinations of `k` elements from the given list.
   """
-  @spec combinations(non_neg_integer(), [any()]) :: [[any()]]
+  @spec combinations([any()], non_neg_integer()) :: [[any()]]
   def combinations(_elements, 0), do: [[]]
   def combinations([], _k), do: []
 

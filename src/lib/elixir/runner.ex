@@ -43,6 +43,7 @@ defmodule AocLib.Runner do
     end
   end
 
+  @spec usage() :: no_return()
   defp usage do
     IO.puts(:stderr, "Usage: main.exs DAY PART MODE (real|sample)")
     System.halt(2)
