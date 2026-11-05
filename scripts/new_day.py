@@ -52,12 +52,7 @@ def create_day(root: Path, lang: str, year: int, day: int) -> None:
             ),
         ],
         "elixir": [
-            (
-                "main.exs",
-                "# aoc:imports",
-                f'Code.require_file(Path.join([__DIR__, "solutions", "{name}.ex"]))',
-            ),
-            ("main.exs", "# aoc:solutions", f"{day} => Day{day:02},"),
+            ("main.ex", "# aoc:solutions", f"{day} => Day{day:02},"),
         ],
         "golang": [
             ("main.go", "// aoc:imports", f'"aoc/src/{year}/golang/solutions/{name}"'),
