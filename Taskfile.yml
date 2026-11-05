@@ -94,6 +94,7 @@ tasks:
     cmds:
       - gofmt -w src/{{.YEAR | default "[0-9]*"}}/golang src/lib/golang
       - go vet {{.PACKAGES}}
+      - golangci-lint run {{.PACKAGES}}
       - go test {{.PACKAGES}}
 
   # Zig
@@ -120,4 +121,8 @@ tasks:
       - elixirc -o "build/elixir/{{.YEAR}}" src/lib/elixir/*.ex src/{{.YEAR}}/elixir/solutions/*.ex src/{{.YEAR}}/elixir/main.ex
       - touch "build/elixir/{{.YEAR}}/.compiled"
   check:elixir:
-    cmds: ['mix format "src/{{.YEAR | default "[0-9]*"}}/elixir/**/*.{ex,exs}" "src/lib/elixir/**/*.{ex,exs}"']
+    cmds:
+      - mix deps.get
+      - mix format mix.exs "src/{{.YEAR | default "[0-9]*"}}/elixir/**/*.{ex,exs}" "src/lib/elixir/**/*.{ex,exs}"
+      - mix compile --force --all-warnings
+      - mix dialyzer

@@ -1,9 +1,4 @@
 - Verify all languages
-- Zig day 22
-- elixir slow
-- zig build slow
-- lint and checks
-
 - elixir ls fails
 - rust analyser fails
 

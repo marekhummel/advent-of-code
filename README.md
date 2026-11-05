@@ -18,10 +18,10 @@ applies system updates and installs globally, in this order:
 | Group | Installed tools |
 | --- | --- |
 | Common | Bash, Git, curl, certificates, archive tools, C compiler/linker, sudo, Task |
-| Rust | Latest stable rustup toolchain, Cargo, rustfmt and Clippy |
-| Go | Go 1.27.3, including gofmt, vet and test |
+| Rust | Latest stable rustup toolchain, Cargo, rust-src, rustfmt and Clippy |
+| Go | Go 1.27.3, including gofmt, vet and test; gopls 0.24.0 and golangci-lint 2.15.0 |
 | Zig | Zig 0.17.1, including its formatter |
-| Elixir | Ubuntu-packaged Elixir, Erlang/OTP and Mix |
+| Elixir | Ubuntu-packaged Elixir, Erlang/OTP, Mix and Dialyzer |
 | Python | Python 3.15 from the deadsnakes PPA, pip, Ruff and mypy |
 
 Python solution dependencies are listed in `requirements.txt`; `pyproject.toml`
@@ -39,6 +39,13 @@ bind mount is accessible on Fedora.
 VS Code's encoding, line endings, indentation and language-specific editor
 settings live in `.devcontainer/devcontainer.json`. Its Python settings select
 Python 3.15 and add `src/` to the editor's import search path.
+Rust-analyzer uses the root `Cargo.toml` and the installed `rust-src` component.
+ElixirLS uses root `mix.exs` to analyse the shared library and 2025 sources in
+the `dev` environment. Task still builds Elixir years independently.
+ElixirLS maintains its own ignored `.elixir_ls/` cache.
+The Go extension uses the image's preinstalled gopls and golangci-lint v2 from
+`/usr/local/bin/`. Tool versions are set in the Dockerfile; extension updates
+do not automatically replace them.
 
 To use your personal VS Code profile, run **Profiles: Switch Profile** while
 connected to the container. VS Code remembers the profile for that workspace;
@@ -70,7 +77,9 @@ cargo update
 task build LANG=zig YEAR=2024
 ```
 
-Go and Elixir currently have no external packages. Updating compiler versions can
+Elixir checks use the development dependency Dialyxir. Update it with
+`mix deps.update dialyxir`; `task check LANG=elixir` fetches dependencies as needed.
+Go currently has no external packages. Updating compiler versions can
 require source changes; keep `go.mod`, `build.zig.zon` and Python's version in
 `pyproject.toml` consistent with the selected toolchains.
 
@@ -173,6 +182,11 @@ bytecode cache paths; direct Python runs need `PYTHONPATH=src` and may set
 `PYTHONPYCACHEPREFIX=build/python/pycache` to keep bytecode under `build/`.
 
 `check` formats files and accepts an optional `YEAR`.
+For Elixir it also prints compiler warnings and runs Dialyzer type analysis on
+the sources selected in `mix.exs` (currently 2025 and the shared library).
+The first Dialyzer run builds an analysis cache under `build/elixir/plts/` and
+can take several minutes; later runs reuse it. ElixirLS-only hints such as
+suggested `@spec` annotations are editor features and are not printed by Dialyzer.
 
 Native builds default to `OPTIMIZE=fast`. The option works with `build`, `run`
 and `verify`, with or without `DAY`:
@@ -227,7 +241,7 @@ Inputs are named
 | Python | `requirements.txt`, `pyproject.toml` | `build/python/`: Ruff/mypy caches and bytecode |
 | Go | `go.mod` | `build/golang/`: binaries and compilation cache; temporary builds use system temp |
 | Zig | `build.zig`, `build.zig.zon` | `build/zig/`: binaries and compiler caches |
-| Elixir | None | Compiled BEAM modules under `build/elixir/YEAR/`; Mix paths under `build/elixir/` |
+| Elixir | `mix.exs`, `mix.lock` (editor/check project) | Compiled BEAM modules under `build/elixir/YEAR/`; Mix builds, dependencies and analysis caches under `build/elixir/`; editor cache under `.elixir_ls/` |
 
 `build/` is ignored. Cargo also maintains a dependency cache in the container
 user's home directory. Task keeps Zig packages and compiler caches under
@@ -250,7 +264,7 @@ entries retain a following element after formatting.
 | Python | `main.py`, `__init__.py`, `solutions/__init__.py`; no root registration |
 | Go | `main.go` with a `lib.Run(YEAR, map[int]lib.Solution{...})` registry; day packages in `solutions/dayDD/`; no root registration |
 | Zig | `main.zig` with day/module pairs filtered at compile time using `build_options.day`; add `add_binary(b, "YEAR");` in root `build.zig` |
-| Elixir | `main.ex` with a `Main.main/1` entry point and day-number map; shared modules and days are compiled by the build task; no root registration |
+| Elixir | `main.ex` with a `Main.main/1` entry point and day-number map; shared modules and days are compiled by the build task. Set the year path in root `mix.exs` to the year being edited; years share module names and must be analysed separately. |
 
 Put the year's README in `src/YEAR/README.md`. Link screenshots with
 `../../progress/YEAR/overview.png` and `../../progress/YEAR/conclusion.png`.
