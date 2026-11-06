@@ -1,7 +1,7 @@
 # Advent of Code
 
 My [Advent of Code](https://adventofcode.com/) solutions in Rust, Python, Go,
-Zig and Elixir, with shared libraries and tasks for running and verifying answers.
+Zig, Elixir and C++, with shared libraries and tasks for running and verifying answers.
 
 | Folder / files | Language | Purpose |
 | --- | --- | --- |
@@ -15,6 +15,7 @@ Zig and Elixir, with shared libraries and tasks for running and verifying answer
 | `Cargo.toml`, `Cargo.lock`, `.cargo/`, `.rustfmt.toml` | Rust | Packages, dependencies, compiler and formatter configuration |
 | `requirements.txt`, `pyproject.toml` | Python | Dependencies, linting, formatting and type-check configuration |
 | `go.mod` | Go | Module and language version |
+| `.clang-format` | C++ | Formatting; Taskfile builds C++23 into `build/cpp/` |
 | `build.zig`, `build.zig.zon` | Zig | Build steps and dependencies |
 | `mix.exs`, `mix.lock`, `.elixir_ls/`  | Elixir | Mix project, build steps and dependencies, local cache |
 | `.gitignore`| All | Git exclusions (build, inputs and session token) |
@@ -24,19 +25,20 @@ Zig and Elixir, with shared libraries and tasks for running and verifying answer
 <img src="./progress/total.png" alt="Total Advent of Code progress" width="1037">
 
 
-| Year | Rust | Python | Golang | Zig | Elixir |
-| --- | :---: | :---: | :---: | :---: | :---: |
-| [2015](src/2015/README.md) | ✓ | — | 07 | — | — |
-| [2016](src/2016/README.md) | ✓ | — | 10 | — | — |
-| [2017](src/2017/README.md) | ✓ | — | — | — | — |
-| [2018](src/2018/README.md) | ✓ | — | — | — | — |
-| [2019](src/2019/README.md) | ✓ | — | — | — | — |
-| [2020](src/2020/README.md) | ✓ | — | — | — | — |
-| [2021](src/2021/README.md) | ✓ | — | — | — | — |
-| [2022](src/2022/README.md) | ✓ | — | — | — | — |
-| [2023](src/2023/README.md) | ✓ | 01-06, 12, 24 | — | — | — |
-| [2024](src/2024/README.md) | 06 | — | 24 | ✓ | — |
-| [2025](src/2025/README.md) | — | 10 | — | — | ✓ |
+| Year | Rust | Python | Golang | Zig | Elixir | C++ |
+| --- | :---: | :---: | :---: | :---: | :---: | :---: |
+| [2015](src/2015/README.md) | ✓ | — | 07 | — | — | — |
+| [2016](src/2016/README.md) | ✓ | — | 10 | — | — | — |
+| [2017](src/2017/README.md) | ✓ | — | — | — | — | — |
+| [2018](src/2018/README.md) | ✓ | — | — | — | — | — |
+| [2019](src/2019/README.md) | ✓ | — | — | — | — | — |
+| [2020](src/2020/README.md) | ✓ | — | — | — | — | — |
+| [2021](src/2021/README.md) | ✓ | — | — | — | — | — |
+| [2022](src/2022/README.md) | ✓ | — | — | — | — | — |
+| [2023](src/2023/README.md) | ✓ | 01-06, 12, 24 | — | — | — | — |
+| [2024](src/2024/README.md) | 06 | — | 24 | ✓ | — | — |
+| [2025](src/2025/README.md) | — | 10 | — | — | ✓ | — |
+| [2026](src/2026/README.md) | — | — | — | — | — | — |
 
 
 See [progress/](progress/) for yearly screenshots and the linked year READMEs
@@ -65,8 +67,8 @@ release (`fast`) or debug build. Verification accepts year and day filters;
 ### Installation
 
 The devcontainer installs common shell, Git, download and C build tools, Task,
-Rust/Cargo, Go, Zig, Elixir/Erlang/Mix and Python 3.15, together with formatters,
-linters, type checkers and editor extensions. The host needs Docker, VS Code
+Rust/Cargo, Go, Zig, Elixir/Erlang/Mix, Python 3.15 and Clang/LLVM 23 with libc++
+for C++23, together with formatters, linters, type checkers and editor extensions. The host needs Docker, VS Code
 and its Dev Containers extension.
 
 | Task | Purpose |
@@ -75,4 +77,4 @@ and its Dev Containers extension.
 | `task check:<language>` | Format, lint and check source code |
 | `task newday:<language>` | Create a day from its template and register it |
 
-Languages are named `rust`, `python`, `golang`, `zig` and `elixir` in task names.
+Languages are named `rust`, `python`, `golang`, `zig`, `elixir` and `cpp` in task names.

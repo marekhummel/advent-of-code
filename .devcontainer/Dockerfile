@@ -50,6 +50,21 @@ RUN case "$TARGETARCH" in amd64) zig_arch=x86_64 ;; arm64) zig_arch=aarch64 ;; \
     && tar -xJf /tmp/zig.tar.xz -C /usr/local/zig --strip-components=1 \
     && rm /tmp/zig.tar.xz
 
+# C++23: current stable LLVM compiler, standard library, editor and check tools.
+ARG LLVM_VERSION=23
+RUN curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key \
+        -o /usr/share/keyrings/llvm.asc \
+    && echo "deb [signed-by=/usr/share/keyrings/llvm.asc] https://apt.llvm.org/resolute/ llvm-toolchain-resolute-${LLVM_VERSION} main" \
+        > /etc/apt/sources.list.d/llvm.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        clang-${LLVM_VERSION} libc++-${LLVM_VERSION}-dev libc++abi-${LLVM_VERSION}-dev \
+        clangd-${LLVM_VERSION} clang-format-${LLVM_VERSION} clang-tidy-${LLVM_VERSION} lldb-${LLVM_VERSION} \
+    && for tool in clang clang++ clangd clang-format clang-tidy lldb; do \
+        ln -s "/usr/bin/${tool}-${LLVM_VERSION}" "/usr/local/bin/${tool}"; \
+       done \
+    && rm -rf /var/lib/apt/lists/*
+
 # Elixir, Erlang/OTP and Mix from Ubuntu's repositories.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends elixir erlang-dev erlang-dialyzer \

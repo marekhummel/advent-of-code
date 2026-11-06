@@ -30,6 +30,7 @@
                 "ms-python.mypy-type-checker",
                 "golang.go",
                 "ziglang.vscode-zig",
+                "llvm-vs-code-extensions.vscode-clangd",
                 "jakebecker.elixir-ls"
             ],
             "settings": {
@@ -56,6 +57,12 @@
                 "mypy-type-checker.importStrategy": "fromEnvironment",
                 "mypy-type-checker.reportingScope": "file",
                 "zig.path": "/usr/local/zig/zig",
+                "clangd.path": "/usr/local/bin/clangd",
+                "clangd.fallbackFlags": [
+                    "-std=c++23",
+                    "-stdlib=libc++",
+                    "-I${workspaceFolder}/src/lib/cpp"
+                ],
                 "elixirLS.mixEnv": "dev",
                 "go.alternateTools": {
                     "gopls": "/usr/local/bin/gopls",
