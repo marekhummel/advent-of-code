@@ -17,7 +17,10 @@
         "--security-opt=seccomp=unconfined"
     ],
     "remoteEnv": {
-        "CODEX_HOME": "${localEnv:HOME}/.codex"
+        "CODEX_HOME": "${localEnv:HOME}/.codex",
+        "ZIG_LOCAL_CACHE_DIR": "${containerWorkspaceFolder}/build/zig/cache",
+        "ZIG_GLOBAL_CACHE_DIR": "${containerWorkspaceFolder}/build/zig/global",
+        "ZIG_LOCAL_PKG_DIR": "${containerWorkspaceFolder}/build/zig/packages"
     },
     "customizations": {
         "vscode": {
@@ -57,6 +60,7 @@
                 "mypy-type-checker.importStrategy": "fromEnvironment",
                 "mypy-type-checker.reportingScope": "file",
                 "zig.path": "/usr/local/zig/zig",
+                "zig.zls.globalCachePath": "${workspaceFolder}/build/zig/zls",
                 "clangd.path": "/usr/local/bin/clangd",
                 "clangd.fallbackFlags": [
                     "-std=c++23",

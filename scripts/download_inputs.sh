@@ -13,6 +13,8 @@ last=25
     echo 'Put your session token in scripts/aoc_cookie.txt, or run task cookie' >&2; exit 1;
 }
 session=$(<scripts/aoc_cookie.txt)
+# Command substitution removes trailing LF, but retains CR from Windows-style CRLF.
+session=${session%$'\r'}
 # Quotes or newlines would change the meaning of the curl config below.
 [[ $session =~ ^[a-zA-Z0-9_-]+$ ]] || { echo 'Invalid session credential' >&2; exit 1; }
 
