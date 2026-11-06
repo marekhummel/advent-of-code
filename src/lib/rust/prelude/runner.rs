@@ -39,10 +39,9 @@ impl AocRunner {
     }
 
     fn run(&self, day: u8, part: u8, sample: bool) -> Result<ProblemResult, String> {
-        let solution = self
-            .solutions
-            .get(&day)
-            .ok_or_else(|| "No solution implemented for this day".to_string())?;
+        let Some(solution) = self.solutions.get(&day) else {
+            return Ok(ProblemResult::Unsolved);
+        };
         let prefix = if sample { "sample" } else { "input" };
         let mut filename = format!("inputs/{}/{prefix}{day:02}.txt", self.year);
         if !Path::new(&filename).exists() {
@@ -55,7 +54,7 @@ impl AocRunner {
             _ => unreachable!(),
         };
         match result {
-            ProblemResult::NoInput | ProblemResult::Unsolved => Err(result.to_string()),
+            ProblemResult::NoInput => Err(result.to_string()),
             _ => Ok(result),
         }
     }

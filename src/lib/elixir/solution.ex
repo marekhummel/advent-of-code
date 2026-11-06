@@ -17,4 +17,6 @@ defmodule AocLib.Solution do
   Solves part 2 of the problem.
   """
   @callback solve_part02(ProblemInput.t(), is_sample()) :: ProblemResult.t()
+
+  @optional_callbacks solve_part01: 2, solve_part02: 2
 end

@@ -1,4 +1,4 @@
-"""Run one case and compare its answer with sample data or Advent of Code."""
+"""Verify complete days against sample data and accepted Advent of Code answers."""
 
 import argparse
 import hashlib
@@ -11,6 +11,8 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.error import URLError
 from urllib.request import Request, urlopen
+
+NO_SAMPLE = "<No Sample Defined>"
 
 
 class PuzzlePage(HTMLParser):
@@ -61,10 +63,12 @@ def sample_answer(year: int, day: int, part: int) -> str | None:
     parts = data.get(f"{day:02}", {})
     if not isinstance(parts, dict):
         raise TypeError(f"Expected a part/answer object for day {day:02} in {path}")
+    if str(part) not in parts:
+        return None
     answer = parts.get(str(part))
     if answer is not None and not isinstance(answer, str):
         raise TypeError(f"Expected a string or null for day {day:02} part {part} in {path}")
-    return answer
+    return NO_SAMPLE if answer is None else answer
 
 
 def remote_answer(year: int, day: int, part: int) -> str | None:
@@ -109,54 +113,124 @@ def remote_answer(year: int, day: int, part: int) -> str | None:
     return accepted.get(str(part))
 
 
-def verify_case(lang: str, year: int, day: int, part: int, mode: str, optimize: str) -> int:
+def case_label(lang: str, year: int, day: int, part: int, mode: str) -> str:
+    lang_str = f"<{lang}>"
+    return f"{lang_str:9} on ({year} {day:02} {part}) with {mode:6}"
+
+
+def verify_case(
+    lang: str,
+    year: int,
+    day: int,
+    part: int,
+    mode: str,
+    verbose: bool = False,
+) -> int:
+    label = case_label(lang, year, day, part, mode)
     command = [
-        "bash",
-        "scripts/run.sh",
-        lang,
-        str(year),
-        str(day),
-        str(part),
-        mode,
-        "--optimize",
-        optimize,
+        "task",
+        "--silent",
+        "--exit-code",
+        f"case:{lang}",
+        f"YEAR={year}",
+        f"DAY={day}",
+        f"PART={part}",
+        f"MODE={mode}",
+        "OPTIMIZE=fast",
     ]
     result = subprocess.run(command, stdout=subprocess.PIPE, check=False)
     if result.returncode:
+        print(f"[FAILED]    {label}: runner exited with {result.returncode}", file=sys.stderr)
         return 1
     actual = result.stdout.decode("utf-8").removesuffix("\n")
+    if actual in ("<Not Implemented>", "<Unsolved>"):
+        if verbose:
+            print(f"[SKIPPED]  {label}:  {actual}")
+        return 0
     expected = (
         sample_answer(year, day, part) if mode == "sample" else remote_answer(year, day, part)
     )
-    label = f"{lang}/{year} day {day:02} part {part} {mode}"
     if expected is None:
         print(
-            f"UNKNOWN: {label} has no {'sample' if mode == 'sample' else 'accepted'} answer",
+            f"[UNKNOWN]  {label}:  {actual}; "
+            f"no {'sample' if mode == 'sample' else 'accepted'} answer",
             file=sys.stderr,
         )
         return 1
     if actual != expected:
-        print(f"MISMATCH: {label}: expected {expected!r}, got {actual!r}", file=sys.stderr)
+        print(
+            f"[FAILED]   {label}:  expected: {expected!r}, got: {actual!r}",
+            file=sys.stderr,
+        )
         return 1
-    print(f"PASS: {label}")
+    if verbose:
+        print(f"[PASSED]   {label}:  {actual}")
     return 0
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("lang", choices=("rust", "python", "golang", "zig", "elixir"))
-    parser.add_argument("year", type=int)
-    parser.add_argument("day", type=int, choices=range(1, 26))
-    parser.add_argument("part", type=int, choices=(1, 2))
-    parser.add_argument("mode", nargs="?", choices=("real", "sample", "both"), default="both")
-    parser.add_argument("--optimize", default="fast", choices=("debug", "fast", "safe", "small"))
+    entry_points = {
+        "rust": "main.rs",
+        "python": "main.py",
+        "golang": "main.go",
+        "zig": "main.zig",
+        "elixir": "main.ex",
+    }
+    parser.add_argument("--lang", choices=entry_points)
+    parser.add_argument("--year", type=int)
+    parser.add_argument("--day", type=int, choices=range(1, 26))
+    parser.add_argument(
+        "--verbose", action="store_true", help="Also show passing and skipped results"
+    )
     args = parser.parse_args()
     os.chdir(Path(__file__).resolve().parents[1])
-    modes = ("sample", "real") if args.mode == "both" else (args.mode,)
     failed = 0
-    for mode in modes:
-        if verify_case(args.lang, args.year, args.day, args.part, mode, args.optimize):
-            failed = 1
+    matched = False
+    for year_dir in sorted(Path("src").glob("[0-9][0-9][0-9][0-9]")):
+        year = int(year_dir.name)
+        if args.year is not None and year != args.year:
+            continue
+        for lang, entry_point in entry_points.items():
+            print(year, lang)
+            if args.lang is not None and lang != args.lang:
+                continue
+            if not (year_dir / lang / entry_point).is_file():
+                continue
+            matched = True
+            days = (
+                [args.day] if args.day is not None else list(range(1, 26 if year < 2025 else 13))
+            )
+            for day in days:
+                filename = (
+                    f"day{day:02}/solution.go"
+                    if lang == "golang"
+                    else f"day{day:02}{Path(entry_point).suffix}"
+                )
+                if not (year_dir / lang / "solutions" / filename).is_file():
+                    continue
+                for part in (1, 2):
+                    if day == days[-1] and part == 2:
+                        continue
+                    for mode in ("sample", "real"):
+                        try:
+                            failed |= verify_case(
+                                lang,
+                                year,
+                                day,
+                                part,
+                                mode,
+                                args.verbose,
+                            )
+                        except (ValueError, TypeError, OSError, URLError) as error:
+                            label = case_label(lang, year, day, part, mode)
+                            print(
+                                f"{'FAILED':7}:  {label}: {error}",
+                                file=sys.stderr,
+                            )
+                            failed = 1
+    if not matched:
+        parser.error("No matching year/language entry points found")
     return failed
 
 

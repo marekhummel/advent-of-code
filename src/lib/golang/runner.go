@@ -9,9 +9,10 @@ import (
 
 // Valid results for cases that do not have an answer. Return these with a nil error.
 const (
-	NoSample  = "<No Sample Defined>"
-	NoPartTwo = "<No Part Two>"
-	Unsolved  = "<No Solution Implemented>"
+	NoSample       = "<No Sample Defined>"
+	NoPartTwo      = "<No Part Two>"
+	Unsolved       = "<Unsolved>"
+	NotImplemented = "<Not Implemented>"
 )
 
 // Solution contains the two parts of a day. Each returns an answer or an error.
@@ -36,7 +37,7 @@ func Run(year int, solutions map[int]Solution) {
 	}
 	solution, ok := solutions[day]
 	if !ok {
-		fmt.Println("No solution implemented for this day")
+		fmt.Println(Unsolved)
 		return
 	}
 	solve := solution.Part1
@@ -44,7 +45,7 @@ func Run(year int, solutions map[int]Solution) {
 		solve = solution.Part2
 	}
 	if solve == nil {
-		fmt.Println("No solution implemented for this part")
+		fmt.Println(NotImplemented)
 		return
 	}
 	sample := args[2] == "sample"
@@ -70,7 +71,7 @@ func Run(year int, solutions map[int]Solution) {
 		fail(err)
 	}
 	if result == nil {
-		fail(fmt.Errorf("part %d returned no answer", part))
+		result = NotImplemented
 	}
 	fmt.Println(result)
 }

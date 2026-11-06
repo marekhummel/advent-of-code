@@ -3,63 +3,28 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-# Parse args
-if (( $# < 2 )); then
-    echo 'Usage: run.sh LANG YEAR [DAY [PART]] [real|sample|both] [--optimize debug|fast|safe|small]' >&2
-    exit 2
-fi
-language=$1
-year=$2
-shift 2
-positionals=()
+# Get CLI args
+language=
+year=
+day=
+part=
 mode=both
 optimize=fast
 while (( $# )); do
     case "$1" in
-        real|sample|both) mode=$1 ;;
-        --optimize) optimize=${2:?Expected a value after --optimize}; shift ;;
-        --*) echo "Unknown option: $1" >&2; exit 2 ;;
-        *) positionals+=("$1") ;;
+        --lang) language=$2 ;;
+        --year) year=$2 ;;
+        --day) day=$2 ;;
+        --part) part=$2 ;;
+        --mode) mode=$2 ;;
+        --optimize) optimize=$2 ;;
+        *) echo "Unknown option: $1" >&2; exit 2 ;;
     esac
-    shift
+    shift 2
 done
-if (( ${#positionals[@]} > 2 )); then
-    echo 'Expected at most DAY and PART after LANG YEAR' >&2
-    exit 2
-fi
-day=${positionals[0]:-}
-part=${positionals[1]:-}
 
-# Define runner
-case "$language" in
-    rust)
-        profile=release
-        [[ $optimize != debug ]] || profile=debug
-        runner=("$PWD/build/rust/$profile/main$year")
-        ;;
-    python) runner=(python3.15 "src/$year/python/main.py") ;;
-    golang) runner=("$PWD/build/golang/bin/main$year") ;;
-    zig)
-        runner=("$PWD/build/zig/out/bin/main$year")
-        if [[ -n $day ]]; then
-            day_runner="${runner[0]}-day$(printf '%02d' "$((10#$day))")"
-            [[ ! -f $day_runner ]] || runner=("$day_runner")
-        fi
-        ;;
-    elixir) runner=(elixir -pa "build/elixir/$year" -e 'Main.main(System.argv())' --) ;;
-    *) echo "Unsupported language: $language" >&2; exit 2 ;;
-esac
-
-# Validate runner exists
-case "$language" in
-    python) main_file=${runner[1]} ;;
-    elixir) main_file="build/elixir/$year/Elixir.Main.beam" ;;
-    *) main_file=${runner[0]} ;;
-esac
-if [[ ! -f $main_file ]]; then
-    echo "Missing runner: $main_file" >&2
-    exit 1
-fi
+# Build executable if needed
+task --exit-code "build:$language" "YEAR=$year" "OPTIMIZE=$optimize"
 
 # Prep the cases
 output_file=$(mktemp)
@@ -95,7 +60,9 @@ for day in "${days[@]}"; do
             [[ $mode != sample ]] || label=SAMP
             start=${EPOCHREALTIME/./}
             # A separate process group lets cancellation stop the runner and its children.
-            setsid "${runner[@]}" "$day" "$part" "$mode" < /dev/null > "$output_file" 2> "$error_file" &
+            setsid task --silent --exit-code "case:$language" "YEAR=$year" \
+                "DAY=$day" "PART=$part" "MODE=$mode" "OPTIMIZE=$optimize" \
+                < /dev/null > "$output_file" 2> "$error_file" &
             runner_pid=$!
             if wait "$runner_pid"; then
                 code=0

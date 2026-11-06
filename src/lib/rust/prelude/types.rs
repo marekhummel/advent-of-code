@@ -40,6 +40,7 @@ pub enum ProblemResult {
     NoInput,
     NoSample,
     Unsolved,
+    NotImplemented,
     NoPartTwo,
     I128(i128),
     I64(i64),
@@ -76,7 +77,8 @@ impl Display for ProblemResult {
             ProblemResult::String(v) => write!(f, "{}", v),
             ProblemResult::NoInput => write!(f, "<No Input Available>"),
             ProblemResult::NoSample => write!(f, "<No Sample Defined>"),
-            ProblemResult::Unsolved => write!(f, "<No Solution Implemented>"),
+            ProblemResult::Unsolved => write!(f, "<Unsolved>"),
+            ProblemResult::NotImplemented => write!(f, "<Not Implemented>"),
             ProblemResult::NoPartTwo => write!(f, "<No Part Two>"),
         }
     }

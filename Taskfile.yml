@@ -1,9 +1,29 @@
 version: '3'
 
 vars:
-  PYTHON: '{{.PYTHON | default "python3"}}'
+  YEAR: '{{.YEAR | default ""}}'
+  DAY: '{{.DAY | default ""}}'
+  PART: '{{.PART | default ""}}'
+  MODE: '{{.MODE | default "both"}}'
   OPTIMIZE: '{{.OPTIMIZE | default "fast"}}'
-  LANG: ''
+  YEARS:
+    sh: find src -mindepth 1 -maxdepth 1 -type d -name '[0-9][0-9][0-9][0-9]' -printf '%f\n' | sort
+  # Accept both DAY=1 and DAY=01; Advent of Code has 12 days from 2025 onwards.
+  DAYS: '{{seq 1 (ternary 12 25 (ge (atoi .YEAR) 2025))}} 01 02 03 04 05 06 07 08 09'
+  PROJECTS:
+    sh: find src/[0-9][0-9][0-9][0-9] -mindepth 1 -maxdepth 1 -type d | sort
+
+  # File-scoped YAML anchors, collected here for reuse in task requirements.
+  VALIDATION:
+    - &year {name: YEAR, enum: {ref: '.YEARS | splitLines | compact'}}
+    - &optional_year {<<: *year, enum: {ref: 'prepend (.YEARS | splitLines | compact) ""'}}
+    - &day {name: DAY, enum: {ref: '.DAYS | splitList " "'}}
+    - &optional_day {<<: *day, enum: {ref: 'prepend (.DAYS | splitList " ") ""'}}
+    - &part {name: PART, enum: ['1', '2']}
+    - &optional_part {<<: *part, enum: ['', '1', '2']}
+    - &mode {name: MODE, enum: [real, sample]}
+    - &optional_mode {<<: *mode, enum: [real, sample, both]}
+    - &optimize {name: OPTIMIZE, enum: [debug, fast]}
 
 env:
   PYTHONPATH: '{{.ROOT_DIR}}/src'
@@ -11,7 +31,6 @@ env:
   GOCACHE: '{{.ROOT_DIR}}/build/golang/cache'
   GOTOOLCHAIN: local
   GOPROXY: 'off'
-  MIX_BUILD_PATH: '{{.ROOT_DIR}}/build/elixir/build'
   MIX_DEPS_PATH: '{{.ROOT_DIR}}/build/elixir/deps'
   ZIG_LOCAL_CACHE_DIR: '{{.ROOT_DIR}}/build/zig/cache'
   ZIG_GLOBAL_CACHE_DIR: '{{.ROOT_DIR}}/build/zig/global'
@@ -21,63 +40,97 @@ tasks:
     cmds: [task --list]
 
   # Common
-  build:
-    desc: Build a year (LANG, YEAR)
-    cmds: [{task: 'build:{{.LANG}}'}]
-  run:
-    desc: Run a year or day (LANG, YEAR, optional DAY, PART, MODE=real/sample/both; default both)
+  'run:*':
+    desc: Run a language (e.g. run:rust; YEAR, optional DAY, PART, MODE=both, OPTIMIZE=fast)
+    vars: {LANGUAGE: '{{index .MATCH 0}}'}
+    requires:
+      vars: [*year, *optional_day, *optional_part, *optional_mode, *optimize]
+    preconditions:
+      - sh: test -f src/{{.YEAR}}/{{.LANGUAGE}}/main.*
+        msg: 'Missing entry point for {{.LANGUAGE}}/{{.YEAR}}'
     cmds:
       - >-
-        task --silent build LANG={{.LANG | shellQuote}} YEAR={{.YEAR | shellQuote}}
-        DAY={{.DAY | default "" | shellQuote}}
-        OPTIMIZE={{.OPTIMIZE | shellQuote}} >&2 &&
-        bash scripts/run.sh "{{.LANG}}" "{{.YEAR}}" "{{.DAY}}" "{{.PART}}"
-        "{{.MODE | default "both"}}" --optimize {{.OPTIMIZE | shellQuote}}
-  verify:
-    desc: Verify one part (LANG, YEAR, DAY, PART, optional MODE=real/sample/both; default both)
+        bash scripts/run.sh --lang {{.LANGUAGE}} --year {{.YEAR}}
+        {{if .DAY}}--day {{.DAY}}{{end}}
+        {{if .PART}}--part {{.PART}}{{end}}
+        --mode {{.MODE}} --optimize {{.OPTIMIZE}}
+  'case:*':
+    vars: {LANGUAGE: '{{index .MATCH 0}}'}
+    requires:
+      vars: [*year, *day, *part, *mode, *optimize]
+    cmds:
+      - task: 'exec:{{.LANGUAGE}}'
+  verify: &verify
+    desc: Verify all languages (optional YEAR, DAY; --verbose shows all results)
+    vars: {LANGUAGE: ''}
+    requires:
+      vars: [*optional_year, *optional_day]
     cmds:
       - >-
-        task --silent build LANG={{.LANG | shellQuote}} YEAR={{.YEAR | shellQuote}}
-        DAY={{.DAY | default "" | shellQuote}}
-        OPTIMIZE={{.OPTIMIZE | shellQuote}} >&2 &&
-        {{.PYTHON}} scripts/verify.py "{{.LANG}}" "{{.YEAR}}" "{{.DAY}}" "{{.PART}}"
-        "{{.MODE | default "both"}}" --optimize {{.OPTIMIZE | shellQuote}}
-  check:
-    desc: Format and check a language (LANG, optional YEAR)
-    cmds: [{task: 'check:{{.LANG}}'}]
+        python3 scripts/verify.py
+        {{if .LANGUAGE}}--lang {{.LANGUAGE | shellQuote}}{{end}}
+        {{if .YEAR}}--year {{.YEAR}}{{end}}
+        {{if .DAY}}--day {{.DAY}}{{end}}
+        {{if .CLI_VERBOSE}}--verbose{{end}}
+  'verify:*':
+    <<: *verify
+    desc: Verify a language (e.g. verify:python; optional YEAR, DAY; --verbose shows all results)
+    vars: {LANGUAGE: '{{index .MATCH 0}}'}
   list:
-    desc: List year/language directories (optional LANG and YEAR)
+    desc: List all year/language directories
     cmds:
-      - 'find src/{{.YEAR | default "[0-9]*"}} -mindepth 1 -maxdepth 1 -type d {{if .LANG}}-name {{.LANG | shellQuote}}{{end}} | sort'
+      - for: {var: PROJECTS}
+        cmd: 'printf "%s\n" {{.ITEM | shellQuote}}'
+        silent: true
 
   # Prep
-  newday:
-    desc: Create and register a day from its template (LANG, YEAR, DAY)
-    cmds: ['{{.PYTHON}} scripts/new_day.py {{.LANG}} {{.YEAR}} {{.DAY}}']
+  'newday:*':
+    desc: Create and register a language's day (e.g. newday:rust; YEAR, DAY)
+    vars: {LANGUAGE: '{{index .MATCH 0}}'}
+    requires:
+      vars: [*year, *day]
+    cmds: ['python3 scripts/new_day.py {{.LANGUAGE}} {{.YEAR}} {{.DAY}}']
   input:
     desc: Download inputs explicitly (YEAR, optional DAY)
+    requires:
+      vars: [*year, *optional_day]
     cmds: ['bash scripts/download_inputs.sh {{.YEAR}} "{{.DAY}}"']
   cookie:
     desc: Import a Firefox session (run on the host with Firefox closed)
-    cmds: ['{{.PYTHON}} scripts/read_cookie.py']
+    cmds: ['python3 scripts/read_cookie.py']
 
 
   # ---
 
   # Rust
   build:rust:
+    desc: Build Rust (YEAR, optional OPTIMIZE=fast)
+    requires: {vars: [*year, *optimize]}
     cmds: ['cargo build --locked {{if ne .OPTIMIZE "debug"}}--release {{end}}--bin main{{.YEAR}}']
+  exec:rust:
+    internal: true
+    cmds: ['cargo run --quiet --locked {{if ne .OPTIMIZE "debug"}}--release {{end}}--bin main{{.YEAR}} -- {{.DAY}} {{.PART}} {{.MODE}}']
   check:rust:
+    desc: Format and check Rust (optional YEAR)
+    requires: {vars: [*optional_year]}
     cmds:
       - rustfmt --edition 2021 src/{{.YEAR | default "[0-9]*"}}/rust/main.rs src/lib/rust/aoc_lib.rs
       - cargo clippy --locked {{if .YEAR}}--bin main{{.YEAR}}{{else}}--all-targets{{end}} -- -D warnings
 
   # Python
   build:python:
-    cmds: ['sudo python3.15 -m pip install --quiet --break-system-packages --root-user-action ignore -r requirements.txt']
+    desc: Install Python dependencies
+    set: [pipefail]
+    cmds: ['sudo python3.15 -m pip install {{if .CLI_SILENT}}--quiet {{end}}--break-system-packages --root-user-action ignore -r requirements.txt | sed "/^Requirement already satisfied/d"']
+  exec:python:
+    internal: true
+    cmds: ['python3.15 src/{{.YEAR}}/python/main.py {{.DAY}} {{.PART}} {{.MODE}}']
   check:python:
+    desc: Format, lint and type-check Python (optional YEAR)
+    requires: {vars: [*optional_year]}
     vars:
       DIRS:
+        # This is also evaluated before the YEAR validator runs.
         sh: 'printf "%s " src/{{if .YEAR}}{{.YEAR | shellQuote}}{{else}}[0-9]*{{end}}/python'
     cmds:
       - ruff format src/{{.YEAR | default "[0-9]*"}}/python src/lib/python scripts/*.py scripts/templates/*.py
@@ -87,8 +140,15 @@ tasks:
 
   # Go
   build:golang:
+    desc: Build Go (YEAR, optional OPTIMIZE=fast)
+    requires: {vars: [*year, *optimize]}
     cmds: ['go build {{if eq .OPTIMIZE "debug"}}-gcflags="all=-N -l" {{end}}-o build/golang/bin/main{{.YEAR}} ./src/{{.YEAR}}/golang']
+  exec:golang:
+    internal: true
+    cmds: ['go run {{if eq .OPTIMIZE "debug"}}-gcflags="all=-N -l" {{end}}./src/{{.YEAR}}/golang {{.DAY}} {{.PART}} {{.MODE}}']
   check:golang:
+    desc: Format, lint and test Go (optional YEAR)
+    requires: {vars: [*optional_year]}
     vars:
       PACKAGES: '{{if .YEAR}}./src/{{.YEAR}}/golang/... ./src/lib/golang/...{{else}}./...{{end}}'
     cmds:
@@ -99,30 +159,30 @@ tasks:
 
   # Zig
   build:zig:
+    desc: Build Zig (YEAR, optional OPTIMIZE=fast)
+    requires: {vars: [*year, *optimize]}
     cmds:
-      - 'zig build --pkg-dir build/zig/packages --cache-dir build/zig/cache --prefix build/zig/out -Doptimize={{.OPTIMIZE | shellQuote}} {{if .DAY}}-Dday={{.DAY | shellQuote}} {{end}}{{.YEAR}}_main'
+      - 'zig build --pkg-dir build/zig/packages --cache-dir build/zig/cache --prefix build/zig/out -Doptimize={{.OPTIMIZE}} {{.YEAR}}_main'
+  exec:zig:
+    internal: true
+    cmds: ['zig build --pkg-dir build/zig/packages --cache-dir build/zig/cache --prefix build/zig/out -Doptimize={{.OPTIMIZE}} {{.YEAR}}_run -- {{.DAY}} {{.PART}} {{.MODE}}']
   check:zig:
+    desc: Format Zig (optional YEAR)
+    requires: {vars: [*optional_year]}
     cmds: ['zig fmt src/{{.YEAR | default "[0-9]*"}}/zig src/lib/zig build.zig']
 
   # Elixir
   build:elixir:
-    label: 'build:elixir:{{.YEAR}}'
-    method: timestamp
-    sources:
-      - src/lib/elixir/**/*.ex
-      - src/{{.YEAR}}/elixir/**/*.ex
-      - Taskfile.yml
-    generates:
-      - build/elixir/{{.YEAR}}/Elixir.Main.beam
-      - build/elixir/{{.YEAR}}/.compiled
-    cmds:
-      - mkdir -p "build/elixir/{{.YEAR}}"
-      - rm -f "build/elixir/{{.YEAR}}"/*.beam "build/elixir/{{.YEAR}}/.compiled"
-      - elixirc -o "build/elixir/{{.YEAR}}" src/lib/elixir/*.ex src/{{.YEAR}}/elixir/solutions/*.ex src/{{.YEAR}}/elixir/main.ex
-      - touch "build/elixir/{{.YEAR}}/.compiled"
+    desc: Build Elixir (YEAR)
+    requires: {vars: [*year]}
+    cmds: ['MIX_ENV=prod mix aoc {{.YEAR}}']
+  exec:elixir:
+    internal: true
+    cmds: ["MIX_ENV=prod MIX_QUIET=1 mix aoc {{.YEAR}} {{.DAY}} {{.PART}} {{.MODE}}"]
   check:elixir:
+    desc: Format and analyse the Elixir project
     cmds:
       - mix deps.get
-      - mix format mix.exs "src/{{.YEAR | default "[0-9]*"}}/elixir/**/*.{ex,exs}" "src/lib/elixir/**/*.{ex,exs}"
+      - mix format mix.exs "src/[0-9]*/elixir/**/*.{ex,exs}" "src/lib/elixir/**/*.{ex,exs}"
       - mix compile --force --all-warnings
       - mix dialyzer
