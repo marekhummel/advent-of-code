@@ -31,7 +31,7 @@ impl Solution20 {
 
         let tile_lines = lines.split(|l| l.is_empty());
 
-        let tiles = tile_lines
+        tile_lines
             .filter(|lines| !lines.is_empty())
             .map(|lines| {
                 let (header, grid_lines) = lines.split_first().unwrap();
@@ -61,9 +61,7 @@ impl Solution20 {
 
                 ((tile_id, edges), grid)
             })
-            .collect();
-
-        tiles
+            .collect()
     }
 
     fn edge_to_uint(edge: &[bool]) -> u16 {

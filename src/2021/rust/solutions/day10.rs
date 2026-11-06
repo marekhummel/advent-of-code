@@ -21,10 +21,8 @@ impl Solution10 {
                     '{' => stack.push('}'),
                     '<' => stack.push('>'),
                     ')' | ']' | '}' | '>' => {
-                        if let Some(pc) = stack.pop() {
-                            if pc == c {
-                                continue;
-                            }
+                        if stack.pop() == Some(c) {
+                            continue;
                         }
 
                         corrupted = Some(c);

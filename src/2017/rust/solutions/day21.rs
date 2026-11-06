@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use aoc_lib::cartesian::Grid;
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
-use itertools::{iproduct, Itertools};
+use itertools::{Itertools, iproduct};
 
 pub struct Solution21;
 impl Solution21 {

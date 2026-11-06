@@ -190,11 +190,7 @@ impl<V: Clone + Eq + Hash> Graph<V> {
             }
         }
 
-        if sources.is_empty() {
-            Some(sorted)
-        } else {
-            None
-        }
+        if sources.is_empty() { Some(sorted) } else { None }
     }
 
     // Invert graph to map trg to source nodes

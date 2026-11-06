@@ -4,7 +4,7 @@ use aoc_lib::algebra::Vec3;
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
-use itertools::{iproduct, Itertools};
+use itertools::{Itertools, iproduct};
 
 type Cube = Vec3<i16>;
 

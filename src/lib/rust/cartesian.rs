@@ -4,7 +4,7 @@ use std::{
     ops::Add,
 };
 
-use itertools::{iproduct, Itertools};
+use itertools::{Itertools, iproduct};
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub enum Direction {
@@ -314,7 +314,7 @@ impl Size {
         }
     }
 
-    pub fn indices(&self) -> impl Iterator<Item = Index> {
+    pub fn indices(&self) -> impl Iterator<Item = Index> + use<> {
         iproduct!(0..self.height, 0..self.width).map(|(j, i)| Index { i, j })
     }
 

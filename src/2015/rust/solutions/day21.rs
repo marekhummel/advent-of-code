@@ -1,6 +1,6 @@
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
-use itertools::{iproduct, Itertools};
+use itertools::{Itertools, iproduct};
 
 type Item = (u32, u32, u32);
 type Loadout = (Item, Vec<Item>, Vec<Item>);

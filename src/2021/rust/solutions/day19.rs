@@ -4,7 +4,7 @@ use aoc_lib::algebra::{Matrix, Vec3};
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
-use itertools::{iproduct, izip, Itertools};
+use itertools::{Itertools, iproduct, izip};
 
 pub struct Solution19;
 impl Solution19 {
