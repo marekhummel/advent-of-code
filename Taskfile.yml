@@ -114,7 +114,7 @@ tasks:
     desc: Format and check Rust (optional YEAR)
     requires: {vars: [*optional_year]}
     cmds:
-      - rustfmt --edition 2021 src/{{.YEAR | default "[0-9]*"}}/rust/main.rs src/lib/rust/aoc_lib.rs
+      - rustfmt --edition 2024 src/{{.YEAR | default "[0-9]*"}}/rust/main.rs src/lib/rust/aoc_lib.rs
       - cargo clippy --locked {{if .YEAR}}--bin main{{.YEAR}}{{else}}--all-targets{{end}} -- -D warnings
 
   # Python

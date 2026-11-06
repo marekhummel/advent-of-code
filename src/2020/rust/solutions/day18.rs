@@ -47,7 +47,8 @@ impl Solution18 {
 
     fn tokenize(expression: &str) -> Vec<Token> {
         let regex = Regex::new(r"[+*]|[()]|\d+").unwrap();
-        let tokens = regex
+
+        regex
             .find_iter(expression)
             .map(|m| match m.as_str() {
                 "+" => Token::Op(Operator::Add),
@@ -56,8 +57,7 @@ impl Solution18 {
                 ")" => Token::CloseParen,
                 num => Token::Number(num.parse().unwrap()),
             })
-            .collect();
-        tokens
+            .collect()
     }
 
     fn shunting_yard(infix: Vec<Token>, precedence: &HashMap<Operator, u8>) -> Vec<Token> {

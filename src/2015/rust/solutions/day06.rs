@@ -4,7 +4,7 @@ use aoc_lib::cartesian::{Direction, Index};
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
-use itertools::{iproduct, Itertools};
+use itertools::{Itertools, iproduct};
 
 type Instruction = (String, Index, Index);
 

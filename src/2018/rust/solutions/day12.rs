@@ -29,14 +29,14 @@ impl Solution12 {
         (initial_state, rules)
     }
 
-    fn next_gen(gen: &[i64], rules: &HashMap<Vec<bool>, bool>) -> Vec<i64> {
+    fn next_gen(generation: &[i64], rules: &HashMap<Vec<bool>, bool>) -> Vec<i64> {
         let mut new_gen = Vec::new();
-        let min = gen[0] - 3;
-        let max = gen[gen.len() - 1] + 3;
+        let min = generation[0] - 3;
+        let max = generation[generation.len() - 1] + 3;
         let window = [-2, -1, 0, 1, 2];
 
         for i in min..=max {
-            let pattern = window.map(|o| gen.binary_search(&(i + o)).is_ok()).to_vec();
+            let pattern = window.map(|o| generation.binary_search(&(i + o)).is_ok()).to_vec();
             if *rules.get(&pattern).unwrap_or(&false) {
                 new_gen.push(i);
             }
@@ -85,7 +85,7 @@ impl Solution for Solution12 {
                 // Find offset in loop to take for 50 billionth step, and compute score until then
                 let period = g - last_g;
                 let offset = (50_000_000_000 - last_g) % period;
-                let final_state = (0..offset).fold(state, |gen, _| Self::next_gen(&gen, &rules));
+                let final_state = (0..offset).fold(state, |generation, _| Self::next_gen(&generation, &rules));
 
                 // Between each period, the score shifts, count increments to the 50 billionth step
                 let score_inc = ((50_000_000_000 - last_g) / period - 1) as i64 * (score - last_score);

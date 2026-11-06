@@ -17,23 +17,11 @@ enum Tile {
 
 impl Tile {
     fn is_entrance(&self) -> bool {
-        if let Tile::Portal(name, _, _) = self {
-            if name == "AA" {
-                return true;
-            }
-        }
-
-        false
+        self.portal_name() == Some("AA")
     }
 
     fn is_exit(&self) -> bool {
-        if let Tile::Portal(name, _, _) = self {
-            if name == "ZZ" {
-                return true;
-            }
-        }
-
-        false
+        self.portal_name() == Some("ZZ")
     }
 
     fn portal_name(&self) -> Option<&str> {

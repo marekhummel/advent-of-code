@@ -62,8 +62,8 @@ impl Solution for Solution08 {
                         .iter()
                         .map(|digit| {
                             let displayed = digit.chars().map(|c| mapping[&c]).sorted().collect::<String>();
-                            let digit_value = displays.iter().position(|disp| disp == &displayed.as_str()).unwrap();
-                            digit_value
+
+                            displays.iter().position(|disp| disp == &displayed.as_str()).unwrap()
                         })
                         .fold(0, |val, digit| val * 10 + digit);
                     output += value;

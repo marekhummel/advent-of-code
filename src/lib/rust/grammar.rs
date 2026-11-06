@@ -189,12 +189,15 @@ where
             let mut subs = Vec::new();
             for chunk in vars.iter().chunks(2).into_iter() {
                 if let Some((nt1, nt2)) = chunk.collect_tuple() {
-                    if let Some(sub) = substitutes.get(&(nt1.clone(), nt2.clone())) {
-                        subs.push(sub.clone());
-                    } else {
-                        let new_sub = (self.sub_func)(substitutes.len());
-                        substitutes.insert((nt1.clone(), nt2.clone()), new_sub.clone());
-                        subs.push(new_sub.clone());
+                    match substitutes.get(&(nt1.clone(), nt2.clone())) {
+                        Some(sub) => {
+                            subs.push(sub.clone());
+                        }
+                        _ => {
+                            let new_sub = (self.sub_func)(substitutes.len());
+                            substitutes.insert((nt1.clone(), nt2.clone()), new_sub.clone());
+                            subs.push(new_sub.clone());
+                        }
                     }
                 }
             }

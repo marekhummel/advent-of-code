@@ -33,14 +33,14 @@ impl Solution06 {
 impl Solution for Solution06 {
     fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let map = input.grid();
-        let guard = map.enumerate().find(|(_, &c)| c == '^').unwrap().0;
+        let guard = map.enumerate().find(|&(_, &c)| c == '^').unwrap().0;
 
         Self::compute_path(&map, guard).0.len().to_result()
     }
 
     fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
         let mut map = input.grid();
-        let guard = map.enumerate().find(|(_, &c)| c == '^').unwrap().0;
+        let guard = map.enumerate().find(|&(_, &c)| c == '^').unwrap().0;
         let original_path = Self::compute_path(&map, guard).0;
 
         let mut loops: usize = 0;

@@ -3,7 +3,7 @@ use std::collections::BinaryHeap;
 
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
-use itertools::{iproduct, Itertools};
+use itertools::{Itertools, iproduct};
 
 #[derive(PartialEq, Eq, PartialOrd, Ord)]
 struct Pos {

@@ -1,4 +1,4 @@
-use aoc_lib::grammar::{Rule, CFG};
+use aoc_lib::grammar::{CFG, Rule};
 use aoc_lib::iterator::ParsedExt;
 use aoc_lib::prelude::solution::Solution;
 use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
