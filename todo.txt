@@ -1,7 +1,0 @@
-- Verify all languages
-- elixir ls fails
-- rust analyser fails
-
-- Verify script
-- Progress in README
-- Add 2026 CPP

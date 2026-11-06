@@ -1,6 +1,6 @@
 /.vscode/
-/.elixir_ls/
 /build/
+/.elixir_ls/
 __pycache__/
 .task/
 
