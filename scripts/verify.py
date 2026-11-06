@@ -176,6 +176,7 @@ def main() -> int:
         "golang": "main.go",
         "zig": "main.zig",
         "elixir": "main.ex",
+        "cpp": "main.cpp",
     }
     parser.add_argument("--lang", choices=entry_points)
     parser.add_argument("--year", type=int)
@@ -205,7 +206,7 @@ def main() -> int:
                 filename = (
                     f"day{day:02}/solution.go"
                     if lang == "golang"
-                    else f"day{day:02}{Path(entry_point).suffix}"
+                    else f"day{day:02}{'.hpp' if lang == 'cpp' else Path(entry_point).suffix}"
                 )
                 if not (year_dir / lang / "solutions" / filename).is_file():
                     continue

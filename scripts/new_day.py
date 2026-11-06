@@ -2,7 +2,14 @@
 
 from pathlib import Path
 
-LANGUAGES = {"rust": "rs", "python": "py", "zig": "zig", "elixir": "ex", "golang": "go"}
+LANGUAGES = {
+    "rust": "rs",
+    "python": "py",
+    "zig": "zig",
+    "elixir": "ex",
+    "golang": "go",
+    "cpp": "hpp",
+}
 
 
 def insert(text: str, marker: str, entry: str) -> str:
@@ -30,6 +37,10 @@ def create_day(root: Path, lang: str, year: int, day: int) -> None:
     if destination.exists() or destination.is_symlink():
         raise ValueError(f"Refusing to overwrite day {day:02}")
     registrations = {
+        "cpp": [
+            ("main.cpp", "// aoc:imports", f'#include "solutions/{name}.hpp"'),
+            ("main.cpp", "// aoc:solutions", f"{{{day}, {name}::solution}},"),
+        ],
         "rust": [
             ("main.rs", "// aoc:imports", f"use solutions::{name};"),
             (

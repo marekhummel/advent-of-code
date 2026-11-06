@@ -186,3 +186,33 @@ tasks:
       - mix format mix.exs "src/[0-9]*/elixir/**/*.{ex,exs}" "src/lib/elixir/**/*.{ex,exs}"
       - mix compile --force --all-warnings
       - mix dialyzer
+
+  # C++
+  build:cpp:
+    desc: Build C++ (YEAR, optional OPTIMIZE=fast)
+    requires: {vars: [*year, *optimize]}
+    label: 'build:cpp:{{.YEAR}}:{{.OPTIMIZE}}'
+    method: timestamp
+    sources:
+      - src/{{.YEAR}}/cpp/**/*
+      - src/lib/cpp/**/*
+      - Taskfile.yml
+    generates: ['build/cpp/{{.YEAR}}/{{.OPTIMIZE}}/main']
+    cmds:
+      - mkdir -p build/cpp/{{.YEAR}}/{{.OPTIMIZE}}
+      - >-
+        clang++ -std=c++23 -stdlib=libc++ -Isrc/lib/cpp -Wall -Wextra -Wpedantic -Werror
+        {{if eq .OPTIMIZE "debug"}}-O0 -g{{else}}-O3 -DNDEBUG{{end}}
+        src/{{.YEAR}}/cpp/main.cpp src/lib/cpp/runner.cpp
+        -o build/cpp/{{.YEAR}}/{{.OPTIMIZE}}/main
+  exec:cpp:
+    internal: true
+    cmds:
+      - task: build:cpp
+      - build/cpp/{{.YEAR}}/{{.OPTIMIZE}}/main {{.DAY}} {{.PART}} {{.MODE}}
+  check:cpp:
+    desc: Format and check C++ (optional YEAR)
+    requires: {vars: [*optional_year]}
+    cmds:
+      - clang-format -i src/{{.YEAR | default "[0-9]*"}}/cpp/*.cpp src/{{.YEAR | default "[0-9]*"}}/cpp/solutions/*.hpp src/lib/cpp/*.cpp src/lib/cpp/*.hpp scripts/templates/day_template.hpp
+      - clang-tidy src/{{.YEAR | default "[0-9]*"}}/cpp/main.cpp src/lib/cpp/runner.cpp -- -std=c++23 -stdlib=libc++ -Isrc/lib/cpp -Wall -Wextra -Wpedantic -Werror
