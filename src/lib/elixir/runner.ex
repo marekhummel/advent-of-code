@@ -23,7 +23,7 @@ defmodule AocLib.Runner do
   Parses DAY, PART and MODE (real or sample), then runs the selected case.
   Prints the answer to stdout. Invalid arguments exit with code 2; execution
   errors are raised and reported on stderr. Missing days, missing parts and
-  results :unsolved, :no_sample and :no_part_two are informational and exit
+  results :unsolved, :not_implemented, :no_sample and :no_part_two are informational and exit
   successfully.
   """
   @spec parse_and_run(t(), [String.t()]) :: :ok
@@ -56,10 +56,10 @@ defmodule AocLib.Runner do
 
     cond do
       solution == nil ->
-        IO.puts("No solution implemented for this day")
+        IO.puts(ProblemResult.format(:unsolved))
 
       not function_exported?(solution, solve, 2) ->
-        IO.puts("No solution implemented for this part")
+        IO.puts(ProblemResult.format(:not_implemented))
 
       true ->
         run_solution(runner, day, part, sample, solution, solve)
@@ -79,11 +79,11 @@ defmodule AocLib.Runner do
 
     result =
       case apply(solution, solve, [input, sample]) do
-        nil -> :unsolved
+        nil -> :not_implemented
         result -> result
       end
 
-    if is_atom(result) and result not in [:unsolved, :no_sample, :no_part_two],
+    if is_atom(result) and result not in [:unsolved, :not_implemented, :no_sample, :no_part_two],
       do: raise("Solution unavailable: #{result}")
 
     IO.puts(ProblemResult.format(result))

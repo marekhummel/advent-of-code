@@ -25,7 +25,14 @@ pub const AocRunner = struct {
         if (day < 1 or day > 25 or part < 1 or part > 2) usage();
         const sample = std.mem.eql(u8, args[3], "sample");
         if (!sample and !std.mem.eql(u8, args[3], "real")) usage();
-        const implementation = self.solutions.get(day) orelse return error.MissingSolution;
+        var buffer: [4096]u8 = undefined;
+        var stdout = std.Io.File.stdout().writer(process.io, &buffer);
+        const implementation = self.solutions.get(day) orelse {
+            const result: types.Result = .Unsolved;
+            try stdout.interface.print("{f}\n", .{result});
+            try stdout.interface.flush();
+            return;
+        };
         const prefix = if (sample) "sample" else "input";
         const filename = try std.fmt.allocPrint(allocator, "inputs/{d}/{s}{d:0>2}.txt", .{ self.year, prefix, day });
         var input = types.ProblemInput.read(process.io, allocator, filename) catch |err| switch (err) {
@@ -39,11 +46,8 @@ pub const AocRunner = struct {
         const result = try solve(&input, sample, allocator);
         switch (result) {
             .NoInput => return error.NoInput,
-            .Unsolved => return error.Unsolved,
             else => {},
         }
-        var buffer: [4096]u8 = undefined;
-        var stdout = std.Io.File.stdout().writer(process.io, &buffer);
         try stdout.interface.print("{f}\n", .{result});
         try stdout.interface.flush();
     }

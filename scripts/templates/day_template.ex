@@ -11,13 +11,13 @@ defmodule DayXX do
   def solve_part01(input, _is_sample) do
     _lines = ProblemInput.lines(input)
 
-    :unsolved
+    :not_implemented
   end
 
   @impl true
   def solve_part02(input, _is_sample) do
     _lines = ProblemInput.lines(input)
 
-    :unsolved
+    :not_implemented
   end
 end

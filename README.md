@@ -28,7 +28,9 @@ Python solution dependencies are listed in `requirements.txt`; `pyproject.toml`
 configures Ruff and mypy, whose versions are set in the Dockerfile.
 The `pulp[cbc]` extra supplies the CBC solver used by `COIN_CMD`.
 The Python build task installs the listed packages globally using pip; packages
-already at the required version are reused. The container provides isolation,
+already at the required version are reused. Explicit builds show pip output;
+`task --silent build:python` also quiets pip through Task's `CLI_SILENT`
+variable. Run this build task when Python dependencies change. The container provides isolation,
 so neither Poetry nor a Python virtual environment is needed.
 Python solutions use `python3.15`; helper scripts
 use Ubuntu's `python3`. Toolchains are installed globally, while the editor and
@@ -64,7 +66,7 @@ Edit tool versions in `.devcontainer/Dockerfile`, then select
 **Dev Containers: Rebuild Container Without Cache**. This also refreshes Ubuntu
 packages and the stable Rust toolchain.
 
-For Python packages, edit `requirements.txt` and run `task build LANG=python`.
+For Python packages, edit `requirements.txt` and run `task build:python`.
 Runs and verification also execute this build step automatically.
 
 Project dependencies remain separate: Cargo builds fetch `Cargo.lock`
@@ -74,11 +76,11 @@ Update them explicitly when needed:
 ```sh
 cargo update
 # Update Zig dependency URLs/hashes in build.zig.zon, then:
-task build LANG=zig YEAR=2024
+task build:zig YEAR=2024
 ```
 
 Elixir checks use the development dependency Dialyxir. Update it with
-`mix deps.update dialyxir`; `task check LANG=elixir` fetches dependencies as needed.
+`mix deps.update dialyxir`; `task check:elixir` fetches dependencies as needed.
 Go currently has no external packages. Updating compiler versions can
 require source changes; keep `go.mod`, `build.zig.zon` and Python's version in
 `pyproject.toml` consistent with the selected toolchains.
@@ -97,18 +99,33 @@ PYTHONPATH=src python3.15 src/2023/python/main.py 1 1 sample
 ```sh
 task --list
 task list
-task build LANG=zig YEAR=2024
-task run LANG=elixir YEAR=2025
-task run LANG=python YEAR=2023 DAY=1 PART=1 MODE=sample
-task verify LANG=zig YEAR=2024 DAY=1 PART=1 MODE=real # compare with your accepted answer
-task check LANG=python                   # formats, lints and checks types
-task check LANG=golang YEAR=2015          # formats, vets and tests
-task newday LANG=python YEAR=2025 DAY=11
+task build:zig YEAR=2024
+task run:elixir YEAR=2025
+task run:python YEAR=2023 DAY=1 PART=1 MODE=sample
+task verify:zig YEAR=2024 DAY=1      # verify both parts, sample and real
+task check:python                   # formats, lints and checks types
+task check:golang YEAR=2015          # formats, vets and tests
+task newday:python YEAR=2025 DAY=11
 task input YEAR=2025 DAY=3                # omit DAY for all missing days
 ```
 
-Languages: `rust`, `python`, `golang`, `zig`, `elixir`. Task builds before calling
-`scripts/run.sh`. Omit `DAY` to try days 1-25 for 2015-2024 or days 1-12 from
+Build, run, check and new-day commands take the language in the task name.
+`verify:LANGUAGE` checks one language; `verify` checks all languages. `list` always
+shows all year/language directories without filters.
+
+Task validates arguments before running commands. `task --list` shows which
+arguments each task requires; Python's dependency-only build does not need a year.
+
+| Argument | Allowed values |
+| --- | --- |
+| `YEAR` | Existing four-digit year folders under `src/` |
+| `DAY` | 1-25 through 2024; 1-12 from 2025; leading zeros are accepted |
+| `PART` | `1`, `2`; omitted means both |
+| `MODE` | `real`, `sample`, `both` (default) |
+| `OPTIMIZE` | `debug`, `fast` (default); verification always uses `fast` |
+
+Languages: `rust`, `python`, `golang`, `zig`, `elixir`. Each case uses the
+language’s build-and-run command, which reuses cached compilation work. Omit `DAY` to try days 1-25 for 2015-2024 or days 1-12 from
 2025 onwards; omit `PART` for both parts.
 `MODE` accepts `real`, `sample` or `both` and defaults to `both`. Both mode runs
 sample input followed by real input for each day/part. Answers go directly to
@@ -116,22 +133,44 @@ stdout, and labels and errors go to stderr. Batch runs
 continue after failures and exit nonzero if any case fails.
 Ctrl+C stops the batch and the active runner, including its child processes.
 Elixir builds compile the shared library, the year's solutions and `main.ex`
-into `build/elixir/YEAR/`. Unchanged builds are skipped. Runs load the compiled
-modules, while each case still starts its own Erlang VM.
-Labels include elapsed wall time, including process startup, with five decimal
+through Mix into `build/elixir/YEAR/`. Each case checks for source changes and
+starts its own Erlang VM. Task passes the year as an argument to `mix aoc`;
+editor checks default to 2025. Use `mix aoc YEAR` to build or
+`mix aoc YEAR DAY PART MODE` to build and run.
+Labels include elapsed wall time, including build checks, Task dispatch and process startup, with five decimal
 places: `D01 P1 SAMP (  0.12345 secs): result`.
 
-Verification runs one day/part with `MODE=real`, `MODE=sample` or the default
-`MODE=both`, comparing each answer separately:
+Verification always checks complete days: both parts, each with sample and real
+input, comparing each answer separately. Use `verify:LANGUAGE` for one language
+or `verify` for all languages. Omit `YEAR` for all matching years, and
+omit `DAY` for every day with an existing solution file (1-25 through 2024,
+1-12 from 2025). Go uses `solutions/dayDD/solution.go`; other languages use
+`solutions/dayDD.EXT`. Days without files are skipped, including when `DAY` is
+specified. Only projects with a language entry point are selected. Every
+verification case builds and runs in release mode (`OPTIMIZE=fast`), regardless
+of any `OPTIMIZE` argument supplied to Task. Compiler caches reuse unchanged work.
 
 ```sh
-task verify LANG=python YEAR=2023 DAY=1 PART=1 MODE=sample
-task verify LANG=rust YEAR=2022 DAY=1 PART=1 MODE=real
+task verify:python YEAR=2023 DAY=1
+task verify YEAR=2024 DAY=1               # every language for day 1 of 2024
+task verify:rust DAY=1               # day 1 in every Rust year
+task verify YEAR=2025                     # every day and language in 2025
+task verify                               # every project and day
+task --verbose verify YEAR=2025           # include passing and skipped results
 ```
 
+`PART` and `MODE` are not verification filters. Verification continues after
+case failures and returns nonzero if any case fails.
+Day 25 part 2 is skipped for both sample and real input.
+Verification normally prints only failures, unknown answers and errors.
+Use `task --verbose verify` (or `scripts/verify.py --verbose`) to include passes
+and skipped cases. This controls output only; exit statuses are unchanged.
+
 Samples use `inputs/YEAR/sample_solutions.json`, keyed by two-digit day and part.
-Answers are strings; `null` marks an unavailable case and omitted entries are
-unknown. Maintain this file alongside the sample inputs:
+Answers are strings; explicit `null` expects the runner to return
+`<No Sample Defined>` and passes when it does. An omitted day or part is unknown,
+as is a missing accepted answer on the remote puzzle page.
+Maintain this file alongside the sample inputs:
 
 ```json
 {
@@ -144,7 +183,15 @@ page using `scripts/aoc_cookie.txt`. Accepted answers are cached by session unde
 `build/answers/`; deleting that directory causes them to be fetched again.
 Unsolved parts are not cached. No answers are submitted to the website.
 
-The verifier reports `PASS`, `MISMATCH` or `UNKNOWN` (no expected/accepted answer).
+The verifier reports aligned `PASSED`, `FAILED` or `UNKNOWN` statuses (no
+expected/accepted answer), with padded language and input-mode columns.
+`<Not Implemented>` and `<Unsolved>` results are reported as `SKIPPED`, without
+fetching an expected answer, and do not make verification fail.
+Labels use `<language> on (year day part) with sample/real`. Passes and unknown
+cases print the result; mismatches print expected and actual answers, including
+`<No Sample Defined>` results. Verification calls `task --silent case:LANGUAGE`
+in release mode. It gets only the answer on stdout;
+runner errors remain visible on stderr.
 Mismatches, unknown answers, runner failures and authentication/network errors
 produce a nonzero exit. Comparison preserves answer whitespace except for the
 single newline appended by the runner. Multiline sample answers use JSON `\n`
@@ -157,39 +204,43 @@ for execution/verification failures and `2` for invalid arguments; crashes may
 use other nonzero codes.
 
 Returned `NoSample` and `NoPartTwo` results print `<No Sample Defined>` and
-`<No Part Two>` and exit successfully. Missing input and unsolved cases remain
-errors. Python exposes `NO_SAMPLE` and `NO_PART_TWO` from `lib.python`; Go exposes
+`<No Part Two>` and exit successfully. An unregistered day prints `<Unsolved>`;
+a missing part or a part returning no result prints `<Not Implemented>`.
+Explicit `Unsolved` results also print `<Unsolved>`. These are informational
+results with exit code `0` in every language. Missing input and execution errors
+remain failures. Python exposes `NO_SAMPLE`, `NO_PART_TWO`, `NOT_IMPLEMENTED`
+and `UNSOLVED` from `lib.python`; Go exposes
 `lib.NoSample` and `lib.NoPartTwo` (return them with a `nil` error). Elixir uses
-`:no_sample` and `:no_part_two`.
-Go also treats missing days, missing part functions and returned `lib.Unsolved`
-values as informational results with exit code `0`.
-Elixir likewise treats missing days, missing parts and `:unsolved` results as
-informational results with exit code `0`.
+`:no_sample`, `:no_part_two`, `:not_implemented` and `:unsolved`.
+Go additionally exposes `lib.NotImplemented` and `lib.Unsolved`.
 
-Scripts use `LANG YEAR DAY PART MODE` order where applicable; downloads need only
-`YEAR DAY`. Direct calls expect an existing build:
+Language run commands live in Taskfile alongside their build commands.
+`run.sh` handles batches, timing and labels; `verify.py` handles reference answers
+and comparison. Both helpers use named options and are called through Task.
+They invoke `case:LANGUAGE` for each configuration; the native tools rebuild
+when needed. Python runs directly; install its dependencies with
+`task build:python` before the first run or after changing `requirements.txt`.
 
 ```sh
-task build LANG=zig YEAR=2024
-bash scripts/run.sh zig 2024                         # full year, sample and real input
-bash scripts/run.sh zig 2024 2 sample                # both parts of sample day 2
-python3 scripts/verify.py zig 2024 2 1 sample          # verify one case
+task run:zig YEAR=2024 DAY=2 MODE=sample
+task --silent case:zig YEAR=2024 DAY=2 PART=1 MODE=sample
 ```
 
-Empty positional arguments allow a part-only filter, e.g.
-`bash scripts/run.sh zig 2024 "" 1 sample`. Task sets the Python import and
-bytecode cache paths; direct Python runs need `PYTHONPATH=src` and may set
-`PYTHONPYCACHEPREFIX=build/python/pycache` to keep bytecode under `build/`.
+`case:LANGUAGE` requires a day, part and a single mode (`sample` or `real`).
+It uses `cargo run`, `go run`, `zig build YEAR_run`, or `mix aoc YEAR` for compiled
+languages; Python uses `python3.15` directly. Task sets the Python import
+and bytecode cache paths for all calls.
 
-`check` formats files and accepts an optional `YEAR`.
-For Elixir it also prints compiler warnings and runs Dialyzer type analysis on
+`check:LANGUAGE` formats and checks files; Rust, Python, Go and Zig accept an
+optional `YEAR`. `check:elixir` checks the whole project, prints compiler warnings
+and runs Dialyzer type analysis on
 the sources selected in `mix.exs` (currently 2025 and the shared library).
 The first Dialyzer run builds an analysis cache under `build/elixir/plts/` and
 can take several minutes; later runs reuse it. ElixirLS-only hints such as
 suggested `@spec` annotations are editor features and are not printed by Dialyzer.
 
-Native builds default to `OPTIMIZE=fast`. The option works with `build`, `run`
-and `verify`, with or without `DAY`:
+Native builds default to `OPTIMIZE=fast`. The option works with `build:LANGUAGE` and
+`run:LANGUAGE`; verification always uses release mode:
 
 | Language | `fast` (default) | `debug` |
 | --- | --- | --- |
@@ -197,33 +248,27 @@ and `verify`, with or without `DAY`:
 | Rust | Cargo release profile | Cargo dev profile, binary under `build/rust/debug/` |
 | Go | Normal optimised build | Optimisations and inlining disabled |
 
-Debug builds can reduce compilation time but run slower. Zig additionally
-supports `safe` and `small`; these use the normal optimised build for Rust and
-Go. Python and Elixir ignore `OPTIMIZE`.
+Debug builds can reduce compilation time but run slower. Python and Elixir
+ignore `OPTIMIZE`.
 
 ```sh
-task build LANG=zig YEAR=2024 OPTIMIZE=debug
-task run LANG=zig YEAR=2024 DAY=1 OPTIMIZE=debug
-task run LANG=rust YEAR=2023 OPTIMIZE=debug
-task build LANG=golang YEAR=2024 OPTIMIZE=debug
+task build:zig YEAR=2024 OPTIMIZE=debug
+task run:zig YEAR=2024 DAY=1 OPTIMIZE=debug
+task run:rust YEAR=2023 OPTIMIZE=debug
+task build:golang YEAR=2024 OPTIMIZE=debug
 ```
 
-For direct script calls, select a Rust debug binary with `--optimize debug`:
-`bash scripts/run.sh rust 2023 1 1 real --optimize debug`. The same flag is
-available in `scripts/verify.py`.
+`OPTIMIZE=debug` selects the Cargo development profile in `case:LANGUAGE`.
 
-For Zig, `DAY` also filters compilation: only that day's solution functions are
-included. `run` and `verify` pass the day to the build automatically.
+Zig always builds the entire year to `build/zig/out/bin/mainYEAR`. `DAY` only
+filters which cases to run or verify. The build-and-run commands check for
+changes on every case; compiler caches reuse unchanged work.
 
 ```sh
-task build LANG=zig YEAR=2024 DAY=22 # main2024-day22
-task run LANG=zig YEAR=2024 DAY=22 PART=2 MODE=real
-task build LANG=zig YEAR=2024        # main2024, all registered days
+task build:zig YEAR=2024
+task run:zig YEAR=2024 DAY=22 PART=2 MODE=real
+task verify:zig YEAR=2024 DAY=22
 ```
-
-Day-specific binaries live alongside the full-year binary under
-`build/zig/out/bin/`. Direct `run.sh` calls prefer the matching day binary when
-present and otherwise use the full-year binary.
 
 Downloads read the session token from ignored `scripts/aoc_cookie.txt`. Put the
 token alone in that file, or run `task cookie` on the host after logging in
@@ -241,7 +286,7 @@ Inputs are named
 | Python | `requirements.txt`, `pyproject.toml` | `build/python/`: Ruff/mypy caches and bytecode |
 | Go | `go.mod` | `build/golang/`: binaries and compilation cache; temporary builds use system temp |
 | Zig | `build.zig`, `build.zig.zon` | `build/zig/`: binaries and compiler caches |
-| Elixir | `mix.exs`, `mix.lock` (editor/check project) | Compiled BEAM modules under `build/elixir/YEAR/`; Mix builds, dependencies and analysis caches under `build/elixir/`; editor cache under `.elixir_ls/` |
+| Elixir | `mix.exs`, `mix.lock` | Mix builds under `build/elixir/YEAR/`; dependencies and analysis caches under `build/elixir/`; editor cache under `.elixir_ls/` |
 
 `build/` is ignored. Cargo also maintains a dependency cache in the container
 user's home directory. Task keeps Zig packages and compiler caches under
@@ -252,7 +297,7 @@ variables. VS Code's editing defaults are configured in `.devcontainer/devcontai
 
 Create `inputs/YEAR/` and `src/YEAR/LANGUAGE/` manually, using an existing year's
 entry point as a reference. Set its runner's year and keep the `aoc:*` registration
-markers so `task newday` can insert imports and solutions from `scripts/templates/`.
+markers so `task newday:LANGUAGE` can insert imports and solutions from `scripts/templates/`.
 All languages register days by number, so days can be added in any order
 without placeholder files or padding entries.
 In Elixir maps, place `# aoc:solutions` before the first entry so inserted
@@ -263,8 +308,8 @@ entries retain a following element after formatting.
 | Rust | `main.rs` with a day-number `HashMap`, `solutions/mod.rs`; add a `[[bin]]` in root `Cargo.toml`: `name = "mainYEAR"`, `path = "src/YEAR/rust/main.rs"` |
 | Python | `main.py`, `__init__.py`, `solutions/__init__.py`; no root registration |
 | Go | `main.go` with a `lib.Run(YEAR, map[int]lib.Solution{...})` registry; day packages in `solutions/dayDD/`; no root registration |
-| Zig | `main.zig` with day/module pairs filtered at compile time using `build_options.day`; add `add_binary(b, "YEAR");` in root `build.zig` |
-| Elixir | `main.ex` with a `Main.main/1` entry point and day-number map; shared modules and days are compiled by the build task. Set the year path in root `mix.exs` to the year being edited; years share module names and must be analysed separately. |
+| Zig | `main.zig` with day/solution pairs using `aoc_lib.solution.makeSolution(dayDD)`; add `add_binary(b, "YEAR");` in root `build.zig` |
+| Elixir | `main.ex` with a `Main.main/1` entry point and day-number map; Mix compiles shared modules and days. Task passes the year to `mix aoc`; adjust the default year in root `mix.exs` for editor analysis of a different year. Years share module names and must be analysed separately. |
 
 Put the year's README in `src/YEAR/README.md`. Link screenshots with
 `../../progress/YEAR/overview.png` and `../../progress/YEAR/conclusion.png`.

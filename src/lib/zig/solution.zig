@@ -8,7 +8,11 @@ pub const Solution = struct {
 
 pub fn makeSolution(comptime day: anytype) Solution {
     return .{
-        .solvePart01 = day.solvePart01,
-        .solvePart02 = day.solvePart02,
+        .solvePart01 = if (@hasDecl(day, "solvePart01")) day.solvePart01 else notImplemented,
+        .solvePart02 = if (@hasDecl(day, "solvePart02")) day.solvePart02 else notImplemented,
     };
+}
+
+fn notImplemented(_: *types.ProblemInput, _: bool, _: std.mem.Allocator) anyerror!types.Result {
+    return .NotImplemented;
 }

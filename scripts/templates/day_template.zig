@@ -9,7 +9,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     _ = input;
     _ = is_sample;
 
-    return Result.Unsolved;
+    return Result.NotImplemented;
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
@@ -17,5 +17,5 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     _ = is_sample;
     _ = allocator;
 
-    return Result.Unsolved;
+    return Result.NotImplemented;
 }

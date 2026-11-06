@@ -4,7 +4,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from lib.python.solution import ProblemInput, Solution
+from lib.python.solution import NOT_IMPLEMENTED, UNSOLVED, ProblemInput, Solution
 
 
 class Runner:
@@ -25,8 +25,9 @@ class Runner:
         """
         Parse DAY, PART and MODE (real or sample), then print one answer.
 
-        Invalid arguments exit with code 2. Missing solutions or inputs exit
-        with code 1 and a message. Unexpected errors retain their traceback.
+        Invalid arguments exit with code 2. Missing input exits with code 1.
+        Missing days and parts print informational results and exit successfully.
+        Unexpected errors retain their traceback.
         """
         parser = argparse.ArgumentParser(description=__doc__)
         parser.add_argument("day", type=int, choices=range(1, 26))
@@ -35,7 +36,13 @@ class Runner:
         args = parser.parse_args()
         sample = args.mode == "sample"
         if args.day not in self.solutions:
-            sys.exit("No solution implemented for this day")
+            print(UNSOLVED)
+            return
+        solution = self.solutions[args.day]
+        solve = solution.solve_part01 if args.part == 1 else solution.solve_part02
+        if solve in (Solution.solve_part01, Solution.solve_part02):
+            print(NOT_IMPLEMENTED)
+            return
         prefix = "sample" if sample else "input"
         filename = Path(f"inputs/{self.year}/{prefix}{args.day:02}.txt")
         if not filename.exists():
@@ -45,12 +52,8 @@ class Runner:
         except FileNotFoundError:
             sys.exit(f"Missing input: {filename}")
         data = ProblemInput([line.rstrip("\r") for line in content.split("\n")])
-        solution = self.solutions[args.day]
-        solve = solution.solve_part01 if args.part == 1 else solution.solve_part02
         try:
             result = solve(data, sample)
         except NotImplementedError:
-            sys.exit("No solution implemented for this part")
-        if result is None:
-            sys.exit("No solution implemented for this part")
-        print(result)
+            result = NOT_IMPLEMENTED
+        print(NOT_IMPLEMENTED if result is None else result)

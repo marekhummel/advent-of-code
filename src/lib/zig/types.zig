@@ -7,6 +7,7 @@ pub const Result = union(enum) {
     NoInput,
     NoSample,
     Unsolved,
+    NotImplemented,
     NoPartTwo,
     USize: usize,
     Int8: i8,
@@ -25,7 +26,8 @@ pub const Result = union(enum) {
         return try switch (self) {
             .NoInput => writer.print("<No Input Available>", .{}),
             .NoSample => writer.print("<No Sample Defined>", .{}),
-            .Unsolved => writer.print("<No Solution Implemented>", .{}),
+            .Unsolved => writer.print("<Unsolved>", .{}),
+            .NotImplemented => writer.print("<Not Implemented>", .{}),
             .NoPartTwo => writer.print("<No Part Two>", .{}),
             .USize => writer.print("{}", .{self.USize}),
             .Int8 => writer.print("{}", .{self.Int8}),
