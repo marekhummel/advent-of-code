@@ -193,12 +193,12 @@ def main() -> int:
         if args.year is not None and year != args.year:
             continue
         for lang, entry_point in entry_points.items():
-            print(year, lang)
             if args.lang is not None and lang != args.lang:
                 continue
             if not (year_dir / lang / entry_point).is_file():
                 continue
             matched = True
+            group_failed = 0
             days = (
                 [args.day] if args.day is not None else list(range(1, 26 if year < 2025 else 13))
             )
@@ -215,7 +215,7 @@ def main() -> int:
                         continue
                     for mode in ("sample", "real"):
                         try:
-                            failed |= verify_case(
+                            group_failed += verify_case(
                                 lang,
                                 year,
                                 day,
@@ -229,10 +229,12 @@ def main() -> int:
                                 f"{'FAILED':7}:  {label}: {error}",
                                 file=sys.stderr,
                             )
-                            failed = 1
+                            group_failed += 1
+            print(f"VERIFIED: {year} {lang:<10}:  {group_failed} failed")
+            failed += group_failed
     if not matched:
         parser.error("No matching year/language entry points found")
-    return failed
+    return int(failed > 0)
 
 
 if __name__ == "__main__":
