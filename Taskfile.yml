@@ -124,7 +124,9 @@ tasks:
     cmds: ['sudo python3.15 -m pip install {{if .CLI_SILENT}}--quiet {{end}}--break-system-packages --root-user-action ignore -r requirements.txt | sed "/^Requirement already satisfied/d"']
   exec:python:
     internal: true
-    cmds: ['python3.15 src/{{.YEAR}}/python/main.py {{.DAY}} {{.PART}} {{.MODE}}']
+    cmds:
+      - task: build:python
+      - python3.15 src/{{.YEAR}}/python/main.py {{.DAY}} {{.PART}} {{.MODE}}
   check:python:
     desc: Format, lint and type-check Python (optional YEAR)
     requires: {vars: [*optional_year]}
