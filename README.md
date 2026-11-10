@@ -3,6 +3,28 @@
 My [Advent of Code](https://adventofcode.com/) solutions in Rust, Python, Go,
 Zig, Elixir and C++, with shared libraries and tasks for running and verifying answers.
 
+<img src="./progress/total.png" alt="Total Advent of Code progress" width="1037">
+
+| Year | Rust | Zig | Elixir | C++ | Python | Golang |
+| --- | :---: | :---: | :---: | :---: | :---: | :---: |
+| [2015](src/2015/README.md) | ✓ | — | — | — | — | 07 |
+| [2016](src/2016/README.md) | ✓ | — | — | — | — | 10 |
+| [2017](src/2017/README.md) | ✓ | — | — | — | — | — |
+| [2018](src/2018/README.md) | ✓ | — | — | — | — | — |
+| [2019](src/2019/README.md) | ✓ | — | — | — | — | — |
+| [2020](src/2020/README.md) | ✓ | — | — | — | — | — |
+| [2021](src/2021/README.md) | ✓ | — | — | — | — | — |
+| [2022](src/2022/README.md) | ✓ | — | — | — | — | — |
+| [2023](src/2023/README.md) | ✓ | — | — | — | 01-06, 12, 24 | — |
+| [2024](src/2024/README.md) | 06 | ✓ | — | — | — | 24 |
+| [2025](src/2025/README.md) | — | — | ✓ | — |10 | — |
+| [2026](src/2026/README.md) | — | — | — | — | — | — |
+
+See [progress/](progress/) for yearly screenshots and the linked year READMEs
+for individual summaries.
+
+## Repo Overview
+
 | Folder / files | Language | Purpose |
 | --- | --- | --- |
 | `src/YEAR/LANGUAGE/` | All | Yearly solutions and entry points |
@@ -11,7 +33,6 @@ Zig, Elixir and C++, with shared libraries and tasks for running and verifying a
 | `progress/` | All | Overall progress image and yearly screenshots |
 | `Taskfile.yml`, `scripts/` | All | Commands, helper scripts and day templates |
 | `.devcontainer/` | All | Tool installation and VS Code settings |
-| `build/` | All | Generated builds, caches and downloaded answer references |
 | `Cargo.toml`, `Cargo.lock`, `.cargo/`, `.rustfmt.toml` | Rust | Packages, dependencies, compiler and formatter configuration |
 | `requirements.txt`, `pyproject.toml` | Python | Dependencies, linting, formatting and type-check configuration |
 | `go.mod` | Go | Module and language version |
@@ -19,30 +40,6 @@ Zig, Elixir and C++, with shared libraries and tasks for running and verifying a
 | `build.zig`, `build.zig.zon` | Zig | Build steps and dependencies |
 | `mix.exs`, `mix.lock`, `.elixir_ls/`  | Elixir | Mix project, build steps and dependencies, local cache |
 | `.gitignore`| All | Git exclusions (build, inputs and session token) |
-
-## Progress
-
-<img src="./progress/total.png" alt="Total Advent of Code progress" width="1037">
-
-
-| Year | Rust | Python | Golang | Zig | Elixir | C++ |
-| --- | :---: | :---: | :---: | :---: | :---: | :---: |
-| [2015](src/2015/README.md) | ✓ | — | 07 | — | — | — |
-| [2016](src/2016/README.md) | ✓ | — | 10 | — | — | — |
-| [2017](src/2017/README.md) | ✓ | — | — | — | — | — |
-| [2018](src/2018/README.md) | ✓ | — | — | — | — | — |
-| [2019](src/2019/README.md) | ✓ | — | — | — | — | — |
-| [2020](src/2020/README.md) | ✓ | — | — | — | — | — |
-| [2021](src/2021/README.md) | ✓ | — | — | — | — | — |
-| [2022](src/2022/README.md) | ✓ | — | — | — | — | — |
-| [2023](src/2023/README.md) | ✓ | 01-06, 12, 24 | — | — | — | — |
-| [2024](src/2024/README.md) | 06 | — | 24 | ✓ | — | — |
-| [2025](src/2025/README.md) | — | 10 | — | — | ✓ | — |
-| [2026](src/2026/README.md) | — | — | — | — | — | — |
-
-
-See [progress/](progress/) for yearly screenshots and the linked year READMEs
-for individual summaries.
 
 ## Usage
 
