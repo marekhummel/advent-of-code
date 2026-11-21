@@ -178,6 +178,7 @@ def main() -> int:
         "elixir": "main.ex",
         "cpp": "main.cpp",
         "lua": "main.lua",
+        "dart": "main.dart",
     }
     parser.add_argument("--lang", choices=entry_points)
     parser.add_argument("--year", type=int)

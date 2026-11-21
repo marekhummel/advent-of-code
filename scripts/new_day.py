@@ -10,6 +10,7 @@ LANGUAGES = {
     "golang": "go",
     "cpp": "hpp",
     "lua": "lua",
+    "dart": "dart",
 }
 
 
@@ -38,6 +39,10 @@ def create_day(root: Path, lang: str, year: int, day: int) -> None:
     if destination.exists() or destination.is_symlink():
         raise ValueError(f"Refusing to overwrite day {day:02}")
     registrations = {
+        "dart": [
+            ("main.dart", "// aoc:imports", f"import 'solutions/{name}.dart' as {name};"),
+            ("main.dart", "// aoc:solutions", f"{day}: {name}.solution,"),
+        ],
         "lua": [
             ("main.lua", "-- aoc:imports", f'local {name} = require("{year}.lua.solutions.{name}")'),
             ("main.lua", "-- aoc:solutions", f"[{day}] = {name},"),

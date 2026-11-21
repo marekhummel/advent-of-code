@@ -87,6 +87,16 @@ RUN case "$TARGETARCH" in amd64) luals_arch=x64 ;; arm64) luals_arch=arm64 ;; \
     && rm /tmp/luals.tar.gz
 ENV PATH="/usr/local/lib/lua-language-server/bin:${PATH}"
 
+# Dart: stable SDK, including the compiler, formatter, analyser and language server.
+RUN curl -fsSL https://dl-ssl.google.com/linux/linux_signing_key.pub \
+        -o /usr/share/keyrings/dart.asc \
+    && echo "deb [signed-by=/usr/share/keyrings/dart.asc arch=${TARGETARCH}] https://storage.googleapis.com/download.dartlang.org/linux/debian stable main" \
+        > /etc/apt/sources.list.d/dart.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends dart \
+    && rm -rf /var/lib/apt/lists/*
+ENV PATH="/usr/lib/dart/bin:${PATH}"
+
 # Python interpreter and development tools
 RUN add-apt-repository -y ppa:deadsnakes/ppa \
     && apt-get update \

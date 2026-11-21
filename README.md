@@ -1,24 +1,24 @@
 # Advent of Code
 
 My [Advent of Code](https://adventofcode.com/) solutions in Rust, Python, Go,
-Zig, Elixir, C++ and Lua, with shared libraries and tasks for running and verifying answers.
+Zig, Elixir, C++, Lua and Dart, with shared libraries and tasks for running and verifying answers.
 
 <img src="./progress/total.png" alt="Total Advent of Code progress" width="1037">
 
-| Year | Rust | Zig | Elixir | C++ | Python | Golang | Lua |
-| --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| [2015](src/2015/README.md) | ✓ | — | — | — | — | 07 | — |
-| [2016](src/2016/README.md) | ✓ | — | — | — | — | 10 | — |
-| [2017](src/2017/README.md) | ✓ | — | — | — | — | — | — |
-| [2018](src/2018/README.md) | ✓ | — | — | — | — | — | — |
-| [2019](src/2019/README.md) | ✓ | — | — | — | — | — | — |
-| [2020](src/2020/README.md) | ✓ | — | — | — | — | — | — |
-| [2021](src/2021/README.md) | ✓ | — | — | — | — | — | — |
-| [2022](src/2022/README.md) | ✓ | — | — | — | — | — | — |
-| [2023](src/2023/README.md) | ✓ | — | — | — | 01-06, 12, 24 | — | — |
-| [2024](src/2024/README.md) | 06 | ✓ | — | — | — | 24 | — |
-| [2025](src/2025/README.md) | — | — | ✓ | — |10 | — | — |
-| [2026](src/2026/README.md) | — | — | — | — | — | — | — |
+| Year | Rust | Zig | Elixir | C++ | Python | Golang | Lua | Dart |
+| --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| [2015](src/2015/README.md) | ✓ | — | — | — | — | 07 | — | — |
+| [2016](src/2016/README.md) | ✓ | — | — | — | — | 10 | — | — |
+| [2017](src/2017/README.md) | ✓ | — | — | — | — | — | — | — |
+| [2018](src/2018/README.md) | ✓ | — | — | — | — | — | — | — |
+| [2019](src/2019/README.md) | ✓ | — | — | — | — | — | — | — |
+| [2020](src/2020/README.md) | ✓ | — | — | — | — | — | — | — |
+| [2021](src/2021/README.md) | ✓ | — | — | — | — | — | — | — |
+| [2022](src/2022/README.md) | ✓ | — | — | — | — | — | — | — |
+| [2023](src/2023/README.md) | ✓ | — | — | — | 01-06, 12, 24 | — | — | — |
+| [2024](src/2024/README.md) | 06 | ✓ | — | — | — | 24 | — | — |
+| [2025](src/2025/README.md) | — | — | ✓ | — |10 | — | — | — |
+| [2026](src/2026/README.md) | — | — | — | — | — | — | — | — |
 
 See [progress/](progress/) for yearly screenshots and the linked year READMEs
 for individual summaries.
@@ -40,6 +40,7 @@ for individual summaries.
 | `build.zig`, `build.zig.zon` | Zig | Build steps and dependencies |
 | `mix.exs`, `mix.lock`, `.elixir_ls/`  | Elixir | Mix project, build steps and dependencies, local cache |
 | `.stylua.toml`, `.luarc.json` | Lua | Formatting and language-server settings; shared runner in `src/lib/lua/` |
+| `analysis_options.yaml` | Dart | Static analysis settings; Taskfile builds into `build/dart/` |
 | `.gitignore`| All | Git exclusions (build, inputs and session token) |
 
 ## Usage
@@ -66,6 +67,7 @@ release (`fast`) or debug build. Verification accepts year and day filters;
 
 The devcontainer installs common shell, Git, download and C build tools, Task,
 Rust/Cargo, Go, Zig, Elixir/Erlang/Mix, Python 3.15, Lua 5.4 with StyLua, Luacheck and LuaLS,
+the stable Dart SDK,
 and Clang/LLVM 23 with libc++
 for C++23, together with formatters, linters, type checkers and editor extensions. The host needs Docker, VS Code
 and its Dev Containers extension.
@@ -76,9 +78,13 @@ and its Dev Containers extension.
 | `task check:<language>` | Format, lint and check source code |
 | `task newday:<language>` | Create a day from its template and register it |
 
-Languages are named `rust`, `python`, `golang`, `zig`, `elixir`, `cpp` and `lua` in task names.
+Languages are named `rust`, `python`, `golang`, `zig`, `elixir`, `cpp`, `lua` and `dart` in task names.
 
 Lua tools are installed independently of VS Code. The editor and `task check:lua`
 use the same LuaLS executable and `.luarc.json` settings. LuaLS checks the whole
 Lua workspace; `YEAR` filters formatting and linting. CLI logs and generated
 definitions are stored in `build/lua/luals/`.
+
+Dart's SDK includes its formatter, analyser and language server; no extra packages
+are needed. `task check:dart` formats and analyses the code using the same SDK as
+VS Code. Release builds are native executables; debug builds run on the Dart VM.

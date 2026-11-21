@@ -135,8 +135,8 @@ tasks:
         # This is also evaluated before the YEAR validator runs.
         sh: 'printf "%s " src/{{if .YEAR}}{{.YEAR | shellQuote}}{{else}}[0-9]*{{end}}/python'
     cmds:
-      - ruff format src/{{.YEAR | default "[0-9]*"}}/python src/lib/python scripts/*.py scripts/templates/*.py
-      - ruff check src/{{.YEAR | default "[0-9]*"}}/python src/lib/python scripts/*.py scripts/templates/*.py
+      - ruff format src/{{.YEAR | default "[0-9]*"}}/python src/lib/python scripts/*.py
+      - ruff check src/{{.YEAR | default "[0-9]*"}}/python src/lib/python scripts/*.py
       - for: {var: DIRS}
         cmd: 'MYPYPATH={{.ITEM | shellQuote}} mypy src/lib/python {{.ITEM}}'
 
@@ -216,7 +216,7 @@ tasks:
     desc: Format and check C++ (optional YEAR)
     requires: {vars: [*optional_year]}
     cmds:
-      - clang-format -i src/{{.YEAR | default "[0-9]*"}}/cpp/*.cpp src/{{.YEAR | default "[0-9]*"}}/cpp/solutions/*.hpp src/lib/cpp/*.cpp src/lib/cpp/*.hpp scripts/templates/day_template.hpp
+      - clang-format -i src/{{.YEAR | default "[0-9]*"}}/cpp/*.cpp src/{{.YEAR | default "[0-9]*"}}/cpp/solutions/*.hpp src/lib/cpp/*.cpp src/lib/cpp/*.hpp
       - clang-tidy src/{{.YEAR | default "[0-9]*"}}/cpp/main.cpp src/lib/cpp/runner.cpp -- -std=c++23 -stdlib=libc++ -Isrc/lib/cpp -Wall -Wextra -Wpedantic -Werror
 
   # Lua
@@ -231,9 +231,39 @@ tasks:
     desc: Format/lint Lua (optional YEAR) and type-check the Lua workspace
     requires: {vars: [*optional_year]}
     cmds:
-      - stylua src/{{.YEAR | default "[0-9]*"}}/lua src/lib/lua scripts/templates/day_template.lua
-      - luacheck --std lua54 --max-line-length 100 src/{{.YEAR | default "[0-9]*"}}/lua src/lib/lua scripts/templates/day_template.lua
+      - stylua src/{{.YEAR | default "[0-9]*"}}/lua src/lib/lua
+      - luacheck --std lua54 --max-line-length 100 src/{{.YEAR | default "[0-9]*"}}/lua src/lib/lua
       - mkdir -p build/lua/luals
       - >-
         lua-language-server --check=. --configpath=.luarc.json --checklevel=Warning
         --logpath=build/lua/luals/log --metapath=build/lua/luals/meta
+
+  # Dart
+  build:dart:
+    desc: Build Dart (YEAR, optional OPTIMIZE=fast)
+    requires: {vars: [*year, *optimize]}
+    label: 'build:dart:{{.YEAR}}:{{.OPTIMIZE}}'
+    method: timestamp
+    sources:
+      - src/{{.YEAR}}/dart/**/*.dart
+      - src/lib/dart/**/*.dart
+      - Taskfile.yml
+    generates: ['build/dart/{{.YEAR}}/{{.OPTIMIZE}}/main{{if eq .OPTIMIZE "debug"}}.dill{{end}}']
+    cmds:
+      - mkdir -p build/dart/{{.YEAR}}/{{.OPTIMIZE}}
+      - >-
+        dart compile {{if eq .OPTIMIZE "debug"}}kernel{{else}}exe{{end}}
+        src/{{.YEAR}}/dart/main.dart
+        -o build/dart/{{.YEAR}}/{{.OPTIMIZE}}/main{{if eq .OPTIMIZE "debug"}}.dill{{end}}
+  exec:dart:
+    internal: true
+    cmds:
+      - task: build:dart
+      - '{{if eq .OPTIMIZE "debug"}}dart {{end}}build/dart/{{.YEAR}}/{{.OPTIMIZE}}/main{{if eq .OPTIMIZE "debug"}}.dill{{end}} {{.DAY}} {{.PART}} {{.MODE}}'
+  check:dart:
+    desc: Format and analyse Dart (optional YEAR)
+    requires: {vars: [*optional_year]}
+    cmds:
+      - dart format src/{{.YEAR | default "[0-9]*"}}/dart src/lib/dart
+      - dart analyze --fatal-infos src/{{if .YEAR}}{{.YEAR}}/dart{{end}}
+      - dart analyze --fatal-infos src/lib/dart

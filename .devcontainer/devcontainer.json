@@ -36,7 +36,8 @@
                 "llvm-vs-code-extensions.vscode-clangd",
                 "jakebecker.elixir-ls",
                 "sumneko.lua",
-                "JohnnyMorganz.stylua"
+                "JohnnyMorganz.stylua",
+                "Dart-Code.dart-code"
             ],
             "settings": {
                 "files.encoding": "utf8",
@@ -57,6 +58,14 @@
                 "[lua]": {
                     "editor.defaultFormatter": "JohnnyMorganz.stylua"
                 },
+                "[dart]": {
+                    "editor.defaultFormatter": "Dart-Code.dart-code",
+                    "editor.tabSize": 2
+                },
+                "dart.sdkPath": "/usr/lib/dart",
+                "dart.analysisExcludedFolders": [
+                    "${workspaceFolder}/build"
+                ],
                 "Lua.misc.executablePath": "/usr/local/lib/lua-language-server/bin/lua-language-server",
                 "stylua.styluaPath": "/usr/local/bin/stylua",
                 "stylua.disableVersionCheck": true,
