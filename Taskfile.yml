@@ -218,3 +218,22 @@ tasks:
     cmds:
       - clang-format -i src/{{.YEAR | default "[0-9]*"}}/cpp/*.cpp src/{{.YEAR | default "[0-9]*"}}/cpp/solutions/*.hpp src/lib/cpp/*.cpp src/lib/cpp/*.hpp scripts/templates/day_template.hpp
       - clang-tidy src/{{.YEAR | default "[0-9]*"}}/cpp/main.cpp src/lib/cpp/runner.cpp -- -std=c++23 -stdlib=libc++ -Isrc/lib/cpp -Wall -Wextra -Wpedantic -Werror
+
+  # Lua
+  build:lua:
+    desc: Lua runs directly; no build required
+    silent: true
+    cmds: ['true']
+  exec:lua:
+    internal: true
+    cmds: ['lua5.4 src/{{.YEAR}}/lua/main.lua {{.DAY}} {{.PART}} {{.MODE}}']
+  check:lua:
+    desc: Format/lint Lua (optional YEAR) and type-check the Lua workspace
+    requires: {vars: [*optional_year]}
+    cmds:
+      - stylua src/{{.YEAR | default "[0-9]*"}}/lua src/lib/lua scripts/templates/day_template.lua
+      - luacheck --std lua54 --max-line-length 100 src/{{.YEAR | default "[0-9]*"}}/lua src/lib/lua scripts/templates/day_template.lua
+      - mkdir -p build/lua/luals
+      - >-
+        lua-language-server --check=. --configpath=.luarc.json --checklevel=Warning
+        --logpath=build/lua/luals/log --metapath=build/lua/luals/meta

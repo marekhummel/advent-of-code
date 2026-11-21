@@ -9,6 +9,7 @@ LANGUAGES = {
     "elixir": "ex",
     "golang": "go",
     "cpp": "hpp",
+    "lua": "lua",
 }
 
 
@@ -37,6 +38,10 @@ def create_day(root: Path, lang: str, year: int, day: int) -> None:
     if destination.exists() or destination.is_symlink():
         raise ValueError(f"Refusing to overwrite day {day:02}")
     registrations = {
+        "lua": [
+            ("main.lua", "-- aoc:imports", f'local {name} = require("{year}.lua.solutions.{name}")'),
+            ("main.lua", "-- aoc:solutions", f"[{day}] = {name},"),
+        ],
         "cpp": [
             ("main.cpp", "// aoc:imports", f'#include "solutions/{name}.hpp"'),
             ("main.cpp", "// aoc:solutions", f"{{{day}, {name}::solution}},"),

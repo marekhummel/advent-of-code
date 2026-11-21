@@ -34,7 +34,9 @@
                 "golang.go",
                 "ziglang.vscode-zig",
                 "llvm-vs-code-extensions.vscode-clangd",
-                "jakebecker.elixir-ls"
+                "jakebecker.elixir-ls",
+                "sumneko.lua",
+                "JohnnyMorganz.stylua"
             ],
             "settings": {
                 "files.encoding": "utf8",
@@ -52,6 +54,12 @@
                 "[go]": {
                     "editor.insertSpaces": false
                 },
+                "[lua]": {
+                    "editor.defaultFormatter": "JohnnyMorganz.stylua"
+                },
+                "Lua.misc.executablePath": "/usr/local/lib/lua-language-server/bin/lua-language-server",
+                "stylua.styluaPath": "/usr/local/bin/stylua",
+                "stylua.disableVersionCheck": true,
                 "python.analysis.extraPaths": [
                     "${workspaceFolder}/src"
                 ],

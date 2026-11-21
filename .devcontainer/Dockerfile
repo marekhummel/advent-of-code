@@ -70,6 +70,23 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends elixir erlang-dev erlang-dialyzer \
     && rm -rf /var/lib/apt/lists/*
 
+# Lua interpreter, linter, formatter and standalone language server.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends lua5.4 lua-check \
+    && rm -rf /var/lib/apt/lists/*
+ARG STYLUA_VERSION=2.6.0
+RUN CARGO_HOME=/usr/local/cargo cargo install stylua --version "${STYLUA_VERSION}" \
+        --locked --no-default-features --features lua54 --root /usr/local
+ARG LUALS_VERSION=3.19.2
+RUN case "$TARGETARCH" in amd64) luals_arch=x64 ;; arm64) luals_arch=arm64 ;; \
+        *) echo "Unsupported LuaLS architecture: $TARGETARCH" >&2; exit 1 ;; esac \
+    && curl -fsSL "https://github.com/LuaLS/lua-language-server/releases/download/${LUALS_VERSION}/lua-language-server-${LUALS_VERSION}-linux-${luals_arch}.tar.gz" \
+        -o /tmp/luals.tar.gz \
+    && mkdir -p /usr/local/lib/lua-language-server \
+    && tar -xzf /tmp/luals.tar.gz -C /usr/local/lib/lua-language-server \
+    && rm /tmp/luals.tar.gz
+ENV PATH="/usr/local/lib/lua-language-server/bin:${PATH}"
+
 # Python interpreter and development tools
 RUN add-apt-repository -y ppa:deadsnakes/ppa \
     && apt-get update \
