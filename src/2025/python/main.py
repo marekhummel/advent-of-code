@@ -1,11 +1,11 @@
 from lib.python import Runner, Solution
-from solutions.day10 import Solution10
+from solutions import day10
 
 # aoc:imports
 
 if __name__ == "__main__":
-    solutions: dict[int, type[Solution]] = {
-        10: Solution10,
+    solutions: dict[int, Solution] = {
+        10: Solution.from_module(day10),
         # aoc:solutions
     }
 

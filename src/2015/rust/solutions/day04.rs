@@ -1,37 +1,31 @@
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 use rayon::iter::*;
-pub struct Solution04;
 
-impl Solution04 {
-    const STEP_SIZE: usize = 1 << 15;
-
-    fn find_hash(secret: &str, prefix: &str) -> usize {
-        // Obviously works fine without chunks (~3s), but good test for parallelism
-        for bn in (1usize..).step_by(Self::STEP_SIZE) {
-            let digest = (bn..bn + Self::STEP_SIZE).into_par_iter().find_first(|n| {
-                let digest = md5::compute(format!("{secret}{n}"));
-                let digest_str = format!("{:x}", digest);
-                digest_str.starts_with(prefix)
-            });
-
-            if let Some(n) = digest {
-                return n;
-            }
-        }
-
-        unreachable!()
-    }
+pub fn part1(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let key = input.string();
+    find_hash(&key, "00000").into()
 }
 
-impl Solution for Solution04 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let key = input.string();
-        Self::find_hash(&key, "00000").to_result()
+pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let key = input.string();
+    find_hash(&key, "000000").into()
+}
+
+const STEP_SIZE: usize = 1 << 15;
+
+fn find_hash(secret: &str, prefix: &str) -> usize {
+    // Obviously works fine without chunks (~3s), but good test for parallelism
+    for bn in (1usize..).step_by(STEP_SIZE) {
+        let digest = (bn..bn + STEP_SIZE).into_par_iter().find_first(|n| {
+            let digest = md5::compute(format!("{secret}{n}"));
+            let digest_str = format!("{:x}", digest);
+            digest_str.starts_with(prefix)
+        });
+
+        if let Some(n) = digest {
+            return n;
+        }
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let key = input.string();
-        Self::find_hash(&key, "000000").to_result()
-    }
+    unreachable!()
 }

@@ -1,55 +1,6 @@
----@enum AocStatus
-local Status = {
-    NoSample = "no_sample",
-    NoPartTwo = "no_part_two",
-    NotImplemented = "not_implemented",
-    Unsolved = "unsolved",
-}
+local solution = require("lib.lua.solution")
 
----@class AocStatusResult
----@field status AocStatus
-
----@param status AocStatus
----@return AocStatusResult
-local function info(status)
-    return { status = status }
-end
-
-local runner = {
-    NoSample = info(Status.NoSample),
-    NoPartTwo = info(Status.NoPartTwo),
-    NotImplemented = info(Status.NotImplemented),
-    Unsolved = info(Status.Unsolved),
-}
-
----@type table<AocStatus, string>
-local labels = {
-    [Status.NoSample] = "<No Sample Defined>",
-    [Status.NoPartTwo] = "<No Part Two>",
-    [Status.NotImplemented] = "<Not Implemented>",
-    [Status.Unsolved] = "<Unsolved>",
-}
-
----@alias AocResult integer|string|AocStatusResult
----@alias AocPart fun(input: string[], sample: boolean): AocResult
----@class AocSolution
----@field part1? AocPart
----@field part2? AocPart
-
----@param result AocResult
----@return string
-function runner.format(result)
-    if type(result) == "string" or (type(result) == "number" and math.type(result) == "integer") then
-        return tostring(result)
-    end
-    if type(result) == "table" then
-        local label = labels[result.status]
-        if label then
-            return label
-        end
-    end
-    error("A solution must return an integer, text or a known status")
-end
+local runner = {}
 
 ---Run one DAY PART MODE case; batches and verification belong to the scripts.
 ---@param year integer
@@ -72,16 +23,12 @@ function runner.run(year, solutions, args)
         os.exit(2)
     end
 
-    local solution = solutions[day]
-    if solution == nil then
-        print(runner.format(runner.Unsolved))
+    local implementation = solutions[day]
+    if implementation == nil then
+        print(solution.format(solution.Unsolved))
         return
     end
-    local solve = solution[part == 1 and "part1" or "part2"]
-    if solve == nil then
-        print(runner.format(runner.NotImplemented))
-        return
-    end
+    local solve = implementation[part == 1 and "part1" or "part2"]
 
     local sample = mode == "sample"
     local prefix = sample and "sample" or "input"
@@ -104,7 +51,7 @@ function runner.run(year, solutions, args)
     end
     file:close()
 
-    print(runner.format(solve(input, sample)))
+    print(solution.format(solve(input, sample)))
 end
 
 return runner

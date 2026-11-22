@@ -3,26 +3,27 @@ defmodule AocLib.Runner do
   Runner for executing a single Advent of Code solution and printing its answer.
   """
 
+  alias AocLib.Solution
   alias AocLib.Types.{ProblemInput, ProblemResult}
 
   defstruct [:year, :solutions]
 
   @type t :: %__MODULE__{
           year: non_neg_integer(),
-          solutions: %{pos_integer() => module()}
+          solutions: %{pos_integer() => Solution.t()}
         }
 
   @doc """
   Creates a new runner for a given year with a map of day numbers to solution
-  modules. Registration order does not matter, and days may be omitted.
+  part functions. Registration order does not matter, and days may be omitted.
   """
-  @spec new(non_neg_integer(), %{pos_integer() => module()}) :: t()
+  @spec new(non_neg_integer(), %{pos_integer() => Solution.t()}) :: t()
   def new(year, solutions), do: %__MODULE__{year: year, solutions: solutions}
 
   @doc """
   Parses DAY, PART and MODE (real or sample), then runs the selected case.
   Prints the answer to stdout. Invalid arguments exit with code 2; execution
-  errors are raised and reported on stderr. Missing days, missing parts and
+  errors are raised and reported on stderr. Unregistered days and
   results :unsolved, :not_implemented, :no_sample and :no_part_two are informational and exit
   successfully.
   """
@@ -51,22 +52,16 @@ defmodule AocLib.Runner do
 
   defp run(runner, day, part, sample) do
     solution = Map.get(runner.solutions, day)
-    solve = if part == 1, do: :solve_part01, else: :solve_part02
-    if solution != nil, do: Code.ensure_loaded!(solution)
 
-    cond do
-      solution == nil ->
-        IO.puts(ProblemResult.format(:unsolved))
-
-      not function_exported?(solution, solve, 2) ->
-        IO.puts(ProblemResult.format(:not_implemented))
-
-      true ->
-        run_solution(runner, day, part, sample, solution, solve)
+    if solution == nil do
+      IO.puts(ProblemResult.format(:unsolved))
+    else
+      solve = if part == 1, do: solution.part1, else: solution.part2
+      run_solution(runner, day, part, sample, solve)
     end
   end
 
-  defp run_solution(runner, day, part, sample, solution, solve) do
+  defp run_solution(runner, day, part, sample, solve) do
     prefix = if sample, do: "sample", else: "input"
     stem = "inputs/#{runner.year}/#{prefix}#{String.pad_leading(to_string(day), 2, "0")}"
     filename = if File.exists?(stem <> ".txt"), do: stem <> ".txt", else: "#{stem}_#{part}.txt"
@@ -77,7 +72,7 @@ defmodule AocLib.Runner do
         {:error, reason} -> raise "Could not read #{filename}: #{:file.format_error(reason)}"
       end
 
-    result = apply(solution, solve, [input, sample])
+    result = solve.(input, sample)
 
     IO.puts(ProblemResult.format(result))
   end

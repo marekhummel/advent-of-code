@@ -7,7 +7,7 @@ const Grid = aoc_lib.types.Grid;
 const Index = aoc_lib.cartesian.Index;
 const Direction = aoc_lib.cartesian.Direction;
 
-pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part1(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
     const map = try input.grid();
@@ -17,7 +17,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     return Result.from(pathloop.path.len);
 }
 
-pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part2(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
     var map = try input.grid();

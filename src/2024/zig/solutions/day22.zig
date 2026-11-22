@@ -6,7 +6,7 @@ const Result = aoc_lib.types.Result;
 
 const NUM_PRICE_CHANGES = 19 * 19 * 19 * 19;
 
-pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part1(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = allocator;
     _ = is_sample;
 
@@ -20,7 +20,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     return Result.from(sum);
 }
 
-pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part2(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
     // Build lookup tables (maps each combination of price change sequences to the banana sell value)

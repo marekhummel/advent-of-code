@@ -1,6 +1,17 @@
 use aoc_lib::iterator::ParsedExt;
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
+
+pub fn part1(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let licence = parse(input);
+    let root = Node::from_licence(&mut licence.into_iter());
+    root.total_metadata().into()
+}
+
+pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let licence = parse(input);
+    let root = Node::from_licence(&mut licence.into_iter());
+    root.value().into()
+}
 
 #[derive(Debug)]
 struct Node {
@@ -35,23 +46,6 @@ impl Node {
     }
 }
 
-pub struct Solution08;
-impl Solution08 {
-    fn parse(input: ProblemInput) -> Vec<u32> {
-        input.string().split_whitespace().parsed().collect()
-    }
-}
-
-impl Solution for Solution08 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let licence = Self::parse(input);
-        let root = Node::from_licence(&mut licence.into_iter());
-        root.total_metadata().to_result()
-    }
-
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let licence = Self::parse(input);
-        let root = Node::from_licence(&mut licence.into_iter());
-        root.value().to_result()
-    }
+fn parse(input: ProblemInput) -> Vec<u32> {
+    input.string().split_whitespace().parsed().collect()
 }

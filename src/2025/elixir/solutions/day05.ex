@@ -3,19 +3,15 @@ defmodule Day05 do
   Solution for Advent of Code 2025 - Day 05
   """
 
-  @behaviour AocLib.Solution
-
   alias AocLib.Types.ProblemInput
 
-  @impl true
-  def solve_part01(input, _is_sample) do
+  def part1(input, _is_sample) do
     {fresh_ranges, ids} = parse_input(input)
 
     ids |> Enum.count(fn id -> Enum.any?(fresh_ranges, fn range -> id in range end) end)
   end
 
-  @impl true
-  def solve_part02(input, _is_sample) do
+  def part2(input, _is_sample) do
     # Sort ranges to make overlap detection easier
     fresh_ranges = parse_input(input) |> elem(0) |> Enum.sort_by(& &1.first)
 

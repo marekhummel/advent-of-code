@@ -10,13 +10,13 @@ from lib.python.solution import ProblemInput, ProblemResult, Solution, Status
 class Runner:
     """Runner for executing Advent of Code solutions."""
 
-    def __init__(self, year: int, solutions: dict[int, type[Solution]]):
+    def __init__(self, year: int, solutions: dict[int, Solution]):
         """
-        Creates a new runner for a given year with solution classes.
+        Creates a new runner for a given year with registered part functions.
 
         Args:
             year: The year of the Advent of Code
-            solutions: Dictionary mapping day numbers (1-25) to Solution classes
+            solutions: Dictionary mapping day numbers (1-25) to Solution instances
         """
         self.year = year
         self.solutions = solutions
@@ -26,7 +26,8 @@ class Runner:
         Parse DAY, PART and MODE (real or sample), then print one answer.
 
         Invalid arguments exit with code 2. Missing input exits with code 1.
-        Missing days and parts print informational results and exit successfully.
+        Unregistered days and unimplemented parts print informational results
+        and exit successfully.
         Unexpected errors retain their traceback.
         """
         parser = argparse.ArgumentParser(description=__doc__)
@@ -39,10 +40,7 @@ class Runner:
             print(Status.UNSOLVED)
             return
         solution = self.solutions[args.day]
-        solve = solution.solve_part01 if args.part == 1 else solution.solve_part02
-        if solve in (Solution.solve_part01, Solution.solve_part02):
-            print(Status.NOT_IMPLEMENTED)
-            return
+        solve = solution.part1 if args.part == 1 else solution.part2
         prefix = "sample" if sample else "input"
         filename = Path(f"inputs/{self.year}/{prefix}{args.day:02}.txt")
         if not filename.exists():
@@ -52,10 +50,7 @@ class Runner:
         except FileNotFoundError:
             sys.exit(f"Missing input: {filename}")
         data = ProblemInput([line.rstrip("\r") for line in content.split("\n")])
-        try:
-            result = solve(data, sample)
-        except NotImplementedError:
-            result = Status.NOT_IMPLEMENTED
+        result = solve(data, sample)
         if not isinstance(result, ProblemResult):
             raise TypeError("A solution must return an integer, text or Status")
         print(result)

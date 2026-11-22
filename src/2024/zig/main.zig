@@ -1,5 +1,6 @@
 const std = @import("std");
 const aoc_lib = @import("aoc_lib");
+const Solution = aoc_lib.solution.Solution;
 
 const day01 = @import("solutions/day01.zig");
 const day02 = @import("solutions/day02.zig");
@@ -36,31 +37,31 @@ pub fn main(init: std.process.Init) !void {
 
 fn createRunner(allocator: std.mem.Allocator) !aoc_lib.runner.AocRunner {
     return aoc_lib.runner.AocRunner.init(allocator, 2024, &.{
-        .{ 1, aoc_lib.solution.makeSolution(day01) },
-        .{ 2, aoc_lib.solution.makeSolution(day02) },
-        .{ 3, aoc_lib.solution.makeSolution(day03) },
-        .{ 4, aoc_lib.solution.makeSolution(day04) },
-        .{ 5, aoc_lib.solution.makeSolution(day05) },
-        .{ 6, aoc_lib.solution.makeSolution(day06) },
-        .{ 7, aoc_lib.solution.makeSolution(day07) },
-        .{ 8, aoc_lib.solution.makeSolution(day08) },
-        .{ 9, aoc_lib.solution.makeSolution(day09) },
-        .{ 10, aoc_lib.solution.makeSolution(day10) },
-        .{ 11, aoc_lib.solution.makeSolution(day11) },
-        .{ 12, aoc_lib.solution.makeSolution(day12) },
-        .{ 13, aoc_lib.solution.makeSolution(day13) },
-        .{ 14, aoc_lib.solution.makeSolution(day14) },
-        .{ 15, aoc_lib.solution.makeSolution(day15) },
-        .{ 16, aoc_lib.solution.makeSolution(day16) },
-        .{ 17, aoc_lib.solution.makeSolution(day17) },
-        .{ 18, aoc_lib.solution.makeSolution(day18) },
-        .{ 19, aoc_lib.solution.makeSolution(day19) },
-        .{ 20, aoc_lib.solution.makeSolution(day20) },
-        .{ 21, aoc_lib.solution.makeSolution(day21) },
-        .{ 22, aoc_lib.solution.makeSolution(day22) },
-        .{ 23, aoc_lib.solution.makeSolution(day23) },
-        .{ 24, aoc_lib.solution.makeSolution(day24) },
-        .{ 25, aoc_lib.solution.makeSolution(day25) },
+        .{ 1, Solution.from(day01) },
+        .{ 2, Solution.from(day02) },
+        .{ 3, Solution.from(day03) },
+        .{ 4, Solution.from(day04) },
+        .{ 5, Solution.from(day05) },
+        .{ 6, Solution.from(day06) },
+        .{ 7, Solution.from(day07) },
+        .{ 8, Solution.from(day08) },
+        .{ 9, Solution.from(day09) },
+        .{ 10, Solution.from(day10) },
+        .{ 11, Solution.from(day11) },
+        .{ 12, Solution.from(day12) },
+        .{ 13, Solution.from(day13) },
+        .{ 14, Solution.from(day14) },
+        .{ 15, Solution.from(day15) },
+        .{ 16, Solution.from(day16) },
+        .{ 17, Solution.from(day17) },
+        .{ 18, Solution.from(day18) },
+        .{ 19, Solution.from(day19) },
+        .{ 20, Solution.from(day20) },
+        .{ 21, Solution.from(day21) },
+        .{ 22, Solution.from(day22) },
+        .{ 23, Solution.from(day23) },
+        .{ 24, Solution.from(day24) },
+        .{ 25, Solution.from(day25) },
         // aoc:solutions
     });
 }

@@ -5,12 +5,12 @@ const Allocator = std.mem.Allocator;
 const ProblemInput = aoc_lib.types.ProblemInput;
 const Result = aoc_lib.types.Result;
 
-pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part1(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     return Result.from(try computeTokens(input, 0, allocator));
 }
 
-pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part2(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     if (is_sample) return Result.NoSample;
     return Result.from(try computeTokens(input, 10_000_000_000_000, allocator));
 }

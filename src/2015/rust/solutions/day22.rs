@@ -2,8 +2,37 @@ use regex::Regex;
 use std::collections::HashMap;
 use std::hash::Hash;
 
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
+
+pub fn part1(input: ProblemInput, is_sample: bool) -> ProblemResult {
+    let player = if is_sample { (10, 0, 250) } else { (50, 0, 500) };
+    let boss = parse(input);
+
+    let mut game_state = GameState {
+        player,
+        boss,
+        active_effects: vec![],
+        mana_spent: 0,
+    };
+
+    let mut cache = HashMap::new();
+    emulate_game(&mut game_state, false, &mut cache).into()
+}
+
+pub fn part2(input: ProblemInput, is_sample: bool) -> ProblemResult {
+    let player = if is_sample { (15, 0, 250) } else { (50, 0, 500) };
+    let boss = parse(input);
+
+    let mut game_state = GameState {
+        player,
+        boss,
+        active_effects: vec![],
+        mana_spent: 0,
+    };
+
+    let mut cache = HashMap::new();
+    emulate_game(&mut game_state, true, &mut cache).into()
+}
 
 #[derive(Debug, Default)]
 struct Spell {
@@ -164,106 +193,71 @@ impl GameState {
     }
 }
 
-pub struct Solution22;
-impl Solution22 {
-    fn parse(input: ProblemInput) -> (i32, u32) {
-        let rgx = Regex::new(r"Hit Points: (?P<hp>\d+)Damage: (?P<dmg>\d+)").unwrap();
-        let line = input.string();
-        let captures = rgx.captures(&line).unwrap();
-        let hp = captures.name("hp").unwrap().as_str().parse().unwrap();
-        let dmg = captures.name("dmg").unwrap().as_str().parse().unwrap();
-        (hp, dmg)
+fn parse(input: ProblemInput) -> (i32, u32) {
+    let rgx = Regex::new(r"Hit Points: (?P<hp>\d+)Damage: (?P<dmg>\d+)").unwrap();
+    let line = input.string();
+    let captures = rgx.captures(&line).unwrap();
+    let hp = captures.name("hp").unwrap().as_str().parse().unwrap();
+    let dmg = captures.name("dmg").unwrap().as_str().parse().unwrap();
+    (hp, dmg)
+}
+
+fn emulate_game(state: &mut GameState, hard_mode: bool, cache: &mut HashMap<GameState, u32>) -> u32 {
+    if let Some(mana) = cache.get(state) {
+        return *mana;
     }
 
-    fn emulate_game(state: &mut GameState, hard_mode: bool, cache: &mut HashMap<GameState, u32>) -> u32 {
-        if let Some(mana) = cache.get(state) {
-            return *mana;
+    if !state.is_ongoing() {
+        return if state.is_boss_dead() {
+            state.mana_spent
+        } else {
+            u32::MAX
+        };
+    }
+
+    let mut least_mana_spent = u32::MAX;
+    for spell in GameState::spells() {
+        let mut new_state = state.clone();
+        if run_two_turns(&mut new_state, &spell, hard_mode) {
+            let spent = emulate_game(&mut new_state, hard_mode, cache);
+            cache.insert(state.clone(), spent);
+            least_mana_spent = least_mana_spent.min(spent);
+        }
+    }
+
+    least_mana_spent
+}
+
+fn run_two_turns(state: &mut GameState, spell: &Spell, hard_mode: bool) -> bool {
+    for players_turn in [true, false] {
+        // Effects first
+        state.apply_effects();
+        if state.is_boss_dead() {
+            return true;
+        }
+
+        // Spell cast / attack
+        match players_turn {
+            true => {
+                if !state.can_cast_spell(spell) {
+                    return false;
+                }
+
+                if hard_mode {
+                    state.player.0 -= 1;
+                }
+
+                state.player_cast_spell(spell);
+            }
+            false => {
+                state.boss_attack();
+            }
         }
 
         if !state.is_ongoing() {
-            return if state.is_boss_dead() {
-                state.mana_spent
-            } else {
-                u32::MAX
-            };
+            return true;
         }
-
-        let mut least_mana_spent = u32::MAX;
-        for spell in GameState::spells() {
-            let mut new_state = state.clone();
-            if Self::run_two_turns(&mut new_state, &spell, hard_mode) {
-                let spent = Self::emulate_game(&mut new_state, hard_mode, cache);
-                cache.insert(state.clone(), spent);
-                least_mana_spent = least_mana_spent.min(spent);
-            }
-        }
-
-        least_mana_spent
     }
 
-    fn run_two_turns(state: &mut GameState, spell: &Spell, hard_mode: bool) -> bool {
-        for players_turn in [true, false] {
-            // Effects first
-            state.apply_effects();
-            if state.is_boss_dead() {
-                return true;
-            }
-
-            // Spell cast / attack
-            match players_turn {
-                true => {
-                    if !state.can_cast_spell(spell) {
-                        return false;
-                    }
-
-                    if hard_mode {
-                        state.player.0 -= 1;
-                    }
-
-                    state.player_cast_spell(spell);
-                }
-                false => {
-                    state.boss_attack();
-                }
-            }
-
-            if !state.is_ongoing() {
-                return true;
-            }
-        }
-
-        true
-    }
-}
-
-impl Solution for Solution22 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
-        let player = if is_sample { (10, 0, 250) } else { (50, 0, 500) };
-        let boss = Self::parse(input);
-
-        let mut game_state = GameState {
-            player,
-            boss,
-            active_effects: vec![],
-            mana_spent: 0,
-        };
-
-        let mut cache = HashMap::new();
-        Self::emulate_game(&mut game_state, false, &mut cache).to_result()
-    }
-
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
-        let player = if is_sample { (15, 0, 250) } else { (50, 0, 500) };
-        let boss = Self::parse(input);
-
-        let mut game_state = GameState {
-            player,
-            boss,
-            active_effects: vec![],
-            mana_spent: 0,
-        };
-
-        let mut cache = HashMap::new();
-        Self::emulate_game(&mut game_state, true, &mut cache).to_result()
-    }
+    true
 }

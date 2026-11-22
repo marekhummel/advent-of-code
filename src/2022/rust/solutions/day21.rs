@@ -1,8 +1,23 @@
 use std::collections::{HashMap, VecDeque};
 
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 use itertools::Itertools;
+
+pub fn part1(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let monkeys: VecDeque<_> = parse(input).into_iter().collect();
+    let root = get_root(monkeys, false);
+    root.eval().unwrap().into()
+}
+
+pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let monkeys: VecDeque<_> = parse(input).into_iter().collect();
+    let Term::Op(a, b, _) = get_root(monkeys, true) else { unreachable!() };
+
+    // Solve equation, left side contains unknown "humn"
+    assert!(a.eval().is_none());
+    let target = b.eval().unwrap();
+    a.solve(target).into()
+}
 
 #[derive(Debug)]
 enum Yell {
@@ -68,76 +83,55 @@ enum Operation {
     Div,
 }
 
-pub struct Solution21;
-impl Solution21 {
-    fn parse(input: ProblemInput) -> Vec<(String, Yell)> {
-        input
-            .lines()
-            .into_iter()
-            .map(|l| {
-                let (monkey, message) = l.split_once(": ").unwrap();
-                let yell = match message.parse() {
-                    Ok(num) => Yell::Number(num),
-                    _ => {
-                        let (a, op_str, b) = message.split_ascii_whitespace().collect_tuple().unwrap();
-                        let op = match op_str {
-                            "+" => Operation::Add,
-                            "-" => Operation::Sub,
-                            "*" => Operation::Mul,
-                            "/" => Operation::Div,
-                            _ => unreachable!(),
-                        };
-                        Yell::Operation(a.to_string(), b.to_string(), op)
-                    }
-                };
-                (monkey.to_string(), yell)
-            })
-            .collect()
-    }
-
-    fn get_root(mut monkeys: VecDeque<(String, Yell)>, with_human: bool) -> Term {
-        let mut yelled = HashMap::new();
-        while let Some((monkey, yell)) = monkeys.pop_front() {
-            match yell {
-                // Insert unknown if part two and humn monkey
-                Yell::Number(_) if with_human && monkey == "humn" => _ = yelled.insert(monkey, Term::Unknown),
-                // Insert number
-                Yell::Number(num) => _ = yelled.insert(monkey, Term::Number(num)),
-                // Try to eval operation
-                Yell::Operation(ref ma, ref mb, op) => match (yelled.get(ma), yelled.get(mb)) {
-                    // Both operands are evaluated, thus this can be evaluated too
-                    (Some(ea), Some(eb)) => {
-                        let result = Term::Op(Box::new(ea.clone()), Box::new(eb.clone()), op);
-
-                        // Root monkey, return the operation
-                        if monkey == "root" {
-                            return result;
-                        }
-                        yelled.insert(monkey, result);
-                    }
-                    _ => monkeys.push_back((monkey, yell)),
-                },
-            }
-        }
-
-        unreachable!()
-    }
+fn parse(input: ProblemInput) -> Vec<(String, Yell)> {
+    input
+        .lines()
+        .into_iter()
+        .map(|l| {
+            let (monkey, message) = l.split_once(": ").unwrap();
+            let yell = match message.parse() {
+                Ok(num) => Yell::Number(num),
+                _ => {
+                    let (a, op_str, b) = message.split_ascii_whitespace().collect_tuple().unwrap();
+                    let op = match op_str {
+                        "+" => Operation::Add,
+                        "-" => Operation::Sub,
+                        "*" => Operation::Mul,
+                        "/" => Operation::Div,
+                        _ => unreachable!(),
+                    };
+                    Yell::Operation(a.to_string(), b.to_string(), op)
+                }
+            };
+            (monkey.to_string(), yell)
+        })
+        .collect()
 }
 
-impl Solution for Solution21 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let monkeys: VecDeque<_> = Self::parse(input).into_iter().collect();
-        let root = Self::get_root(monkeys, false);
-        root.eval().unwrap().to_result()
+fn get_root(mut monkeys: VecDeque<(String, Yell)>, with_human: bool) -> Term {
+    let mut yelled = HashMap::new();
+    while let Some((monkey, yell)) = monkeys.pop_front() {
+        match yell {
+            // Insert unknown if part two and humn monkey
+            Yell::Number(_) if with_human && monkey == "humn" => _ = yelled.insert(monkey, Term::Unknown),
+            // Insert number
+            Yell::Number(num) => _ = yelled.insert(monkey, Term::Number(num)),
+            // Try to eval operation
+            Yell::Operation(ref ma, ref mb, op) => match (yelled.get(ma), yelled.get(mb)) {
+                // Both operands are evaluated, thus this can be evaluated too
+                (Some(ea), Some(eb)) => {
+                    let result = Term::Op(Box::new(ea.clone()), Box::new(eb.clone()), op);
+
+                    // Root monkey, return the operation
+                    if monkey == "root" {
+                        return result;
+                    }
+                    yelled.insert(monkey, result);
+                }
+                _ => monkeys.push_back((monkey, yell)),
+            },
+        }
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let monkeys: VecDeque<_> = Self::parse(input).into_iter().collect();
-        let Term::Op(a, b, _) = Self::get_root(monkeys, true) else { unreachable!() };
-
-        // Solve equation, left side contains unknown "humn"
-        assert!(a.eval().is_none());
-        let target = b.eval().unwrap();
-        a.solve(target).to_result()
-    }
+    unreachable!()
 }

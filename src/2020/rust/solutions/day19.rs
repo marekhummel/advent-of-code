@@ -1,89 +1,83 @@
 use aoc_lib::grammar::{CFG, Rule};
 use aoc_lib::iterator::ParsedExt;
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 use itertools::Itertools;
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
-pub struct Solution19;
-impl Solution19 {
-    fn parse(input: ProblemInput) -> (CFG<u16, char>, Vec<Vec<char>>) {
-        let lines = input.lines();
-        let (cfg, word_strs) = lines.split(|l| l.is_empty()).collect_tuple().unwrap();
+pub fn part1(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let (mut cfg, words) = parse(input);
+    cfg.transform_cnf();
 
-        let rules = cfg
-            .iter()
-            .flat_map(|rule_str| {
-                let (lhs, rhss) = rule_str.split_once(": ").unwrap();
-                if rhss.contains('"') {
-                    let terminal = rhss.chars().nth(1).unwrap();
-                    vec![Rule::Unit {
-                        src: lhs.parse().unwrap(),
-                        terminal,
-                    }]
-                } else {
-                    rhss.split('|')
-                        .map(|rhs| {
-                            let nts = rhs.split_ascii_whitespace().parsed().collect_vec();
+    let matches = words
+        .into_par_iter()
+        .filter(|word| cfg.cyk_algorithm(word).is_some())
+        .count();
 
-                            if nts.len() == 2 {
-                                Rule::Iterative {
-                                    src: lhs.parse().unwrap(),
-                                    vars: nts.try_into().unwrap(),
-                                }
-                            } else {
-                                Rule::Extended {
-                                    src: lhs.parse().unwrap(),
-                                    vars: nts,
-                                }
-                            }
-                        })
-                        .collect_vec()
-                }
-            })
-            .collect();
-
-        let words = word_strs.iter().map(|word| word.chars().collect()).collect();
-
-        (
-            CFG {
-                rules,
-                start: 0,
-                sub_func: |sub_len| 10000 + sub_len as u16,
-            },
-            words,
-        )
-    }
+    matches.into()
 }
 
-impl Solution for Solution19 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let (mut cfg, words) = Self::parse(input);
-        cfg.transform_cnf();
+pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let (mut cfg, words) = parse(input);
+    cfg.rules.push(Rule::Iterative { src: 8, vars: [42, 8] });
+    cfg.rules.push(Rule::Extended {
+        src: 11,
+        vars: vec![42, 11, 31],
+    });
 
-        let matches = words
-            .into_par_iter()
-            .filter(|word| cfg.cyk_algorithm(word).is_some())
-            .count();
+    cfg.transform_cnf();
 
-        matches.to_result()
-    }
+    let matches = words
+        .into_par_iter()
+        .filter(|word| cfg.cyk_algorithm(word).is_some())
+        .count();
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let (mut cfg, words) = Self::parse(input);
-        cfg.rules.push(Rule::Iterative { src: 8, vars: [42, 8] });
-        cfg.rules.push(Rule::Extended {
-            src: 11,
-            vars: vec![42, 11, 31],
-        });
+    matches.into()
+}
 
-        cfg.transform_cnf();
+fn parse(input: ProblemInput) -> (CFG<u16, char>, Vec<Vec<char>>) {
+    let lines = input.lines();
+    let (cfg, word_strs) = lines.split(|l| l.is_empty()).collect_tuple().unwrap();
 
-        let matches = words
-            .into_par_iter()
-            .filter(|word| cfg.cyk_algorithm(word).is_some())
-            .count();
+    let rules = cfg
+        .iter()
+        .flat_map(|rule_str| {
+            let (lhs, rhss) = rule_str.split_once(": ").unwrap();
+            if rhss.contains('"') {
+                let terminal = rhss.chars().nth(1).unwrap();
+                vec![Rule::Unit {
+                    src: lhs.parse().unwrap(),
+                    terminal,
+                }]
+            } else {
+                rhss.split('|')
+                    .map(|rhs| {
+                        let nts = rhs.split_ascii_whitespace().parsed().collect_vec();
 
-        matches.to_result()
-    }
+                        if nts.len() == 2 {
+                            Rule::Iterative {
+                                src: lhs.parse().unwrap(),
+                                vars: nts.try_into().unwrap(),
+                            }
+                        } else {
+                            Rule::Extended {
+                                src: lhs.parse().unwrap(),
+                                vars: nts,
+                            }
+                        }
+                    })
+                    .collect_vec()
+            }
+        })
+        .collect();
+
+    let words = word_strs.iter().map(|word| word.chars().collect()).collect();
+
+    (
+        CFG {
+            rules,
+            start: 0,
+            sub_func: |sub_len| 10000 + sub_len as u16,
+        },
+        words,
+    )
 }

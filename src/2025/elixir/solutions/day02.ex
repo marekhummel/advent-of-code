@@ -3,13 +3,10 @@ defmodule Day02 do
   Solution for Advent of Code 2025 - Day 02
   """
 
-  @behaviour AocLib.Solution
-
   alias AocLib.Types.ProblemInput
   alias AocLib.Util
 
-  @impl true
-  def solve_part01(input, _is_sample) do
+  def part1(input, _is_sample) do
     ProblemInput.string(input)
     |> String.split(",", trim: true)
     |> Enum.flat_map(&parse_range/1)
@@ -17,8 +14,7 @@ defmodule Day02 do
     |> Enum.sum()
   end
 
-  @impl true
-  def solve_part02(input, _is_sample) do
+  def part2(input, _is_sample) do
     ProblemInput.string(input)
     |> String.split(",", trim: true)
     |> Enum.flat_map(&parse_range/1)

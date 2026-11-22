@@ -1,22 +1,29 @@
 defmodule AocLib.Solution do
   @moduledoc """
-  Behaviour for Advent of Code solution implementations.
+  The two required callable parts of a day.
   """
 
   alias AocLib.Types.{ProblemInput, ProblemResult}
 
-  @type part :: 1 | 2
-  @type is_sample :: boolean()
+  @type part :: (ProblemInput.t(), boolean() -> ProblemResult.t())
+  @type t :: %__MODULE__{part1: part(), part2: part()}
+
+  @enforce_keys [:part1, :part2]
+  defstruct [:part1, :part2]
 
   @doc """
-  Solves part 1 of the problem.
+  Registers a day module after checking that both part functions exist.
   """
-  @callback solve_part01(ProblemInput.t(), is_sample()) :: ProblemResult.t()
+  @spec from(module()) :: t()
+  def from(day) do
+    Code.ensure_loaded!(day)
 
-  @doc """
-  Solves part 2 of the problem.
-  """
-  @callback solve_part02(ProblemInput.t(), is_sample()) :: ProblemResult.t()
+    for part <- [:part1, :part2] do
+      unless function_exported?(day, part, 2) do
+        raise ArgumentError, "#{inspect(day)} must export #{part}/2"
+      end
+    end
 
-  @optional_callbacks solve_part01: 2, solve_part02: 2
+    %__MODULE__{part1: &day.part1/2, part2: &day.part2/2}
+  end
 end

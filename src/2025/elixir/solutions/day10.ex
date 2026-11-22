@@ -3,22 +3,18 @@ defmodule Day10 do
   Solution for Advent of Code 2025 - Day 10
   """
 
-  @behaviour AocLib.Solution
-
   import Bitwise
   alias AocLib.Types.ProblemInput
   alias AocLib.Util
 
-  @impl true
-  def solve_part01(input, _is_sample) do
+  def part1(input, _is_sample) do
     # Note: All buttons and patterns are unsigned ints, as we either have to press a button never or once
     # In the pattern we use left as the LSB, to make button presses easier
     machines = input |> ProblemInput.lines() |> Enum.map(&parse_line/1)
     machines |> Enum.map(&light_config/1) |> Enum.sum()
   end
 
-  @impl true
-  def solve_part02(_input, _is_sample) do
+  def part2(_input, _is_sample) do
     # There is no ILP solver library for elixir, any BFS / DFS solutions were too slow
     # Check python for solution using PuLP
     :unsolved

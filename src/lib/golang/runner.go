@@ -7,15 +7,26 @@ import (
 	"strings"
 )
 
-// Solution contains the two parts of a day. Each returns a typed result or an error.
+// Part returns a typed result or an error.
+type Part func(input []string, sample bool) (Result, error)
+
+// Solution contains the two callable parts of a day. Construct it with NewSolution.
 type Solution struct {
-	Part1 func(input []string, sample bool) (Result, error)
-	Part2 func(input []string, sample bool) (Result, error)
+	part1 Part
+	part2 Part
+}
+
+// NewSolution requires both part functions; nil is a registration error.
+func NewSolution(part1, part2 Part) Solution {
+	if part1 == nil || part2 == nil {
+		panic("A solution must provide both part functions")
+	}
+	return Solution{part1: part1, part2: part2}
 }
 
 // Run parses DAY PART MODE (real or sample), loads input and prints one answer to stdout.
 // Invalid arguments exit with code 2; execution errors are printed to stderr
-// and exit with code 1. Missing days and parts are informational and exit successfully.
+// and exit with code 1. Unregistered days and unimplemented parts are informational.
 // Batch execution and verification belong to the scripts.
 func Run(year int, solutions map[int]Solution) {
 	args := os.Args[1:]
@@ -32,13 +43,9 @@ func Run(year int, solutions map[int]Solution) {
 		fmt.Println(Unsolved)
 		return
 	}
-	solve := solution.Part1
+	solve := solution.part1
 	if part == 2 {
-		solve = solution.Part2
-	}
-	if solve == nil {
-		fmt.Println(NotImplemented)
-		return
+		solve = solution.part2
 	}
 	sample := args[2] == "sample"
 	prefix := "input"

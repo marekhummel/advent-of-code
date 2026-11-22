@@ -3,17 +3,13 @@ defmodule Day03 do
   Solution for Advent of Code 2025 - Day 03
   """
 
-  @behaviour AocLib.Solution
-
   alias AocLib.Types.ProblemInput
 
-  @impl true
-  def solve_part01(input, _is_sample) do
+  def part1(input, _is_sample) do
     input |> banks_from_line() |> Enum.map(&largest_joltage(&1, 2)) |> Enum.sum()
   end
 
-  @impl true
-  def solve_part02(input, _is_sample) do
+  def part2(input, _is_sample) do
     input |> banks_from_line() |> Enum.map(&largest_joltage(&1, 12)) |> Enum.sum()
   end
 

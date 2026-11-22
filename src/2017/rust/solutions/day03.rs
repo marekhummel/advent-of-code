@@ -1,8 +1,33 @@
 use std::collections::HashMap;
 
 use aoc_lib::cartesian::{Direction, Position};
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
+
+pub fn part1(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let n = input.string().parse::<usize>().unwrap();
+
+    let mut it = SpiralPosIterator::new();
+    let pos = it.nth(n - 1).unwrap();
+    pos.dist(&Position::zero()).into()
+}
+
+pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let n = input.string().parse::<u64>().unwrap();
+    let it = SpiralPosIterator::new();
+
+    let mut spiral = HashMap::from([(Position::zero(), 1)]);
+    for pos in it.skip(1) {
+        let adjacent_sum: u64 = pos.moore_neighbors().into_iter().flat_map(|n| spiral.get(&n)).sum();
+
+        if adjacent_sum > n {
+            return adjacent_sum.into();
+        }
+
+        spiral.insert(pos, adjacent_sum);
+    }
+
+    unreachable!()
+}
 
 struct SpiralPosIterator {
     pos: Position,
@@ -43,35 +68,6 @@ impl Iterator for SpiralPosIterator {
     }
 }
 
-pub struct Solution03;
-impl Solution03 {}
 
-impl Solution for Solution03 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let n = input.string().parse::<usize>().unwrap();
-
-        let mut it = SpiralPosIterator::new();
-        let pos = it.nth(n - 1).unwrap();
-        pos.dist(&Position::zero()).to_result()
-    }
-
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let n = input.string().parse::<u64>().unwrap();
-        let it = SpiralPosIterator::new();
-
-        let mut spiral = HashMap::from([(Position::zero(), 1)]);
-        for pos in it.skip(1) {
-            let adjacent_sum: u64 = pos.moore_neighbors().into_iter().flat_map(|n| spiral.get(&n)).sum();
-
-            if adjacent_sum > n {
-                return adjacent_sum.to_result();
-            }
-
-            spiral.insert(pos, adjacent_sum);
-        }
-
-        unreachable!()
-    }
-}
 
 //

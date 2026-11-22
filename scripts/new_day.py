@@ -41,46 +41,70 @@ def create_day(root: Path, lang: str, year: int, day: int) -> None:
     registrations = {
         "dart": [
             ("main.dart", "// aoc:imports", f"import 'solutions/{name}.dart' as {name};"),
-            ("main.dart", "// aoc:solutions", f"{day}: {name}.solution,"),
+            (
+                "main.dart",
+                "// aoc:solutions",
+                f"{day}: Solution(part1: {name}.part1, part2: {name}.part2),",
+            ),
         ],
         "lua": [
-            ("main.lua", "-- aoc:imports", f'local {name} = require("{year}.lua.solutions.{name}")'),
-            ("main.lua", "-- aoc:solutions", f"[{day}] = {name},"),
+            (
+                "main.lua",
+                "-- aoc:imports",
+                f'local {name} = require("{year}.lua.solutions.{name}")',
+            ),
+            (
+                "main.lua",
+                "-- aoc:solutions",
+                f"[{day}] = Solution.from({name}),",
+            ),
         ],
         "cpp": [
             ("main.cpp", "// aoc:imports", f'#include "solutions/{name}.hpp"'),
-            ("main.cpp", "// aoc:solutions", f"{{{day}, {name}::solution}},"),
+            (
+                "main.cpp",
+                "// aoc:solutions",
+                f"{{{day}, AOC_SOLUTION({name})}},",
+            ),
         ],
         "rust": [
             ("main.rs", "// aoc:imports", f"use solutions::{name};"),
             (
                 "main.rs",
                 "// aoc:solutions",
-                f"({day}, Box::new({name}::Solution{day:02} {{}})),",
+                f"({day}, solution!({name})),",
             ),
             ("solutions/mod.rs", "// aoc:modules", f"pub mod {name};"),
         ],
         "python": [
-            ("main.py", "# aoc:imports", f"from solutions.{name} import Solution{day:02}"),
-            ("main.py", "# aoc:solutions", f"{day}: Solution{day:02},"),
+            ("main.py", "# aoc:imports", f"from solutions import {name}"),
+            (
+                "main.py",
+                "# aoc:solutions",
+                f"{day}: Solution.from_module({name}),",
+            ),
         ],
         "zig": [
             ("main.zig", "// aoc:imports", f'const {name} = @import("solutions/{name}.zig");'),
             (
                 "main.zig",
                 "// aoc:solutions",
-                f".{{ {day}, aoc_lib.solution.makeSolution({name}) }},",
+                f".{{ {day}, Solution.from({name}) }},",
             ),
         ],
         "elixir": [
-            ("main.ex", "# aoc:solutions", f"{day} => Day{day:02},"),
+            (
+                "main.ex",
+                "# aoc:solutions",
+                f"{day} => Solution.from(Day{day:02}),",
+            ),
         ],
         "golang": [
             ("main.go", "// aoc:imports", f'"aoc/src/{year}/golang/solutions/{name}"'),
             (
                 "main.go",
                 "// aoc:solutions",
-                f"{day}: {{Part1: {name}.Part1, Part2: {name}.Part2}},",
+                f"{day}: lib.NewSolution({name}.Part1, {name}.Part2),",
             ),
         ],
     }

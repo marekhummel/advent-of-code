@@ -3,15 +3,12 @@ defmodule Day08 do
   Solution for Advent of Code 2025 - Day 08
   """
 
-  @behaviour AocLib.Solution
-
   alias AocLib.Types.ProblemInput
   alias AocLib.Util
   alias AocLib.Util.Vec3
   alias AocLib.Util.UnionFind
 
-  @impl true
-  def solve_part01(input, is_sample) do
+  def part1(input, is_sample) do
     num_lights = if(is_sample, do: 10, else: 1000)
 
     {jboxes, lights} = jboxes_and_lights(input)
@@ -27,8 +24,7 @@ defmodule Day08 do
     circuits |> Map.values() |> Enum.sort(:desc) |> Enum.take(3) |> Enum.product()
   end
 
-  @impl true
-  def solve_part02(input, _is_sample) do
+  def part2(input, _is_sample) do
     {jboxes, lights} = jboxes_and_lights(input)
 
     {_, connection} =

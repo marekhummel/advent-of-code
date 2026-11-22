@@ -3,18 +3,14 @@ defmodule Day09 do
   Solution for Advent of Code 2025 - Day 09
   """
 
-  @behaviour AocLib.Solution
-
   alias AocLib.Types.ProblemInput
   alias AocLib.Util
 
-  @impl true
-  def solve_part01(input, _is_sample) do
+  def part1(input, _is_sample) do
     input |> red_tiles() |> Util.combinations(2) |> Enum.map(&area/1) |> Enum.max()
   end
 
-  @impl true
-  def solve_part02(input, _is_sample) do
+  def part2(input, _is_sample) do
     red_tiles = red_tiles(input)
 
     edges =

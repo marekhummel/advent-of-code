@@ -5,7 +5,7 @@ const ProblemInput = aoc_lib.types.ProblemInput;
 const Result = aoc_lib.types.Result;
 const Grid = aoc_lib.types.Grid;
 
-pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part1(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
     var locks: std.ArrayList([]u8) = .empty;
@@ -62,7 +62,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     return Result.from(total_fit);
 }
 
-pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part2(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = input;
     _ = is_sample;
     _ = allocator;

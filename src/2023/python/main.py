@@ -1,25 +1,18 @@
-from lib.python import Runner
-from solutions.day01 import Solution01
-from solutions.day02 import Solution02
-from solutions.day03 import Solution03
-from solutions.day04 import Solution04
-from solutions.day05 import Solution05
-from solutions.day06 import Solution06
-from solutions.day12 import Solution12
-from solutions.day24 import Solution24
+from lib.python import Runner, Solution
+from solutions import day01, day02, day03, day04, day05, day06, day12, day24
 
 # aoc:imports
 
 if __name__ == "__main__":
     solutions = {
-        1: Solution01,
-        2: Solution02,
-        3: Solution03,
-        4: Solution04,
-        5: Solution05,
-        6: Solution06,
-        12: Solution12,
-        24: Solution24,
+        1: Solution.from_module(day01),
+        2: Solution.from_module(day02),
+        3: Solution.from_module(day03),
+        4: Solution.from_module(day04),
+        5: Solution.from_module(day05),
+        6: Solution.from_module(day06),
+        12: Solution.from_module(day12),
+        24: Solution.from_module(day24),
         # aoc:solutions
     }
 

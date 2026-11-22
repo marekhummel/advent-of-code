@@ -1,18 +1,13 @@
 const std = @import("std");
 const types = @import("types.zig");
 
+pub const Part = *const fn (*types.ProblemInput, bool, std.mem.Allocator) anyerror!types.Result;
+
 pub const Solution = struct {
-    solvePart01: *const fn (*types.ProblemInput, bool, std.mem.Allocator) anyerror!types.Result,
-    solvePart02: *const fn (*types.ProblemInput, bool, std.mem.Allocator) anyerror!types.Result,
+    part1: Part,
+    part2: Part,
+
+    pub fn from(comptime day: type) Solution {
+        return .{ .part1 = day.part1, .part2 = day.part2 };
+    }
 };
-
-pub fn makeSolution(comptime day: type) Solution {
-    return .{
-        .solvePart01 = if (@hasDecl(day, "solvePart01")) day.solvePart01 else notImplemented,
-        .solvePart02 = if (@hasDecl(day, "solvePart02")) day.solvePart02 else notImplemented,
-    };
-}
-
-fn notImplemented(_: *types.ProblemInput, _: bool, _: std.mem.Allocator) anyerror!types.Result {
-    return .NotImplemented;
-}

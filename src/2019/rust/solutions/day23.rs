@@ -1,8 +1,37 @@
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 use aoc_lib::specific::intcode::Program;
 use itertools::Itertools;
 use std::cell::RefCell;
+
+pub fn part1(input: ProblemInput, is_sample: bool) -> ProblemResult {
+    if is_sample {
+        return ProblemResult::NoSample;
+    }
+
+    let intcode = input.string();
+    let mut network = Network::new(intcode, false);
+    network.init();
+
+    network.next().unwrap().1.into()
+}
+
+pub fn part2(input: ProblemInput, is_sample: bool) -> ProblemResult {
+    if is_sample {
+        return ProblemResult::NoSample;
+    }
+
+    let intcode = input.string();
+    let mut network = Network::new(intcode, true);
+    network.init();
+
+    network
+        .map(|(_, y)| y)
+        .tuple_windows()
+        .find(|(py, y)| py == y)
+        .unwrap()
+        .0
+        .into()
+}
 
 type Packet = (i128, i128);
 
@@ -93,40 +122,5 @@ impl Iterator for Network {
                 }
             }
         }
-    }
-}
-
-pub struct Solution23;
-impl Solution23 {}
-
-impl Solution for Solution23 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
-        if is_sample {
-            return ProblemResult::NoSample;
-        }
-
-        let intcode = input.string();
-        let mut network = Network::new(intcode, false);
-        network.init();
-
-        network.next().unwrap().1.to_result()
-    }
-
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
-        if is_sample {
-            return ProblemResult::NoSample;
-        }
-
-        let intcode = input.string();
-        let mut network = Network::new(intcode, true);
-        network.init();
-
-        network
-            .map(|(_, y)| y)
-            .tuple_windows()
-            .find(|(py, y)| py == y)
-            .unwrap()
-            .0
-            .to_result()
     }
 }

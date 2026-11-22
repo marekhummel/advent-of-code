@@ -1,20 +1,18 @@
-from lib.python import ProblemInput, ProblemResult, Solution
+from lib.python import ProblemInput, ProblemResult
 
 
-class Solution04(Solution):
-    @staticmethod
-    def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        return sum(compute_value(winning, mine) for winning, mine in parse(data))
+def part1(data: ProblemInput, is_sample: bool) -> ProblemResult:
+    return sum(compute_value(winning, mine) for winning, mine in parse(data))
 
-    @staticmethod
-    def solve_part02(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        copies = [1] * len(data)
-        for i, (winning, mine) in enumerate(parse(data)):
-            value = count_hits(winning, mine)
-            for j in range(i + 1, i + 1 + value):
-                copies[j] += copies[i]
 
-        return sum(copies)
+def part2(data: ProblemInput, is_sample: bool) -> ProblemResult:
+    copies = [1] * len(data)
+    for i, (winning, mine) in enumerate(parse(data)):
+        value = count_hits(winning, mine)
+        for j in range(i + 1, i + 1 + value):
+            copies[j] += copies[i]
+
+    return sum(copies)
 
 
 def parse(data: ProblemInput) -> list[tuple[set[int], set[int]]]:

@@ -1,27 +1,21 @@
 use aoc_lib::iterator::ParsedExt;
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 use aoc_lib::specific::knothash::KnotHash;
 use itertools::Itertools;
 
-pub struct Solution10;
-impl Solution10 {}
+pub fn part1(input: ProblemInput, is_sample: bool) -> ProblemResult {
+    let n = if is_sample { 5 } else { 256 };
+    let lengths = input.string().split(',').parsed::<usize>().collect_vec();
 
-impl Solution for Solution10 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
-        let n = if is_sample { 5 } else { 256 };
-        let lengths = input.string().split(',').parsed::<usize>().collect_vec();
+    let mut knot = KnotHash::custom(n, lengths);
+    knot.round();
 
-        let mut knot = KnotHash::custom(n, lengths);
-        knot.round();
+    (knot.circle[0] as u32 * knot.circle[1] as u32).into()
+}
 
-        (knot.circle[0] as u32 * knot.circle[1] as u32).to_result()
-    }
+pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let mut knot = KnotHash::new(&input.string());
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let mut knot = KnotHash::new(&input.string());
-
-        let hash = knot.hash().into_iter().map(|d| format!("{d:02x}")).join("");
-        hash.to_result()
-    }
+    let hash = knot.hash().into_iter().map(|d| format!("{d:02x}")).join("");
+    hash.into()
 }

@@ -1,24 +1,18 @@
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 use aoc_lib::specific::intcode::Program;
 
-pub struct Solution09;
-impl Solution09 {}
+pub fn part1(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let mut program = Program::init(&input.string());
 
-impl Solution for Solution09 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let mut program = Program::init(&input.string());
+    program.input.push_back(1);
+    program.execute();
+    program.output[0].into()
+}
 
-        program.input.push_back(1);
-        program.execute();
-        program.output[0].to_result()
-    }
+pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let mut program = Program::init(&input.string());
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let mut program = Program::init(&input.string());
-
-        program.input.push_back(2);
-        program.execute();
-        program.output[0].to_result()
-    }
+    program.input.push_back(2);
+    program.execute();
+    program.output[0].into()
 }

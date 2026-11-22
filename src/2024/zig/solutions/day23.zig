@@ -9,7 +9,7 @@ const util = aoc_lib.util;
 const Pc = [2]u8;
 const Conn = [4]u8;
 
-pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part1(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
     // Create network
@@ -36,7 +36,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     return Result.from(count);
 }
 
-pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part2(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
     var network = try createNetwork(input, allocator);

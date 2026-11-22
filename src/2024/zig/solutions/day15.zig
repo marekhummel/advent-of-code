@@ -7,13 +7,13 @@ const Grid = aoc_lib.types.Grid;
 const Direction = aoc_lib.cartesian.Direction;
 const Index = aoc_lib.cartesian.Index;
 
-pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part1(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     var warehouse, var robot, const moves = try parseInput(input, false, allocator);
     return Result.from(rearrange_warehouse(&warehouse, &robot, moves));
 }
 
-pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part2(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     var warehouse, var robot, const moves = try parseInput(input, true, allocator);
     return Result.from(rearrange_warehouse(&warehouse, &robot, moves));

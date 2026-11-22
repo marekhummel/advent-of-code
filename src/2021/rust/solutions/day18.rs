@@ -1,9 +1,25 @@
 use std::collections::VecDeque;
 use std::fmt::Debug;
 
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 use itertools::Itertools;
+
+pub fn part1(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let nums = input
+        .lines()
+        .into_iter()
+        .map(|l| Num::parse(&mut l.chars().collect()))
+        .collect_vec();
+
+    let final_num = nums.iter().skip(1).fold(nums[0].clone(), |sum, n| sum.add(n));
+    final_num.magnitute().into()
+}
+
+pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let nums = input.lines().into_iter().map(|l| Num::parse(&mut l.chars().collect()));
+    let magnitutes = nums.permutations(2).map(|perm| perm[0].add(&perm[1]).magnitute());
+    magnitutes.max().unwrap().into()
+}
 
 #[derive(Clone, PartialEq, Eq)]
 enum Num {
@@ -104,27 +120,5 @@ impl Num {
             Num::Regular(_) => false,
             Num::Pair(l, r) => l.split() || r.split(), // Won't split right unless left is false
         }
-    }
-}
-
-pub struct Solution18;
-impl Solution18 {}
-
-impl Solution for Solution18 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let nums = input
-            .lines()
-            .into_iter()
-            .map(|l| Num::parse(&mut l.chars().collect()))
-            .collect_vec();
-
-        let final_num = nums.iter().skip(1).fold(nums[0].clone(), |sum, n| sum.add(n));
-        final_num.magnitute().to_result()
-    }
-
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let nums = input.lines().into_iter().map(|l| Num::parse(&mut l.chars().collect()));
-        let magnitutes = nums.permutations(2).map(|perm| perm[0].add(&perm[1]).magnitute());
-        magnitutes.max().unwrap().to_result()
     }
 }

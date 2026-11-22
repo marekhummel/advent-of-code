@@ -4,13 +4,14 @@ use std::collections::HashMap;
 
 use aoc_lib::prelude::runner::AocRunner;
 use aoc_lib::prelude::solution::Solution;
+use aoc_lib::solution;
 
 use solutions::day06;
 // aoc:imports
 
 fn create_runner() -> AocRunner {
-    let entries: [(u8, Box<dyn Solution>); _] = [
-        (6, Box::new(day06::Solution06 {})),
+    let entries: [(u8, Solution); _] = [
+        (6, solution!(day06)),
         // aoc:solutions
     ];
 

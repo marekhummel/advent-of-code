@@ -3,6 +3,8 @@ defmodule Main do
   Main entry point for Advent of Code 2025 solutions.
   """
 
+  alias AocLib.Solution
+
   def main(args) do
     AocLib.Runner.parse_and_run(create_runner(), args)
   end
@@ -10,18 +12,18 @@ defmodule Main do
   def create_runner do
     solutions = %{
       # aoc:solutions
-      1 => Day01,
-      2 => Day02,
-      3 => Day03,
-      4 => Day04,
-      5 => Day05,
-      6 => Day06,
-      7 => Day07,
-      8 => Day08,
-      9 => Day09,
-      10 => Day10,
-      11 => Day11,
-      12 => Day12
+      1 => Solution.from(Day01),
+      2 => Solution.from(Day02),
+      3 => Solution.from(Day03),
+      4 => Solution.from(Day04),
+      5 => Solution.from(Day05),
+      6 => Solution.from(Day06),
+      7 => Solution.from(Day07),
+      8 => Solution.from(Day08),
+      9 => Solution.from(Day09),
+      10 => Solution.from(Day10),
+      11 => Solution.from(Day11),
+      12 => Solution.from(Day12)
     }
 
     AocLib.Runner.new(2025, solutions)

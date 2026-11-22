@@ -1,14 +1,12 @@
-from lib.python import ProblemInput, ProblemResult, Solution
+from lib.python import ProblemInput, ProblemResult
 
 
-class Solution01(Solution):
-    @staticmethod
-    def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        return sum(value01(line) for line in data)
+def part1(data: ProblemInput, is_sample: bool) -> ProblemResult:
+    return sum(value01(line) for line in data)
 
-    @staticmethod
-    def solve_part02(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        return sum(value02(line) for line in data)
+
+def part2(data: ProblemInput, is_sample: bool) -> ProblemResult:
+    return sum(value02(line) for line in data)
 
 
 def value01(s: str) -> int:

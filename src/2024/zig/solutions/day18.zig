@@ -10,7 +10,7 @@ const Size = aoc_lib.cartesian.Size;
 const PathFinding = aoc_lib.graph.PathFinding;
 const freeNested = aoc_lib.util.freeNested;
 
-pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part1(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     const size: Size = if (!is_sample) Size{ .width = 71, .height = 71 } else Size{ .width = 7, .height = 7 };
     const sim_length: usize = if (!is_sample) 1024 else 12;
 
@@ -19,7 +19,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     return Result.from(escapeSteps.?);
 }
 
-pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part2(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     const size: Size = if (!is_sample) Size{ .width = 71, .height = 71 } else Size{ .width = 7, .height = 7 };
     const falling_bytes = try parseInput(input, allocator);
 

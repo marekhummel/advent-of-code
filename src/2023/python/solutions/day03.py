@@ -1,19 +1,17 @@
-from lib.python import ProblemInput, ProblemResult, Solution
+from lib.python import ProblemInput, ProblemResult
 
 Number = tuple[int, int, int, int]
 Symbol = tuple[str, int, int]
 
 
-class Solution03(Solution):
-    @staticmethod
-    def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        numbers, symbols = parse(data)
-        return sum(n[0] for n in numbers if is_part(n, symbols))
+def part1(data: ProblemInput, is_sample: bool) -> ProblemResult:
+    numbers, symbols = parse(data)
+    return sum(n[0] for n in numbers if is_part(n, symbols))
 
-    @staticmethod
-    def solve_part02(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        numbers, symbols = parse(data)
-        return sum(gear_ratio(s, numbers) for s in symbols)
+
+def part2(data: ProblemInput, is_sample: bool) -> ProblemResult:
+    numbers, symbols = parse(data)
+    return sum(gear_ratio(s, numbers) for s in symbols)
 
 
 def parse(lines: list[str]) -> tuple[list[Number], list[Symbol]]:

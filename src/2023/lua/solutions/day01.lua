@@ -1,19 +1,17 @@
-local runner = require("lib.lua.runner")
-
-local day01 = {}
+local solution = require("lib.lua.solution")
 
 ---@param _input string[]
 ---@param _sample boolean
 ---@return AocResult
-function day01.part1(_input, _sample)
-    return runner.NotImplemented
+local function part1(_input, _sample)
+    return solution.NotImplemented
 end
 
 ---@param _input string[]
 ---@param _sample boolean
 ---@return AocResult
-function day01.part2(_input, _sample)
-    return runner.NotImplemented
+local function part2(_input, _sample)
+    return solution.NotImplemented
 end
 
-return day01
+return { part1 = part1, part2 = part2 }

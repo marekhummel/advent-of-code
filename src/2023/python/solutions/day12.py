@@ -1,18 +1,16 @@
 from functools import cache
 
-from lib.python import ProblemInput, ProblemResult, Solution
+from lib.python import ProblemInput, ProblemResult
 
 
-class Solution12(Solution):
-    @staticmethod
-    def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        lines = parse(data)
-        return sum(find_arrangements(*args, None) for args in lines)
+def part1(data: ProblemInput, is_sample: bool) -> ProblemResult:
+    lines = parse(data)
+    return sum(find_arrangements(*args, None) for args in lines)
 
-    @staticmethod
-    def solve_part02(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        lines = parse2(data)
-        return sum(find_arrangements(*args, None) for args in lines)
+
+def part2(data: ProblemInput, is_sample: bool) -> ProblemResult:
+    lines = parse2(data)
+    return sum(find_arrangements(*args, None) for args in lines)
 
 
 def parse(data: ProblemInput) -> list[tuple[str, tuple[int, ...]]]:

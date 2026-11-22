@@ -42,7 +42,7 @@ pub const AocRunner = struct {
             },
             else => return err,
         };
-        const solve = if (part == 1) implementation.solvePart01 else implementation.solvePart02;
+        const solve = if (part == 1) implementation.part1 else implementation.part2;
         const result = try solve(&input, sample, allocator);
         try stdout.interface.print("{f}\n", .{result});
         try stdout.interface.flush();

@@ -62,16 +62,12 @@ impl Display for ProblemResult {
     }
 }
 
-pub trait ToResult {
-    fn to_result(self) -> ProblemResult;
-}
-
 macro_rules! impl_integer_result {
     ($variant:ident, $storage:ty: $($source:ty),+ $(,)?) => {
         $(
-            impl ToResult for $source {
-                fn to_result(self) -> ProblemResult {
-                    ProblemResult::$variant(self as $storage)
+            impl From<$source> for ProblemResult {
+                fn from(value: $source) -> Self {
+                    Self::$variant(value as $storage)
                 }
             }
         )+
@@ -81,32 +77,41 @@ macro_rules! impl_integer_result {
 impl_integer_result!(Signed, i128: i8, i16, i32, i64, isize);
 impl_integer_result!(Unsigned, u128: u8, u16, u32, u64, usize);
 
-impl ToResult for i128 {
-    fn to_result(self) -> ProblemResult {
-        ProblemResult::Signed(self)
+impl From<i128> for ProblemResult {
+    fn from(value: i128) -> Self {
+        Self::Signed(value)
     }
 }
 
-impl ToResult for u128 {
-    fn to_result(self) -> ProblemResult {
-        ProblemResult::Unsigned(self)
+impl From<u128> for ProblemResult {
+    fn from(value: u128) -> Self {
+        Self::Unsigned(value)
     }
 }
 
-impl ToResult for BigInt {
-    fn to_result(self) -> ProblemResult {
-        ProblemResult::BigInt(self)
+impl From<BigInt> for ProblemResult {
+    fn from(value: BigInt) -> Self {
+        Self::BigInt(value)
     }
 }
 
-impl ToResult for String {
-    fn to_result(self) -> ProblemResult {
-        ProblemResult::String(self)
+impl From<String> for ProblemResult {
+    fn from(value: String) -> Self {
+        Self::String(value)
     }
 }
 
-impl ToResult for &str {
-    fn to_result(self) -> ProblemResult {
-        ProblemResult::String(self.to_owned())
+impl From<&str> for ProblemResult {
+    fn from(value: &str) -> Self {
+        Self::String(value.to_owned())
+    }
+}
+
+impl<T: Copy> From<&T> for ProblemResult
+where
+    Self: From<T>,
+{
+    fn from(value: &T) -> Self {
+        Self::from(*value)
     }
 }

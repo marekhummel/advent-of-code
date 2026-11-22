@@ -1,39 +1,37 @@
-from lib.python import ProblemInput, ProblemResult, Solution, Status
+from lib.python import ProblemInput, ProblemResult, Status
 
 
-class Solution24(Solution):
-    @staticmethod
-    def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        return Status.NOT_IMPLEMENTED
+def part1(data: ProblemInput, is_sample: bool) -> ProblemResult:
+    return Status.NOT_IMPLEMENTED
 
-    @staticmethod
-    def solve_part02(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        hailstones = parse(data)
 
-        # Check rust version to understand terms
-        p0, p1, p2 = (hailstones[0][0], hailstones[1][0], hailstones[2][0])
-        q0, q1, q2 = (hailstones[0][1], hailstones[1][1], hailstones[2][1])
+def part2(data: ProblemInput, is_sample: bool) -> ProblemResult:
+    hailstones = parse(data)
 
-        a = [
-            [0, (-q0[2] + q1[2]), (q0[1] - q1[1]), 0, (p0[2] - p1[2]), (-p0[1] + p1[1])],
-            [(q0[2] - q1[2]), 0, (-q0[0] + q1[0]), (-p0[2] + p1[2]), 0, (p0[0] - p1[0])],
-            [(-q0[1] + q1[1]), (q0[0] - q1[0]), 0, (p0[1] - p1[1]), (-p0[0] + p1[0]), 0],
-            [0, (-q0[2] + q2[2]), (q0[1] - q2[1]), 0, (p0[2] - p2[2]), (-p0[1] + p2[1])],
-            [(q0[2] - q2[2]), 0, (-q0[0] + q2[0]), (-p0[2] + p2[2]), 0, (p0[0] - p2[0])],
-            [(-q0[1] + q2[1]), (q0[0] - q2[0]), 0, (p0[1] - p2[1]), (-p0[0] + p2[0]), 0],
-        ]
-        b = [
-            p0[2] * q0[1] - p0[1] * q0[2] - p1[2] * q1[1] + p1[1] * q1[2],
-            p0[0] * q0[2] - p0[2] * q0[0] - p1[0] * q1[2] + p1[2] * q1[0],
-            p0[1] * q0[0] - p0[0] * q0[1] - p1[1] * q1[0] + p1[0] * q1[1],
-            p0[2] * q0[1] - p0[1] * q0[2] - p2[2] * q2[1] + p2[1] * q2[2],
-            p0[0] * q0[2] - p0[2] * q0[0] - p2[0] * q2[2] + p2[2] * q2[0],
-            p0[1] * q0[0] - p0[0] * q0[1] - p2[1] * q2[0] + p2[0] * q2[1],
-        ]
+    # Check rust version to understand terms
+    p0, p1, p2 = (hailstones[0][0], hailstones[1][0], hailstones[2][0])
+    q0, q1, q2 = (hailstones[0][1], hailstones[1][1], hailstones[2][1])
 
-        x = solve_cramer(a, b)
-        # print(x)
-        return sum(x[:3])
+    a = [
+        [0, (-q0[2] + q1[2]), (q0[1] - q1[1]), 0, (p0[2] - p1[2]), (-p0[1] + p1[1])],
+        [(q0[2] - q1[2]), 0, (-q0[0] + q1[0]), (-p0[2] + p1[2]), 0, (p0[0] - p1[0])],
+        [(-q0[1] + q1[1]), (q0[0] - q1[0]), 0, (p0[1] - p1[1]), (-p0[0] + p1[0]), 0],
+        [0, (-q0[2] + q2[2]), (q0[1] - q2[1]), 0, (p0[2] - p2[2]), (-p0[1] + p2[1])],
+        [(q0[2] - q2[2]), 0, (-q0[0] + q2[0]), (-p0[2] + p2[2]), 0, (p0[0] - p2[0])],
+        [(-q0[1] + q2[1]), (q0[0] - q2[0]), 0, (p0[1] - p2[1]), (-p0[0] + p2[0]), 0],
+    ]
+    b = [
+        p0[2] * q0[1] - p0[1] * q0[2] - p1[2] * q1[1] + p1[1] * q1[2],
+        p0[0] * q0[2] - p0[2] * q0[0] - p1[0] * q1[2] + p1[2] * q1[0],
+        p0[1] * q0[0] - p0[0] * q0[1] - p1[1] * q1[0] + p1[0] * q1[1],
+        p0[2] * q0[1] - p0[1] * q0[2] - p2[2] * q2[1] + p2[1] * q2[2],
+        p0[0] * q0[2] - p0[2] * q0[0] - p2[0] * q2[2] + p2[2] * q2[0],
+        p0[1] * q0[0] - p0[0] * q0[1] - p2[1] * q2[0] + p2[0] * q2[1],
+    ]
+
+    x = solve_cramer(a, b)
+    # print(x)
+    return sum(x[:3])
 
 
 def parse(lines: ProblemInput) -> list[tuple[tuple[int, int, int], tuple[int, int, int]]]:

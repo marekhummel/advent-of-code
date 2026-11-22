@@ -1,77 +1,71 @@
 use std::collections::HashMap;
 
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 use itertools::Itertools;
 
-pub struct Solution08;
-impl Solution08 {
-    fn parse(input: ProblemInput) -> Vec<(Vec<String>, Vec<String>)> {
-        input
-            .lines()
-            .into_iter()
-            .map(|l| {
-                let (wire_str, num_str) = l.split_once(" | ").unwrap();
-                let wires = wire_str.split_ascii_whitespace().map(|s| s.to_string()).collect();
-                let number = num_str.split_ascii_whitespace().map(|s| s.to_string()).collect();
-                (wires, number)
-            })
-            .collect()
-    }
+pub fn part1(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let entries = parse(input);
+
+    entries
+        .into_iter()
+        .flat_map(|(_, num)| num)
+        .filter(|digit| [2, 3, 4, 7].contains(&digit.len()))
+        .count()
+        .into()
 }
 
-impl Solution for Solution08 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let entries = Self::parse(input);
+pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let entries = parse(input);
+    let displays = [
+        "abcefg", "cf", "acdeg", "acdfg", "bcdf", "abdfg", "abdefg", "acf", "abcdefg", "abcdfg",
+    ];
 
-        entries
-            .into_iter()
-            .flat_map(|(_, num)| num)
-            .filter(|digit| [2, 3, 4, 7].contains(&digit.len()))
-            .count()
-            .to_result()
-    }
+    let mut output = 0;
+    for (signal_patterns, number) in entries {
+        // To speed up, instead of trying every permutation we could make some assumptions
+        // E.g. deduce the mapping of 'a' by comparing the signals for 1 and 7 and so forth.
+        for permutaion in "abcdefg".chars().permutations(7) {
+            // Create mapping
+            let mapping: HashMap<_, _> = "abcdefg".chars().zip_eq(permutaion).collect();
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let entries = Self::parse(input);
-        let displays = [
-            "abcefg", "cf", "acdeg", "acdfg", "bcdf", "abdfg", "abdefg", "acf", "abcdefg", "abcdfg",
-        ];
-
-        let mut output = 0;
-        for (signal_patterns, number) in entries {
-            // To speed up, instead of trying every permutation we could make some assumptions
-            // E.g. deduce the mapping of 'a' by comparing the signals for 1 and 7 and so forth.
-            for permutaion in "abcdefg".chars().permutations(7) {
-                // Create mapping
-                let mapping: HashMap<_, _> = "abcdefg".chars().zip_eq(permutaion).collect();
-
-                // Check if each recorded signal pattern leads to a valid digit
-                let mut valid = true;
-                for pattern in &signal_patterns {
-                    let segments: String = pattern.chars().map(|c| mapping[&c]).sorted().collect();
-                    if !displays.contains(&segments.as_str()) {
-                        valid = false;
-                        break;
-                    }
-                }
-
-                // If mapping is valid, apply to number
-                if valid {
-                    let value = number
-                        .iter()
-                        .map(|digit| {
-                            let displayed = digit.chars().map(|c| mapping[&c]).sorted().collect::<String>();
-
-                            displays.iter().position(|disp| disp == &displayed.as_str()).unwrap()
-                        })
-                        .fold(0, |val, digit| val * 10 + digit);
-                    output += value;
+            // Check if each recorded signal pattern leads to a valid digit
+            let mut valid = true;
+            for pattern in &signal_patterns {
+                let segments: String = pattern.chars().map(|c| mapping[&c]).sorted().collect();
+                if !displays.contains(&segments.as_str()) {
+                    valid = false;
                     break;
                 }
             }
-        }
 
-        output.to_result()
+            // If mapping is valid, apply to number
+            if valid {
+                let value = number
+                    .iter()
+                    .map(|digit| {
+                        let displayed = digit.chars().map(|c| mapping[&c]).sorted().collect::<String>();
+
+                        displays.iter().position(|disp| disp == &displayed.as_str()).unwrap()
+                    })
+                    .fold(0, |val, digit| val * 10 + digit);
+                output += value;
+                break;
+            }
+        }
     }
+
+    output.into()
+}
+
+fn parse(input: ProblemInput) -> Vec<(Vec<String>, Vec<String>)> {
+    input
+        .lines()
+        .into_iter()
+        .map(|l| {
+            let (wire_str, num_str) = l.split_once(" | ").unwrap();
+            let wires = wire_str.split_ascii_whitespace().map(|s| s.to_string()).collect();
+            let number = num_str.split_ascii_whitespace().map(|s| s.to_string()).collect();
+            (wires, number)
+        })
+        .collect()
 }

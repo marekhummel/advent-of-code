@@ -1,24 +1,18 @@
 use aoc_lib::iterator::ParsedExt;
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 use itertools::Itertools;
 
-pub struct Solution01;
-impl Solution01 {}
+pub fn part1(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let depths = input.lines().into_iter().parsed::<u16>();
+    let increasing = depths.tuple_windows().filter(|(a, b)| a < b).count();
 
-impl Solution for Solution01 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let depths = input.lines().into_iter().parsed::<u16>();
-        let increasing = depths.tuple_windows().filter(|(a, b)| a < b).count();
+    increasing.into()
+}
 
-        increasing.to_result()
-    }
+pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let depths = input.lines().into_iter().parsed::<u16>();
+    let windows = depths.tuple_windows().map(|(a, b, c)| a + b + c);
+    let increasing = windows.tuple_windows().filter(|(a, b)| a < b).count();
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let depths = input.lines().into_iter().parsed::<u16>();
-        let windows = depths.tuple_windows().map(|(a, b, c)| a + b + c);
-        let increasing = windows.tuple_windows().filter(|(a, b)| a < b).count();
-
-        increasing.to_result()
-    }
+    increasing.into()
 }

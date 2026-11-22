@@ -3,13 +3,10 @@ defmodule Day06 do
   Solution for Advent of Code 2025 - Day 06
   """
 
-  @behaviour AocLib.Solution
-
   alias AocLib.Types.ProblemInput
   alias AocLib.Util
 
-  @impl true
-  def solve_part01(input, _is_sample) do
+  def part1(input, _is_sample) do
     ProblemInput.lines(input)
     |> Enum.map(&String.split/1)
     |> Util.grid_transpose()
@@ -17,8 +14,7 @@ defmodule Day06 do
     |> compute_total()
   end
 
-  @impl true
-  def solve_part02(input, _is_sample) do
+  def part2(input, _is_sample) do
     columns = input |> ProblemInput.grid() |> Util.grid_transpose(" ")
 
     problems =

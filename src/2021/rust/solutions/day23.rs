@@ -3,9 +3,32 @@ use std::ops::Range;
 
 use aoc_lib::cartesian::Grid;
 use aoc_lib::graph::{DynamicGraph, PathFinding};
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 use itertools::Itertools;
+
+pub fn part1(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let cave = Cave::new(4, 2);
+
+    let start = Config::from_grid(&input.grid(), cave.room_depth);
+
+    let mut config_graph = create_config_graph(cave.clone());
+    let goal = cave.goal_config();
+    let best_moves = compute_best_config_path(&cave, &mut config_graph, start, goal);
+    best_moves.into()
+}
+
+pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let cave = Cave::new(4, 4);
+
+    let mut grid = input.grid();
+    extend_grid(&mut grid);
+    let start = Config::from_grid(&grid, cave.room_depth);
+
+    let mut config_graph = create_config_graph(cave.clone());
+    let goal = cave.goal_config();
+    let best_moves = compute_best_config_path(&cave, &mut config_graph, start, goal);
+    best_moves.into()
+}
 
 /// Image cave as list of indices. Start with the rooms first, from the innermost to the outermost.
 /// Given 4 amphipods per type, room A is 0-3, B is 4-7 etc., with the highest one connecting to the hallway.
@@ -257,119 +280,90 @@ impl Display for Config {
     }
 }
 
-pub struct Solution23;
-impl Solution23 {
-    fn extend_grid(folded: &mut Grid<char>) {
-        folded.rows.insert(3, "  #D#C#B#A#".chars().collect());
-        folded.rows.insert(4, "  #D#B#A#C#".chars().collect());
-    }
+fn extend_grid(folded: &mut Grid<char>) {
+    folded.rows.insert(3, "  #D#C#B#A#".chars().collect());
+    folded.rows.insert(4, "  #D#B#A#C#".chars().collect());
+}
 
-    fn create_config_graph(cave: Cave) -> DynamicGraph<Config> {
-        // Use dynamic graph. No need to build the entire graph of config transitions.
-        DynamicGraph {
-            adjacent: Box::new(move |config: &Config| {
-                let mut children = Vec::new();
-                for amphipod in 0..cave.amphipod_types {
-                    let energy = 10i64.pow(amphipod as u32);
-                    for pos in config.positions(amphipod) {
-                        for (nb, steps) in cave.reachable(amphipod, pos, config) {
-                            // Add to config graph
-                            let mut next_config = *config;
-                            next_config.move_amphipod(amphipod, pos, nb);
-                            children.push((next_config, energy * steps));
-                        }
-                    }
-                }
-                children
-            }),
-        }
-    }
-
-    fn compute_best_config_path(cave: &Cave, graph: &mut DynamicGraph<Config>, start: Config, goal: Config) -> i64 {
-        let best_moves = graph.astar(&start, &goal, |current| {
-            let mut diffs = 0;
+fn create_config_graph(cave: Cave) -> DynamicGraph<Config> {
+    // Use dynamic graph. No need to build the entire graph of config transitions.
+    DynamicGraph {
+        adjacent: Box::new(move |config: &Config| {
+            let mut children = Vec::new();
             for amphipod in 0..cave.amphipod_types {
-                let mut amphipod_diffs = 0;
-                for pos in current.positions(amphipod) {
-                    if !cave.is_in_hallway(pos) {
-                        // ** In room
-
-                        if cave.get_room(pos) == amphipod {
-                            // Correct room already
-                            // Has to vacate room to make space for others
-                            if cave
-                                .room_indices(amphipod)
-                                .any(|p| p < pos && current.contains_other_at(amphipod, p))
-                            {
-                                amphipod_diffs += 2 * cave.dist_to_hallway(pos) as i64;
-                            }
-                        } else {
-                            // Wrong room
-                            let (in_left, in_right) = cave.hallway_entry_points(amphipod);
-                            amphipod_diffs += cave.dist_to_hallway(pos) as i64;
-
-                            let (out_left, out_right) = cave.hallway_entry_points(cave.get_room(pos));
-                            amphipod_diffs += cave
-                                .dist_in_hallway(out_left, in_right)
-                                .min(cave.dist_in_hallway(out_right, in_left))
-                                as i64;
-
-                            let room = cave.room_indices(amphipod);
-                            let highest = room
-                                .into_iter()
-                                .filter(|r| !current.contains_any_at(*r))
-                                .max()
-                                .unwrap_or_default();
-                            amphipod_diffs += cave.dist_to_hallway(highest) as i64;
-                        }
-                    } else {
-                        // In hallway
-
-                        // Find dist to entry points
-                        let (in_left, in_right) = cave.hallway_entry_points(amphipod);
-                        amphipod_diffs += cave
-                            .dist_in_hallway(pos, in_left)
-                            .min(cave.dist_in_hallway(pos, in_right)) as i64;
-
-                        // Enter room
-                        let room = cave.room_indices(amphipod);
-                        let highest = room.filter(|r| !current.contains_any_at(*r)).max().unwrap_or_default();
-                        amphipod_diffs += cave.dist_to_hallway(highest) as i64;
+                let energy = 10i64.pow(amphipod as u32);
+                for pos in config.positions(amphipod) {
+                    for (nb, steps) in cave.reachable(amphipod, pos, config) {
+                        // Add to config graph
+                        let mut next_config = *config;
+                        next_config.move_amphipod(amphipod, pos, nb);
+                        children.push((next_config, energy * steps));
                     }
                 }
-
-                diffs += amphipod_diffs * 10i64.pow(amphipod as u32);
             }
-
-            diffs
-        });
-
-        best_moves.unwrap().0
+            children
+        }),
     }
 }
 
-impl Solution for Solution23 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let cave = Cave::new(4, 2);
+fn compute_best_config_path(cave: &Cave, graph: &mut DynamicGraph<Config>, start: Config, goal: Config) -> i64 {
+    let best_moves = graph.astar(&start, &goal, |current| {
+        let mut diffs = 0;
+        for amphipod in 0..cave.amphipod_types {
+            let mut amphipod_diffs = 0;
+            for pos in current.positions(amphipod) {
+                if !cave.is_in_hallway(pos) {
+                    // ** In room
 
-        let start = Config::from_grid(&input.grid(), cave.room_depth);
+                    if cave.get_room(pos) == amphipod {
+                        // Correct room already
+                        // Has to vacate room to make space for others
+                        if cave
+                            .room_indices(amphipod)
+                            .any(|p| p < pos && current.contains_other_at(amphipod, p))
+                        {
+                            amphipod_diffs += 2 * cave.dist_to_hallway(pos) as i64;
+                        }
+                    } else {
+                        // Wrong room
+                        let (in_left, in_right) = cave.hallway_entry_points(amphipod);
+                        amphipod_diffs += cave.dist_to_hallway(pos) as i64;
 
-        let mut config_graph = Self::create_config_graph(cave.clone());
-        let goal = cave.goal_config();
-        let best_moves = Self::compute_best_config_path(&cave, &mut config_graph, start, goal);
-        best_moves.to_result()
-    }
+                        let (out_left, out_right) = cave.hallway_entry_points(cave.get_room(pos));
+                        amphipod_diffs += cave
+                            .dist_in_hallway(out_left, in_right)
+                            .min(cave.dist_in_hallway(out_right, in_left))
+                            as i64;
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let cave = Cave::new(4, 4);
+                        let room = cave.room_indices(amphipod);
+                        let highest = room
+                            .into_iter()
+                            .filter(|r| !current.contains_any_at(*r))
+                            .max()
+                            .unwrap_or_default();
+                        amphipod_diffs += cave.dist_to_hallway(highest) as i64;
+                    }
+                } else {
+                    // In hallway
 
-        let mut grid = input.grid();
-        Self::extend_grid(&mut grid);
-        let start = Config::from_grid(&grid, cave.room_depth);
+                    // Find dist to entry points
+                    let (in_left, in_right) = cave.hallway_entry_points(amphipod);
+                    amphipod_diffs += cave
+                        .dist_in_hallway(pos, in_left)
+                        .min(cave.dist_in_hallway(pos, in_right)) as i64;
 
-        let mut config_graph = Self::create_config_graph(cave.clone());
-        let goal = cave.goal_config();
-        let best_moves = Self::compute_best_config_path(&cave, &mut config_graph, start, goal);
-        best_moves.to_result()
-    }
+                    // Enter room
+                    let room = cave.room_indices(amphipod);
+                    let highest = room.filter(|r| !current.contains_any_at(*r)).max().unwrap_or_default();
+                    amphipod_diffs += cave.dist_to_hallway(highest) as i64;
+                }
+            }
+
+            diffs += amphipod_diffs * 10i64.pow(amphipod as u32);
+        }
+
+        diffs
+    });
+
+    best_moves.unwrap().0
 }

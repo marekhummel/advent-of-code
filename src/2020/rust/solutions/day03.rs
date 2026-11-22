@@ -1,32 +1,26 @@
 use aoc_lib::cartesian::{Grid, Index};
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 
-pub struct Solution03;
-impl Solution03 {
-    fn trees(area: &Grid<char>, dx: usize, dy: usize) -> usize {
-        (0..area.size.height)
-            .step_by(dy)
-            .map(|j| Index::new((j * dx / dy) % area.size.width, j))
-            .filter(|idx| *area.get(idx) == '#')
-            .count()
-    }
+pub fn part1(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let area = input.grid();
+    trees(&area, 3, 1).into()
 }
 
-impl Solution for Solution03 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let area = input.grid();
-        Self::trees(&area, 3, 1).to_result()
-    }
+pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let area = input.grid();
+    let slopes = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)];
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let area = input.grid();
-        let slopes = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)];
+    slopes
+        .into_iter()
+        .map(|(dx, dy)| trees(&area, dx, dy))
+        .product::<usize>()
+        .into()
+}
 
-        slopes
-            .into_iter()
-            .map(|(dx, dy)| Self::trees(&area, dx, dy))
-            .product::<usize>()
-            .to_result()
-    }
+fn trees(area: &Grid<char>, dx: usize, dy: usize) -> usize {
+    (0..area.size.height)
+        .step_by(dy)
+        .map(|j| Index::new((j * dx / dy) % area.size.width, j))
+        .filter(|idx| *area.get(idx) == '#')
+        .count()
 }

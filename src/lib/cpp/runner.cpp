@@ -39,10 +39,6 @@ int run(int argc, char* argv[], int year, const std::unordered_map<int, Solution
         return 0;
     }
     const auto solve = part == 1 ? entry->second.part1 : entry->second.part2;
-    if (solve == nullptr) {
-        std::cout << Status::NotImplemented << '\n';
-        return 0;
-    }
 
     try {
         const bool sample = std::string_view(argv[3]) == "sample";

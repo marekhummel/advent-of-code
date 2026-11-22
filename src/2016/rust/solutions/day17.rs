@@ -1,12 +1,28 @@
 use std::collections::{HashSet, VecDeque};
 
 use aoc_lib::cartesian::{Direction, Index, Size};
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 use itertools::Itertools;
 
-pub struct Solution17;
-impl Solution17 {}
+pub fn part1(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let rooms = Rooms {
+        passcode: input.string(),
+        size: Size::square(4),
+        vault: Index::new(3, 3),
+    };
+
+    Rooms::format_path(&rooms.paths_to_vault().next().unwrap()).into()
+}
+
+pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let rooms = Rooms {
+        passcode: input.string(),
+        size: Size::square(4),
+        vault: Index::new(3, 3),
+    };
+
+    rooms.paths_to_vault().map(|p| p.len()).max().unwrap().into()
+}
 
 struct Rooms {
     passcode: String,
@@ -76,27 +92,5 @@ impl<'a> Iterator for PathsIterator<'a> {
         }
 
         None
-    }
-}
-
-impl Solution for Solution17 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let rooms = Rooms {
-            passcode: input.string(),
-            size: Size::square(4),
-            vault: Index::new(3, 3),
-        };
-
-        Rooms::format_path(&rooms.paths_to_vault().next().unwrap()).to_result()
-    }
-
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let rooms = Rooms {
-            passcode: input.string(),
-            size: Size::square(4),
-            vault: Index::new(3, 3),
-        };
-
-        rooms.paths_to_vault().map(|p| p.len()).max().unwrap().to_result()
     }
 }

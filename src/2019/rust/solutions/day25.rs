@@ -1,10 +1,78 @@
 use aoc_lib::cartesian::Direction;
 use aoc_lib::iterator::ParsedExt;
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 use aoc_lib::specific::intcode::Program;
 use itertools::Itertools;
 use regex::Regex;
+
+pub fn part1(input: ProblemInput, is_sample: bool) -> ProblemResult {
+    if is_sample {
+        return ProblemResult::NoSample;
+    }
+
+    // Interactive
+    // use std::io::{self, BufRead};
+    // let stdin = io::stdin();
+    // let mut droid = Droid::new(input.string());
+    // loop {
+    //     let (output, command_req) = droid.execute_until_command();
+    //     println!("{}", output.join("\n"));
+
+    //     if !command_req {
+    //         break;
+    //     }
+
+    //     let cmd = stdin.lock().lines().next().unwrap().unwrap();
+    //     droid.program.input.extend(cmd.bytes().parsed::<i128>());
+    //     droid.program.input.push_back(b'\n' as i128);
+    // }
+    // return ProblemResult::Unsolved;
+
+    // Explore ship and try to pick up all items
+    let mut droid = Droid::new(input.string());
+    while !droid.explore(&mut vec![]) {
+        droid.reset();
+    }
+
+    // Walk back to pressure sensitive floor
+    assert!(droid.pressure_sens_floor.is_some());
+    let mut path = droid.pressure_sens_floor.clone().unwrap();
+    let door = path.pop().unwrap();
+    for dir in path {
+        droid.give_command(Command::Move(dir), true);
+    }
+
+    // Try all item combinations
+    let regex = Regex::new(r"\d+").unwrap();
+    let items = droid.collected_items.clone();
+    for drop_items in items.iter().powerset() {
+        // Drop
+        for item in &drop_items {
+            droid.give_command(Command::Drop(item.to_string()), true);
+        }
+
+        // Try plate
+        droid.give_command(Command::Move(door), false);
+        let (output, command_req) = droid.execute_until_command();
+        if !(command_req) {
+            // Success!
+            let str_output = output.join("\n");
+            let passkey = regex.find(&str_output).unwrap();
+            return passkey.as_str().into();
+        }
+
+        // Take back
+        for item in &drop_items {
+            droid.give_command(Command::Take(item.to_string()), true);
+        }
+    }
+
+    ProblemResult::Unsolved
+}
+
+pub fn part2(_input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    ProblemResult::NoPartTwo
+}
 
 enum Command {
     Move(Direction),
@@ -158,79 +226,5 @@ impl Droid {
 
             (room.to_string(), doors, items_room)
         })
-    }
-}
-
-pub struct Solution25;
-impl Solution25 {}
-
-impl Solution for Solution25 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
-        if is_sample {
-            return ProblemResult::NoSample;
-        }
-
-        // Interactive
-        // use std::io::{self, BufRead};
-        // let stdin = io::stdin();
-        // let mut droid = Droid::new(input.string());
-        // loop {
-        //     let (output, command_req) = droid.execute_until_command();
-        //     println!("{}", output.join("\n"));
-
-        //     if !command_req {
-        //         break;
-        //     }
-
-        //     let cmd = stdin.lock().lines().next().unwrap().unwrap();
-        //     droid.program.input.extend(cmd.bytes().parsed::<i128>());
-        //     droid.program.input.push_back(b'\n' as i128);
-        // }
-        // return ProblemResult::Unsolved;
-
-        // Explore ship and try to pick up all items
-        let mut droid = Droid::new(input.string());
-        while !droid.explore(&mut vec![]) {
-            droid.reset();
-        }
-
-        // Walk back to pressure sensitive floor
-        assert!(droid.pressure_sens_floor.is_some());
-        let mut path = droid.pressure_sens_floor.clone().unwrap();
-        let door = path.pop().unwrap();
-        for dir in path {
-            droid.give_command(Command::Move(dir), true);
-        }
-
-        // Try all item combinations
-        let regex = Regex::new(r"\d+").unwrap();
-        let items = droid.collected_items.clone();
-        for drop_items in items.iter().powerset() {
-            // Drop
-            for item in &drop_items {
-                droid.give_command(Command::Drop(item.to_string()), true);
-            }
-
-            // Try plate
-            droid.give_command(Command::Move(door), false);
-            let (output, command_req) = droid.execute_until_command();
-            if !(command_req) {
-                // Success!
-                let str_output = output.join("\n");
-                let passkey = regex.find(&str_output).unwrap();
-                return passkey.as_str().to_result();
-            }
-
-            // Take back
-            for item in &drop_items {
-                droid.give_command(Command::Take(item.to_string()), true);
-            }
-        }
-
-        ProblemResult::Unsolved
-    }
-
-    fn solve_version02(&self, _input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        ProblemResult::NoPartTwo
     }
 }

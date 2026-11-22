@@ -9,7 +9,7 @@ const Position = aoc_lib.cartesian.Position;
 const PosDelta = aoc_lib.cartesian.PosDelta;
 const set = @import("ziglangSet");
 
-pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part1(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
     const antenna_map = try input.grid();
@@ -24,7 +24,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     return Result.from(antinodes.cardinality());
 }
 
-pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part2(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
     const antenna_map = try input.grid();

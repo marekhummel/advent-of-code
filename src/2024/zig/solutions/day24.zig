@@ -10,7 +10,7 @@ const join = aoc_lib.util.join;
 const Op = enum { XOR, AND, OR };
 const Instruction = struct { op: Op, arg1: []const u8, arg2: []const u8, target: []const u8 };
 
-pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part1(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
     // Parse
@@ -40,7 +40,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     return Result.from(z);
 }
 
-pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part2(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     if (is_sample) return Result.NoSample;
 
     // Binary adder (z = x + y), bitwise from LSB to MSB with carry c

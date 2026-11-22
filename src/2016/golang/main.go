@@ -8,7 +8,7 @@ import (
 
 func main() {
 	lib.Run(2016, map[int]lib.Solution{
-		10: {Part1: day10.Part1, Part2: day10.Part2},
+		10: lib.NewSolution(day10.Part1, day10.Part2),
 		// aoc:solutions
 	})
 }

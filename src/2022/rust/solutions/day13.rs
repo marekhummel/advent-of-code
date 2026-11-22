@@ -1,10 +1,32 @@
 use std::collections::VecDeque;
 use std::fmt::Display;
 
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 use itertools::Itertools;
 use regex::Regex;
+
+pub fn part1(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let packet_pairs = parse(input).into_iter().tuples();
+
+    let right_order = packet_pairs.enumerate().filter(|(_, (left, right))| left <= right);
+    let index_sum = right_order.map(|(i, _)| i + 1).sum::<usize>();
+
+    index_sum.into()
+}
+
+pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let mut packets = parse(input);
+
+    let divider1 = Packet::List(vec![Packet::List(vec![Packet::Int(2)])]);
+    let divider2 = Packet::List(vec![Packet::List(vec![Packet::Int(6)])]);
+    packets.extend([divider1.clone(), divider2.clone()]);
+
+    packets.sort();
+
+    let distress1 = packets.iter().position(|p| p == &divider1).unwrap() + 1;
+    let distress2 = packets.iter().position(|p| p == &divider2).unwrap() + 1;
+    (distress1 * distress2).into()
+}
 
 #[derive(Clone)]
 enum Packet {
@@ -83,44 +105,16 @@ impl PartialOrd for Packet {
 
 impl Eq for Packet {}
 
-pub struct Solution13;
-impl Solution13 {
-    fn parse(input: ProblemInput) -> Vec<Packet> {
-        let token_rgx = Regex::new(r"(\[|\]|,|\d+)").unwrap();
+fn parse(input: ProblemInput) -> Vec<Packet> {
+    let token_rgx = Regex::new(r"(\[|\]|,|\d+)").unwrap();
 
-        input
-            .lines()
-            .into_iter()
-            .filter(|l| !l.is_empty())
-            .map(|p| {
-                let mut tokens = token_rgx.find_iter(&p).map(|m| m.as_str().to_string()).collect();
-                Packet::parse(&mut tokens)
-            })
-            .collect()
-    }
-}
-
-impl Solution for Solution13 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let packet_pairs = Self::parse(input).into_iter().tuples();
-
-        let right_order = packet_pairs.enumerate().filter(|(_, (left, right))| left <= right);
-        let index_sum = right_order.map(|(i, _)| i + 1).sum::<usize>();
-
-        index_sum.to_result()
-    }
-
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let mut packets = Self::parse(input);
-
-        let divider1 = Packet::List(vec![Packet::List(vec![Packet::Int(2)])]);
-        let divider2 = Packet::List(vec![Packet::List(vec![Packet::Int(6)])]);
-        packets.extend([divider1.clone(), divider2.clone()]);
-
-        packets.sort();
-
-        let distress1 = packets.iter().position(|p| p == &divider1).unwrap() + 1;
-        let distress2 = packets.iter().position(|p| p == &divider2).unwrap() + 1;
-        (distress1 * distress2).to_result()
-    }
+    input
+        .lines()
+        .into_iter()
+        .filter(|l| !l.is_empty())
+        .map(|p| {
+            let mut tokens = token_rgx.find_iter(&p).map(|m| m.as_str().to_string()).collect();
+            Packet::parse(&mut tokens)
+        })
+        .collect()
 }

@@ -1,24 +1,22 @@
 import re
 from concurrent.futures import ThreadPoolExecutor
 
-from lib.python import ProblemInput, ProblemResult, Solution, Status
+from lib.python import ProblemInput, ProblemResult, Status
 
 type Joltages = list[int]
 type Buttons = list[list[int]]
 type Machine = tuple[int, Buttons, Joltages]
 
 
-class Solution10(Solution):
-    @staticmethod
-    def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        return Status.NOT_IMPLEMENTED
+def part1(data: ProblemInput, is_sample: bool) -> ProblemResult:
+    return Status.NOT_IMPLEMENTED
 
-    @staticmethod
-    def solve_part02(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        machines = parse(data)
-        with ThreadPoolExecutor() as executor:
-            results = executor.map(joltage_config, machines)
-            return sum(results)
+
+def part2(data: ProblemInput, is_sample: bool) -> ProblemResult:
+    machines = parse(data)
+    with ThreadPoolExecutor() as executor:
+        results = executor.map(joltage_config, machines)
+        return sum(results)
 
 
 def parse(data: ProblemInput) -> list[Machine]:

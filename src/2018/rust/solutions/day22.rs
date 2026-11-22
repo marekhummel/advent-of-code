@@ -2,9 +2,79 @@ use std::cmp::Reverse;
 use std::collections::{BinaryHeap, HashMap, HashSet};
 
 use aoc_lib::cartesian::{Index, Size};
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 use itertools::iproduct;
+
+pub fn part1(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let (depth, target) = parse(input);
+
+    let mut cave = Cave {
+        depth,
+        target,
+        geologic: HashMap::new(),
+        erosion: HashMap::new(),
+    };
+
+    iproduct!(0..=target.i, 0..=target.j)
+        .map(|(i, j)| cave.erosion_level(Index { i, j }) % 3)
+        .sum::<usize>()
+        .into()
+}
+
+pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let (depth, target) = parse(input);
+
+    let mut cave = Cave {
+        depth,
+        target,
+        geologic: HashMap::new(),
+        erosion: HashMap::new(),
+    };
+
+    let cave_size = Size::square(usize::MAX);
+    let mut queue = BinaryHeap::from([Reverse((0, Index::new(0, 0), Gear::Torch))]);
+    let mut seen = HashSet::new();
+
+    while let Some(Reverse((time, idx, gear))) = queue.pop() {
+        if idx == target && gear == Gear::Torch {
+            return time.into();
+        }
+
+        // No need to revisit regions with the same tool
+        if seen.contains(&(idx, gear)) {
+            continue;
+        }
+        seen.insert((idx, gear));
+
+        // Switch gears
+        match (cave.region(idx), &gear) {
+            (Region::Rocky, Gear::Torch) => queue.push(Reverse((time + 7, idx, Gear::Climbing))),
+            (Region::Rocky, Gear::Climbing) => queue.push(Reverse((time + 7, idx, Gear::Torch))),
+            (Region::Wet, Gear::Nothing) => queue.push(Reverse((time + 7, idx, Gear::Climbing))),
+            (Region::Wet, Gear::Climbing) => queue.push(Reverse((time + 7, idx, Gear::Nothing))),
+            (Region::Narrow, Gear::Nothing) => queue.push(Reverse((time + 7, idx, Gear::Torch))),
+            (Region::Narrow, Gear::Torch) => queue.push(Reverse((time + 7, idx, Gear::Nothing))),
+            (Region::Rocky, Gear::Nothing) | (Region::Wet, Gear::Torch) | (Region::Narrow, Gear::Climbing) => {
+                unreachable!()
+            }
+        }
+
+        // Go to next region
+        for next in idx.von_neumann_neighbors(cave_size) {
+            match (cave.region(next), &gear) {
+                (Region::Rocky, Gear::Torch)
+                | (Region::Rocky, Gear::Climbing)
+                | (Region::Wet, Gear::Nothing)
+                | (Region::Wet, Gear::Climbing)
+                | (Region::Narrow, Gear::Nothing)
+                | (Region::Narrow, Gear::Torch) => queue.push(Reverse((time + 1, next, gear))),
+                (Region::Rocky, Gear::Nothing) | (Region::Wet, Gear::Torch) | (Region::Narrow, Gear::Climbing) => {}
+            }
+        }
+    }
+
+    unreachable!()
+}
 
 #[derive(Debug, PartialEq, Eq)]
 enum Region {
@@ -65,88 +135,12 @@ impl Cave {
     }
 }
 
-pub struct Solution22;
-impl Solution22 {
-    fn parse(input: ProblemInput) -> (usize, Index) {
-        let lines = input.lines();
+fn parse(input: ProblemInput) -> (usize, Index) {
+    let lines = input.lines();
 
-        let depth = lines[0].split_once(' ').unwrap().1.parse().unwrap();
-        let (i, j) = lines[1].split_once(' ').unwrap().1.split_once(',').unwrap();
-        let target = Index::new(i.parse().unwrap(), j.parse().unwrap());
+    let depth = lines[0].split_once(' ').unwrap().1.parse().unwrap();
+    let (i, j) = lines[1].split_once(' ').unwrap().1.split_once(',').unwrap();
+    let target = Index::new(i.parse().unwrap(), j.parse().unwrap());
 
-        (depth, target)
-    }
-}
-
-impl Solution for Solution22 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let (depth, target) = Self::parse(input);
-
-        let mut cave = Cave {
-            depth,
-            target,
-            geologic: HashMap::new(),
-            erosion: HashMap::new(),
-        };
-
-        iproduct!(0..=target.i, 0..=target.j)
-            .map(|(i, j)| cave.erosion_level(Index { i, j }) % 3)
-            .sum::<usize>()
-            .to_result()
-    }
-
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let (depth, target) = Self::parse(input);
-
-        let mut cave = Cave {
-            depth,
-            target,
-            geologic: HashMap::new(),
-            erosion: HashMap::new(),
-        };
-
-        let cave_size = Size::square(usize::MAX);
-        let mut queue = BinaryHeap::from([Reverse((0, Index::new(0, 0), Gear::Torch))]);
-        let mut seen = HashSet::new();
-
-        while let Some(Reverse((time, idx, gear))) = queue.pop() {
-            if idx == target && gear == Gear::Torch {
-                return time.to_result();
-            }
-
-            // No need to revisit regions with the same tool
-            if seen.contains(&(idx, gear)) {
-                continue;
-            }
-            seen.insert((idx, gear));
-
-            // Switch gears
-            match (cave.region(idx), &gear) {
-                (Region::Rocky, Gear::Torch) => queue.push(Reverse((time + 7, idx, Gear::Climbing))),
-                (Region::Rocky, Gear::Climbing) => queue.push(Reverse((time + 7, idx, Gear::Torch))),
-                (Region::Wet, Gear::Nothing) => queue.push(Reverse((time + 7, idx, Gear::Climbing))),
-                (Region::Wet, Gear::Climbing) => queue.push(Reverse((time + 7, idx, Gear::Nothing))),
-                (Region::Narrow, Gear::Nothing) => queue.push(Reverse((time + 7, idx, Gear::Torch))),
-                (Region::Narrow, Gear::Torch) => queue.push(Reverse((time + 7, idx, Gear::Nothing))),
-                (Region::Rocky, Gear::Nothing) | (Region::Wet, Gear::Torch) | (Region::Narrow, Gear::Climbing) => {
-                    unreachable!()
-                }
-            }
-
-            // Go to next region
-            for next in idx.von_neumann_neighbors(cave_size) {
-                match (cave.region(next), &gear) {
-                    (Region::Rocky, Gear::Torch)
-                    | (Region::Rocky, Gear::Climbing)
-                    | (Region::Wet, Gear::Nothing)
-                    | (Region::Wet, Gear::Climbing)
-                    | (Region::Narrow, Gear::Nothing)
-                    | (Region::Narrow, Gear::Torch) => queue.push(Reverse((time + 1, next, gear))),
-                    (Region::Rocky, Gear::Nothing) | (Region::Wet, Gear::Torch) | (Region::Narrow, Gear::Climbing) => {}
-                }
-            }
-        }
-
-        unreachable!()
-    }
+    (depth, target)
 }

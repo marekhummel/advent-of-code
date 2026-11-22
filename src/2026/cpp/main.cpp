@@ -4,7 +4,7 @@
 
 int main(int argc, char* argv[]) {
     return aoc::run(argc, argv, 2026, {
-        {1, day01::solution},
+        {1, AOC_SOLUTION(day01)},
         // aoc:solutions
     });
 }

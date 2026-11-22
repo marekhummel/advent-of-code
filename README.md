@@ -92,26 +92,34 @@ VS Code. Release builds are native executables; debug builds run on the Dart VM.
 ### Library Contract
 
 Each `src/lib/LANGUAGE/` must provide typed inputs and results, a representation
-of a day's two parts, and a runner with a day-to-solution map. Part functions
+of a day's two parts, and a runner with a day-to-solution map. Each day defines
+ordinary `part1` and `part2` functions (`Part1`/`Part2` in Go); the year's entry
+point registers them in a common solution container. Helpers and algorithm
+state stay local to the day; no day-specific solution types are needed. Part functions
 receive input lines and a sample flag; Zig additionally receives an allocator.
 Results distinguish integer answers, text answers and informational statuses.
 Floating-point answers must be explicitly formatted as strings by the part.
 
 | Language | Day registration and part contract | Result representation |
 | --- | --- | --- |
-| Rust | Struct implementing `Solution`; map of boxed trait objects; default methods | `Signed(i128)`, `Unsigned(u128)`, big integer, text and statuses |
-| Python | Subclass of `Solution`; map of classes; default static methods | Integer/text/status enum union |
-| Zig | Day module adapted to a struct with two typed function pointers; missing functions get defaults | `Signed(i128)`, `Unsigned(u128)`, text and status union |
-| Elixir | Day module implementing `AocLib.Solution`; map of modules; optional callbacks | Integer/string/status atom union |
-| Lua | Day table with annotated functions; map of tables | Integer/string/tagged status union |
+| Rust | `solution!(day01)`; function pointers checked at compile time | `Signed(i128)`, `Unsigned(u128)`, big integer, text and statuses |
+| Python | `Solution.from_module(day01)`; module checked against a typed protocol | Integer/text/status enum union |
+| Zig | `Solution.from(day01)`; function pointers checked at compile time | `Signed(i128)`, `Unsigned(u128)`, text and status union |
+| Elixir | `Solution.from(Day01)`; both exported functions checked at registration | Integer/string/status atom union |
+| Lua | `Solution.from(day01)` validates both functions in a plain module table | Integer/string/tagged status union |
 | Dart | Common `Solution` class with typed function fields; map of instances | Sealed integer/text/status variants |
-| C++ | Common `Solution` struct with typed function pointers; map of instances | `intmax_t`/`uintmax_t`, text and status variant |
-| Go | Common `Solution` struct with typed function fields; map of instances | Generic `Signed`/`Unsigned` constructors widen to 64 bits; formatted answer or status |
+| C++ | `AOC_SOLUTION(day01)`; function pointers checked at compile time | `intmax_t`/`uintmax_t`, text and status variant |
+| Go | `lib.NewSolution(part1, part2)` requires two typed, non-nil functions | Generic `Signed`/`Unsigned` constructors widen to 64 bits; formatted answer or status |
 
 Unfinished parts return `NotImplemented`; an unregistered day returns `Unsolved`.
-`NoSample` (problem statement has no sample) and `NoPartTwo` (typical for day 25) are also successful informational outcomes. Missing
-part functions are handled as `NotImplemented`. Templates use their final import
-paths and are excluded from checks.
+Rust converts integer and text answers with `.into()`.
+`NoSample` (problem statement has no sample) and `NoPartTwo` (typical for day 25)
+are also successful informational outcomes. Every registered day must provide both
+part functions. Unfinished parts explicitly return `NotImplemented`; no default
+functions are supplied. Runners load input and call the selected function directly.
+Lua days return plain function tables, validated by `Solution.from(day)` in the year
+entry point. Go containers use `NewSolution` to reject nil part functions.
+Templates use their final import paths and are excluded from checks.
 
 The runner accepts `DAY PART MODE` (`real` or `sample`), reads
 `inputs/YEAR/{input,sample}DD.txt` with a `_PART` fallback, and prints only the

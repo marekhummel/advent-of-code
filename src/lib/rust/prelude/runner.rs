@@ -9,7 +9,7 @@ use crate::prelude::{
 
 pub struct AocRunner {
     pub year: u16,
-    pub solutions: HashMap<u8, Box<dyn Solution>>,
+    pub solutions: HashMap<u8, Solution>,
 }
 
 #[derive(Parser)]
@@ -49,8 +49,8 @@ impl AocRunner {
         }
         let input = ProblemInput::read(&filename).ok_or_else(|| format!("Could not read {filename}"))?;
         Ok(match part {
-            1 => solution.solve_version01(input, sample),
-            2 => solution.solve_version02(input, sample),
+            1 => (solution.part1)(input, sample),
+            2 => (solution.part2)(input, sample),
             _ => unreachable!(),
         })
     }

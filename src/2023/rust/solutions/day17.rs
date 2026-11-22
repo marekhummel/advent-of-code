@@ -3,41 +3,37 @@ use std::collections::{BinaryHeap, HashSet};
 use std::fmt::Debug;
 
 use aoc_lib::cartesian::{Direction, Grid, Index, Size};
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 use itertools::Itertools;
-pub struct Solution17;
 
-impl Solution17 {
-    fn get_graph(input: ProblemInput) -> LatticeGraph {
-        let grid = input
-            .grid()
-            .map_elements(|elem| elem.to_string().parse::<u32>().unwrap());
+pub fn part1(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let graph = get_graph(input);
+    let start = Index::new(0, 0);
+    let goal = Index::new(graph.size.width - 1, graph.size.height - 1);
 
-        LatticeGraph {
-            size: grid.size,
-            weights: grid,
-        }
+    graph.shortest_path(start, goal, 0, 3).unwrap().heat.into()
+}
+
+pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let graph = get_graph(input);
+    let start = Index::new(0, 0);
+    let goal = Index::new(graph.size.width - 1, graph.size.height - 1);
+
+    graph.shortest_path(start, goal, 4, 10).unwrap().heat.into()
+}
+
+fn get_graph(input: ProblemInput) -> LatticeGraph {
+    let grid = input
+        .grid()
+        .map_elements(|elem| elem.to_string().parse::<u32>().unwrap());
+
+    LatticeGraph {
+        size: grid.size,
+        weights: grid,
     }
 }
 
-impl Solution for Solution17 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let graph = Self::get_graph(input);
-        let start = Index::new(0, 0);
-        let goal = Index::new(graph.size.width - 1, graph.size.height - 1);
 
-        graph.shortest_path(start, goal, 0, 3).unwrap().heat.to_result()
-    }
-
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let graph = Self::get_graph(input);
-        let start = Index::new(0, 0);
-        let goal = Index::new(graph.size.width - 1, graph.size.height - 1);
-
-        graph.shortest_path(start, goal, 4, 10).unwrap().heat.to_result()
-    }
-}
 
 #[derive(Clone, Debug, Eq, PartialEq, Hash)]
 struct Vertex {

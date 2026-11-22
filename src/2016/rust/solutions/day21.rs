@@ -1,8 +1,33 @@
 use std::collections::HashMap;
 
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 use itertools::Itertools;
+
+pub fn part1(input: ProblemInput, is_sample: bool) -> ProblemResult {
+    let instructions = parse(input);
+    let password = if is_sample { "abcde" } else { "abcdefgh" };
+
+    let mut scramble = password.to_string();
+    for inst in instructions {
+        scramble = inst.perform(&scramble);
+    }
+
+    scramble.into()
+}
+
+pub fn part2(input: ProblemInput, is_sample: bool) -> ProblemResult {
+    let instructions = parse(input);
+    let password = if is_sample { "decab" } else { "fbgdceah" };
+    let rot_letter_map = create_mapping_rev_letter(password.len());
+
+    let mut unscramble = password.to_string();
+    for inst in instructions.into_iter().rev() {
+        let inv_inst = inst.invert(&unscramble, &rot_letter_map);
+        unscramble = inv_inst.perform(&unscramble);
+    }
+
+    unscramble.into()
+}
 
 #[derive(Debug, Clone, Copy)]
 enum Instruction {
@@ -63,90 +88,59 @@ impl Instruction {
     }
 }
 
-pub struct Solution21;
-impl Solution21 {
-    fn parse(input: ProblemInput) -> Vec<Instruction> {
-        input
-            .lines()
-            .into_iter()
-            .map(|l| {
-                let words = l.split_whitespace().collect_vec();
-                match &words[..] {
-                    ["swap", "position", ..] => {
-                        let x: usize = words[2].parse().unwrap();
-                        let y: usize = words[5].parse().unwrap();
-                        Instruction::SwapPos(x.min(y), x.max(y))
-                    }
-                    ["swap", "letter", ..] => {
-                        Instruction::SwapLetter(words[2].chars().next().unwrap(), words[5].chars().next().unwrap())
-                    }
-                    ["rotate", "left", ..] => Instruction::RotLeft(words[2].parse().unwrap()),
-                    ["rotate", "right", ..] => Instruction::RotRight(words[2].parse().unwrap()),
-                    ["rotate", "based", ..] => Instruction::RotLetter(words[6].chars().next().unwrap()),
-                    ["reverse", ..] => Instruction::Reverse(words[2].parse().unwrap(), words[4].parse().unwrap()),
-                    ["move", ..] => Instruction::Move(words[2].parse().unwrap(), words[5].parse().unwrap()),
-                    _ => panic!(),
+fn parse(input: ProblemInput) -> Vec<Instruction> {
+    input
+        .lines()
+        .into_iter()
+        .map(|l| {
+            let words = l.split_whitespace().collect_vec();
+            match &words[..] {
+                ["swap", "position", ..] => {
+                    let x: usize = words[2].parse().unwrap();
+                    let y: usize = words[5].parse().unwrap();
+                    Instruction::SwapPos(x.min(y), x.max(y))
                 }
-            })
-            .collect_vec()
-    }
-
-    // Rotate by letter is not trivally invertable. Thus we look at each outcome and see that the mapping position of
-    // the target char actually is a bijection, at least for the password length of the input.
-    // This function creates a mapping from new position to instruction which rotates back to the old position.
-    fn create_mapping_rev_letter(pwd_len: usize) -> HashMap<usize, Instruction> {
-        let base = "a".repeat(pwd_len);
-        let inst = Instruction::RotLetter('b');
-
-        // Find old and new position mapping when rotating on b for all indices of b
-        let pos_mapping: HashMap<_, _> = (0..pwd_len)
-            .map(|i| {
-                let mut pwd = base.clone();
-                pwd.replace_range(i..i + 1, "b");
-                let new_i = inst.perform(&pwd).find('b').unwrap();
-                (new_i, i)
-            })
-            .collect();
-
-        // Turn old pos into an instruction based on new pos
-        pos_mapping
-            .into_iter()
-            .map(|(new, old)| {
-                let inst = if new > old {
-                    Instruction::RotLeft(new - old)
-                } else {
-                    Instruction::RotRight(old - new)
-                };
-                (new, inst)
-            })
-            .collect()
-    }
+                ["swap", "letter", ..] => {
+                    Instruction::SwapLetter(words[2].chars().next().unwrap(), words[5].chars().next().unwrap())
+                }
+                ["rotate", "left", ..] => Instruction::RotLeft(words[2].parse().unwrap()),
+                ["rotate", "right", ..] => Instruction::RotRight(words[2].parse().unwrap()),
+                ["rotate", "based", ..] => Instruction::RotLetter(words[6].chars().next().unwrap()),
+                ["reverse", ..] => Instruction::Reverse(words[2].parse().unwrap(), words[4].parse().unwrap()),
+                ["move", ..] => Instruction::Move(words[2].parse().unwrap(), words[5].parse().unwrap()),
+                _ => panic!(),
+            }
+        })
+        .collect_vec()
 }
 
-impl Solution for Solution21 {
-    fn solve_version01(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
-        let instructions = Self::parse(input);
-        let password = if is_sample { "abcde" } else { "abcdefgh" };
+// Rotate by letter is not trivally invertable. Thus we look at each outcome and see that the mapping position of
+// the target char actually is a bijection, at least for the password length of the input.
+// This function creates a mapping from new position to instruction which rotates back to the old position.
+fn create_mapping_rev_letter(pwd_len: usize) -> HashMap<usize, Instruction> {
+    let base = "a".repeat(pwd_len);
+    let inst = Instruction::RotLetter('b');
 
-        let mut scramble = password.to_string();
-        for inst in instructions {
-            scramble = inst.perform(&scramble);
-        }
+    // Find old and new position mapping when rotating on b for all indices of b
+    let pos_mapping: HashMap<_, _> = (0..pwd_len)
+        .map(|i| {
+            let mut pwd = base.clone();
+            pwd.replace_range(i..i + 1, "b");
+            let new_i = inst.perform(&pwd).find('b').unwrap();
+            (new_i, i)
+        })
+        .collect();
 
-        scramble.to_result()
-    }
-
-    fn solve_version02(&self, input: ProblemInput, is_sample: bool) -> ProblemResult {
-        let instructions = Self::parse(input);
-        let password = if is_sample { "decab" } else { "fbgdceah" };
-        let rot_letter_map = Self::create_mapping_rev_letter(password.len());
-
-        let mut unscramble = password.to_string();
-        for inst in instructions.into_iter().rev() {
-            let inv_inst = inst.invert(&unscramble, &rot_letter_map);
-            unscramble = inv_inst.perform(&unscramble);
-        }
-
-        unscramble.to_result()
-    }
+    // Turn old pos into an instruction based on new pos
+    pos_mapping
+        .into_iter()
+        .map(|(new, old)| {
+            let inst = if new > old {
+                Instruction::RotLeft(new - old)
+            } else {
+                Instruction::RotRight(old - new)
+            };
+            (new, inst)
+        })
+        .collect()
 }

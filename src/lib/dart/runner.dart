@@ -47,10 +47,10 @@ final class StatusResult extends Result {
 typedef Part = Result Function(List<String> input, bool sample);
 
 class Solution {
-  final Part? part1;
-  final Part? part2;
+  final Part part1;
+  final Part part2;
 
-  const Solution({this.part1, this.part2});
+  const Solution({required this.part1, required this.part2});
 }
 
 /// Run one DAY PART MODE case; scripts handle batches and verification.
@@ -75,10 +75,6 @@ void run(int year, Map<int, Solution> solutions, List<String> args) {
     return;
   }
   final solve = part == 1 ? solution.part1 : solution.part2;
-  if (solve == null) {
-    stdout.writeln(Result.notImplemented);
-    return;
-  }
 
   final sample = mode == 'sample';
   final prefix = sample ? 'sample' : 'input';

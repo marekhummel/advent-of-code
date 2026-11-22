@@ -3,12 +3,9 @@ defmodule Day12 do
   Solution for Advent of Code 2025 - Day 12
   """
 
-  @behaviour AocLib.Solution
-
   alias AocLib.Types.ProblemInput
 
-  @impl true
-  def solve_part01(input, is_sample) do
+  def part1(input, is_sample) do
     {shape_sizes, region_requirements} = input |> ProblemInput.lines() |> parse()
 
     {valid, _invalid, unsure} =
@@ -43,8 +40,7 @@ defmodule Day12 do
     if not is_sample and unsure == 0, do: valid, else: :unsolved
   end
 
-  @impl true
-  def solve_part02(_input, _is_sample) do
+  def part2(_input, _is_sample) do
     :no_part_two
   end
 

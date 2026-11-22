@@ -1,7 +1,9 @@
-"""Base class and types for Advent of Code solutions."""
+"""Function registration and types for Advent of Code solutions."""
 
+from collections.abc import Callable
+from dataclasses import dataclass
 from enum import Enum
-from typing import NewType
+from typing import NewType, Protocol
 
 
 # Valid results for cases that do not have an answer.
@@ -22,21 +24,25 @@ ProblemInput = NewType("ProblemInput", list[str])
 ProblemResult = int | str | Status
 
 
+Part = Callable[[ProblemInput, bool], ProblemResult]
+
+
+class DayModule(Protocol):
+    """A day module exposing both correctly typed part functions."""
+
+    def part1(self, data: ProblemInput, is_sample: bool, /) -> ProblemResult: ...
+
+    def part2(self, data: ProblemInput, is_sample: bool, /) -> ProblemResult: ...
+
+
+@dataclass(frozen=True)
 class Solution:
-    """
-    Base class for Advent of Code solutions.
+    """The two required callable parts of a day."""
 
-    Subclasses should implement:
-    - solve_part01(input, is_sample): Solve part 1
-    - solve_part02(input, is_sample): Solve part 2
-    """
+    part1: Part
+    part2: Part
 
-    @staticmethod
-    def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        """Solve part 1 of the problem."""
-        raise NotImplementedError()
-
-    @staticmethod
-    def solve_part02(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        """Solve part 2 of the problem."""
-        raise NotImplementedError()
+    @classmethod
+    def from_module(cls, day: DayModule) -> "Solution":
+        """Bind both parts from a module satisfying the day contract."""
+        return cls(part1=day.part1, part2=day.part2)

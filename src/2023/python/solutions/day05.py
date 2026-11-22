@@ -2,7 +2,7 @@ from functools import reduce
 from itertools import zip_longest
 from typing import NamedTuple
 
-from lib.python import ProblemInput, ProblemResult, Solution
+from lib.python import ProblemInput, ProblemResult
 
 
 class MapEntry(NamedTuple):
@@ -20,16 +20,14 @@ class SeedRange(NamedTuple):
     len: int
 
 
-class Solution05(Solution):
-    @staticmethod
-    def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        seeds, maps = parse(data)
-        return min(reduce(apply_map, maps, s) for s in seeds)
+def part1(data: ProblemInput, is_sample: bool) -> ProblemResult:
+    seeds, maps = parse(data)
+    return min(reduce(apply_map, maps, s) for s in seeds)
 
-    @staticmethod
-    def solve_part02(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        seeds, maps = parse2(data)
-        return min(sr.start for s in seeds for sr in reduce(apply_map2, maps, [s]))
+
+def part2(data: ProblemInput, is_sample: bool) -> ProblemResult:
+    seeds, maps = parse2(data)
+    return min(sr.start for s in seeds for sr in reduce(apply_map2, maps, [s]))
 
 
 def parse(lines: ProblemInput) -> tuple[list[Seed], list[Map]]:

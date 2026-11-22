@@ -1,7 +1,24 @@
 use std::collections::HashMap;
 
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
+
+pub fn part1(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let tree = parse(input);
+    let dir_sizes = tree.keys().map(|dir| dir_size(dir.clone(), &tree));
+    dir_sizes.filter(|&s| s <= 100000).sum::<u64>().into()
+}
+
+pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let tree = parse(input);
+
+    let occupied = dir_size(vec![], &tree);
+    let unused_space = 70_000_000 - occupied;
+    let to_be_deleted_space = 30_000_000 - unused_space;
+
+    let dir_sizes = tree.keys().map(|dir| dir_size(dir.clone(), &tree));
+    let smallest = dir_sizes.filter(|&ds| ds > to_be_deleted_space).min().unwrap();
+    smallest.into()
+}
 
 #[derive(Debug)]
 #[allow(dead_code)] // technically filename is unused, but its kept for clarity
@@ -10,68 +27,45 @@ enum Entry {
     Directory(String),
 }
 
-pub struct Solution07;
-impl Solution07 {
-    fn parse(input: ProblemInput) -> HashMap<Vec<String>, Vec<Entry>> {
-        let mut tree: HashMap<Vec<String>, Vec<Entry>> = HashMap::new();
-        let mut cwd = vec![];
+fn parse(input: ProblemInput) -> HashMap<Vec<String>, Vec<Entry>> {
+    let mut tree: HashMap<Vec<String>, Vec<Entry>> = HashMap::new();
+    let mut cwd = vec![];
 
-        for line in input.lines() {
-            if let Some(command) = line.strip_prefix("$ ") {
-                if let Some(dir) = command.strip_prefix("cd ") {
-                    // CD
-                    match dir {
-                        "/" => cwd = vec![],
-                        ".." => _ = cwd.pop(),
-                        _ => cwd.push(dir.to_string()),
-                    }
+    for line in input.lines() {
+        if let Some(command) = line.strip_prefix("$ ") {
+            if let Some(dir) = command.strip_prefix("cd ") {
+                // CD
+                match dir {
+                    "/" => cwd = vec![],
+                    ".." => _ = cwd.pop(),
+                    _ => cwd.push(dir.to_string()),
                 }
-            } else {
-                // Output line of LS command
-                let entry = if let Some(dirname) = line.strip_prefix("dir ") {
-                    Entry::Directory(dirname.to_string())
-                } else {
-                    let (size, file) = line.split_once(' ').unwrap();
-                    Entry::File(file.to_string(), size.parse().unwrap())
-                };
-                tree.entry(cwd.clone()).or_default().push(entry);
             }
+        } else {
+            // Output line of LS command
+            let entry = if let Some(dirname) = line.strip_prefix("dir ") {
+                Entry::Directory(dirname.to_string())
+            } else {
+                let (size, file) = line.split_once(' ').unwrap();
+                Entry::File(file.to_string(), size.parse().unwrap())
+            };
+            tree.entry(cwd.clone()).or_default().push(entry);
         }
-
-        tree
     }
 
-    fn dir_size(directory: Vec<String>, files: &HashMap<Vec<String>, Vec<Entry>>) -> u64 {
-        files[&directory]
-            .iter()
-            .map(|content| match content {
-                Entry::File(_, size) => *size,
-                Entry::Directory(subdir) => {
-                    let mut full_path = directory.clone();
-                    full_path.push(subdir.clone());
-                    Self::dir_size(full_path, files)
-                }
-            })
-            .sum()
-    }
+    tree
 }
 
-impl Solution for Solution07 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let tree = Self::parse(input);
-        let dir_sizes = tree.keys().map(|dir| Self::dir_size(dir.clone(), &tree));
-        dir_sizes.filter(|&s| s <= 100000).sum::<u64>().to_result()
-    }
-
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let tree = Self::parse(input);
-
-        let occupied = Self::dir_size(vec![], &tree);
-        let unused_space = 70_000_000 - occupied;
-        let to_be_deleted_space = 30_000_000 - unused_space;
-
-        let dir_sizes = tree.keys().map(|dir| Self::dir_size(dir.clone(), &tree));
-        let smallest = dir_sizes.filter(|&ds| ds > to_be_deleted_space).min().unwrap();
-        smallest.to_result()
-    }
+fn dir_size(directory: Vec<String>, files: &HashMap<Vec<String>, Vec<Entry>>) -> u64 {
+    files[&directory]
+        .iter()
+        .map(|content| match content {
+            Entry::File(_, size) => *size,
+            Entry::Directory(subdir) => {
+                let mut full_path = directory.clone();
+                full_path.push(subdir.clone());
+                dir_size(full_path, files)
+            }
+        })
+        .sum()
 }

@@ -12,9 +12,4 @@ inline aoc::Result part2(const aoc::Input & /*input*/, bool /*sample*/) {
     return aoc::Status::NotImplemented;
 }
 
-inline const aoc::Solution solution{
-    .part1 = part1,
-    .part2 = part2,
-};
-
 } // namespace dayXX

@@ -1,17 +1,15 @@
 from functools import reduce
 from itertools import starmap
 
-from lib.python import ProblemInput, ProblemResult, Solution
+from lib.python import ProblemInput, ProblemResult
 
 
-class Solution02(Solution):
-    @staticmethod
-    def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        return sum(g for g, reveals in parse(data) if valid(reveals, 12, 13, 14))
+def part1(data: ProblemInput, is_sample: bool) -> ProblemResult:
+    return sum(g for g, reveals in parse(data) if valid(reveals, 12, 13, 14))
 
-    @staticmethod
-    def solve_part02(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        return sum(power(reveals) for _, reveals in parse(data))
+
+def part2(data: ProblemInput, is_sample: bool) -> ProblemResult:
+    return sum(power(reveals) for _, reveals in parse(data))
 
 
 def parse(lines: list[str]) -> list[tuple[int, list[tuple[int, str]]]]:

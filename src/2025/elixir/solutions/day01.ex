@@ -3,15 +3,12 @@ defmodule Day01 do
   Solution for Advent of Code 2025 - Day 01
   """
 
-  @behaviour AocLib.Solution
-
   alias AocLib.Types.ProblemInput
   alias AocLib.Util
 
   @dial_size 100
 
-  @impl true
-  def solve_part01(input, _is_sample) do
+  def part1(input, _is_sample) do
     instructions = parse_instructions(input)
 
     positions =
@@ -27,8 +24,7 @@ defmodule Day01 do
     password
   end
 
-  @impl true
-  def solve_part02(input, _is_sample) do
+  def part2(input, _is_sample) do
     instructions = parse_instructions(input)
 
     positions =

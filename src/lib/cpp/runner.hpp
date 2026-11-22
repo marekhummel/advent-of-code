@@ -17,13 +17,17 @@ using Result = std::variant<Signed, Unsigned, std::string, Status>;
 using Part = Result (*)(const Input &, bool);
 
 struct Solution {
-    Part part1 = nullptr;
-    Part part2 = nullptr;
+    Part part1;
+    Part part2;
+
+    Solution(Part first, Part second) : part1(first), part2(second) {}
 };
 
 std::ostream &operator<<(std::ostream &output, Status status);
 
-// Run DAY PART MODE (real|sample). Missing days/parts succeed; errors go to stderr.
+// Run DAY PART MODE (real|sample). Unregistered/unfinished solutions succeed; errors go to stderr.
 int run(int argc, char *argv[], int year, const std::unordered_map<int, Solution> &solutions);
 
 } // namespace aoc
+
+#define AOC_SOLUTION(day) ::aoc::Solution{day::part1, day::part2}

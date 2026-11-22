@@ -1,5 +1,24 @@
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
+
+pub fn part1(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let (numbers, symbols) = parse(input);
+    numbers
+        .iter()
+        .filter(|n| is_part(n, &symbols))
+        .map(|n| n.value)
+        .sum::<u32>()
+        .into()
+}
+
+pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let (numbers, symbols) = parse(input);
+    symbols
+        .iter()
+        .map(|s| gear_ratio(s, &numbers))
+        .sum::<u32>()
+        .into()
+}
+
 #[derive(Debug)]
 struct Number {
     value: u32,
@@ -15,113 +34,88 @@ struct Symbol {
     col: usize,
 }
 
-pub struct Solution03;
+fn parse(input: ProblemInput) -> (Vec<Number>, Vec<Symbol>) {
+    let mut numbers = vec![];
+    let mut symbols = vec![];
+    for (i, line) in input.lines().iter().enumerate() {
+        let mut num_str = String::from("");
+        let mut number_start = 0;
+        for (j, ch) in line.chars().enumerate() {
+            if ch.is_ascii_digit() {
+                if num_str.is_empty() {
+                    number_start = j;
+                }
+                num_str.push(ch);
+            } else {
+                if !num_str.is_empty() {
+                    numbers.push(Number {
+                        value: num_str.parse().unwrap(),
+                        row: i,
+                        col_start: number_start,
+                        col_end: j - 1,
+                    });
+                    num_str.clear();
+                }
 
-impl Solution03 {
-    fn parse(&self, input: ProblemInput) -> (Vec<Number>, Vec<Symbol>) {
-        let mut numbers = vec![];
-        let mut symbols = vec![];
-        for (i, line) in input.lines().iter().enumerate() {
-            let mut num_str = String::from("");
-            let mut number_start = 0;
-            for (j, ch) in line.chars().enumerate() {
-                if ch.is_ascii_digit() {
-                    if num_str.is_empty() {
-                        number_start = j;
-                    }
-                    num_str.push(ch);
-                } else {
-                    if !num_str.is_empty() {
-                        numbers.push(Number {
-                            value: num_str.parse().unwrap(),
-                            row: i,
-                            col_start: number_start,
-                            col_end: j - 1,
-                        });
-                        num_str.clear();
-                    }
-
-                    if ch != '.' && ch != '\n' {
-                        symbols.push(Symbol {
-                            value: ch,
-                            row: i,
-                            col: j,
-                        })
-                    }
+                if ch != '.' && ch != '\n' {
+                    symbols.push(Symbol {
+                        value: ch,
+                        row: i,
+                        col: j,
+                    })
                 }
             }
-
-            if !num_str.is_empty() {
-                numbers.push(Number {
-                    value: num_str.parse().unwrap(),
-                    row: i,
-                    col_start: number_start,
-                    col_end: line.len() - 1,
-                });
-            }
         }
 
-        (numbers, symbols)
-    }
-
-    fn is_part(&self, num: &Number, symbols: &Vec<Symbol>) -> bool {
-        for sym in symbols {
-            if sym.row == num.row && (sym.col + 1 == num.col_start || sym.col == num.col_end + 1) {
-                return true;
-            }
-            if (sym.row + 1 == num.row || sym.row == num.row + 1)
-                && (num.col_start <= sym.col + 1 && sym.col <= num.col_end + 1)
-            {
-                return true;
-            }
-        }
-
-        false
-    }
-
-    fn gear_ratio(&self, sym: &Symbol, numbers: &Vec<Number>) -> u32 {
-        if sym.value != '*' {
-            return 0;
-        }
-
-        let mut part_numbers = vec![];
-        for num in numbers {
-            if sym.row == num.row && (sym.col + 1 == num.col_start || sym.col == num.col_end + 1) {
-                part_numbers.push(num.value);
-                continue;
-            }
-            if (sym.row + 1 == num.row || sym.row == num.row + 1)
-                && (num.col_start <= sym.col + 1 && sym.col <= num.col_end + 1)
-            {
-                part_numbers.push(num.value);
-                continue;
-            }
-        }
-
-        match part_numbers.len() {
-            2 => part_numbers.iter().product(),
-            _ => 0,
+        if !num_str.is_empty() {
+            numbers.push(Number {
+                value: num_str.parse().unwrap(),
+                row: i,
+                col_start: number_start,
+                col_end: line.len() - 1,
+            });
         }
     }
+
+    (numbers, symbols)
 }
 
-impl Solution for Solution03 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let (numbers, symbols) = self.parse(input);
-        numbers
-            .iter()
-            .filter(|n| self.is_part(n, &symbols))
-            .map(|n| n.value)
-            .sum::<u32>()
-            .to_result()
+fn is_part(num: &Number, symbols: &Vec<Symbol>) -> bool {
+    for sym in symbols {
+        if sym.row == num.row && (sym.col + 1 == num.col_start || sym.col == num.col_end + 1) {
+            return true;
+        }
+        if (sym.row + 1 == num.row || sym.row == num.row + 1)
+            && (num.col_start <= sym.col + 1 && sym.col <= num.col_end + 1)
+        {
+            return true;
+        }
     }
 
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let (numbers, symbols) = self.parse(input);
-        symbols
-            .iter()
-            .map(|s| self.gear_ratio(s, &numbers))
-            .sum::<u32>()
-            .to_result()
+    false
+}
+
+fn gear_ratio(sym: &Symbol, numbers: &Vec<Number>) -> u32 {
+    if sym.value != '*' {
+        return 0;
+    }
+
+    let mut part_numbers = vec![];
+    for num in numbers {
+        if sym.row == num.row && (sym.col + 1 == num.col_start || sym.col == num.col_end + 1) {
+            part_numbers.push(num.value);
+            continue;
+        }
+        if (sym.row + 1 == num.row || sym.row == num.row + 1)
+            && (num.col_start <= sym.col + 1 && sym.col <= num.col_end + 1)
+        {
+            part_numbers.push(num.value);
+            continue;
+        }
+    }
+
+    match part_numbers.len() {
+        2 => part_numbers.iter().product(),
+        _ => 0,
     }
 }

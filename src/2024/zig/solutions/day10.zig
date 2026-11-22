@@ -7,12 +7,12 @@ const Result = aoc_lib.types.Result;
 const Grid = aoc_lib.types.Grid;
 const Index = aoc_lib.cartesian.Index;
 
-pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part1(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     return Result.from(try countTrails(try input.grid(), true, allocator));
 }
 
-pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part2(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     return Result.from(try countTrails(try input.grid(), false, allocator));
 }

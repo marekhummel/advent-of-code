@@ -9,14 +9,14 @@ const PathFinding = aoc_lib.graph.PathFinding;
 const Index = aoc_lib.cartesian.Index;
 const Direction = aoc_lib.cartesian.Direction;
 
-pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part1(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
     const astar_result = try runAstar(try input.grid(), false, allocator);
     return Result.from(astar_result.cost);
 }
 
-pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part2(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
 
     const astar_result = try runAstar(try input.grid(), true, allocator);

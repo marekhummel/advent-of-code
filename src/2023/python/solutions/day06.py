@@ -1,18 +1,16 @@
 from functools import reduce
 from math import ceil, floor, sqrt
 
-from lib.python import ProblemInput, ProblemResult, Solution
+from lib.python import ProblemInput, ProblemResult
 
 
-class Solution06(Solution):
-    @staticmethod
-    def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        race_winners = [solve_race(r) for r in parse(data)]
-        return reduce(lambda acc, x: acc * x, race_winners, 1)
+def part1(data: ProblemInput, is_sample: bool) -> ProblemResult:
+    race_winners = [solve_race(r) for r in parse(data)]
+    return reduce(lambda acc, x: acc * x, race_winners, 1)
 
-    @staticmethod
-    def solve_part02(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        return solve_race(parse2(data))
+
+def part2(data: ProblemInput, is_sample: bool) -> ProblemResult:
+    return solve_race(parse2(data))
 
 
 def parse(lines: ProblemInput) -> list[tuple[int, int]]:

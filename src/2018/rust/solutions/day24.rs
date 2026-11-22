@@ -1,9 +1,33 @@
 use std::collections::{HashMap, HashSet};
 
-use aoc_lib::prelude::solution::Solution;
-use aoc_lib::prelude::types::{ProblemInput, ProblemResult, ToResult};
+use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 use itertools::Itertools;
 use regex::Regex;
+
+pub fn part1(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let divisions = parse(input);
+    let (_, remaining) = fight(divisions).unwrap();
+    remaining.into()
+}
+
+pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
+    let divisions = parse(input);
+
+    let mut low = 1;
+    let mut high = u32::MAX / 2;
+
+    while high - low > 1 {
+        let attack_boost = (low + high) / 2;
+
+        match fight_boosted(divisions.clone(), attack_boost) {
+            Some((Army::ImmuneSystem, _)) => high = attack_boost,
+            Some((Army::Infection, _)) => low = attack_boost,
+            None => low = attack_boost,
+        }
+    }
+
+    fight_boosted(divisions, high).unwrap().1.into()
+}
 
 type DivId = (Army, u8);
 
@@ -104,112 +128,82 @@ impl Division {
     }
 }
 
-pub struct Solution24;
-impl Solution24 {
-    fn parse(input: ProblemInput) -> Vec<Division> {
-        let mut divisions = Vec::new();
+fn parse(input: ProblemInput) -> Vec<Division> {
+    let mut divisions = Vec::new();
 
-        for team in input.lines().split(|l| l.is_empty()) {
-            let army = team[0].trim_end_matches(':');
-            divisions.extend(
-                team[1..]
-                    .iter()
-                    .enumerate()
-                    .map(|(i, l)| Division::from_line(l, army, i as u8 + 1)),
-            );
-        }
-
-        divisions
-    }
-
-    fn fight(mut divisions: Vec<Division>) -> Option<(Army, u32)> {
-        for _ in 1.. {
-            // Target Selection
-            let mut targets = HashMap::new();
-            for div in divisions
+    for team in input.lines().split(|l| l.is_empty()) {
+        let army = team[0].trim_end_matches(':');
+        divisions.extend(
+            team[1..]
                 .iter()
-                .filter(|d| d.soldiers > 0)
-                .sorted_by_key(|d| (d.effective_power(), d.initiative))
-                .rev()
-            {
-                let selected = targets.values().copied().collect_vec();
-                if let Some(target) = div.select_target(&divisions, &selected) {
-                    targets.insert(div.id(), target);
-                }
-            }
-
-            // Attack
-            let mut success = false;
-            let attackers = divisions
-                .iter()
-                .filter(|d| d.soldiers > 0)
-                .sorted_by_key(|d| d.initiative)
-                .rev()
-                .map(|d| d.id())
-                .collect_vec();
-            for att in attackers {
-                let attacker = divisions.iter().find(|a| a.id() == att).unwrap().clone();
-                if let Some(t_id) = targets.get(&att) {
-                    let target = divisions.iter_mut().find(|t| t.id() == *t_id).unwrap();
-                    success |= attacker.attack(target);
-                }
-            }
-
-            // Fight finished without any attack => remis
-            if !success {
-                return None;
-            }
-
-            if !Self::has_soldiers(&divisions, Army::ImmuneSystem) {
-                return Some((Army::Infection, divisions.into_iter().map(|d| d.soldiers).sum()));
-            }
-
-            if !Self::has_soldiers(&divisions, Army::Infection) {
-                return Some((Army::ImmuneSystem, divisions.into_iter().map(|d| d.soldiers).sum()));
-            }
-        }
-
-        unreachable!()
+                .enumerate()
+                .map(|(i, l)| Division::from_line(l, army, i as u8 + 1)),
+        );
     }
 
-    fn has_soldiers(divisions: &[Division], army: Army) -> bool {
-        divisions.iter().filter(|d| d.army == army && d.soldiers > 0).count() > 0
-    }
-
-    fn fight_boosted(mut divisions: Vec<Division>, boost: u32) -> Option<(Army, u32)> {
-        for div in divisions.iter_mut() {
-            if div.army == Army::ImmuneSystem {
-                div.dmg += boost;
-            }
-        }
-
-        Self::fight(divisions)
-    }
+    divisions
 }
 
-impl Solution for Solution24 {
-    fn solve_version01(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let divisions = Self::parse(input);
-        let (_, remaining) = Self::fight(divisions).unwrap();
-        remaining.to_result()
-    }
-
-    fn solve_version02(&self, input: ProblemInput, _is_sample: bool) -> ProblemResult {
-        let divisions = Self::parse(input);
-
-        let mut low = 1;
-        let mut high = u32::MAX / 2;
-
-        while high - low > 1 {
-            let attack_boost = (low + high) / 2;
-
-            match Self::fight_boosted(divisions.clone(), attack_boost) {
-                Some((Army::ImmuneSystem, _)) => high = attack_boost,
-                Some((Army::Infection, _)) => low = attack_boost,
-                None => low = attack_boost,
+fn fight(mut divisions: Vec<Division>) -> Option<(Army, u32)> {
+    for _ in 1.. {
+        // Target Selection
+        let mut targets = HashMap::new();
+        for div in divisions
+            .iter()
+            .filter(|d| d.soldiers > 0)
+            .sorted_by_key(|d| (d.effective_power(), d.initiative))
+            .rev()
+        {
+            let selected = targets.values().copied().collect_vec();
+            if let Some(target) = div.select_target(&divisions, &selected) {
+                targets.insert(div.id(), target);
             }
         }
 
-        Self::fight_boosted(divisions, high).unwrap().1.to_result()
+        // Attack
+        let mut success = false;
+        let attackers = divisions
+            .iter()
+            .filter(|d| d.soldiers > 0)
+            .sorted_by_key(|d| d.initiative)
+            .rev()
+            .map(|d| d.id())
+            .collect_vec();
+        for att in attackers {
+            let attacker = divisions.iter().find(|a| a.id() == att).unwrap().clone();
+            if let Some(t_id) = targets.get(&att) {
+                let target = divisions.iter_mut().find(|t| t.id() == *t_id).unwrap();
+                success |= attacker.attack(target);
+            }
+        }
+
+        // Fight finished without any attack => remis
+        if !success {
+            return None;
+        }
+
+        if !has_soldiers(&divisions, Army::ImmuneSystem) {
+            return Some((Army::Infection, divisions.into_iter().map(|d| d.soldiers).sum()));
+        }
+
+        if !has_soldiers(&divisions, Army::Infection) {
+            return Some((Army::ImmuneSystem, divisions.into_iter().map(|d| d.soldiers).sum()));
+        }
     }
+
+    unreachable!()
+}
+
+fn has_soldiers(divisions: &[Division], army: Army) -> bool {
+    divisions.iter().filter(|d| d.army == army && d.soldiers > 0).count() > 0
+}
+
+fn fight_boosted(mut divisions: Vec<Division>, boost: u32) -> Option<(Army, u32)> {
+    for div in divisions.iter_mut() {
+        if div.army == Army::ImmuneSystem {
+            div.dmg += boost;
+        }
+    }
+
+    fight(divisions)
 }

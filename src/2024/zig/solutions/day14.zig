@@ -9,7 +9,7 @@ const Position = aoc_lib.cartesian.Position;
 const PosDelta = aoc_lib.cartesian.PosDelta;
 const Size = aoc_lib.cartesian.Size;
 
-pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part1(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     const size = if (!is_sample) Size{ .width = 101, .height = 103 } else Size{ .width = 11, .height = 7 };
 
     var quadrants = [_]usize{ 0, 0, 0, 0 };
@@ -31,7 +31,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     return Result.from(safety_factor);
 }
 
-pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
+pub fn part2(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     const size = if (!is_sample) Size{ .width = 101, .height = 103 } else return Result.NoSample;
 
     var robots = try std.ArrayList(Robot).initCapacity(allocator, input.lines.len);

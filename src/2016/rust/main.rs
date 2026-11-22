@@ -4,6 +4,7 @@ use std::collections::HashMap;
 
 use aoc_lib::prelude::runner::AocRunner;
 use aoc_lib::prelude::solution::Solution;
+use aoc_lib::solution;
 
 use solutions::day01;
 use solutions::day02;
@@ -33,32 +34,32 @@ use solutions::day25;
 // aoc:imports
 
 fn create_runner() -> AocRunner {
-    let entries: [(u8, Box<dyn Solution>); _] = [
-        (1, Box::new(day01::Solution01 {})),
-        (2, Box::new(day02::Solution02 {})),
-        (3, Box::new(day03::Solution03 {})),
-        (4, Box::new(day04::Solution04 {})),
-        (5, Box::new(day05::Solution05 {})),
-        (6, Box::new(day06::Solution06 {})),
-        (7, Box::new(day07::Solution07 {})),
-        (8, Box::new(day08::Solution08 {})),
-        (9, Box::new(day09::Solution09 {})),
-        (10, Box::new(day10::Solution10 {})),
-        (11, Box::new(day11::Solution11 {})),
-        (12, Box::new(day12::Solution12 {})),
-        (13, Box::new(day13::Solution13 {})),
-        (14, Box::new(day14::Solution14 {})),
-        (15, Box::new(day15::Solution15 {})),
-        (16, Box::new(day16::Solution16 {})),
-        (17, Box::new(day17::Solution17 {})),
-        (18, Box::new(day18::Solution18 {})),
-        (19, Box::new(day19::Solution19 {})),
-        (20, Box::new(day20::Solution20 {})),
-        (21, Box::new(day21::Solution21 {})),
-        (22, Box::new(day22::Solution22 {})),
-        (23, Box::new(day23::Solution23 {})),
-        (24, Box::new(day24::Solution24 {})),
-        (25, Box::new(day25::Solution25 {})),
+    let entries: [(u8, Solution); _] = [
+        (1, solution!(day01)),
+        (2, solution!(day02)),
+        (3, solution!(day03)),
+        (4, solution!(day04)),
+        (5, solution!(day05)),
+        (6, solution!(day06)),
+        (7, solution!(day07)),
+        (8, solution!(day08)),
+        (9, solution!(day09)),
+        (10, solution!(day10)),
+        (11, solution!(day11)),
+        (12, solution!(day12)),
+        (13, solution!(day13)),
+        (14, solution!(day14)),
+        (15, solution!(day15)),
+        (16, solution!(day16)),
+        (17, solution!(day17)),
+        (18, solution!(day18)),
+        (19, solution!(day19)),
+        (20, solution!(day20)),
+        (21, solution!(day21)),
+        (22, solution!(day22)),
+        (23, solution!(day23)),
+        (24, solution!(day24)),
+        (25, solution!(day25)),
         // aoc:solutions
     ];
 
