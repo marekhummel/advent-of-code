@@ -9,7 +9,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
 
     var computer = try Computer.init(input.lines, allocator);
     try computer.run();
-    return Result{ .String = try computer.finalOutput(allocator) };
+    return Result.from(try computer.finalOutput(allocator));
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
@@ -17,10 +17,10 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
 
     const computer = try Computer.init(input.lines, allocator);
     std.mem.reverse(u3, computer.program); // last output determines MSB, so start there
-    return Result{ .UInt64 = findAAnalytical(computer.program, 0, 0).? };
+    return Result.from(findAAnalytical(computer.program, 0, 0).?);
 
     // var computer = try Computer.init(input.lines, allocator);
-    // return Result{ .UInt64 = (try findASearch(&computer, 0, 0)).? };
+    // return Result.from((try findASearch(&computer, 0, 0)).?);
 }
 
 const Computer = struct {

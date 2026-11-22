@@ -44,10 +44,6 @@ pub const AocRunner = struct {
         };
         const solve = if (part == 1) implementation.solvePart01 else implementation.solvePart02;
         const result = try solve(&input, sample, allocator);
-        switch (result) {
-            .NoInput => return error.NoInput,
-            else => {},
-        }
         try stdout.interface.print("{f}\n", .{result});
         try stdout.interface.flush();
     }

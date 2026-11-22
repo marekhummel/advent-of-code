@@ -6,7 +6,7 @@ pub const Solution = struct {
     solvePart02: *const fn (*types.ProblemInput, bool, std.mem.Allocator) anyerror!types.Result,
 };
 
-pub fn makeSolution(comptime day: anytype) Solution {
+pub fn makeSolution(comptime day: type) Solution {
     return .{
         .solvePart01 = if (@hasDecl(day, "solvePart01")) day.solvePart01 else notImplemented,
         .solvePart02 = if (@hasDecl(day, "solvePart02")) day.solvePart02 else notImplemented,

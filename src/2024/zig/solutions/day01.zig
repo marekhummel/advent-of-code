@@ -18,7 +18,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
         total += @abs(left - right);
     }
 
-    return Result{ .UInt32 = total };
+    return Result.from(total);
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
@@ -42,7 +42,7 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
         sim_score += left * occurances;
     }
 
-    return Result{ .UInt32 = sim_score };
+    return Result.from(sim_score);
 }
 
 fn getLists(comptime T: type, input: *ProblemInput, left_list: *std.ArrayList(T), right_list: *std.ArrayList(T), allocator: Allocator) !void {

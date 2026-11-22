@@ -21,7 +21,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
         _ = try addAntinode(elem.antenna, elem.delta, 2, &antinodes, &antenna_map, allocator);
     }
 
-    return Result{ .UInt32 = antinodes.cardinality() };
+    return Result.from(antinodes.cardinality());
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
@@ -37,7 +37,7 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
         while (try addAntinode(elem.antenna, elem.delta, n, &antinodes, &antenna_map, allocator)) : (n += 1) {}
     }
 
-    return Result{ .UInt32 = antinodes.cardinality() };
+    return Result.from(antinodes.cardinality());
 }
 
 const AntennaLookup = std.AutoHashMap(u8, std.ArrayList(Index));

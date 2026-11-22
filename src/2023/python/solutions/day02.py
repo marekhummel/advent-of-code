@@ -14,7 +14,7 @@ class Solution02(Solution):
         return sum(power(reveals) for _, reveals in parse(data))
 
 
-def parse(lines: list[str]) -> list:
+def parse(lines: list[str]) -> list[tuple[int, list[tuple[int, str]]]]:
     record = []
     for line in lines:
         game, reveals_str = line.split(":")
@@ -28,7 +28,7 @@ def parse(lines: list[str]) -> list:
     return record
 
 
-def valid(reveals, reds, greens, blues):
+def valid(reveals: list[tuple[int, str]], reds: int, greens: int, blues: int) -> bool:
     for n, color in reveals:
         limit = [reds, greens, blues][["red", "green", "blue"].index(color)]
         if n > limit:
@@ -37,7 +37,7 @@ def valid(reveals, reds, greens, blues):
     return True
 
 
-def power(reveals):
+def power(reveals: list[tuple[int, str]]) -> int:
     setsize = {"red": 0, "green": 0, "blue": 0}
     for n, color in reveals:
         setsize[color] = max(n, setsize[color])

@@ -1,7 +1,7 @@
 import re
 from concurrent.futures import ThreadPoolExecutor
 
-from lib.python import ProblemInput, ProblemResult, Solution
+from lib.python import ProblemInput, ProblemResult, Solution, Status
 
 type Joltages = list[int]
 type Buttons = list[list[int]]
@@ -11,7 +11,7 @@ type Machine = tuple[int, Buttons, Joltages]
 class Solution10(Solution):
     @staticmethod
     def solve_part01(data: ProblemInput, is_sample: bool) -> ProblemResult:
-        return None
+        return Status.NOT_IMPLEMENTED
 
     @staticmethod
     def solve_part02(data: ProblemInput, is_sample: bool) -> ProblemResult:

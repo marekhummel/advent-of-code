@@ -9,12 +9,12 @@ const Index = aoc_lib.cartesian.Index;
 
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
-    return Result{ .USize = try countTrails(try input.grid(), true, allocator) };
+    return Result.from(try countTrails(try input.grid(), true, allocator));
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
-    return Result{ .USize = try countTrails(try input.grid(), false, allocator) };
+    return Result.from(try countTrails(try input.grid(), false, allocator));
 }
 
 const TrailCache = std.AutoHashMap(Index, std.ArrayList(Index));

@@ -33,7 +33,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
         search(diag_min, &counter);
     }
 
-    return Result{ .USize = counter };
+    return Result.from(counter);
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
@@ -54,7 +54,7 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
         }
     }
 
-    return Result{ .USize = counter };
+    return Result.from(counter);
 }
 
 /// Searches for all the occurences of XMAS or SAMX in a line

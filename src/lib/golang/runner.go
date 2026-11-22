@@ -7,18 +7,10 @@ import (
 	"strings"
 )
 
-// Valid results for cases that do not have an answer. Return these with a nil error.
-const (
-	NoSample       = "<No Sample Defined>"
-	NoPartTwo      = "<No Part Two>"
-	Unsolved       = "<Unsolved>"
-	NotImplemented = "<Not Implemented>"
-)
-
-// Solution contains the two parts of a day. Each returns an answer or an error.
+// Solution contains the two parts of a day. Each returns a typed result or an error.
 type Solution struct {
-	Part1 func(input []string, sample bool) (any, error)
-	Part2 func(input []string, sample bool) (any, error)
+	Part1 func(input []string, sample bool) (Result, error)
+	Part2 func(input []string, sample bool) (Result, error)
 }
 
 // Run parses DAY PART MODE (real or sample), loads input and prints one answer to stdout.
@@ -69,9 +61,6 @@ func Run(year int, solutions map[int]Solution) {
 	result, err := solve(lines, sample)
 	if err != nil {
 		fail(err)
-	}
-	if result == nil {
-		result = NotImplemented
 	}
 	fmt.Println(result)
 }

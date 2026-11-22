@@ -11,7 +11,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     const design_combs = try findAllDesignCombs(input, allocator);
     var possible: usize = 0;
     for (design_combs) |combs| possible += if (combs > 0) 1 else 0;
-    return Result{ .USize = possible };
+    return Result.from(possible);
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
@@ -20,7 +20,7 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     const design_combs = try findAllDesignCombs(input, allocator);
     var total: usize = 0;
     for (design_combs) |combs| total += combs;
-    return Result{ .USize = total };
+    return Result.from(total);
 }
 
 fn findAllDesignCombs(input: *ProblemInput, allocator: Allocator) ![]usize {

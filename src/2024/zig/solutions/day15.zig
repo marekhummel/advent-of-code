@@ -10,13 +10,13 @@ const Index = aoc_lib.cartesian.Index;
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     var warehouse, var robot, const moves = try parseInput(input, false, allocator);
-    return Result{ .USize = rearrange_warehouse(&warehouse, &robot, moves) };
+    return Result.from(rearrange_warehouse(&warehouse, &robot, moves));
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     var warehouse, var robot, const moves = try parseInput(input, true, allocator);
-    return Result{ .USize = rearrange_warehouse(&warehouse, &robot, moves) };
+    return Result.from(rearrange_warehouse(&warehouse, &robot, moves));
 }
 
 fn parseInput(input: *ProblemInput, extend: bool, allocator: Allocator) !struct { Grid(u8), Index, []Direction } {

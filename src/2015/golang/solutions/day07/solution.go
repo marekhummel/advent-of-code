@@ -51,15 +51,15 @@ func signal(instructions []Instruction, target string) uint16 {
 	return <-resultCh
 }
 
-func Part1(input []string, sample bool) (any, error) {
+func Part1(input []string, sample bool) (lib.Result, error) {
 	target := "a"
 	if sample {
 		target = "i"
 	}
-	return signal(parseInput(input), target), nil
+	return lib.Unsigned(signal(parseInput(input), target)), nil
 }
 
-func Part2(input []string, sample bool) (any, error) {
+func Part2(input []string, sample bool) (lib.Result, error) {
 	target := "a"
 	if sample {
 		target = "i"
@@ -73,5 +73,5 @@ func Part2(input []string, sample bool) (any, error) {
 		}
 	}
 	rewired = append(rewired, Instruction{output: "b", operation: "SIGNAL", args: []string{strconv.Itoa(int(first))}})
-	return signal(rewired, target), nil
+	return lib.Unsigned(signal(rewired, target)), nil
 }

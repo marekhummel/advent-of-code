@@ -17,7 +17,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
         }
     }
 
-    return Result{ .UInt32 = result };
+    return Result.from(result);
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
@@ -55,7 +55,7 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
         result += middle;
     }
 
-    return Result{ .UInt32 = result };
+    return Result.from(result);
 }
 
 fn parse(input: *ProblemInput, allocator: std.mem.Allocator) !struct { aoc_lib.graph.Graph(u16), [][]u16 } {

@@ -33,7 +33,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
         }
     }
 
-    return Result{ .USize = count };
+    return Result.from(count);
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
@@ -61,7 +61,7 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
         _ = try std.fmt.bufPrint(password[i * 3 ..], "{c}{c},", .{ pc[0], pc[1] });
     }
 
-    return Result{ .String = password[0 .. password.len - 1] };
+    return Result.from(password[0 .. password.len - 1]);
 }
 
 fn createNetwork(input: *ProblemInput, allocator: Allocator) !struct { pcs: set.Set(Pc), conns: std.AutoHashMap(Pc, set.Set(Pc)) } {

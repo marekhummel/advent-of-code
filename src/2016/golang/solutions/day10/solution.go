@@ -35,7 +35,7 @@ func compute(instructions []Instruction, broker *lib.Broker[uint16], chips [2]ui
 	}
 }
 
-func Part1(input []string, sample bool) (any, error) {
+func Part1(input []string, sample bool) (lib.Result, error) {
 	broker := lib.NewBroker[uint16]()
 	go broker.Start()
 	defer broker.Stop()
@@ -46,10 +46,10 @@ func Part1(input []string, sample bool) (any, error) {
 	}
 	result := broker.Subscribe("result1")
 	compute(parseInput(input), broker, chips)
-	return <-result, nil
+	return lib.Unsigned(<-result), nil
 }
 
-func Part2(input []string, _ bool) (any, error) {
+func Part2(input []string, _ bool) (lib.Result, error) {
 	broker := lib.NewBroker[uint16]()
 	go broker.Start()
 	defer broker.Stop()
@@ -58,5 +58,5 @@ func Part2(input []string, _ bool) (any, error) {
 	output1 := broker.Subscribe("output1")
 	output2 := broker.Subscribe("output2")
 	compute(parseInput(input), broker, [2]uint16{17, 61})
-	return uint64(<-output0) * uint64(<-output1) * uint64(<-output2), nil
+	return lib.Unsigned(uint64(<-output0) * uint64(<-output1) * uint64(<-output2)), nil
 }

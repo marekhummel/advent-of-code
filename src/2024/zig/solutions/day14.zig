@@ -28,7 +28,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     }
 
     const safety_factor = quadrants[0] * quadrants[1] * quadrants[2] * quadrants[3];
-    return Result{ .USize = safety_factor };
+    return Result.from(safety_factor);
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
@@ -49,7 +49,7 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
         }
 
         // printRobots(&uniquePositions, size);
-        return Result{ .USize = second };
+        return Result.from(second);
     }
 }
 

@@ -7,14 +7,14 @@ const Result = aoc_lib.types.Result;
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     const num_stones = try blinkAll(try input.string(), 25, allocator);
-    return Result{ .USize = num_stones };
+    return Result.from(num_stones);
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     if (is_sample) return Result.NoSample;
 
     const num_stones = try blinkAll(try input.string(), 75, allocator);
-    return Result{ .USize = num_stones };
+    return Result.from(num_stones);
 }
 
 const CacheKey = struct { stone: u64, blinks: usize };

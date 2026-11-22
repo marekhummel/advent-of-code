@@ -45,7 +45,7 @@ func compute(instructions []Instruction, broker *lib.Broker[Val]) {
 	}
 }
 
-func Part1(input []string, _ bool) (any, error) {
+func Part1(input []string, _ bool) (lib.Result, error) {
 	broker := lib.NewBroker[Val]()
 	go broker.Start()
 	defer broker.Stop()
@@ -74,9 +74,9 @@ func Part1(input []string, _ bool) (any, error) {
 		decimal = (decimal << 1) + uint64(result)
 	}
 
-	return decimal, nil
+	return lib.Unsigned(decimal), nil
 }
 
-func Part2(_ []string, _ bool) (any, error) {
+func Part2(_ []string, _ bool) (lib.Result, error) {
 	return lib.Unsolved, nil
 }

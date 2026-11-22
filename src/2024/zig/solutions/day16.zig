@@ -13,7 +13,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     _ = is_sample;
 
     const astar_result = try runAstar(try input.grid(), false, allocator);
-    return Result{ .UInt32 = astar_result.cost };
+    return Result.from(astar_result.cost);
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
@@ -28,7 +28,7 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
         }
     }
 
-    return Result{ .USize = visited_tiles.cardinality() };
+    return Result.from(visited_tiles.cardinality());
 }
 
 fn runAstar(map: Grid(u8), all_paths: bool, allocator: Allocator) !PathFinding(Maze).AStarResult {

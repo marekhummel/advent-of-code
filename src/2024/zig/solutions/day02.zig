@@ -14,7 +14,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
             safe_reports += 1;
     }
 
-    return Result{ .USize = safe_reports };
+    return Result.from(safe_reports);
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
@@ -37,7 +37,7 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
         }
     }
 
-    return Result{ .USize = safe_reports };
+    return Result.from(safe_reports);
 }
 
 fn getReports(allocator: std.mem.Allocator, input: *ProblemInput) ![][]i16 {

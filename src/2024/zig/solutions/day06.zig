@@ -14,7 +14,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     const guard = map.find('^').?;
 
     const pathloop = try computePath(&map, guard, null, allocator);
-    return Result{ .USize = pathloop.path.len };
+    return Result.from(pathloop.path.len);
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
@@ -59,7 +59,7 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     //     }
     // }
 
-    return Result{ .USize = loops };
+    return Result.from(loops);
 }
 
 const ThreadSpecs = struct { map: *const Grid(u8), guard: Index, indices: []Index };

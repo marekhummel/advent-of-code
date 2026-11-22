@@ -64,8 +64,7 @@ defmodule AocLib.Types do
     """
 
     @type t ::
-            :no_input
-            | :no_sample
+            :no_sample
             | :unsolved
             | :not_implemented
             | :no_part_two
@@ -76,14 +75,12 @@ defmodule AocLib.Types do
     Formats a result for display.
     """
     @spec format(t()) :: String.t()
-    def format(:no_input), do: "<No Input Available>"
     def format(:no_sample), do: "<No Sample Defined>"
     def format(:unsolved), do: "<Unsolved>"
     def format(:not_implemented), do: "<Not Implemented>"
     def format(:no_part_two), do: "<No Part Two>"
     def format(value) when is_integer(value), do: Integer.to_string(value)
     def format(value) when is_binary(value), do: value
-    def format(value), do: inspect(value)
 
     @doc """
     Checks if two results are equal.

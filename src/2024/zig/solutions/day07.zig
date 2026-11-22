@@ -6,12 +6,12 @@ const Result = aoc_lib.types.Result;
 
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
-    return Result{ .UInt64 = try calibrate(input, false, allocator) };
+    return Result.from(try calibrate(input, false, allocator));
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
-    return Result{ .UInt64 = try calibrate(input, true, allocator) };
+    return Result.from(try calibrate(input, true, allocator));
 }
 
 const Equation = struct { rhs: u64, values: []u64 };

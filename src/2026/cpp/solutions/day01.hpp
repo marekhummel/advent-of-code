@@ -5,11 +5,11 @@
 namespace day01 {
 
 inline aoc::Result part1(const aoc::Input & /*input*/, bool /*sample*/) {
-    return aoc::NotImplemented;
+    return aoc::Status::NotImplemented;
 }
 
 inline aoc::Result part2(const aoc::Input & /*input*/, bool /*sample*/) {
-    return aoc::NotImplemented;
+    return aoc::Status::NotImplemented;
 }
 
 inline const aoc::Solution solution{

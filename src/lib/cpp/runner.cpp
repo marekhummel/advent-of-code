@@ -9,6 +9,16 @@
 
 namespace aoc {
 
+std::ostream& operator<<(std::ostream& output, Status status) {
+    switch (status) {
+    case Status::NoSample: return output << "<No Sample Defined>";
+    case Status::NoPartTwo: return output << "<No Part Two>";
+    case Status::NotImplemented: return output << "<Not Implemented>";
+    case Status::Unsolved: return output << "<Unsolved>";
+    }
+    throw std::logic_error("Invalid result status");
+}
+
 int run(int argc, char* argv[], int year, const std::unordered_map<int, Solution>& solutions) {
     int day = 0;
     int part = 0;
@@ -25,12 +35,12 @@ int run(int argc, char* argv[], int year, const std::unordered_map<int, Solution
 
     const auto entry = solutions.find(day);
     if (entry == solutions.end()) {
-        std::cout << Unsolved << '\n';
+        std::cout << Status::Unsolved << '\n';
         return 0;
     }
     const auto solve = part == 1 ? entry->second.part1 : entry->second.part2;
     if (solve == nullptr) {
-        std::cout << NotImplemented << '\n';
+        std::cout << Status::NotImplemented << '\n';
         return 0;
     }
 
@@ -57,7 +67,8 @@ int run(int argc, char* argv[], int year, const std::unordered_map<int, Solution
         if (file.bad()) {
             throw std::runtime_error("Error reading input: " + filename.string());
         }
-        std::visit([](const auto& answer) { std::cout << answer; }, solve(input, sample));
+        const auto result = solve(input, sample);
+        std::visit([](const auto& answer) { std::cout << answer; }, result);
         std::cout << '\n';
         return 0;
     } catch (const std::exception& error) {

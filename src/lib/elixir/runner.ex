@@ -77,14 +77,7 @@ defmodule AocLib.Runner do
         {:error, reason} -> raise "Could not read #{filename}: #{:file.format_error(reason)}"
       end
 
-    result =
-      case apply(solution, solve, [input, sample]) do
-        nil -> :not_implemented
-        result -> result
-      end
-
-    if is_atom(result) and result not in [:unsolved, :not_implemented, :no_sample, :no_part_two],
-      do: raise("Solution unavailable: #{result}")
+    result = apply(solution, solve, [input, sample])
 
     IO.puts(ProblemResult.format(result))
   end

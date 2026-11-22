@@ -37,7 +37,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
         z |= (@as(u64, bit) << @intCast(i));
     }
 
-    return Result{ .UInt64 = z };
+    return Result.from(z);
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
@@ -70,7 +70,7 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     }.stringLessThan;
     std.mem.sort([]const u8, suspicious.items, {}, lessThan);
     const wire_string = try join(u8, suspicious.items, ",", allocator);
-    return Result{ .String = wire_string };
+    return Result.from(wire_string);
 }
 
 fn parse(

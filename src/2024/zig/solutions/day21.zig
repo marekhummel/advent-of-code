@@ -10,7 +10,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
 
     var robots = try Robots.init(allocator);
     const total_complexity = try robots.findComplexity(input.lines, 2);
-    return Result{ .UInt64 = total_complexity };
+    return Result.from(total_complexity);
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
@@ -18,7 +18,7 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
 
     var robots = try Robots.init(allocator);
     const total_complexity = try robots.findComplexity(input.lines, 25);
-    return Result{ .UInt64 = total_complexity };
+    return Result.from(total_complexity);
 }
 
 const Robots = struct {

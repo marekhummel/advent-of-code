@@ -11,13 +11,13 @@ const Direction = aoc_lib.cartesian.Direction;
 pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     var garden = try input.grid();
-    return Result{ .UInt64 = try computePrice(&garden, Region.price, allocator) };
+    return Result.from(try computePrice(&garden, Region.price, allocator));
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
     _ = is_sample;
     var garden = try input.grid();
-    return Result{ .UInt64 = try computePrice(&garden, Region.bulk_price, allocator) };
+    return Result.from(try computePrice(&garden, Region.bulk_price, allocator));
 }
 
 const Fence = struct {

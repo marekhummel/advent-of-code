@@ -11,7 +11,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
 
     const memory = try input.string();
     const sum = computeSum(memory, false);
-    return Result{ .Int32 = sum };
+    return Result.from(sum);
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
@@ -20,7 +20,7 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
 
     const memory = try input.string();
     const sum = computeSum(memory, true);
-    return Result{ .Int32 = sum };
+    return Result.from(sum);
 }
 
 fn computeSum(memory: []u8, with_conditionals: bool) i32 {

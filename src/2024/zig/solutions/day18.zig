@@ -16,7 +16,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
 
     const falling_bytes = try parseInput(input, allocator);
     const escapeSteps = try escape(size, falling_bytes[0..sim_length], allocator);
-    return Result{ .UInt32 = escapeSteps.? };
+    return Result.from(escapeSteps.?);
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
@@ -33,7 +33,7 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     }
 
     const blocking_byte = falling_bytes[hi];
-    return Result{ .String = try std.fmt.allocPrint(allocator, "{d},{d}", .{ blocking_byte.c, blocking_byte.r }) };
+    return Result.from(try std.fmt.allocPrint(allocator, "{d},{d}", .{ blocking_byte.c, blocking_byte.r }));
 }
 
 fn parseInput(input: *ProblemInput, allocator: Allocator) ![]Index {

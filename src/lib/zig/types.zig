@@ -4,42 +4,50 @@ const Index = cartesian.Index;
 const Size = cartesian.Size;
 
 pub const Result = union(enum) {
-    NoInput,
     NoSample,
     Unsolved,
     NotImplemented,
     NoPartTwo,
-    USize: usize,
-    Int8: i8,
-    Int16: i16,
-    Int32: i32,
-    Int64: i64,
-    Int128: i128,
-    UInt8: u8,
-    UInt16: u16,
-    UInt32: u32,
-    UInt64: u64,
-    UInt128: u128,
+    Signed: i128,
+    Unsigned: u128,
     String: []const u8,
+
+    /// Convert integers or byte strings without erasing their type at runtime.
+    pub fn from(value: anytype) Result {
+        const T = @TypeOf(value);
+        switch (@typeInfo(T)) {
+            .int => |info| return if (info.signedness == .signed)
+                .{ .Signed = value }
+            else
+                .{ .Unsigned = value },
+            .comptime_int => return if (value < 0)
+                .{ .Signed = value }
+            else
+                .{ .Unsigned = value },
+            .pointer => |pointer| {
+                if (pointer.size == .slice and pointer.child == u8) return .{ .String = value };
+                if (pointer.size == .one) {
+                    switch (@typeInfo(pointer.child)) {
+                        .array => |array| {
+                            if (array.child == u8) return .{ .String = value };
+                        },
+                        else => {},
+                    }
+                }
+            },
+            else => {},
+        }
+        @compileError("Cannot convert " ++ @typeName(T) ++ " to Result");
+    }
 
     pub fn format(self: Result, writer: *std.Io.Writer) std.Io.Writer.Error!void {
         return try switch (self) {
-            .NoInput => writer.print("<No Input Available>", .{}),
             .NoSample => writer.print("<No Sample Defined>", .{}),
             .Unsolved => writer.print("<Unsolved>", .{}),
             .NotImplemented => writer.print("<Not Implemented>", .{}),
             .NoPartTwo => writer.print("<No Part Two>", .{}),
-            .USize => writer.print("{}", .{self.USize}),
-            .Int8 => writer.print("{}", .{self.Int8}),
-            .Int16 => writer.print("{}", .{self.Int16}),
-            .Int32 => writer.print("{}", .{self.Int32}),
-            .Int64 => writer.print("{}", .{self.Int64}),
-            .Int128 => writer.print("{}", .{self.Int128}),
-            .UInt8 => writer.print("{}", .{self.UInt8}),
-            .UInt16 => writer.print("{}", .{self.UInt16}),
-            .UInt32 => writer.print("{}", .{self.UInt32}),
-            .UInt64 => writer.print("{}", .{self.UInt64}),
-            .UInt128 => writer.print("{}", .{self.UInt128}),
+            .Signed => writer.print("{}", .{self.Signed}),
+            .Unsigned => writer.print("{}", .{self.Unsigned}),
             .String => writer.print("{s}", .{self.String}),
         };
     }

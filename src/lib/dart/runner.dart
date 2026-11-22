@@ -1,18 +1,47 @@
 import 'dart:io';
 
-class Result {
-  final Object value;
+enum Status {
+  noSample('<No Sample Defined>'),
+  noPartTwo('<No Part Two>'),
+  notImplemented('<Not Implemented>'),
+  unsolved('<Unsolved>');
 
-  const Result.number(num value) : value = value;
-  const Result.text(String value) : value = value;
+  final String label;
+  const Status(this.label);
+}
 
-  static const noSample = Result.text('<No Sample Defined>');
-  static const noPartTwo = Result.text('<No Part Two>');
-  static const notImplemented = Result.text('<Not Implemented>');
-  static const unsolved = Result.text('<Unsolved>');
+sealed class Result {
+  const Result();
+  const factory Result.integer(int value) = IntegerResult;
+  const factory Result.text(String value) = TextResult;
+  const factory Result.status(Status value) = StatusResult;
+
+  static const noSample = Result.status(Status.noSample);
+  static const noPartTwo = Result.status(Status.noPartTwo);
+  static const notImplemented = Result.status(Status.notImplemented);
+  static const unsolved = Result.status(Status.unsolved);
 
   @override
-  String toString() => value.toString();
+  String toString() => switch (this) {
+    IntegerResult(:final value) => value.toString(),
+    TextResult(:final value) => value,
+    StatusResult(:final value) => value.label,
+  };
+}
+
+final class IntegerResult extends Result {
+  final int value;
+  const IntegerResult(this.value);
+}
+
+final class TextResult extends Result {
+  final String value;
+  const TextResult(this.value);
+}
+
+final class StatusResult extends Result {
+  final Status value;
+  const StatusResult(this.value);
 }
 
 typedef Part = Result Function(List<String> input, bool sample);

@@ -2,22 +2,16 @@
 
 from lib.python.runner import Runner
 from lib.python.solution import (
-    NO_PART_TWO,
-    NO_SAMPLE,
-    NOT_IMPLEMENTED,
-    UNSOLVED,
     ProblemInput,
     ProblemResult,
     Solution,
+    Status,
 )
 
 __all__ = [
-    "NOT_IMPLEMENTED",
-    "NO_PART_TWO",
-    "NO_SAMPLE",
-    "UNSOLVED",
     "ProblemInput",
     "ProblemResult",
     "Runner",
     "Solution",
+    "Status",
 ]

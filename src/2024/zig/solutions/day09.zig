@@ -24,7 +24,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     cleanupDisk(files.items, free_spans.items, false);
 
     const checksum = computeChecksum(files.items);
-    return Result{ .USize = checksum };
+    return Result.from(checksum);
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
@@ -36,7 +36,7 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
     cleanupDisk(blocks.files, blocks.free_spans, true);
 
     const checksum = computeChecksum(blocks.files);
-    return Result{ .USize = checksum };
+    return Result.from(checksum);
 }
 
 /// File or free span block (id only not-null for files)

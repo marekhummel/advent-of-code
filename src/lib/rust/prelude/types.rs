@@ -37,23 +37,12 @@ impl ProblemInput {
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum ProblemResult {
-    NoInput,
     NoSample,
     Unsolved,
     NotImplemented,
     NoPartTwo,
-    I128(i128),
-    I64(i64),
-    I32(i32),
-    I16(i16),
-    I8(i8),
-    ISize(isize),
-    U128(u128),
-    U64(u64),
-    U32(u32),
-    U16(u16),
-    U8(u8),
-    USize(usize),
+    Signed(i128),
+    Unsigned(u128),
     BigInt(BigInt),
     String(String),
 }
@@ -61,21 +50,10 @@ pub enum ProblemResult {
 impl Display for ProblemResult {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ProblemResult::I128(v) => write!(f, "{}", v),
-            ProblemResult::I64(v) => write!(f, "{}", v),
-            ProblemResult::I32(v) => write!(f, "{}", v),
-            ProblemResult::I16(v) => write!(f, "{}", v),
-            ProblemResult::I8(v) => write!(f, "{}", v),
-            ProblemResult::ISize(v) => write!(f, "{}", v),
-            ProblemResult::U128(v) => write!(f, "{}", v),
-            ProblemResult::U64(v) => write!(f, "{}", v),
-            ProblemResult::U32(v) => write!(f, "{}", v),
-            ProblemResult::U16(v) => write!(f, "{}", v),
-            ProblemResult::U8(v) => write!(f, "{}", v),
-            ProblemResult::USize(v) => write!(f, "{}", v),
+            ProblemResult::Signed(v) => write!(f, "{}", v),
+            ProblemResult::Unsigned(v) => write!(f, "{}", v),
             ProblemResult::BigInt(v) => write!(f, "{}", v),
             ProblemResult::String(v) => write!(f, "{}", v),
-            ProblemResult::NoInput => write!(f, "<No Input Available>"),
             ProblemResult::NoSample => write!(f, "<No Sample Defined>"),
             ProblemResult::Unsolved => write!(f, "<Unsolved>"),
             ProblemResult::NotImplemented => write!(f, "<Not Implemented>"),
@@ -88,35 +66,47 @@ pub trait ToResult {
     fn to_result(self) -> ProblemResult;
 }
 
-macro_rules! impl_to_result {
-    ($e:path,$t:ty) => {
-        impl ToResult for $t {
-            fn to_result(self) -> ProblemResult {
-                $e(self)
+macro_rules! impl_integer_result {
+    ($variant:ident, $storage:ty: $($source:ty),+ $(,)?) => {
+        $(
+            impl ToResult for $source {
+                fn to_result(self) -> ProblemResult {
+                    ProblemResult::$variant(self as $storage)
+                }
             }
-        }
+        )+
     };
 }
 
-impl_to_result!(ProblemResult::I128, i128);
-impl_to_result!(ProblemResult::I64, i64);
-impl_to_result!(ProblemResult::I32, i32);
-impl_to_result!(ProblemResult::I16, i16);
-impl_to_result!(ProblemResult::I8, i8);
+impl_integer_result!(Signed, i128: i8, i16, i32, i64, isize);
+impl_integer_result!(Unsigned, u128: u8, u16, u32, u64, usize);
 
-impl_to_result!(ProblemResult::U128, u128);
-impl_to_result!(ProblemResult::U64, u64);
-impl_to_result!(ProblemResult::U32, u32);
-impl_to_result!(ProblemResult::U16, u16);
-impl_to_result!(ProblemResult::U8, u8);
+impl ToResult for i128 {
+    fn to_result(self) -> ProblemResult {
+        ProblemResult::Signed(self)
+    }
+}
 
-impl_to_result!(ProblemResult::USize, usize);
-impl_to_result!(ProblemResult::ISize, isize);
-impl_to_result!(ProblemResult::BigInt, BigInt);
-impl_to_result!(ProblemResult::String, String);
+impl ToResult for u128 {
+    fn to_result(self) -> ProblemResult {
+        ProblemResult::Unsigned(self)
+    }
+}
+
+impl ToResult for BigInt {
+    fn to_result(self) -> ProblemResult {
+        ProblemResult::BigInt(self)
+    }
+}
+
+impl ToResult for String {
+    fn to_result(self) -> ProblemResult {
+        ProblemResult::String(self)
+    }
+}
 
 impl ToResult for &str {
     fn to_result(self) -> ProblemResult {
-        ProblemResult::String(self.to_string())
+        ProblemResult::String(self.to_owned())
     }
 }

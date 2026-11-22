@@ -88,3 +88,34 @@ definitions are stored in `build/lua/luals/`.
 Dart's SDK includes its formatter, analyser and language server; no extra packages
 are needed. `task check:dart` formats and analyses the code using the same SDK as
 VS Code. Release builds are native executables; debug builds run on the Dart VM.
+
+### Library Contract
+
+Each `src/lib/LANGUAGE/` must provide typed inputs and results, a representation
+of a day's two parts, and a runner with a day-to-solution map. Part functions
+receive input lines and a sample flag; Zig additionally receives an allocator.
+Results distinguish integer answers, text answers and informational statuses.
+Floating-point answers must be explicitly formatted as strings by the part.
+
+| Language | Day registration and part contract | Result representation |
+| --- | --- | --- |
+| Rust | Struct implementing `Solution`; map of boxed trait objects; default methods | `Signed(i128)`, `Unsigned(u128)`, big integer, text and statuses |
+| Python | Subclass of `Solution`; map of classes; default static methods | Integer/text/status enum union |
+| Zig | Day module adapted to a struct with two typed function pointers; missing functions get defaults | `Signed(i128)`, `Unsigned(u128)`, text and status union |
+| Elixir | Day module implementing `AocLib.Solution`; map of modules; optional callbacks | Integer/string/status atom union |
+| Lua | Day table with annotated functions; map of tables | Integer/string/tagged status union |
+| Dart | Common `Solution` class with typed function fields; map of instances | Sealed integer/text/status variants |
+| C++ | Common `Solution` struct with typed function pointers; map of instances | `intmax_t`/`uintmax_t`, text and status variant |
+| Go | Common `Solution` struct with typed function fields; map of instances | Generic `Signed`/`Unsigned` constructors widen to 64 bits; formatted answer or status |
+
+Unfinished parts return `NotImplemented`; an unregistered day returns `Unsolved`.
+`NoSample` (problem statement has no sample) and `NoPartTwo` (typical for day 25) are also successful informational outcomes. Missing
+part functions are handled as `NotImplemented`. Templates use their final import
+paths and are excluded from checks.
+
+The runner accepts `DAY PART MODE` (`real` or `sample`), reads
+`inputs/YEAR/{input,sample}DD.txt` with a `_PART` fallback, and prints only the
+answer or formatted status to stdout. Informational outcomes exit with 0;
+missing input and execution errors fail, with diagnostics on stderr; invalid
+arguments exit with 2. Task and scripts handle builds, batching, timing and
+verification; additional library utilities are optional.

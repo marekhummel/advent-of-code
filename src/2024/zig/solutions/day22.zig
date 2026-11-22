@@ -17,7 +17,7 @@ pub fn solvePart01(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
         sum += secret;
     }
 
-    return Result{ .UInt64 = sum };
+    return Result.from(sum);
 }
 
 pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) !Result {
@@ -43,7 +43,7 @@ pub fn solvePart02(input: *ProblemInput, is_sample: bool, allocator: Allocator) 
         best_bananas = @max(best_bananas, total_bananas);
     }
 
-    return Result{ .UInt64 = best_bananas };
+    return Result.from(best_bananas);
 }
 
 fn sequenceValues(start_secret: u64) [NUM_PRICE_CHANGES]u8 {

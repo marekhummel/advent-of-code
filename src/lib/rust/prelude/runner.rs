@@ -48,14 +48,10 @@ impl AocRunner {
             filename = format!("inputs/{}/{prefix}{day:02}_{part}.txt", self.year);
         }
         let input = ProblemInput::read(&filename).ok_or_else(|| format!("Could not read {filename}"))?;
-        let result = match part {
+        Ok(match part {
             1 => solution.solve_version01(input, sample),
             2 => solution.solve_version02(input, sample),
             _ => unreachable!(),
-        };
-        match result {
-            ProblemResult::NoInput => Err(result.to_string()),
-            _ => Ok(result),
-        }
+        })
     }
 }

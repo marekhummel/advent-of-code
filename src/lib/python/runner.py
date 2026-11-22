@@ -4,7 +4,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from lib.python.solution import NOT_IMPLEMENTED, UNSOLVED, ProblemInput, Solution
+from lib.python.solution import ProblemInput, ProblemResult, Solution, Status
 
 
 class Runner:
@@ -36,12 +36,12 @@ class Runner:
         args = parser.parse_args()
         sample = args.mode == "sample"
         if args.day not in self.solutions:
-            print(UNSOLVED)
+            print(Status.UNSOLVED)
             return
         solution = self.solutions[args.day]
         solve = solution.solve_part01 if args.part == 1 else solution.solve_part02
         if solve in (Solution.solve_part01, Solution.solve_part02):
-            print(NOT_IMPLEMENTED)
+            print(Status.NOT_IMPLEMENTED)
             return
         prefix = "sample" if sample else "input"
         filename = Path(f"inputs/{self.year}/{prefix}{args.day:02}.txt")
@@ -55,5 +55,7 @@ class Runner:
         try:
             result = solve(data, sample)
         except NotImplementedError:
-            result = NOT_IMPLEMENTED
-        print(NOT_IMPLEMENTED if result is None else result)
+            result = Status.NOT_IMPLEMENTED
+        if not isinstance(result, ProblemResult):
+            raise TypeError("A solution must return an integer, text or Status")
+        print(result)
