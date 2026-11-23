@@ -1,8 +1,26 @@
-FROM ubuntu:26.04
+ARG UBUNTU_VERSION=26.04
+FROM ubuntu:${UBUNTU_VERSION}
+
+# Language and tool versions. Elixir/Erlang and Dart use their apt repository versions.
+ARG TASK_VERSION=3.54.0
+ARG RUST_VERSION=stable
+ARG GO_VERSION=1.27.3
+ARG GOPLS_VERSION=v0.24.0
+ARG GOLANGCI_LINT_VERSION=v2.15.0
+ARG ZIG_VERSION=0.17.1
+ARG LLVM_VERSION=23
+ARG LUA_VERSION=5.4
+ARG STYLUA_VERSION=2.6.0
+ARG LUALS_VERSION=3.19.2
+ARG PYTHON_VERSION=3.15
+ARG RUFF_VERSION=0.17.3
+ARG MYPY_VERSION=2.4.1
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ARG DEBIAN_FRONTEND=noninteractive
+ENV RUSTUP_HOME=/usr/local/rustup \
+    PATH="/usr/local/cargo/bin:/usr/local/go/bin:/usr/local/zig:/usr/local/lib/lua-language-server/bin:/usr/lib/dart/bin:${PATH}"
 
 # System updates and common tools.
 RUN apt-get update && apt-get upgrade -y \
@@ -11,47 +29,41 @@ RUN apt-get update && apt-get upgrade -y \
         sudo tar unzip xz-utils openssh-client bubblewrap \
     && rm -rf /var/lib/apt/lists/*
 
-ARG TASK_VERSION=3.54.0
+# Match the host user's UID through Dev Containers, keeping checkout files writable.
+RUN (id ubuntu >/dev/null 2>&1 || useradd --create-home --uid 1000 --shell /bin/bash ubuntu) \
+    && echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu \
+    && chmod 0440 /etc/sudoers.d/ubuntu
+
 RUN curl -fsSL https://taskfile.dev/install.sh -o /tmp/install-task.sh \
     && sh /tmp/install-task.sh -b /usr/local/bin "v${TASK_VERSION}" \
     && rm /tmp/install-task.sh
 
 # Rust: compiler, standard library sources, formatter and Clippy.
-ENV RUSTUP_HOME=/usr/local/rustup
-ENV PATH="/usr/local/cargo/bin:/usr/local/go/bin:/usr/local/zig:${PATH}"
 RUN curl -fsSL https://sh.rustup.rs -o /tmp/install-rust.sh \
     && CARGO_HOME=/usr/local/cargo sh /tmp/install-rust.sh -y --no-modify-path \
-        --default-toolchain stable --profile minimal --component rust-src,rustfmt,clippy \
+        --default-toolchain "${RUST_VERSION}" --profile minimal --component rust-src,rustfmt,clippy \
     && rm /tmp/install-rust.sh
 
 # Go: compiler, gofmt, vet, test and editor tools.
-ARG TARGETARCH
-ARG GO_VERSION=1.27.3
-RUN curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-${TARGETARCH}.tar.gz" \
+RUN curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" \
         -o /tmp/go.tar.gz \
     && tar -xzf /tmp/go.tar.gz -C /usr/local \
     && rm /tmp/go.tar.gz
 
-ARG GOPLS_VERSION=v0.24.0
-ARG GOLANGCI_LINT_VERSION=v2.15.0
-RUN GOBIN=/usr/local/bin go install golang.org/x/tools/gopls@${GOPLS_VERSION} \
+RUN GOBIN=/usr/local/bin go install "golang.org/x/tools/gopls@${GOPLS_VERSION}" \
     && go clean -modcache -cache
 RUN curl -fsSL https://golangci-lint.run/install.sh -o /tmp/install-golangci-lint.sh \
     && sh /tmp/install-golangci-lint.sh -b /usr/local/bin "${GOLANGCI_LINT_VERSION}" \
     && rm /tmp/install-golangci-lint.sh
 
 # Zig: compiler and formatter.
-ARG ZIG_VERSION=0.17.1
-RUN case "$TARGETARCH" in amd64) zig_arch=x86_64 ;; arm64) zig_arch=aarch64 ;; \
-        *) echo "Unsupported Zig architecture: $TARGETARCH" >&2; exit 1 ;; esac \
-    && curl -fsSL "https://ziglang.org/download/${ZIG_VERSION}/zig-${zig_arch}-linux-${ZIG_VERSION}.tar.xz" \
+RUN curl -fsSL "https://ziglang.org/download/${ZIG_VERSION}/zig-x86_64-linux-${ZIG_VERSION}.tar.xz" \
         -o /tmp/zig.tar.xz \
     && mkdir /usr/local/zig \
     && tar -xJf /tmp/zig.tar.xz -C /usr/local/zig --strip-components=1 \
     && rm /tmp/zig.tar.xz
 
 # C++23: current stable LLVM compiler, standard library, editor and check tools.
-ARG LLVM_VERSION=23
 RUN curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key \
         -o /usr/share/keyrings/llvm.asc \
     && echo "deb [signed-by=/usr/share/keyrings/llvm.asc] https://apt.llvm.org/resolute/ llvm-toolchain-resolute-${LLVM_VERSION} main" \
@@ -68,52 +80,39 @@ RUN curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key \
 # Elixir, Erlang/OTP and Mix from Ubuntu's repositories.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends elixir erlang-dev erlang-dialyzer \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && sudo -H -u ubuntu mix local.hex --force
 
 # Lua interpreter, linter, formatter and standalone language server.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends lua5.4 lua-check \
+    && apt-get install -y --no-install-recommends "lua${LUA_VERSION}" lua-check \
     && rm -rf /var/lib/apt/lists/*
-ARG STYLUA_VERSION=2.6.0
 RUN CARGO_HOME=/usr/local/cargo cargo install stylua --version "${STYLUA_VERSION}" \
-        --locked --no-default-features --features lua54 --root /usr/local
-ARG LUALS_VERSION=3.19.2
-RUN case "$TARGETARCH" in amd64) luals_arch=x64 ;; arm64) luals_arch=arm64 ;; \
-        *) echo "Unsupported LuaLS architecture: $TARGETARCH" >&2; exit 1 ;; esac \
-    && curl -fsSL "https://github.com/LuaLS/lua-language-server/releases/download/${LUALS_VERSION}/lua-language-server-${LUALS_VERSION}-linux-${luals_arch}.tar.gz" \
+        --locked --no-default-features --features "lua${LUA_VERSION//./}" --root /usr/local
+RUN curl -fsSL "https://github.com/LuaLS/lua-language-server/releases/download/${LUALS_VERSION}/lua-language-server-${LUALS_VERSION}-linux-x64.tar.gz" \
         -o /tmp/luals.tar.gz \
     && mkdir -p /usr/local/lib/lua-language-server \
     && tar -xzf /tmp/luals.tar.gz -C /usr/local/lib/lua-language-server \
     && rm /tmp/luals.tar.gz
-ENV PATH="/usr/local/lib/lua-language-server/bin:${PATH}"
 
 # Dart: stable SDK, including the compiler, formatter, analyser and language server.
 RUN curl -fsSL https://dl-ssl.google.com/linux/linux_signing_key.pub \
         -o /usr/share/keyrings/dart.asc \
-    && echo "deb [signed-by=/usr/share/keyrings/dart.asc arch=${TARGETARCH}] https://storage.googleapis.com/download.dartlang.org/linux/debian stable main" \
+    && echo "deb [signed-by=/usr/share/keyrings/dart.asc arch=amd64] https://storage.googleapis.com/download.dartlang.org/linux/debian stable main" \
         > /etc/apt/sources.list.d/dart.list \
     && apt-get update \
     && apt-get install -y --no-install-recommends dart \
     && rm -rf /var/lib/apt/lists/*
-ENV PATH="/usr/lib/dart/bin:${PATH}"
 
 # Python interpreter and development tools
 RUN add-apt-repository -y ppa:deadsnakes/ppa \
     && apt-get update \
-    && apt-get install -y --no-install-recommends python3 python3.15 \
+    && apt-get install -y --no-install-recommends python3 "python${PYTHON_VERSION}" \
     && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py \
-    && python3.15 /tmp/get-pip.py --break-system-packages \
-    && python3.15 -m pip install --break-system-packages --ignore-installed --no-cache-dir \
-        ruff==0.17.3 mypy==2.4.1 \
+    && "python${PYTHON_VERSION}" /tmp/get-pip.py --break-system-packages \
+    && "python${PYTHON_VERSION}" -m pip install --break-system-packages --ignore-installed --no-cache-dir \
+        "ruff==${RUFF_VERSION}" "mypy==${MYPY_VERSION}" \
     && rm /tmp/get-pip.py
 
-# Match the host user's UID through Dev Containers, keeping checkout files writable.
-RUN (id ubuntu >/dev/null 2>&1 || useradd --create-home --uid 1000 --shell /bin/bash ubuntu) \
-    && echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu \
-    && chmod 0440 /etc/sudoers.d/ubuntu
-
 USER ubuntu
-
-# Hex fetches the development dependency used by the Elixir check task.
-RUN mix local.hex --force

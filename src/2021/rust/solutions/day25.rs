@@ -4,10 +4,10 @@ use aoc_lib::prelude::types::{ProblemInput, ProblemResult};
 pub fn part1(input: ProblemInput, _is_sample: bool) -> ProblemResult {
     let mut map = input.grid();
 
-    for step in 1u32.. {
+    for elapsed in 1u32.. {
         let next = step(map.clone());
         if next == map {
-            return step.into();
+            return elapsed.into();
         }
         map = next;
     }

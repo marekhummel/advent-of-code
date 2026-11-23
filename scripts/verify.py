@@ -189,6 +189,7 @@ def main() -> int:
     args = parser.parse_args()
     os.chdir(Path(__file__).resolve().parents[1])
     failed = 0
+    summaries: list[tuple[int, str, int]] = []
     matched = False
     for year_dir in sorted(Path("src").glob("[0-9][0-9][0-9][0-9]")):
         year = int(year_dir.name)
@@ -201,9 +202,8 @@ def main() -> int:
                 continue
             matched = True
             group_failed = 0
-            days = (
-                [args.day] if args.day is not None else list(range(1, 26 if year < 2025 else 13))
-            )
+            last_day = 25 if year < 2025 else 12
+            days = [args.day] if args.day is not None else list(range(1, last_day + 1))
             for day in days:
                 filename = (
                     f"day{day:02}/solution.go"
@@ -213,7 +213,7 @@ def main() -> int:
                 if not (year_dir / lang / "solutions" / filename).is_file():
                     continue
                 for part in (1, 2):
-                    if day == days[-1] and part == 2:
+                    if day == last_day and part == 2:
                         continue
                     for mode in ("sample", "real"):
                         try:
@@ -232,10 +232,13 @@ def main() -> int:
                                 file=sys.stderr,
                             )
                             group_failed += 1
-            print(f"VERIFIED: {year} {lang:<10}:  {group_failed} failed")
+            summaries.append((year, lang, group_failed))
             failed += group_failed
     if not matched:
         parser.error("No matching year/language entry points found")
+    for year, lang, group_failed in summaries:
+        print(f"VERIFIED: {year} {lang:<10}:  {group_failed} failed")
+    print(f"VERIFIED: {failed} failed", flush=True)
     return int(failed > 0)
 
 

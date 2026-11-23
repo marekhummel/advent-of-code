@@ -255,6 +255,7 @@ tasks:
         dart compile {{if eq .OPTIMIZE "debug"}}kernel{{else}}exe{{end}}
         src/{{.YEAR}}/dart/main.dart
         -o build/dart/{{.YEAR}}/{{.OPTIMIZE}}/main{{if eq .OPTIMIZE "debug"}}.dill{{end}}
+        >&2
   exec:dart:
     internal: true
     cmds:

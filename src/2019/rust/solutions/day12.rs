@@ -15,11 +15,7 @@ pub fn part1(input: ProblemInput, is_sample: bool) -> ProblemResult {
         step(&moons);
     }
 
-    moons
-        .into_iter()
-        .map(|m| m.borrow().total_energy())
-        .sum::<i32>()
-        .into()
+    moons.into_iter().map(|m| m.borrow().total_energy()).sum::<i32>().into()
 }
 
 pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
@@ -33,7 +29,7 @@ pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
     let mut period_y = None;
     let mut period_z = None;
 
-    for step in 0.. {
+    for elapsed in 0.. {
         // Compute state for each dimension
         let states = moons.iter().map(|m| m.borrow().states()).collect_vec();
         let state_x = states.iter().map(|(sx, _, _)| *sx).collect_vec();
@@ -43,21 +39,21 @@ pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
         // Check if period is found for each dimension
         if period_x.is_none() {
             if states_x.contains(&state_x) {
-                period_x = Some(step);
+                period_x = Some(elapsed);
             }
             states_x.insert(state_x);
         }
 
         if period_y.is_none() {
             if states_y.contains(&state_y) {
-                period_y = Some(step);
+                period_y = Some(elapsed);
             }
             states_y.insert(state_y);
         }
 
         if period_z.is_none() {
             if states_z.contains(&state_z) {
-                period_z = Some(step);
+                period_z = Some(elapsed);
             }
             states_z.insert(state_z);
         }

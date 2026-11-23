@@ -17,7 +17,7 @@ pub fn part2(input: ProblemInput, _is_sample: bool) -> ProblemResult {
     }
 
     let (paper, folds) = parse(input);
-    let final_dots = folds.into_iter().fold(paper, |dots, fold| fold(fold, dots));
+    let final_dots = folds.into_iter().fold(paper, |dots, crease| fold(crease, dots));
 
     let max_x = final_dots.iter().map(|d| d.x).max().unwrap();
     let max_y = final_dots.iter().map(|d| d.y).max().unwrap();
