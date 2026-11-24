@@ -11,7 +11,8 @@ function runner.run(year, solutions, args)
     local part = tonumber(args[2])
     local mode = args[3]
     local last_day = year < 2025 and 25 or 12
-    if #args ~= 3
+    if
+        #args ~= 3
         or not day
         or day % 1 ~= 0
         or day < 1
@@ -25,7 +26,7 @@ function runner.run(year, solutions, args)
 
     local implementation = solutions[day]
     if implementation == nil then
-        print(solution.format(solution.Unsolved))
+        print(solution.Status.Unsolved)
         return
     end
     local solve = implementation[part == 1 and "part1" or "part2"]
@@ -51,7 +52,12 @@ function runner.run(year, solutions, args)
     end
     file:close()
 
-    print(solution.format(solve(input, sample)))
+    local result = solve(input, sample)
+    assert(
+        type(result) == "string" or (type(result) == "number" and math.type(result) == "integer"),
+        "A solution must return an integer, text or a known status"
+    )
+    print(result)
 end
 
 return runner

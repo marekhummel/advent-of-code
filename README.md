@@ -54,19 +54,21 @@ verification and inputs. Use `task --list` to list available tasks.
 | `task run:<language>` | Run solutions with timing |
 | `task verify:<language>` | Verify answers for one language |
 | `task verify` | Verify answers across all languages |
+| `task solutions YEAR=2023 DAY=1` | Show sample and accepted answers for a day |
 | `task input` | Download puzzle inputs |
 | `task cookie` | Import a Firefox session; run on the host |
 
 Arguments select the year, day, part and input mode. `OPTIMIZE` selects a
 release (`fast`) or debug build. Verification accepts year and day filters;
 `--verbose` includes passing and skipped results.
+`solutions` requires `YEAR` and `DAY`, with optional `PART` and `MODE=sample|real|both`.
 
 ## Development
 
 ### Installation
 
 The devcontainer installs common shell, Git, download and C build tools, Task,
-Rust/Cargo, Go, Zig, Elixir/Erlang/Mix, Python 3.15, Lua 5.4 with StyLua, Luacheck and LuaLS,
+Rust/Cargo, Go, Zig with ZLS, Elixir/Erlang/Mix, Python 3.15, Lua 5.4 with StyLua, Luacheck and LuaLS,
 the stable Dart SDK,
 and Clang/LLVM 23 with libc++
 for C++23, together with formatters, linters, type checkers and editor extensions. The host needs Docker, VS Code
@@ -85,6 +87,10 @@ use the same LuaLS executable and `.luarc.json` settings. LuaLS checks the whole
 Lua workspace; `YEAR` filters formatting and linting. CLI logs and generated
 definitions are stored in `build/lua/luals/`.
 
+ZLS is installed in the image and enabled explicitly. ElixirLS fetches the project's
+development dependencies automatically; the image includes Elixir and Erlang sources
+for standard-library navigation.
+
 Dart's SDK includes its formatter, analyser and language server; no extra packages
 are needed. `task check:dart` formats and analyses the code using the same SDK as
 VS Code. Release builds are native executables; debug builds run on the Dart VM.
@@ -100,13 +106,16 @@ receive input lines and a sample flag; Zig additionally receives an allocator.
 Results distinguish integer answers, text answers and informational statuses.
 Floating-point answers must be explicitly formatted as strings by the part.
 
+Go keeps each day in its own `solutions/dayNN/` package, with the parts in
+`solution.go` and any additional helper files alongside it.
+
 | Language | Day registration and part contract | Result representation |
 | --- | --- | --- |
 | Rust | `solution!(day01)`; function pointers checked at compile time | `Signed(i128)`, `Unsigned(u128)`, big integer, text and statuses |
 | Python | `Solution.from_module(day01)`; module checked against a typed protocol | Integer/text/status enum union |
 | Zig | `Solution.from(day01)`; function pointers checked at compile time | `Signed(i128)`, `Unsigned(u128)`, text and status union |
 | Elixir | `Solution.from(Day01)`; both exported functions checked at registration | Integer/string/status atom union |
-| Lua | `Solution.from(day01)` validates both functions in a plain module table | Integer/string/tagged status union |
+| Lua | `Solution.from(day01)` validates both functions in a plain module table | Integer/string answers; status enum values contain their output labels |
 | Dart | Common `Solution` class with typed function fields; map of instances | Sealed integer/text/status variants |
 | C++ | `AOC_SOLUTION(day01)`; function pointers checked at compile time | `intmax_t`/`uintmax_t`, text and status variant |
 | Go | `lib.NewSolution(part1, part2)` requires two typed, non-nil functions | Generic `Signed`/`Unsigned` constructors widen to 64 bits; formatted answer or status |

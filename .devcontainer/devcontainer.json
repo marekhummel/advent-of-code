@@ -67,6 +67,10 @@
                     "${workspaceFolder}/build"
                 ],
                 "Lua.misc.executablePath": "/usr/local/lib/lua-language-server/bin/lua-language-server",
+                "Lua.misc.parameters": [
+                    "--logpath=${containerWorkspaceFolder}/build/lua/luals/editor/log",
+                    "--metapath=${containerWorkspaceFolder}/build/lua/luals/editor/meta"
+                ],
                 "stylua.styluaPath": "/usr/local/bin/stylua",
                 "stylua.disableVersionCheck": true,
                 "python.analysis.extraPaths": [
@@ -77,6 +81,8 @@
                 "mypy-type-checker.importStrategy": "fromEnvironment",
                 "mypy-type-checker.reportingScope": "file",
                 "zig.path": "/usr/local/zig/zig",
+                "zig.zls.enabled": "on",
+                "zig.zls.path": "/usr/local/bin/zls",
                 "zig.zls.globalCachePath": "${workspaceFolder}/build/zig/zls",
                 "clangd.path": "/usr/local/bin/clangd",
                 "clangd.fallbackFlags": [
@@ -85,6 +91,8 @@
                     "-I${workspaceFolder}/src/lib/cpp"
                 ],
                 "elixirLS.mixEnv": "dev",
+                "elixirLS.fetchDeps": true,
+                "elixirLS.stdlibSrcDir": "/usr/local/src/elixir",
                 "go.alternateTools": {
                     "gopls": "/usr/local/bin/gopls",
                     "golangci-lint-v2": "/usr/local/bin/golangci-lint"

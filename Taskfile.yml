@@ -76,6 +76,14 @@ tasks:
     <<: *verify
     desc: Verify a language (e.g. verify:python; optional YEAR, DAY; --verbose shows all results)
     vars: {LANGUAGE: '{{index .MATCH 0}}'}
+  solutions:
+    desc: Show reference answers (YEAR, DAY; optional PART, MODE=both)
+    requires:
+      vars: [*year, *day, *optional_part, *optional_mode]
+    cmds:
+      - >-
+        python3 scripts/answers.py --year {{.YEAR}} --day {{.DAY}}
+        {{if .PART}}--part {{.PART}}{{end}} --mode {{.MODE}}
   list:
     desc: List all year/language directories
     cmds:
@@ -251,11 +259,15 @@ tasks:
     generates: ['build/dart/{{.YEAR}}/{{.OPTIMIZE}}/main{{if eq .OPTIMIZE "debug"}}.dill{{end}}']
     cmds:
       - mkdir -p build/dart/{{.YEAR}}/{{.OPTIMIZE}}
-      - >-
-        dart compile {{if eq .OPTIMIZE "debug"}}kernel{{else}}exe{{end}}
-        src/{{.YEAR}}/dart/main.dart
-        -o build/dart/{{.YEAR}}/{{.OPTIMIZE}}/main{{if eq .OPTIMIZE "debug"}}.dill{{end}}
-        >&2
+      - |
+        if output=$(dart compile {{if eq .OPTIMIZE "debug"}}kernel{{else}}exe{{end}} \
+          src/{{.YEAR}}/dart/main.dart \
+          -o build/dart/{{.YEAR}}/{{.OPTIMIZE}}/main{{if eq .OPTIMIZE "debug"}}.dill{{end}} 2>&1); then
+          {{if .CLI_SILENT}}:{{else}}printf '%s\n' "$output" >&2{{end}}
+        else
+          printf '%s\n' "$output" >&2
+          exit 1
+        fi
   exec:dart:
     internal: true
     cmds:

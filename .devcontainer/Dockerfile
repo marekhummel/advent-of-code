@@ -1,18 +1,24 @@
 ARG UBUNTU_VERSION=26.04
 FROM ubuntu:${UBUNTU_VERSION}
 
-# Language and tool versions. Elixir/Erlang and Dart use their apt repository versions.
+# Upstream versions; apt package revisions may vary within these releases.
 ARG TASK_VERSION=3.54.0
-ARG RUST_VERSION=stable
+ARG RUST_VERSION=1.100.0
 ARG GO_VERSION=1.27.3
 ARG GOPLS_VERSION=v0.24.0
 ARG GOLANGCI_LINT_VERSION=v2.15.0
 ARG ZIG_VERSION=0.17.1
+ARG ZLS_VERSION=0.17.0
 ARG LLVM_VERSION=23
-ARG LUA_VERSION=5.4
+ARG ELIXIR_VERSION=1.18.3
+ARG ERLANG_VERSION=27.3.4
+ARG HEX_VERSION=2.7.0
+ARG LUA_VERSION=5.4.8
+ARG LUACHECK_VERSION=1.2.0
 ARG STYLUA_VERSION=2.6.0
 ARG LUALS_VERSION=3.19.2
-ARG PYTHON_VERSION=3.15
+ARG DART_VERSION=3.14.0
+ARG PYTHON_VERSION=3.15.2
 ARG RUFF_VERSION=0.17.3
 ARG MYPY_VERSION=2.4.1
 
@@ -63,6 +69,11 @@ RUN curl -fsSL "https://ziglang.org/download/${ZIG_VERSION}/zig-x86_64-linux-${Z
     && tar -xJf /tmp/zig.tar.xz -C /usr/local/zig --strip-components=1 \
     && rm /tmp/zig.tar.xz
 
+RUN curl -fsSL "https://builds.zigtools.org/zls-x86_64-linux-${ZLS_VERSION}.tar.xz" \
+        -o /tmp/zls.tar.xz \
+    && tar -xJf /tmp/zls.tar.xz -C /usr/local/bin zls \
+    && rm /tmp/zls.tar.xz
+
 # C++23: current stable LLVM compiler, standard library, editor and check tools.
 RUN curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key \
         -o /usr/share/keyrings/llvm.asc \
@@ -79,16 +90,27 @@ RUN curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key \
 
 # Elixir, Erlang/OTP and Mix from Ubuntu's repositories.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends elixir erlang-dev erlang-dialyzer \
+    && apt-get install -y --no-install-recommends \
+        "elixir=${ELIXIR_VERSION}*" "erlang-base=1:${ERLANG_VERSION}*" \
+        "erlang-dev=1:${ERLANG_VERSION}*" "erlang-dialyzer=1:${ERLANG_VERSION}*" \
+        "erlang-src=1:${ERLANG_VERSION}*" \
     && rm -rf /var/lib/apt/lists/* \
-    && sudo -H -u ubuntu mix local.hex --force
+    && sudo -H -u ubuntu mix local.hex "${HEX_VERSION}" --force
+
+RUN curl -fsSL "https://github.com/elixir-lang/elixir/archive/refs/tags/v${ELIXIR_VERSION}.tar.gz" \
+        -o /tmp/elixir-src.tar.gz \
+    && mkdir -p /usr/local/src/elixir \
+    && tar -xzf /tmp/elixir-src.tar.gz -C /usr/local/src/elixir --strip-components=1 \
+    && rm /tmp/elixir-src.tar.gz
 
 # Lua interpreter, linter, formatter and standalone language server.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends "lua${LUA_VERSION}" lua-check \
+    && apt-get install -y --no-install-recommends \
+        "lua${LUA_VERSION%.*}=${LUA_VERSION}*" "lua-check=${LUACHECK_VERSION}*" \
     && rm -rf /var/lib/apt/lists/*
-RUN CARGO_HOME=/usr/local/cargo cargo install stylua --version "${STYLUA_VERSION}" \
-        --locked --no-default-features --features "lua${LUA_VERSION//./}" --root /usr/local
+RUN lua_series=${LUA_VERSION%.*} \
+    && CARGO_HOME=/usr/local/cargo cargo install stylua --version "${STYLUA_VERSION}" \
+        --locked --no-default-features --features "lua${lua_series//./}" --root /usr/local
 RUN curl -fsSL "https://github.com/LuaLS/lua-language-server/releases/download/${LUALS_VERSION}/lua-language-server-${LUALS_VERSION}-linux-x64.tar.gz" \
         -o /tmp/luals.tar.gz \
     && mkdir -p /usr/local/lib/lua-language-server \
@@ -101,17 +123,19 @@ RUN curl -fsSL https://dl-ssl.google.com/linux/linux_signing_key.pub \
     && echo "deb [signed-by=/usr/share/keyrings/dart.asc arch=amd64] https://storage.googleapis.com/download.dartlang.org/linux/debian stable main" \
         > /etc/apt/sources.list.d/dart.list \
     && apt-get update \
-    && apt-get install -y --no-install-recommends dart \
+    && apt-get install -y --no-install-recommends "dart=${DART_VERSION}*" \
+    && sudo -H -u ubuntu dart --disable-analytics \
     && rm -rf /var/lib/apt/lists/*
 
 # Python interpreter and development tools
 RUN add-apt-repository -y ppa:deadsnakes/ppa \
     && apt-get update \
-    && apt-get install -y --no-install-recommends python3 "python${PYTHON_VERSION}" \
+    && apt-get install -y --no-install-recommends python3 \
+        "python${PYTHON_VERSION%.*}=${PYTHON_VERSION}*" \
     && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py \
-    && "python${PYTHON_VERSION}" /tmp/get-pip.py --break-system-packages \
-    && "python${PYTHON_VERSION}" -m pip install --break-system-packages --ignore-installed --no-cache-dir \
+    && "python${PYTHON_VERSION%.*}" /tmp/get-pip.py --break-system-packages \
+    && "python${PYTHON_VERSION%.*}" -m pip install --break-system-packages --ignore-installed --no-cache-dir \
         "ruff==${RUFF_VERSION}" "mypy==${MYPY_VERSION}" \
     && rm /tmp/get-pip.py
 
