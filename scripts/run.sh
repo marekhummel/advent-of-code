@@ -10,6 +10,7 @@ day=
 part=
 mode=both
 optimize=fast
+build_options=()
 while (( $# )); do
     case "$1" in
         --lang) language=$2 ;;
@@ -18,13 +19,14 @@ while (( $# )); do
         --part) part=$2 ;;
         --mode) mode=$2 ;;
         --optimize) optimize=$2 ;;
+        --silent) build_options+=(--silent); shift; continue ;;
         *) echo "Unknown option: $1" >&2; exit 2 ;;
     esac
     shift 2
 done
 
 # Build executable if needed
-task --exit-code "build:$language" "YEAR=$year" "OPTIMIZE=$optimize"
+task "${build_options[@]}" --exit-code "build:$language" "YEAR=$year" "OPTIMIZE=$optimize"
 
 # Prep the cases
 output_file=$(mktemp)

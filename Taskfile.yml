@@ -55,6 +55,7 @@ tasks:
         {{if .DAY}}--day {{.DAY}}{{end}}
         {{if .PART}}--part {{.PART}}{{end}}
         --mode {{.MODE}} --optimize {{.OPTIMIZE}}
+        {{if .CLI_SILENT}}--silent{{end}}
   'case:*':
     vars: {LANGUAGE: '{{index .MATCH 0}}'}
     requires:
@@ -115,7 +116,7 @@ tasks:
   build:rust:
     desc: Build Rust (YEAR, optional OPTIMIZE=fast)
     requires: {vars: [*year, *optimize]}
-    cmds: ['cargo build --locked {{if ne .OPTIMIZE "debug"}}--release {{end}}--bin main{{.YEAR}}']
+    cmds: ['cargo build {{if .CLI_SILENT}}--quiet {{end}}--locked {{if ne .OPTIMIZE "debug"}}--release {{end}}--bin main{{.YEAR}}']
   exec:rust:
     internal: true
     cmds: ['cargo run --quiet --locked {{if ne .OPTIMIZE "debug"}}--release {{end}}--bin main{{.YEAR}} -- {{.DAY}} {{.PART}} {{.MODE}}']
@@ -173,10 +174,10 @@ tasks:
     desc: Build Zig (YEAR, optional OPTIMIZE=fast)
     requires: {vars: [*year, *optimize]}
     cmds:
-      - 'zig build --pkg-dir build/zig/packages --cache-dir build/zig/cache --prefix build/zig/out -Doptimize={{.OPTIMIZE}} {{.YEAR}}_main'
+      - 'zig build {{if .CLI_SILENT}}--color off {{end}}--pkg-dir build/zig/packages --cache-dir build/zig/cache --prefix build/zig/out -Doptimize={{.OPTIMIZE}} {{.YEAR}}_main'
   exec:zig:
     internal: true
-    cmds: ['zig build --pkg-dir build/zig/packages --cache-dir build/zig/cache --prefix build/zig/out -Doptimize={{.OPTIMIZE}} {{.YEAR}}_run -- {{.DAY}} {{.PART}} {{.MODE}}']
+    cmds: ['zig build {{if .CLI_SILENT}}--color off {{end}}--pkg-dir build/zig/packages --cache-dir build/zig/cache --prefix build/zig/out -Doptimize={{.OPTIMIZE}} {{.YEAR}}_run -- {{.DAY}} {{.PART}} {{.MODE}}']
   check:zig:
     desc: Format Zig (optional YEAR)
     requires: {vars: [*optional_year]}
@@ -186,7 +187,7 @@ tasks:
   build:elixir:
     desc: Build Elixir (YEAR)
     requires: {vars: [*year]}
-    cmds: ['MIX_ENV=prod mix aoc {{.YEAR}}']
+    cmds: ['MIX_ENV=prod {{if .CLI_SILENT}}MIX_QUIET=1 {{end}}mix aoc {{.YEAR}}']
   exec:elixir:
     internal: true
     cmds: ["MIX_ENV=prod MIX_QUIET=1 mix aoc {{.YEAR}} {{.DAY}} {{.PART}} {{.MODE}}"]
@@ -272,7 +273,7 @@ tasks:
       - |
         if output=$(dart compile {{if eq .OPTIMIZE "debug"}}kernel{{else}}exe{{end}} \
           src/{{.YEAR}}/dart/main.dart \
-          -o build/dart/{{.YEAR}}/{{.OPTIMIZE}}/main{{if eq .OPTIMIZE "debug"}}.dill{{end}} 2>&1); then
+          -o build/dart/{{.YEAR}}/{{.OPTIMIZE}}/main{{if eq .OPTIMIZE "debug"}}.dill{{end}}); then
           {{if .CLI_SILENT}}:{{else}}printf '%s\n' "$output" >&2{{end}}
         else
           printf '%s\n' "$output" >&2

@@ -62,6 +62,7 @@ verification and inputs. Use `task --list` to list available tasks.
 Arguments select the year, day, part and input mode. `OPTIMIZE` selects a
 release (`fast`) or debug build. Verification accepts year and day filters;
 `--verbose` includes passing and skipped results.
+`--silent` hides command echoes and routine build output; errors and run results remain visible.
 `solutions` requires `YEAR` and `DAY`, with optional `PART` and `MODE=sample|real|both`.
 
 ## Development
