@@ -3,7 +3,6 @@
 /.dart_tool/
 /.elixir_ls/
 __pycache__/
-.task/
 
 scripts/aoc_cookie.txt
 /inputs/*/input*.txt

@@ -32,6 +32,7 @@ for individual summaries.
 | `inputs/YEAR/` | All | Puzzle inputs (not commited), samples and `sample_solutions.json` |
 | `progress/` | All | Overall progress image and yearly screenshots |
 | `Taskfile.yml`, `scripts/` | All | Commands, helper scripts and day templates |
+| `.taskrc.yml` | All | Task settings; local cache in `build/task/` |
 | `.devcontainer/` | All | Tool installation and VS Code settings |
 | `Cargo.toml`, `Cargo.lock`, `.cargo/`, `.rustfmt.toml` | Rust | Packages, dependencies, compiler and formatter configuration |
 | `requirements.txt`, `pyproject.toml` | Python | Dependencies, linting, formatting and type-check configuration |
