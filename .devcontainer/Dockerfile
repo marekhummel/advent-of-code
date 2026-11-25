@@ -103,10 +103,11 @@ RUN curl -fsSL "https://github.com/elixir-lang/elixir/archive/refs/tags/v${ELIXI
     && tar -xzf /tmp/elixir-src.tar.gz -C /usr/local/src/elixir --strip-components=1 \
     && rm /tmp/elixir-src.tar.gz
 
-# Lua interpreter, linter, formatter and standalone language server.
+# Lua interpreter, package manager, linter, formatter and standalone language server.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         "lua${LUA_VERSION%.*}=${LUA_VERSION}*" "lua-check=${LUACHECK_VERSION}*" \
+        "liblua${LUA_VERSION%.*}-dev" luarocks \
     && rm -rf /var/lib/apt/lists/*
 RUN lua_series=${LUA_VERSION%.*} \
     && CARGO_HOME=/usr/local/cargo cargo install stylua --version "${STYLUA_VERSION}" \

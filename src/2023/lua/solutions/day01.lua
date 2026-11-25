@@ -1,36 +1,28 @@
-local words = {
-    "one",
-    "two",
-    "three",
-    "four",
-    "five",
-    "six",
-    "seven",
-    "eight",
-    "nine",
-}
+local stringx = require("pl.stringx")
+
+local words = stringx.split("one two three four five six seven eight nine")
 
 ---@param line string
----@param include_spelled boolean
+---@param spelled boolean
 ---@return integer
-local function calibration(line, include_spelled)
+local function calibration(line, spelled)
     local first, last
 
     for i = 1, #line do
-        -- Checking for digit
+        -- Check digit
         local value = tonumber(line:sub(i, i))
 
-        -- Checking for spelled out words
-        if not value and include_spelled then
+        -- Check spelled number
+        if value == nil and spelled then
             for number, word in ipairs(words) do
-                if line:sub(i, i + #word - 1) == word then
+                if stringx.startswith(line:sub(i), word) then
                     value = number
                     break
                 end
             end
         end
 
-        -- Update first and last
+        -- Update first and last found
         if value then
             first = first or value
             last = value
@@ -49,6 +41,7 @@ local function part1(input, _sample)
     for _, line in ipairs(input) do
         sum = sum + calibration(line, false)
     end
+
     return sum
 end
 
@@ -60,6 +53,7 @@ local function part2(input, _sample)
     for _, line in ipairs(input) do
         sum = sum + calibration(line, true)
     end
+
     return sum
 end
 

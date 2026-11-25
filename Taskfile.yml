@@ -229,12 +229,16 @@ tasks:
 
   # Lua
   build:lua:
-    desc: Lua runs directly; no build required
-    silent: true
-    cmds: ['true']
+    desc: Install Lua dependencies
+    cmds:
+      - >-
+        sudo luarocks --lua-version=5.4 make --only-deps rockspec
+        {{if .CLI_SILENT}}> /dev/null{{else}}>&2{{end}}
   exec:lua:
     internal: true
-    cmds: ['lua5.4 src/{{.YEAR}}/lua/main.lua {{.DAY}} {{.PART}} {{.MODE}}']
+    cmds:
+      - task: build:lua
+      - lua5.4 src/{{.YEAR}}/lua/main.lua {{.DAY}} {{.PART}} {{.MODE}}
   check:lua:
     desc: Format/lint Lua (optional YEAR) and type-check the Lua workspace
     requires: {vars: [*optional_year]}
@@ -243,7 +247,7 @@ tasks:
       - luacheck --std lua54 --max-line-length 100 src/{{.YEAR | default "[0-9]*"}}/lua src/lib/lua
       - mkdir -p build/lua/luals
       - >-
-        lua-language-server --check=. --configpath=.luarc.json --checklevel=Warning
+        lua-language-server --check=src --configpath=.luarc.json --checklevel=Warning
         --logpath=build/lua/luals/log --metapath=build/lua/luals/meta
 
   # Dart

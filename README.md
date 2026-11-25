@@ -39,7 +39,7 @@ for individual summaries.
 | `.clang-format` | C++ | Formatting; Taskfile builds C++23 into `build/cpp/` |
 | `build.zig`, `build.zig.zon` | Zig | Build steps and dependencies |
 | `mix.exs`, `mix.lock`, `.elixir_ls/`  | Elixir | Mix project, build steps and dependencies, local cache |
-| `.stylua.toml`, `.luarc.json` | Lua | Formatting and language-server settings; shared runner in `src/lib/lua/` |
+| `rockspec`, `.stylua.toml`, `.luarc.json` | Lua | Dependencies, formatting and language-server settings; shared runner in `src/lib/lua/` |
 | `analysis_options.yaml` | Dart | Static analysis settings; Taskfile builds into `build/dart/` |
 | `.gitignore`| All | Git exclusions (build, inputs and session token) |
 
@@ -68,7 +68,7 @@ release (`fast`) or debug build. Verification accepts year and day filters;
 ### Installation
 
 The devcontainer installs common shell, Git, download and C build tools, Task,
-Rust/Cargo, Go, Zig with ZLS, Elixir/Erlang/Mix, Python 3.15, Lua 5.4 with StyLua, Luacheck and LuaLS,
+Rust/Cargo, Go, Zig with ZLS, Elixir/Erlang/Mix, Python 3.15, Lua 5.4 with LuaRocks, StyLua, Luacheck and LuaLS,
 the stable Dart SDK,
 and Clang/LLVM 23 with libc++
 for C++23, together with formatters, linters, type checkers and editor extensions. The host needs Docker, VS Code
@@ -76,7 +76,7 @@ and its Dev Containers extension.
 
 | Task | Purpose |
 | --- | --- |
-| `task build:<language>` | Build a year; for Python, install project dependencies |
+| `task build:<language>` | Build a year; for Python and Lua, install project dependencies |
 | `task check:<language>` | Format, lint and check source code |
 | `task newday:<language>` | Create a day from its template and register it |
 
@@ -86,6 +86,9 @@ Lua tools are installed independently of VS Code. The editor and `task check:lua
 use the same LuaLS executable and `.luarc.json` settings. LuaLS checks the whole
 Lua workspace; `YEAR` filters formatting and linting. CLI logs and generated
 definitions are stored in `build/lua/luals/`.
+
+LuaRocks installs Penlight globally through `task build:lua`.
+StyLua formats code; Luacheck lints it; LuaLS checks types.
 
 ZLS is installed in the image and enabled explicitly. ElixirLS fetches the project's
 development dependencies automatically; the image includes Elixir and Erlang sources
