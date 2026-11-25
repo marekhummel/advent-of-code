@@ -26,6 +26,7 @@ vars:
     - &optimize {name: OPTIMIZE, enum: [debug, fast]}
 
 env:
+  PUB_CACHE: '{{.ROOT_DIR}}/build/dart/pub-cache'
   PYTHONPATH: '{{.ROOT_DIR}}/src'
   PYTHONPYCACHEPREFIX: '{{.ROOT_DIR}}/build/python/pycache'
   GOCACHE: '{{.ROOT_DIR}}/build/golang/cache'
@@ -259,9 +260,14 @@ tasks:
     sources:
       - src/{{.YEAR}}/dart/**/*.dart
       - src/lib/dart/**/*.dart
+      - pubspec.yaml
+      - pubspec.lock
       - Taskfile.yml
-    generates: ['build/dart/{{.YEAR}}/{{.OPTIMIZE}}/main{{if eq .OPTIMIZE "debug"}}.dill{{end}}']
+    generates:
+      - .dart_tool/package_config.json
+      - 'build/dart/{{.YEAR}}/{{.OPTIMIZE}}/main{{if eq .OPTIMIZE "debug"}}.dill{{end}}'
     cmds:
+      - 'dart pub get {{if .CLI_SILENT}}> /dev/null{{else}}>&2{{end}}'
       - mkdir -p build/dart/{{.YEAR}}/{{.OPTIMIZE}}
       - |
         if output=$(dart compile {{if eq .OPTIMIZE "debug"}}kernel{{else}}exe{{end}} \

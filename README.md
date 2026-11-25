@@ -40,7 +40,7 @@ for individual summaries.
 | `build.zig`, `build.zig.zon` | Zig | Build steps and dependencies |
 | `mix.exs`, `mix.lock`, `.elixir_ls/`  | Elixir | Mix project, build steps and dependencies, local cache |
 | `rockspec`, `.stylua.toml`, `.luarc.json` | Lua | Dependencies, formatting and language-server settings; shared runner in `src/lib/lua/` |
-| `analysis_options.yaml` | Dart | Static analysis settings; Taskfile builds into `build/dart/` |
+| `pubspec.yaml`, `pubspec.lock`, `analysis_options.yaml` | Dart | Dependencies and static analysis; builds and package cache in `build/dart/`, local package configuration in `.dart_tool/` |
 | `.gitignore`| All | Git exclusions (build, inputs and session token) |
 
 ## Usage

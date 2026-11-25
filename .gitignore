@@ -1,5 +1,6 @@
 /.vscode/
 /build/
+/.dart_tool/
 /.elixir_ls/
 __pycache__/
 .task/
