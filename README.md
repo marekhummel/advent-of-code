@@ -52,16 +52,19 @@ verification and inputs. Use `task --list` to list available tasks.
 | Task | Purpose |
 | --- | --- |
 | `task list` | List all year/language directories |
-| `task run:<language>` | Run solutions with timing |
-| `task verify:<language>` | Verify answers for one language |
-| `task verify` | Verify answers across all languages |
+| `task run:<language>` | Run solutions with timing and check their answers |
+| `task verify:<language>` | Run one language, showing failures and a final tally |
+| `task verify` | Run all languages, showing failures and a final tally |
 | `task solutions YEAR=2023 DAY=1` | Show sample and accepted answers for a day |
 | `task input` | Download puzzle inputs |
 | `task cookie` | Import a Firefox session; run on the host |
 
 Arguments select the year, day, part and input mode. `OPTIMIZE` selects a
-release (`fast`) or debug build. Verification accepts year and day filters;
-`--verbose` includes passing and skipped results.
+release (`fast`) or debug build. Verification always uses release builds and accepts
+`YEAR`, `DAY`, `PART` and `MODE` filters; `--verbose` shows every case.
+Both tasks compare sample answers with `inputs/YEAR/sample_solutions.json` and real
+answers with accepted answers from Advent of Code. Unfinished solutions and missing
+references are counted separately without failing; mismatches and execution errors fail.
 `--silent` hides command echoes and routine build output; errors and run results remain visible.
 `solutions` requires `YEAR` and `DAY`, with optional `PART` and `MODE=sample|real|both`.
 

@@ -42,7 +42,7 @@ tasks:
 
   # Common
   'run:*':
-    desc: Run a language (e.g. run:rust; YEAR, optional DAY, PART, MODE=both, OPTIMIZE=fast)
+    desc: Run and verify a language (e.g. run:rust; YEAR, optional DAY, PART, MODE=both, OPTIMIZE=fast)
     vars: {LANGUAGE: '{{index .MATCH 0}}'}
     requires:
       vars: [*year, *optional_day, *optional_part, *optional_mode, *optimize]
@@ -51,11 +51,10 @@ tasks:
         msg: 'Missing entry point for {{.LANGUAGE}}/{{.YEAR}}'
     cmds:
       - >-
-        bash scripts/run.sh --lang {{.LANGUAGE}} --year {{.YEAR}}
+        python3 scripts/run.py --lang {{.LANGUAGE}} --year {{.YEAR}}
         {{if .DAY}}--day {{.DAY}}{{end}}
         {{if .PART}}--part {{.PART}}{{end}}
         --mode {{.MODE}} --optimize {{.OPTIMIZE}}
-        {{if .CLI_SILENT}}--silent{{end}}
   'case:*':
     vars: {LANGUAGE: '{{index .MATCH 0}}'}
     requires:
@@ -63,20 +62,22 @@ tasks:
     cmds:
       - task: 'exec:{{.LANGUAGE}}'
   verify: &verify
-    desc: Verify all languages (optional YEAR, DAY; --verbose shows all results)
+    desc: Verify all languages (optional YEAR, DAY, PART, MODE; --verbose shows all results)
     vars: {LANGUAGE: ''}
     requires:
-      vars: [*optional_year, *optional_day]
+      vars: [*optional_year, *optional_day, *optional_part, *optional_mode]
     cmds:
       - >-
-        python3 scripts/verify.py
+        python3 scripts/run.py
         {{if .LANGUAGE}}--lang {{.LANGUAGE | shellQuote}}{{end}}
         {{if .YEAR}}--year {{.YEAR}}{{end}}
         {{if .DAY}}--day {{.DAY}}{{end}}
-        {{if .CLI_VERBOSE}}--verbose{{end}}
+        {{if .PART}}--part {{.PART}}{{end}}
+        --mode {{.MODE}} --optimize fast
+        {{if not .CLI_VERBOSE}}--failures-only{{end}}
   'verify:*':
     <<: *verify
-    desc: Verify a language (e.g. verify:python; optional YEAR, DAY; --verbose shows all results)
+    desc: Verify a language (e.g. verify:python; optional YEAR, DAY, PART, MODE; --verbose shows all results)
     vars: {LANGUAGE: '{{index .MATCH 0}}'}
   solutions:
     desc: Show reference answers (YEAR, DAY; optional PART, MODE=both)
