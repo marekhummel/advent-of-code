@@ -53,7 +53,7 @@ class Solution {
   const Solution({required this.part1, required this.part2});
 }
 
-/// Run one DAY PART MODE case; scripts handle batches and verification.
+/// Run one DAY PART MODE case; scripts handle batches and verification
 void run(int year, Map<int, Solution> solutions, List<String> args) {
   final day = args.isNotEmpty ? int.tryParse(args[0]) : null;
   final part = args.length > 1 ? int.tryParse(args[1]) : null;
@@ -84,7 +84,7 @@ void run(int year, Map<int, Solution> solutions, List<String> args) {
     try {
       input = File('$stem.txt').readAsLinesSync();
     } on FileSystemException catch (error) {
-      // Only a missing file should select the part-specific fallback.
+      // Only a missing file should select the part-specific fallback
       if (error.osError?.errorCode != 2) rethrow;
       input = File('${stem}_$part.txt').readAsLinesSync();
     }

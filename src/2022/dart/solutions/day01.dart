@@ -1,5 +1,7 @@
 import 'package:collection/collection.dart';
 
+import '../../../lib/dart/helpers.dart';
+import '../../../lib/dart/input.dart';
 import '../../../lib/dart/runner.dart';
 
 Result part1(List<String> input, bool sample) {
@@ -11,8 +13,5 @@ Result part2(List<String> input, bool sample) {
 }
 
 List<int> _elfCalories(List<String> input) {
-  return input
-      .splitAfter((line) => line.isEmpty)
-      .map((group) => group.where((line) => line.isNotEmpty).map(int.parse).sum)
-      .sorted((a, b) => b.compareTo(a));
+  return input.blocks().map((group) => group.map(int.parse).sum).sortedDesc();
 }

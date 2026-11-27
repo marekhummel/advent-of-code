@@ -1,8 +1,9 @@
 # 2022
 
-Solved in Rust
+Solved in Rust and Dart.
 
-Dart infrastructure and an unimplemented day 1 are ready; no days solved in Dart yet.
+Dart days follow the Rust implementations; language-specific adaptations
+are noted in the code.
 
 ### Overview
 ![Overview](../../progress/2022/overview.png)

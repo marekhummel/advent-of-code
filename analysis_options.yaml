@@ -1,3 +1,6 @@
+formatter:
+  page_width: 99
+
 analyzer:
   exclude:
     - build/**

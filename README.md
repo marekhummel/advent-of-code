@@ -5,20 +5,20 @@ Zig, Elixir, C++, Lua and Dart, with shared libraries and tasks for running and 
 
 <img src="./progress/total.png" alt="Total Advent of Code progress" width="1037">
 
-| Year | Rust | Zig | Elixir | C++ | Python | Golang | Lua | Dart |
+| Year | Rust | Dart | Lua | Zig | Elixir | C++ | Python | Golang |
 | --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| [2015](src/2015/README.md) | ✓ | — | — | — | — | 07 | — | — |
-| [2016](src/2016/README.md) | ✓ | — | — | — | — | 10 | — | — |
-| [2017](src/2017/README.md) | ✓ | — | — | — | — | — | — | — |
-| [2018](src/2018/README.md) | ✓ | — | — | — | — | — | — | — |
-| [2019](src/2019/README.md) | ✓ | — | — | — | — | — | — | — |
-| [2020](src/2020/README.md) | ✓ | — | — | — | — | — | — | — |
-| [2021](src/2021/README.md) | ✓ | — | — | — | — | — | — | — |
-| [2022](src/2022/README.md) | ✓ | — | — | — | — | — | — | — |
-| [2023](src/2023/README.md) | ✓ | — | — | — | 01-06, 12, 24 | — | — | — |
-| [2024](src/2024/README.md) | 06 | ✓ | — | — | — | 24 | — | — |
-| [2025](src/2025/README.md) | — | — | ✓ | — |10 | — | — | — |
-| [2026](src/2026/README.md) | — | — | — | — | — | — | — | — |
+| [2015](src/2015/README.md) | ✓ | - | - | - | - | - | - | 07 |
+| [2016](src/2016/README.md) | ✓ | - | - | - | - | - | - | 10 |
+| [2017](src/2017/README.md) | ✓ | - | - | - | - | - | - | - |
+| [2018](src/2018/README.md) | ✓ | - | - | - | - | - | - | - |
+| [2019](src/2019/README.md) | ✓ | - | - | - | - | - | - | - |
+| [2020](src/2020/README.md) | ✓ | - | - | - | - | - | - | - |
+| [2021](src/2021/README.md) | ✓ | - | - | - | - | - | - | - |
+| [2022](src/2022/README.md) | ✓ | ✓ | - | - | - | - | - | - |
+| [2023](src/2023/README.md) | ✓ | - | 01 | - | - | - | 01-06, 12, 24 | - |
+| [2024](src/2024/README.md) | 06 | - | - | ✓ | - | - | - | 24 |
+| [2025](src/2025/README.md) | - | - | - | - | ✓ | - |10 | - |
+| [2026](src/2026/README.md) | - | - | - | - | - | - | - | - |
 
 See [progress/](progress/) for yearly screenshots and the linked year READMEs
 for individual summaries.

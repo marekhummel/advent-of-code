@@ -16,8 +16,10 @@
         "--security-opt=label=disable",
         "--security-opt=seccomp=unconfined"
     ],
+    "containerEnv": {
+        "CODEX_HOME": "${localEnv:HOME}/.codex"
+    },
     "remoteEnv": {
-        "CODEX_HOME": "${localEnv:HOME}/.codex",
         "ZIG_LOCAL_CACHE_DIR": "${containerWorkspaceFolder}/build/zig/cache",
         "ZIG_GLOBAL_CACHE_DIR": "${containerWorkspaceFolder}/build/zig/global",
         "ZIG_LOCAL_PKG_DIR": "${containerWorkspaceFolder}/build/zig/packages"
@@ -49,18 +51,34 @@
                 "[yaml][json]": {
                     "editor.tabSize": 2
                 },
+                "[rust]": {
+                    "editor.rulers": [120]
+                },
+                "[python]": {
+                    "editor.rulers": [99]
+                },
+                "[cpp]": {
+                    "editor.rulers": [100]
+                },
+                "[zig]": {
+                    "editor.rulers": []
+                },
                 "[elixir]": {
-                    "editor.tabSize": 2
+                    "editor.tabSize": 2,
+                    "editor.rulers": [98]
                 },
                 "[go]": {
-                    "editor.insertSpaces": false
+                    "editor.insertSpaces": false,
+                    "editor.rulers": []
                 },
                 "[lua]": {
-                    "editor.defaultFormatter": "JohnnyMorganz.stylua"
+                    "editor.defaultFormatter": "JohnnyMorganz.stylua",
+                    "editor.rulers": [100]
                 },
                 "[dart]": {
                     "editor.defaultFormatter": "Dart-Code.dart-code",
-                    "editor.tabSize": 2
+                    "editor.tabSize": 2,
+                    "editor.rulers": [99]
                 },
                 "dart.sdkPath": "/usr/lib/dart",
                 "dart.analysisExcludedFolders": [
